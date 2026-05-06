@@ -2355,7 +2355,7 @@ function renderBidding(r, qIndex, sa) {
   auctionWinner = null;
   if(auctionCountdown) { clearInterval(auctionCountdown); auctionCountdown = null; }
 
-  const baseUrl = 'https://3al-balcon-game.netlify.app/bid.html';
+  const baseUrl = 'https://raedharb.github.io/3al-balcon-game/bid.html';
   const qrUrlA = `${baseUrl}?t=a&r=${roomId}`;
   const qrUrlB = `${baseUrl}?t=b&r=${roomId}`;
 
@@ -2885,7 +2885,7 @@ function renderCharades(r, qIndex, sa) {
   const isLast = qIndex >= r.count - 1;
 
   const encoded = encodeURIComponent(item);
-  const qrData = `https://3al-balcon-game.netlify.app/act.html?n=${encoded}`;
+  const qrData = `https://raedharb.github.io/3al-balcon-game/act.html?n=${encoded}`;
 
   sa.innerHTML = `
     <div style="position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px">
