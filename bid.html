@@ -69,7 +69,13 @@ body {
 <div id="bid-section" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px">
   <div style="font-size:13px;color:rgba(255,255,255,0.5)">مزايدتكم الحالية</div>
   <div class="bid-display" id="bid-display">1</div>
-  <button class="bid-up" id="bid-up-btn" onclick="raiseBid()">▲ زايد</button>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%">
+  <button class="bid-up" onclick="raiseBidBy(1)">+1</button>
+  <button class="bid-up" onclick="raiseBidBy(2)">+2</button>
+  <button class="bid-up" onclick="raiseBidBy(3)">+3</button>
+  <button class="bid-up" onclick="raiseBidBy(4)">+4</button>
+  <button class="bid-up" onclick="raiseBidBy(5)">+5</button>
+</div>
 </div>
 
 <!-- Answers -->
@@ -118,15 +124,21 @@ function hide(id) { const el=document.getElementById(id); if(el) el.style.displa
 function showBox(id) { hideAllStatus(); const el=document.getElementById(id); if(el){el.style.display='flex';} }
 function hideAllStatus() { ['status-waiting','status-lost','status-won','status-your-turn'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; }); }
 
-window.raiseBid = async function() {
-  myBid++;
+window.raiseBidBy = async function(amount) {
+  myBid += amount;
   document.getElementById('bid-display').textContent = myBid;
-  document.getElementById('bid-up-btn').disabled = true;
+  // Disable all bid buttons
+  document.querySelectorAll('.bid-up').forEach(b => b.disabled = true);
   showBox('status-waiting');
 
-  await set(ref(db, `rooms/${roomId}/bids/${team}`), { value: myBid, time: Date.now() });
-  await set(ref(db, `rooms/${roomId}/lastBidder`), team);
-  await set(ref(db, `rooms/${roomId}/countdown`), { startedBy: team, startTime: Date.now(), duration: 10000 });
+  const now = Date.now();
+  await update(ref(db, `rooms/${roomId}`), {
+    [`bids/${team}`]: { value: myBid, time: now },
+    lastBidder: team,
+    lastBidTime: now,
+    phase: 'bidding',
+    countdown: { startedBy: team, startTime: now, duration: 10000 }
+  });
 };
 
 window.submitAnswer = async function() {
@@ -177,43 +189,99 @@ function startCountdown(duration, forMe) {
   }, 1000);
 }
 
+// Countdown timer on phone
+let phoneCountdownInterval = null;
+let lastSeenBidder = null;
+let countdownEndTime = null;
+
+function runPhoneCountdown(endTime, forMe) {
+  clearInterval(phoneCountdownInterval);
+  countdownEndTime = endTime;
+  const bar = document.getElementById('countdown-bar');
+  const fill = document.getElementById('countdown-fill');
+  const num = document.getElementById('countdown-num');
+  const total = 10;
+  bar.style.display = 'block';
+  num.style.display = 'block';
+  fill.style.background = forMe ? 'var(--red)' : 'var(--cyan)';
+
+  phoneCountdownInterval = setInterval(() => {
+    const remaining = Math.max(0, (endTime - Date.now()) / 1000);
+    num.textContent = Math.ceil(remaining);
+    fill.style.width = (remaining / total * 100) + '%';
+    if (remaining <= 0) {
+      clearInterval(phoneCountdownInterval);
+      bar.style.display = 'none';
+      num.style.display = 'none';
+    }
+  }, 200);
+}
+
 // Listen to room
-onValue(ref(db, `rooms/${roomId}`), (snap) => {
+onValue(ref(db, `rooms/${roomId}`), async (snap) => {
   const data = snap.val();
   if (!data) return;
 
-  if (data.teamA) teamBadge.textContent = team==='a' ? data.teamA : data.teamB;
+  const teamName = team === 'a' ? data.teamA : data.teamB;
+  if (teamName) teamBadge.textContent = teamName;
   if (data.question) document.getElementById('question-box').textContent = data.question;
 
   const bids = data.bids || {};
   const myBidVal = bids[team] ? bids[team].value : 1;
-  const otherBidVal = bids[other] ? bids[other].value : 1;
-  if (myBidVal > myBid) { myBid = myBidVal; document.getElementById('bid-display').textContent = myBid; }
+  if (myBidVal > myBid) {
+    myBid = myBidVal;
+    document.getElementById('bid-display').textContent = myBid;
+  }
 
-  // Countdown logic
-  if (data.countdown && data.phase === 'bidding') {
-    const forMe = data.lastBidder === other; // other bid, countdown is for ME
-    const elapsed = Date.now() - data.countdown.startTime;
-    const remaining = Math.max(0, data.countdown.duration - elapsed);
-    startCountdown(remaining, forMe);
+  // Handle countdown — when other team bids, I need to respond
+  if (data.countdown && data.phase === 'bidding' && data.lastBidder !== team) {
+    const forMe = true; // other team bid, countdown is for me
+    const endTime = data.countdown.startTime + data.countdown.duration;
 
-    if (forMe) {
-      showBox('status-your-turn');
-      document.getElementById('bid-up-btn').disabled = false;
-    } else {
-      showBox('status-waiting');
-      document.getElementById('bid-up-btn').disabled = true;
+    if (data.lastBidder !== lastSeenBidder) {
+      lastSeenBidder = data.lastBidder;
+      const remaining = endTime - Date.now();
+      if (remaining > 0) {
+        runPhoneCountdown(endTime, forMe);
+        showBox('status-your-turn');
+        document.querySelectorAll('.bid-up').forEach(b => b.disabled = false);
+
+        // Auto-lose if countdown expires and no response
+        clearTimeout(window._autoLoseTimer);
+        window._autoLoseTimer = setTimeout(async () => {
+          // Check if still in bidding phase and we haven't bid
+          const currentBidVal = (data.bids || {})[team]?.value || 1;
+          const otherBidVal = (data.bids || {})[data.lastBidder]?.value || 1;
+          if (currentBidVal < otherBidVal) {
+            // We lost — set phase to answering with other team as winner
+            await update(ref(db, `rooms/${roomId}`), {
+              phase: 'answering',
+              auctionWinner: data.lastBidder,
+              winningBid: otherBidVal
+            });
+          }
+        }, remaining + 500);
+      }
     }
+  } else if (data.countdown && data.phase === 'bidding' && data.lastBidder === team) {
+    // I just bid — waiting for other team
+    const endTime = data.countdown.startTime + data.countdown.duration;
+    const remaining = endTime - Date.now();
+    if (remaining > 0) {
+      runPhoneCountdown(endTime, false);
+    }
+    showBox('status-waiting');
+    document.querySelectorAll('.bid-up').forEach(b => b.disabled = true);
   }
 
   if (data.phase === 'answering') {
+    clearInterval(phoneCountdownInterval);
+    document.getElementById('countdown-bar').style.display = 'none';
+    document.getElementById('countdown-num').style.display = 'none';
     if (data.auctionWinner === team) {
       totalAnswers = data.winningBid || 1;
       hide('bid-section');
       hideAllStatus();
-      clearInterval(countdownInterval);
-      document.getElementById('countdown-bar').style.display = 'none';
-      document.getElementById('countdown-num').style.display = 'none';
       show('answer-section');
       updateAnswerUI();
     } else {
@@ -222,15 +290,7 @@ onValue(ref(db, `rooms/${roomId}`), (snap) => {
     }
   }
 
-  if (data.phase === 'done') {
-    // Show validated answers
-    if (data.answers) {
-      answersSubmitted = data.answers;
-      updateAnswerUI();
-    }
-  }
-
-  // Update answers from Firebase (for validation feedback)
+  // Update answers with validation results
   if (data.answers && data.auctionWinner === team) {
     answersSubmitted = data.answers;
     updateAnswerUI();
