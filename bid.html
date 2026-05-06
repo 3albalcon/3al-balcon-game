@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>3AL BALCON — مزاد علني</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --pink:#FF2D78; --cyan:#00EFFF; --yellow:#FFE600;
+  --green:#39FF14; --red:#FF2D2D; --dark:#060d1f;
+}
+body {
+  font-family:'Cairo',sans-serif;
+  background:var(--dark); color:#fff;
+  min-height:100dvh;
+  display:flex; flex-direction:column;
+  align-items:center; padding:20px 16px 40px; gap:14px;
+}
+.logo { font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:3px; }
+.team-badge { font-size:26px; font-weight:900; padding:10px 28px; border-radius:100px; border:2px solid; text-align:center; }
+.team-a { color:#E50158; border-color:#E50158; box-shadow:0 0 16px rgba(229,1,88,0.4); background:rgba(229,1,88,0.08); }
+.team-b { color:#E2DA51; border-color:#E2DA51; box-shadow:0 0 16px rgba(226,218,81,0.4); background:rgba(226,218,81,0.08); }
+.question-box { background:rgba(0,239,255,0.06); border:2px solid var(--cyan); box-shadow:0 0 20px rgba(0,239,255,0.2); border-radius:16px; padding:18px; font-size:18px; font-weight:700; text-align:center; line-height:1.6; width:100%; }
+.bid-display { font-size:90px; font-weight:900; color:var(--yellow); text-shadow:0 0 20px rgba(255,230,0,0.6); line-height:1; text-align:center; }
+.bid-up { width:100%; height:80px; background:rgba(255,230,0,0.1); border:3px solid var(--yellow); box-shadow:0 0 20px rgba(255,230,0,0.4); border-radius:16px; font-size:36px; font-weight:900; color:var(--yellow); cursor:pointer; transition:all 0.15s; }
+.bid-up:active { transform:scale(0.95); background:rgba(255,230,0,0.3); }
+.bid-up:disabled { opacity:0.3; cursor:default; }
+.countdown-bar { width:100%; height:10px; background:rgba(255,255,255,0.1); border-radius:100px; overflow:hidden; display:none; }
+.countdown-fill { height:100%; border-radius:100px; transition:width 0.5s linear; }
+.status-box { width:100%; padding:14px 18px; border-radius:14px; font-size:16px; font-weight:700; text-align:center; line-height:1.5; display:none; }
+.status-cyan { background:rgba(0,239,255,0.08); border:2px solid var(--cyan); color:var(--cyan); }
+.status-red { background:rgba(255,45,45,0.08); border:2px solid var(--red); color:var(--red); }
+.status-green { background:rgba(57,255,20,0.08); border:2px solid var(--green); color:var(--green); }
+.status-yellow { background:rgba(255,230,0,0.08); border:2px solid var(--yellow); color:var(--yellow); }
+.answer-section { width:100%; display:flex; flex-direction:column; gap:10px; }
+.answer-input { width:100%; padding:16px; background:rgba(255,255,255,0.05); border:2px solid rgba(255,255,255,0.2); border-radius:12px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:700; color:#fff; outline:none; text-align:right; direction:rtl; }
+.answer-input:focus { border-color:var(--green); box-shadow:0 0 12px rgba(57,255,20,0.3); }
+.submit-btn { width:100%; padding:16px; border-radius:14px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; cursor:pointer; transition:all 0.2s; border:3px solid; }
+.submit-btn:active { transform:scale(0.97); }
+.submit-green { background:rgba(57,255,20,0.1); border-color:var(--green); color:var(--green); }
+.answer-chip { padding:10px 16px; border-radius:10px; font-size:15px; font-weight:700; display:flex; align-items:center; gap:10px; }
+.chip-pending { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); }
+.chip-correct { background:rgba(57,255,20,0.1); border:1px solid var(--green); color:var(--green); }
+.chip-wrong { background:rgba(255,45,45,0.1); border:1px solid var(--red); color:var(--red); }
+.countdown-num { font-size:52px; font-weight:900; color:var(--red); text-shadow:0 0 20px rgba(255,45,45,0.6); text-align:center; animation:pulse 1s infinite; display:none; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+</style>
+</head>
+<body>
+<div class="logo">3AL BALCON — مزاد علني</div>
+<div class="team-badge" id="team-badge">...</div>
+<div class="question-box" id="question-box">جاري التحميل...</div>
+
+<!-- Countdown bar -->
+<div class="countdown-bar" id="countdown-bar">
+  <div class="countdown-fill" id="countdown-fill" style="width:100%;background:var(--yellow)"></div>
+</div>
+<div class="countdown-num" id="countdown-num"></div>
+
+<!-- Status -->
+<div class="status-box status-cyan" id="status-waiting">⏳ انتظر...</div>
+<div class="status-box status-red" id="status-lost">❌ خسرتوا المزاد — حظ أحسن المرة الجاية!</div>
+<div class="status-box status-green" id="status-won">🏆 ربحتوا المزاد! ابدأوا الكتابة</div>
+<div class="status-box status-yellow" id="status-your-turn">⚡ دوركم — زايدوا أو خسرتوا!</div>
+
+<!-- Bidding -->
+<div id="bid-section" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px">
+  <div style="font-size:13px;color:rgba(255,255,255,0.5)">مزايدتكم الحالية</div>
+  <div class="bid-display" id="bid-display">1</div>
+  <button class="bid-up" id="bid-up-btn" onclick="raiseBid()">▲ زايد</button>
+</div>
+
+<!-- Answers -->
+<div id="answer-section" class="answer-section" style="display:none">
+  <div style="font-size:14px;font-weight:700;color:var(--green);text-align:center" id="answer-title"></div>
+  <div id="answers-list" style="display:flex;flex-direction:column;gap:6px"></div>
+  <input class="answer-input" id="answer-input" type="text" placeholder="اكتب الجواب..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter') submitAnswer()">
+  <button class="submit-btn submit-green" onclick="submitAnswer()">✅ أرسل الجواب</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
+  authDomain:"al-balcon.firebaseapp.com",
+  databaseURL:"https://al-balcon-default-rtdb.firebaseio.com",
+  projectId:"al-balcon",
+  storageBucket:"al-balcon.firebasestorage.app",
+  messagingSenderId:"556294454945",
+  appId:"1:556294454945:web:770c330e71a4e484277ae0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const params = new URLSearchParams(window.location.search);
+const team = params.get('t');
+const roomId = params.get('r') || 'room1';
+const other = team === 'a' ? 'b' : 'a';
+
+if (!team) { document.body.innerHTML = '<div style="color:red;padding:40px;text-align:center">رابط غلط</div>'; throw new Error(); }
+
+let myBid = 1;
+let phase = 'bidding';
+let answersSubmitted = [];
+let totalAnswers = 0;
+let countdownInterval = null;
+
+const teamBadge = document.getElementById('team-badge');
+teamBadge.className = 'team-badge team-' + team;
+
+function show(id) { const el=document.getElementById(id); if(el) el.style.display='flex'; }
+function hide(id) { const el=document.getElementById(id); if(el) el.style.display='none'; }
+function showBox(id) { hideAllStatus(); const el=document.getElementById(id); if(el){el.style.display='flex';} }
+function hideAllStatus() { ['status-waiting','status-lost','status-won','status-your-turn'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; }); }
+
+window.raiseBid = async function() {
+  myBid++;
+  document.getElementById('bid-display').textContent = myBid;
+  document.getElementById('bid-up-btn').disabled = true;
+  showBox('status-waiting');
+
+  await set(ref(db, `rooms/${roomId}/bids/${team}`), { value: myBid, time: Date.now() });
+  await set(ref(db, `rooms/${roomId}/lastBidder`), team);
+  await set(ref(db, `rooms/${roomId}/countdown`), { startedBy: team, startTime: Date.now(), duration: 10000 });
+};
+
+window.submitAnswer = async function() {
+  const input = document.getElementById('answer-input');
+  const val = input.value.trim();
+  if (!val) return;
+  answersSubmitted.push({ text: val, status: 'pending' });
+  input.value = '';
+  input.focus();
+  await set(ref(db, `rooms/${roomId}/answers`), answersSubmitted);
+  updateAnswerUI();
+  if (answersSubmitted.length >= totalAnswers) {
+    hide('answer-section');
+    show('status-won');
+  }
+};
+
+function updateAnswerUI() {
+  const list = document.getElementById('answers-list');
+  const title = document.getElementById('answer-title');
+  title.textContent = `اكتبوا ${totalAnswers} أجوبة (${answersSubmitted.length}/${totalAnswers})`;
+  list.innerHTML = answersSubmitted.map((a,i) => `
+    <div class="answer-chip chip-${a.status||'pending'}">
+      <span>${i+1}.</span><span>${a.text}</span>
+      ${a.status==='correct'?'✅':a.status==='wrong'?'❌':''}
+    </div>
+  `).join('');
+}
+
+function startCountdown(duration, forMe) {
+  clearInterval(countdownInterval);
+  const bar = document.getElementById('countdown-bar');
+  const fill = document.getElementById('countdown-fill');
+  const num = document.getElementById('countdown-num');
+  bar.style.display = 'block';
+  num.style.display = 'block';
+  fill.style.background = forMe ? 'var(--red)' : 'var(--cyan)';
+
+  let remaining = duration / 1000;
+  num.textContent = remaining;
+  fill.style.width = '100%';
+
+  countdownInterval = setInterval(() => {
+    remaining--;
+    num.textContent = remaining;
+    fill.style.width = (remaining / (duration/1000) * 100) + '%';
+    if (remaining <= 0) { clearInterval(countdownInterval); bar.style.display='none'; num.style.display='none'; }
+  }, 1000);
+}
+
+// Listen to room
+onValue(ref(db, `rooms/${roomId}`), (snap) => {
+  const data = snap.val();
+  if (!data) return;
+
+  if (data.teamA) teamBadge.textContent = team==='a' ? data.teamA : data.teamB;
+  if (data.question) document.getElementById('question-box').textContent = data.question;
+
+  const bids = data.bids || {};
+  const myBidVal = bids[team] ? bids[team].value : 1;
+  const otherBidVal = bids[other] ? bids[other].value : 1;
+  if (myBidVal > myBid) { myBid = myBidVal; document.getElementById('bid-display').textContent = myBid; }
+
+  // Countdown logic
+  if (data.countdown && data.phase === 'bidding') {
+    const forMe = data.lastBidder === other; // other bid, countdown is for ME
+    const elapsed = Date.now() - data.countdown.startTime;
+    const remaining = Math.max(0, data.countdown.duration - elapsed);
+    startCountdown(remaining, forMe);
+
+    if (forMe) {
+      showBox('status-your-turn');
+      document.getElementById('bid-up-btn').disabled = false;
+    } else {
+      showBox('status-waiting');
+      document.getElementById('bid-up-btn').disabled = true;
+    }
+  }
+
+  if (data.phase === 'answering') {
+    if (data.auctionWinner === team) {
+      totalAnswers = data.winningBid || 1;
+      hide('bid-section');
+      hideAllStatus();
+      clearInterval(countdownInterval);
+      document.getElementById('countdown-bar').style.display = 'none';
+      document.getElementById('countdown-num').style.display = 'none';
+      show('answer-section');
+      updateAnswerUI();
+    } else {
+      hide('bid-section');
+      showBox('status-lost');
+    }
+  }
+
+  if (data.phase === 'done') {
+    // Show validated answers
+    if (data.answers) {
+      answersSubmitted = data.answers;
+      updateAnswerUI();
+    }
+  }
+
+  // Update answers from Firebase (for validation feedback)
+  if (data.answers && data.auctionWinner === team) {
+    answersSubmitted = data.answers;
+    updateAnswerUI();
+  }
+});
+</script>
+</body>
+</html>

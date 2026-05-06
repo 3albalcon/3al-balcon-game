@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سكر تمك — 3AL BALCON</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #060d1f;
+  color: #fff;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px; text-align: center;
+}
+.label { font-size: 14px; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 20px; }
+.name {
+  font-size: clamp(40px, 12vw, 90px);
+  font-weight: 900;
+  color: #FFE600;
+  text-shadow: 0 0 20px rgba(255,230,0,0.8), 0 0 50px rgba(255,230,0,0.4);
+  line-height: 1.2;
+}
+.hint { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 32px; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="label">🎭 سكر تمك — الاسم السري</div>
+<div class="name" id="name">...</div>
+<div class="hint">بس انت شوف الجواب</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('n');
+  document.getElementById('name').textContent = name ? decodeURIComponent(name) : '—';
+</script>
+</body>
+</html>
