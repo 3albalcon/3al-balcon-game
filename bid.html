@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>3AL BALCON — مزاد علني</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -10,85 +10,133 @@
 :root {
   --pink:#FF2D78; --cyan:#00EFFF; --yellow:#FFE600;
   --green:#39FF14; --red:#FF2D2D; --dark:#060d1f;
+  --a:#E50158; --b:#E2DA51;
 }
 body {
   font-family:'Cairo',sans-serif;
   background:var(--dark); color:#fff;
   min-height:100dvh;
   display:flex; flex-direction:column;
-  align-items:center; padding:20px 16px 40px; gap:14px;
+  align-items:center; padding:16px 16px 40px; gap:12px;
+  overflow-x:hidden;
 }
-.logo { font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:3px; }
-.team-badge { font-size:26px; font-weight:900; padding:10px 28px; border-radius:100px; border:2px solid; text-align:center; }
-.team-a { color:#E50158; border-color:#E50158; box-shadow:0 0 16px rgba(229,1,88,0.4); background:rgba(229,1,88,0.08); }
-.team-b { color:#E2DA51; border-color:#E2DA51; box-shadow:0 0 16px rgba(226,218,81,0.4); background:rgba(226,218,81,0.08); }
-.question-box { background:rgba(0,239,255,0.06); border:2px solid var(--cyan); box-shadow:0 0 20px rgba(0,239,255,0.2); border-radius:16px; padding:18px; font-size:18px; font-weight:700; text-align:center; line-height:1.6; width:100%; }
-.bid-display { font-size:90px; font-weight:900; color:var(--yellow); text-shadow:0 0 20px rgba(255,230,0,0.6); line-height:1; text-align:center; }
-.bid-up { width:100%; height:80px; background:rgba(255,230,0,0.1); border:3px solid var(--yellow); box-shadow:0 0 20px rgba(255,230,0,0.4); border-radius:16px; font-size:36px; font-weight:900; color:var(--yellow); cursor:pointer; transition:all 0.15s; }
-.bid-up:active { transform:scale(0.95); background:rgba(255,230,0,0.3); }
-.bid-up:disabled { opacity:0.3; cursor:default; }
-.countdown-bar { width:100%; height:10px; background:rgba(255,255,255,0.1); border-radius:100px; overflow:hidden; display:none; }
-.countdown-fill { height:100%; border-radius:100px; transition:width 0.5s linear; }
-.status-box { width:100%; padding:14px 18px; border-radius:14px; font-size:16px; font-weight:700; text-align:center; line-height:1.5; display:none; }
-.status-cyan { background:rgba(0,239,255,0.08); border:2px solid var(--cyan); color:var(--cyan); }
-.status-red { background:rgba(255,45,45,0.08); border:2px solid var(--red); color:var(--red); }
-.status-green { background:rgba(57,255,20,0.08); border:2px solid var(--green); color:var(--green); }
-.status-yellow { background:rgba(255,230,0,0.08); border:2px solid var(--yellow); color:var(--yellow); }
-.answer-section { width:100%; display:flex; flex-direction:column; gap:10px; }
+.logo { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:3px; }
+.team-badge { font-size:24px; font-weight:900; padding:10px 28px; border-radius:100px; border:2px solid; text-align:center; width:100%; }
+.badge-a { color:var(--a); border-color:var(--a); box-shadow:0 0 16px rgba(229,1,88,0.4); background:rgba(229,1,88,0.08); }
+.badge-b { color:var(--b); border-color:var(--b); box-shadow:0 0 16px rgba(226,218,81,0.4); background:rgba(226,218,81,0.08); }
+.q-box { background:rgba(0,239,255,0.06); border:2px solid var(--cyan); border-radius:16px; padding:18px; font-size:18px; font-weight:700; text-align:center; line-height:1.6; width:100%; display:none; }
+.big-num { font-size:90px; font-weight:900; line-height:1; text-align:center; }
+.bid-num { color:var(--yellow); text-shadow:0 0 20px rgba(255,230,0,0.6); }
+.countdown-num { color:var(--red); text-shadow:0 0 20px rgba(255,45,45,0.6); animation:pulse 0.8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.95)} }
+.timer-wrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.timer-bar { width:100%; height:10px; background:rgba(255,255,255,0.1); border-radius:100px; overflow:hidden; }
+.timer-fill { height:100%; border-radius:100px; transition:width 0.5s linear; }
+.timer-label { font-size:13px; color:rgba(255,255,255,0.4); }
+.status-box { width:100%; padding:14px 18px; border-radius:14px; font-size:15px; font-weight:700; text-align:center; line-height:1.5; }
+.s-cyan { background:rgba(0,239,255,0.08); border:2px solid var(--cyan); color:var(--cyan); }
+.s-red { background:rgba(255,45,45,0.08); border:2px solid var(--red); color:var(--red); }
+.s-green { background:rgba(57,255,20,0.08); border:2px solid var(--green); color:var(--green); }
+.s-yellow { background:rgba(255,230,0,0.08); border:2px solid var(--yellow); color:var(--yellow); }
+.btn { width:100%; padding:16px; border-radius:14px; font-family:'Cairo',sans-serif; font-size:18px; font-weight:900; cursor:pointer; transition:all 0.15s; border:3px solid; }
+.btn:active { transform:scale(0.96); }
+.btn:disabled { opacity:0.3; cursor:default; transform:none; }
+.btn-yellow { background:rgba(255,230,0,0.1); border-color:var(--yellow); color:var(--yellow); }
+.btn-green { background:rgba(57,255,20,0.1); border-color:var(--green); color:var(--green); }
+.btn-red { background:rgba(255,45,45,0.1); border-color:var(--red); color:var(--red); }
+.btn-cyan { background:rgba(0,239,255,0.1); border-color:var(--cyan); color:var(--cyan); }
+.bid-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; width:100%; }
+.bid-btn { padding:14px 0; border-radius:12px; font-family:'Cairo',sans-serif; font-size:18px; font-weight:900; cursor:pointer; border:2px solid var(--yellow); background:rgba(255,230,0,0.08); color:var(--yellow); transition:all 0.15s; }
+.bid-btn:active { transform:scale(0.93); background:rgba(255,230,0,0.25); }
+.bid-btn:disabled { opacity:0.25; cursor:default; transform:none; }
 .answer-input { width:100%; padding:16px; background:rgba(255,255,255,0.05); border:2px solid rgba(255,255,255,0.2); border-radius:12px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:700; color:#fff; outline:none; text-align:right; direction:rtl; }
 .answer-input:focus { border-color:var(--green); box-shadow:0 0 12px rgba(57,255,20,0.3); }
-.submit-btn { width:100%; padding:16px; border-radius:14px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; cursor:pointer; transition:all 0.2s; border:3px solid; }
-.submit-btn:active { transform:scale(0.97); }
-.submit-green { background:rgba(57,255,20,0.1); border-color:var(--green); color:var(--green); }
-.answer-chip { padding:10px 16px; border-radius:10px; font-size:15px; font-weight:700; display:flex; align-items:center; gap:10px; }
-.chip-pending { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); }
-.chip-correct { background:rgba(57,255,20,0.1); border:1px solid var(--green); color:var(--green); }
-.chip-wrong { background:rgba(255,45,45,0.1); border:1px solid var(--red); color:var(--red); }
-.countdown-num { font-size:52px; font-weight:900; color:var(--red); text-shadow:0 0 20px rgba(255,45,45,0.6); text-align:center; animation:pulse 1s infinite; display:none; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.answer-chip { padding:10px 14px; border-radius:10px; font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.chip-p { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.7); }
+.chip-ok { background:rgba(57,255,20,0.1); border:1px solid var(--green); color:var(--green); }
+.chip-no { background:rgba(255,45,45,0.1); border:1px solid var(--red); color:var(--red); }
+.flash-overlay { position:fixed; inset:0; z-index:999; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.1s; }
+.flash-overlay.show { opacity:1; }
+.flash-text { font-size:clamp(48px,15vw,120px); font-weight:900; text-align:center; line-height:1.1; }
+.q-indicator { font-size:12px; color:rgba(255,255,255,0.4); text-align:center; }
 </style>
 </head>
 <body>
+
 <div class="logo">3AL BALCON — مزاد علني</div>
-<div class="team-badge" id="team-badge">...</div>
-<div class="question-box" id="question-box">جاري التحميل...</div>
+<div class="team-badge" id="team-badge">جاري الاتصال...</div>
+<div class="q-indicator" id="q-indicator"></div>
 
-<!-- Countdown bar -->
-<div class="countdown-bar" id="countdown-bar">
-  <div class="countdown-fill" id="countdown-fill" style="width:100%;background:var(--yellow)"></div>
-</div>
-<div class="countdown-num" id="countdown-num"></div>
-
-<!-- Status -->
-<div class="status-box status-cyan" id="status-waiting">⏳ انتظر...</div>
-<div class="status-box status-red" id="status-lost">❌ خسرتوا المزاد — حظ أحسن المرة الجاية!</div>
-<div class="status-box status-green" id="status-won">🏆 ربحتوا المزاد! ابدأوا الكتابة</div>
-<div class="status-box status-yellow" id="status-your-turn">⚡ دوركم — زايدوا أو خسرتوا!</div>
-
-<!-- Bidding -->
-<div id="bid-section" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px">
-  <div style="font-size:13px;color:rgba(255,255,255,0.5)">مزايدتكم الحالية</div>
-  <div class="bid-display" id="bid-display">1</div>
-  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%">
-  <button class="bid-up" onclick="raiseBidBy(1)">+1</button>
-  <button class="bid-up" onclick="raiseBidBy(2)">+2</button>
-  <button class="bid-up" onclick="raiseBidBy(3)">+3</button>
-  <button class="bid-up" onclick="raiseBidBy(4)">+4</button>
-  <button class="bid-up" onclick="raiseBidBy(5)">+5</button>
-</div>
+<!-- Flash overlay for bid raise -->
+<div class="flash-overlay" id="flash-overlay">
+  <div class="flash-text" id="flash-text"></div>
 </div>
 
-<!-- Answers -->
-<div id="answer-section" class="answer-section" style="display:none">
-  <div style="font-size:14px;font-weight:700;color:var(--green);text-align:center" id="answer-title"></div>
+<!-- Phase: WAITING (before ready) -->
+<div id="phase-waiting" style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center">
+  <div class="status-box s-cyan">⏳ انتظر — الفريق الثاني يتصل...</div>
+  <div id="ready-status" style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center"></div>
+</div>
+
+<!-- Phase: READY (both connected, waiting to start) -->
+<div id="phase-ready" style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;display:none">
+  <div class="status-box s-cyan" id="ready-msg">الفريق الثاني جاهز — انتظر بدء السؤال</div>
+  <button class="btn btn-green" id="ready-btn" onclick="setReady()">✅ جاهز للبدء!</button>
+</div>
+
+<!-- Phase: COUNTDOWN -->
+<div id="phase-countdown" style="width:100%;align-items:center;justify-content:center;display:none">
+  <div class="big-num countdown-num" id="phone-countdown">3</div>
+</div>
+
+<!-- Phase: BIDDING -->
+<div id="phase-bidding" style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;display:none">
+  <div class="q-box" id="q-box-bid"></div>
+  <div class="big-num bid-num" id="bid-display">1</div>
+  <div class="timer-wrap">
+    <div class="timer-bar"><div class="timer-fill" id="bid-timer-fill" style="width:100%;background:var(--yellow)"></div></div>
+    <div class="timer-label" id="bid-timer-label">10 ثانية</div>
+  </div>
+  <div class="status-box s-yellow" id="bid-status-msg" style="display:none"></div>
+  <div class="bid-grid" id="bid-grid">
+    <button class="bid-btn" onclick="placeBid(1)">+1</button>
+    <button class="bid-btn" onclick="placeBid(2)">+2</button>
+    <button class="bid-btn" onclick="placeBid(3)">+3</button>
+    <button class="bid-btn" onclick="placeBid(4)">+4</button>
+    <button class="bid-btn" onclick="placeBid(5)">+5</button>
+  </div>
+  <button class="btn btn-red" onclick="giveUp('bidding')" style="font-size:15px;padding:12px">🏳️ تخلى عن المزايدة</button>
+</div>
+
+<!-- Phase: LOST -->
+<div id="phase-lost" style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;display:none">
+  <div class="q-box" id="q-box-lost"></div>
+  <div class="status-box s-red">❌ خسرتوا المزاد — حظ أحسن المرة الجاية!</div>
+</div>
+
+<!-- Phase: ANSWERING -->
+<div id="phase-answering" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
+  <div class="q-box" id="q-box-ans" style="display:block"></div>
+  <div class="status-box s-green" id="ans-title">اكتبوا الأجوبة!</div>
+  <div class="timer-wrap">
+    <div class="timer-bar"><div class="timer-fill" id="ans-timer-fill" style="width:100%;background:var(--green)"></div></div>
+    <div class="timer-label" id="ans-timer-label">60 ثانية</div>
+  </div>
   <div id="answers-list" style="display:flex;flex-direction:column;gap:6px"></div>
-  <input class="answer-input" id="answer-input" type="text" placeholder="اكتب الجواب..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter') submitAnswer()">
-  <button class="submit-btn submit-green" onclick="submitAnswer()">✅ أرسل الجواب</button>
+  <input class="answer-input" id="answer-input" type="text" placeholder="اكتب الجواب هنا..." dir="rtl" autocomplete="off">
+  <button class="btn btn-green" onclick="submitAnswer()">✅ أرسل الجواب</button>
+  <button class="btn btn-red" onclick="giveUp('answering')" style="font-size:15px;padding:12px">🏳️ تخلى عن الأجوبة</button>
+</div>
+
+<!-- Phase: DONE -->
+<div id="phase-done" style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;display:none">
+  <div class="status-box s-yellow" id="done-msg">⏳ انتظر السؤال التالي...</div>
+  <div id="final-answers" style="width:100%;display:flex;flex-direction:column;gap:6px"></div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -108,194 +156,290 @@ const team = params.get('t');
 const roomId = params.get('r') || 'room1';
 const other = team === 'a' ? 'b' : 'a';
 
-if (!team) { document.body.innerHTML = '<div style="color:red;padding:40px;text-align:center">رابط غلط</div>'; throw new Error(); }
+if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">رابط غلط</div>'; throw new Error(); }
 
 let myBid = 1;
-let phase = 'bidding';
 let answersSubmitted = [];
 let totalAnswers = 0;
-let countdownInterval = null;
+let currentPhase = '';
+let bidTimerInterval = null;
+let ansTimerInterval = null;
+let lastBidder = null;
+let myReadySet = false;
 
-const teamBadge = document.getElementById('team-badge');
-teamBadge.className = 'team-badge team-' + team;
+// Announce connected
+await update(ref(db, `rooms/${roomId}/connected`), { [team]: true });
 
-function show(id) { const el=document.getElementById(id); if(el) el.style.display='flex'; }
-function hide(id) { const el=document.getElementById(id); if(el) el.style.display='none'; }
-function showBox(id) { hideAllStatus(); const el=document.getElementById(id); if(el){el.style.display='flex';} }
-function hideAllStatus() { ['status-waiting','status-lost','status-won','status-your-turn'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; }); }
+// ── UI helpers ──
+function showPhase(name) {
+  ['waiting','ready','countdown','bidding','lost','answering','done'].forEach(p => {
+    const el = document.getElementById('phase-'+p);
+    if (el) el.style.display = p === name ? 'flex' : 'none';
+  });
+  // bidding and answering need flex-direction:column
+  const el = document.getElementById('phase-'+name);
+  if (el) el.style.flexDirection = 'column';
+}
 
-window.raiseBidBy = async function(amount) {
+function flash(msg, color) {
+  const overlay = document.getElementById('flash-overlay');
+  const text = document.getElementById('flash-text');
+  text.textContent = msg;
+  text.style.color = color;
+  overlay.style.background = color === 'var(--green)' ? 'rgba(0,20,0,0.85)' : 'rgba(20,15,0,0.85)';
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.remove('show'), 800);
+}
+
+function setBidButtons(enabled) {
+  document.querySelectorAll('.bid-btn').forEach(b => b.disabled = !enabled);
+}
+
+function runTimer(fillId, labelId, endTime, total, color, onEnd) {
+  const fill = document.getElementById(fillId);
+  const label = document.getElementById(labelId);
+  return setInterval(() => {
+    const remaining = Math.max(0, endTime - Date.now());
+    const pct = (remaining / total) * 100;
+    if (fill) { fill.style.width = pct + '%'; fill.style.background = color; }
+    if (label) label.textContent = Math.ceil(remaining/1000) + ' ثانية';
+    if (remaining <= 0 && onEnd) { onEnd(); }
+  }, 200);
+}
+
+// ── Actions ──
+window.setReady = async function() {
+  myReadySet = true;
+  document.getElementById('ready-btn').disabled = true;
+  document.getElementById('ready-btn').textContent = '✅ جاهز!';
+  await update(ref(db, `rooms/${roomId}`), { [`ready${team.toUpperCase()}`]: true });
+};
+
+window.placeBid = async function(amount) {
   myBid += amount;
   document.getElementById('bid-display').textContent = myBid;
-  // Disable all bid buttons
-  document.querySelectorAll('.bid-up').forEach(b => b.disabled = true);
-  showBox('status-waiting');
+  setBidButtons(false);
+  document.getElementById('bid-status-msg').style.display = 'flex';
+  document.getElementById('bid-status-msg').textContent = `✅ مزايدتك: ${myBid} — انتظر رد الفريق الثاني`;
+
+  // Flash
+  flash(`+${amount} 🔥`, 'var(--yellow)');
 
   const now = Date.now();
   await update(ref(db, `rooms/${roomId}`), {
     [`bids/${team}`]: { value: myBid, time: now },
     lastBidder: team,
     lastBidTime: now,
-    phase: 'bidding',
-    countdown: { startedBy: team, startTime: now, duration: 10000 }
+    bidCountdownEnd: now + 10000,
   });
 };
 
 window.submitAnswer = async function() {
   const input = document.getElementById('answer-input');
   const val = input.value.trim();
-  if (!val) return;
+  if (!val || answersSubmitted.length >= totalAnswers) return;
   answersSubmitted.push({ text: val, status: 'pending' });
   input.value = '';
   input.focus();
   await set(ref(db, `rooms/${roomId}/answers`), answersSubmitted);
-  updateAnswerUI();
-  if (answersSubmitted.length >= totalAnswers) {
-    hide('answer-section');
-    show('status-won');
+  updateAnswerList();
+};
+
+window.giveUp = async function(phase) {
+  if (!confirm(phase === 'bidding' ? 'تأكيد: تخلى عن المزايدة؟' : 'تأكيد: تخلى عن الأجوبة؟')) return;
+  await update(ref(db, `rooms/${roomId}`), { gaveUp: team, phase: phase === 'bidding' ? 'answering' : 'done' });
+  if (phase === 'bidding') {
+    // Other team wins
+    const snap = await get(ref(db, `rooms/${roomId}/bids`));
+    const bids = snap.val() || {};
+    const otherBid = bids[other]?.value || 1;
+    await update(ref(db, `rooms/${roomId}`), { auctionWinner: other, winningBid: otherBid, phase: 'answering', answerTimerEnd: Date.now() + 60000 });
+  } else {
+    await update(ref(db, `rooms/${roomId}`), { phase: 'nextquestion' });
   }
 };
 
-function updateAnswerUI() {
+function updateAnswerList() {
   const list = document.getElementById('answers-list');
-  const title = document.getElementById('answer-title');
+  const title = document.getElementById('ans-title');
   title.textContent = `اكتبوا ${totalAnswers} أجوبة (${answersSubmitted.length}/${totalAnswers})`;
   list.innerHTML = answersSubmitted.map((a,i) => `
-    <div class="answer-chip chip-${a.status||'pending'}">
-      <span>${i+1}.</span><span>${a.text}</span>
-      ${a.status==='correct'?'✅':a.status==='wrong'?'❌':''}
-    </div>
-  `).join('');
+    <div class="answer-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}">
+      <span>${i+1}.</span><span style="flex:1">${a.text}</span>
+      <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
+    </div>`).join('');
 }
 
-function startCountdown(duration, forMe) {
-  clearInterval(countdownInterval);
-  const bar = document.getElementById('countdown-bar');
-  const fill = document.getElementById('countdown-fill');
-  const num = document.getElementById('countdown-num');
-  bar.style.display = 'block';
-  num.style.display = 'block';
-  fill.style.background = forMe ? 'var(--red)' : 'var(--cyan)';
-
-  let remaining = duration / 1000;
-  num.textContent = remaining;
-  fill.style.width = '100%';
-
-  countdownInterval = setInterval(() => {
-    remaining--;
-    num.textContent = remaining;
-    fill.style.width = (remaining / (duration/1000) * 100) + '%';
-    if (remaining <= 0) { clearInterval(countdownInterval); bar.style.display='none'; num.style.display='none'; }
-  }, 1000);
-}
-
-// Countdown timer on phone
-let phoneCountdownInterval = null;
-let lastSeenBidder = null;
-let countdownEndTime = null;
-
-function runPhoneCountdown(endTime, forMe) {
-  clearInterval(phoneCountdownInterval);
-  countdownEndTime = endTime;
-  const bar = document.getElementById('countdown-bar');
-  const fill = document.getElementById('countdown-fill');
-  const num = document.getElementById('countdown-num');
-  const total = 10;
-  bar.style.display = 'block';
-  num.style.display = 'block';
-  fill.style.background = forMe ? 'var(--red)' : 'var(--cyan)';
-
-  phoneCountdownInterval = setInterval(() => {
-    const remaining = Math.max(0, (endTime - Date.now()) / 1000);
-    num.textContent = Math.ceil(remaining);
-    fill.style.width = (remaining / total * 100) + '%';
-    if (remaining <= 0) {
-      clearInterval(phoneCountdownInterval);
-      bar.style.display = 'none';
-      num.style.display = 'none';
-    }
-  }, 200);
-}
-
-// Listen to room
-onValue(ref(db, `rooms/${roomId}`), async (snap) => {
+// ── Firebase listener ──
+onValue(ref(db, `rooms/${roomId}`), (snap) => {
   const data = snap.val();
   if (!data) return;
 
-  const teamName = team === 'a' ? data.teamA : data.teamB;
-  if (teamName) teamBadge.textContent = teamName;
-  if (data.question) document.getElementById('question-box').textContent = data.question;
+  // Team badge
+  const tName = team==='a' ? data.teamA : data.teamB;
+  if (tName) {
+    document.getElementById('team-badge').textContent = tName;
+    document.getElementById('team-badge').className = `team-badge badge-${team}`;
+  }
 
-  const bids = data.bids || {};
-  const myBidVal = bids[team] ? bids[team].value : 1;
-  if (myBidVal > myBid) {
-    myBid = myBidVal;
+  // Question indicator
+  if (data.questionIndex !== undefined) {
+    document.getElementById('q-indicator').textContent = `سؤال ${data.questionIndex+1} من 5`;
+  }
+
+  // Update question boxes
+  if (data.question) {
+    ['q-box-bid','q-box-lost','q-box-ans'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = data.question;
+    });
+  }
+
+  const phase = data.phase || 'waiting';
+  if (phase === currentPhase) {
+    // Same phase — update bids/answers only
+    handleSamePhaseUpdates(data);
+    return;
+  }
+  currentPhase = phase;
+  clearInterval(bidTimerInterval);
+  clearInterval(ansTimerInterval);
+
+  if (phase === 'waiting') {
+    showPhase('waiting');
+    const conn = data.connected || {};
+    const otherConnected = conn[other];
+    document.getElementById('ready-status').textContent = otherConnected ? '✅ الفريق الثاني متصل' : '⏳ انتظر اتصال الفريق الثاني...';
+  }
+
+  else if (phase === 'ready') {
+    showPhase('ready');
+    const myReady = team==='a' ? data.readyA : data.readyB;
+    const otherReady = team==='a' ? data.readyB : data.readyA;
+    if (myReady) { document.getElementById('ready-btn').disabled=true; document.getElementById('ready-btn').textContent='✅ جاهز!'; }
+    if (otherReady) document.getElementById('ready-msg').textContent = '✅ الفريق الثاني جاهز — انتظر بدء السؤال';
+  }
+
+  else if (phase === 'countdown') {
+    showPhase('countdown');
+    let n = 3;
+    document.getElementById('phone-countdown').textContent = n;
+    const cd = setInterval(() => {
+      n--;
+      if (n <= 0) { clearInterval(cd); }
+      else document.getElementById('phone-countdown').textContent = n;
+    }, 1000);
+  }
+
+  else if (phase === 'bidding') {
+    myBid = (data.bids?.[team]?.value) || 1;
+    showPhase('bidding');
     document.getElementById('bid-display').textContent = myBid;
+    document.getElementById('q-box-bid').style.display = 'block';
+    document.getElementById('bid-status-msg').style.display = 'none';
+    setBidButtons(true);
+    handleBidPhase(data);
   }
 
-  // Handle countdown — when other team bids, I need to respond
-  if (data.countdown && data.phase === 'bidding' && data.lastBidder !== team) {
-    const forMe = true; // other team bid, countdown is for me
-    const endTime = data.countdown.startTime + data.countdown.duration;
-
-    if (data.lastBidder !== lastSeenBidder) {
-      lastSeenBidder = data.lastBidder;
-      const remaining = endTime - Date.now();
-      if (remaining > 0) {
-        runPhoneCountdown(endTime, forMe);
-        showBox('status-your-turn');
-        document.querySelectorAll('.bid-up').forEach(b => b.disabled = false);
-
-        // Auto-lose if countdown expires and no response
-        clearTimeout(window._autoLoseTimer);
-        window._autoLoseTimer = setTimeout(async () => {
-          // Check if still in bidding phase and we haven't bid
-          const currentBidVal = (data.bids || {})[team]?.value || 1;
-          const otherBidVal = (data.bids || {})[data.lastBidder]?.value || 1;
-          if (currentBidVal < otherBidVal) {
-            // We lost — set phase to answering with other team as winner
-            await update(ref(db, `rooms/${roomId}`), {
-              phase: 'answering',
-              auctionWinner: data.lastBidder,
-              winningBid: otherBidVal
-            });
-          }
-        }, remaining + 500);
-      }
-    }
-  } else if (data.countdown && data.phase === 'bidding' && data.lastBidder === team) {
-    // I just bid — waiting for other team
-    const endTime = data.countdown.startTime + data.countdown.duration;
-    const remaining = endTime - Date.now();
-    if (remaining > 0) {
-      runPhoneCountdown(endTime, false);
-    }
-    showBox('status-waiting');
-    document.querySelectorAll('.bid-up').forEach(b => b.disabled = true);
-  }
-
-  if (data.phase === 'answering') {
-    clearInterval(phoneCountdownInterval);
-    document.getElementById('countdown-bar').style.display = 'none';
-    document.getElementById('countdown-num').style.display = 'none';
+  else if (phase === 'answering') {
     if (data.auctionWinner === team) {
       totalAnswers = data.winningBid || 1;
-      hide('bid-section');
-      hideAllStatus();
-      show('answer-section');
-      updateAnswerUI();
+      answersSubmitted = data.answers || [];
+      showPhase('answering');
+      updateAnswerList();
+      // Answer timer
+      if (data.answerTimerEnd) {
+        const total = 60000;
+        clearInterval(ansTimerInterval);
+        ansTimerInterval = runTimer('ans-timer-fill','ans-timer-label', data.answerTimerEnd, total, 'var(--green)', () => {
+          clearInterval(ansTimerInterval);
+        });
+      }
     } else {
-      hide('bid-section');
-      showBox('status-lost');
+      showPhase('lost');
+      document.getElementById('q-box-lost').style.display = 'block';
     }
   }
 
-  // Update answers with validation results
-  if (data.answers && data.auctionWinner === team) {
-    answersSubmitted = data.answers;
-    updateAnswerUI();
+  else if (phase === 'nextquestion' || phase === 'done') {
+    showPhase('done');
+    if (data.answers) {
+      const final = document.getElementById('final-answers');
+      final.innerHTML = data.answers.map((a,i) => `
+        <div class="answer-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}">
+          <span>${i+1}.</span><span style="flex:1">${a.text}</span>
+          <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
+        </div>`).join('');
+    }
+    document.getElementById('done-msg').textContent = phase==='done' ? '🏁 انتهى المزاد!' : '⏳ انتظر السؤال التالي...';
+    // Reset for next question
+    myBid = 1; myReadySet = false; answersSubmitted = [];
   }
 });
+
+function handleSamePhaseUpdates(data) {
+  // Update bid display if someone else changed it
+  if (currentPhase === 'bidding') {
+    handleBidPhase(data);
+  }
+  // Update answer statuses
+  if (currentPhase === 'answering' && data.auctionWinner === team && data.answers) {
+    answersSubmitted = data.answers;
+    updateAnswerList();
+  }
+  // Update ready statuses
+  if (currentPhase === 'ready') {
+    const otherReady = team==='a' ? data.readyB : data.readyA;
+    if (otherReady) document.getElementById('ready-msg').textContent = '✅ الفريق الثاني جاهز — اضغط جاهز للبدء!';
+  }
+}
+
+function handleBidPhase(data) {
+  const bids = data.bids || {};
+  const myBidVal = bids[team]?.value || 1;
+  const otherBidVal = bids[other]?.value || 1;
+  if (myBidVal > myBid) { myBid = myBidVal; document.getElementById('bid-display').textContent = myBid; }
+
+  if (data.bidCountdownEnd && data.lastBidder) {
+    const forMe = data.lastBidder === other;
+    const remaining = data.bidCountdownEnd - Date.now();
+
+    if (data.lastBidder !== lastBidder) {
+      lastBidder = data.lastBidder;
+      clearInterval(bidTimerInterval);
+
+      if (forMe && remaining > 0) {
+        // Flash! Other team just bid
+        const otherName = team==='a' ? data.teamB : data.teamA;
+        flash(`${otherBidVal} 🔥`, 'var(--green)');
+        setBidButtons(true);
+        document.getElementById('bid-status-msg').style.display = 'flex';
+        document.getElementById('bid-status-msg').textContent = `⚡ الفريق الثاني زايد ${otherBidVal} — زايد أو خسرت!`;
+        bidTimerInterval = runTimer('bid-timer-fill','bid-timer-label', data.bidCountdownEnd, 10000, 'var(--red)', async () => {
+          clearInterval(bidTimerInterval);
+          setBidButtons(false);
+          // We lost — trigger winner
+          const snap = await get(ref(db, `rooms/${roomId}`));
+          const d = snap.val();
+          if (d?.phase === 'bidding' && d?.lastBidder === other) {
+            await update(ref(db, `rooms/${roomId}`), {
+              phase: 'answering',
+              auctionWinner: other,
+              winningBid: otherBidVal,
+              answerTimerEnd: Date.now() + 60000
+            });
+          }
+        });
+      } else if (!forMe && remaining > 0) {
+        // I just bid — waiting for other
+        setBidButtons(false);
+        document.getElementById('bid-status-msg').style.display = 'flex';
+        document.getElementById('bid-status-msg').textContent = `✅ مزايدتك: ${myBidVal} — انتظر رد الفريق الثاني`;
+        bidTimerInterval = runTimer('bid-timer-fill','bid-timer-label', data.bidCountdownEnd, 10000, 'var(--cyan)', null);
+      }
+    }
+  }
+}
 </script>
 </body>
 </html>
