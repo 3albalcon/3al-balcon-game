@@ -95,9 +95,12 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 </div>
 
 <!-- LOGO WAITING (lost bidding or time over) -->
-<div id="ph-logo" style="width:100%;display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px">
-  <div class="logo-text">3AL BALCON</div>
-  <div style="font-size:14px;color:rgba(255,255,255,0.4);text-align:center" id="logo-msg">انتظر...</div>
+<div id="ph-logo" style="position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--dark);z-index:50">
+  <img id="waiting-img" src="" style="width:100%;height:100%;object-fit:cover;display:none">
+  <div id="waiting-fallback" style="display:flex;flex-direction:column;align-items:center;gap:16px">
+    <div style="font-size:clamp(36px,12vw,72px);font-weight:900;color:var(--yellow);text-shadow:0 0 30px rgba(255,230,0,0.7);letter-spacing:4px;text-align:center;animation:pulse 2s infinite">3AL BALCON</div>
+    <div style="font-size:16px;color:rgba(255,255,255,0.5);text-align:center;font-weight:700" id="logo-msg">انتظر...</div>
+  </div>
 </div>
 
 <!-- ANSWERING -->
@@ -169,18 +172,19 @@ function flash(msg, color) {
 function setBidBtns(en) { document.querySelectorAll('.bid-btn').forEach(b=>b.disabled=!en); }
 
 function startBidTimer(endTime) {
-  clearInterval(bidInterval);
+  if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval=null;
   const fill = document.getElementById('bid-fill');
   const num = document.getElementById('bid-timer-num');
   const total = 10000;
-  bidInterval = setInterval(()=>{
+  function tick() {
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
     const secs = Math.ceil(rem/1000);
     if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<30?'var(--red)':'var(--yellow)'; }
     if(num){ num.textContent=secs; num.style.color=pct<30?'var(--red)':'var(--yellow)'; }
-    if(rem<=0) clearInterval(bidInterval);
-  },100);
+    if(rem>0) bidInterval = requestAnimationFrame(tick);
+  }
+  bidInterval = requestAnimationFrame(tick);
 }
 
 function startAnsTimer(endTime) {
@@ -219,9 +223,9 @@ function renderAnswers() {
   if(!scroll) return;
   if(title) title.textContent=`اكتبوا ${totalAns} أجوبة (${submitted.length}/${totalAns})`;
   scroll.innerHTML=submitted.map((a,i)=>`
-    <div class="chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}" style="justify-content:space-between">
+    <div class="chip chip-p" style="justify-content:space-between;cursor:${locked?'default':'pointer'}" onclick="${locked?'':'editAnswer('+i+')'}">
       <span style="flex:1">${i+1}. ${a.text}</span>
-      <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
+      ${locked?'<span>⏳</span>':'<span style="font-size:10px;opacity:0.5">✏️</span>'}
     </div>`).join('');
   scroll.scrollTop = scroll.scrollHeight;
   if(conf) conf.style.display = (!locked && submitted.length>=totalAns) ? 'flex' : 'none';
@@ -251,19 +255,36 @@ window.placeBid = async function(amount) {
   });
 };
 
+let editingIdx = null;
+window.editAnswer = function(idx) {
+  if(locked) return;
+  editingIdx = idx;
+  const input = document.getElementById('ans-input');
+  input.value = submitted[idx].text;
+  input.focus();
+  input.placeholder = `تعديل الجواب ${idx+1}...`;
+};
+
 window.submitAnswer = async function() {
   if(locked) return;
   const input=document.getElementById('ans-input');
   const val=input.value.trim();
   if(!val) return;
-  if(submitted.length>=totalAns) return;
   const norm=(s)=>s.toLowerCase().replace(/\s+/g,'');
-  if(submitted.some(a=>norm(a.text)===norm(val))) {
-    input.style.borderColor='var(--red)';
-    setTimeout(()=>input.style.borderColor='',1200);
-    return;
+  if(editingIdx !== null) {
+    // Editing existing answer
+    submitted[editingIdx] = {text:val, status:'pending'};
+    editingIdx = null;
+    input.placeholder = 'اكتب الجواب هنا...';
+  } else {
+    if(submitted.length>=totalAns) return;
+    if(submitted.some((a,i)=>norm(a.text)===norm(val))) {
+      input.style.borderColor='var(--red)';
+      setTimeout(()=>input.style.borderColor='',1200);
+      return;
+    }
+    submitted.push({text:val,status:'pending'});
   }
-  submitted.push({text:val,status:'pending'});
   input.value='';
   input.focus();
   await set(ref(db,`rooms/${roomId}/answers`),submitted);
@@ -283,6 +304,17 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
   if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=`سؤال ${d.questionIndex+1} من 5`;
+
+  // Set waiting screen image if available
+  if(d.waitingScreenUrl) {
+    const img = document.getElementById('waiting-img');
+    const fallback = document.getElementById('waiting-fallback');
+    if(img && img.src !== d.waitingScreenUrl) {
+      img.src = d.waitingScreenUrl;
+      img.style.display = 'block';
+      if(fallback) fallback.style.display = 'none';
+    }
+  }
   if(d.question){['q-bid','q-ans'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=d.question;});}
 
   const p=d.phase||'waiting';
@@ -290,7 +322,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   // Phase change
   if(p!==phase) {
     phase=p; locked=false;
-    clearInterval(bidInterval); clearInterval(ansInterval);
+    if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
 
     if(p==='waiting'){
       showPhase('waiting');
@@ -328,7 +360,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='nextquestion'){
       // Show logo — wait for next question without refreshing
-      clearInterval(bidInterval); clearInterval(ansInterval);
+      if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
       showPhase('logo');
       document.getElementById('logo-msg').textContent='⏳ انتظر السؤال التالي...';
       myBid=1; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;

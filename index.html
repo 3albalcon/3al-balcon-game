@@ -1145,7 +1145,7 @@ window._fbOnValue = onValue;
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIMlAMJAsnGiN08cLsxKhDGvjX-ygx5I0AbJvJ9UmYG-aAMXd34AMSP6vr8dDX_386qw/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlcVC9ncwtg9QEl6TYz93PXFL9dMfa2FOeBi8MDETGg2SYYUXM--BZIvz2jW3_ZAHgmg/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -1164,6 +1164,7 @@ const G = {
   bids: [0, 0],
   wildcards: [],
   winnerSongUrl: null,
+  waitingScreenUrl: null,
   wcSession: [],
   wcMilestoneA: 0,  // last milestone rewarded for team A (in multiples of 50)
   wcMilestoneB: 0,  // last milestone rewarded for team B
@@ -1481,6 +1482,17 @@ async function loadFromDrive(urlOverride) {
       setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
       details.push(`✅ ${images.length} صورة — ${G.media['r1'].length} للفقرة 1 و ${G.media['r2'].length} للفقرة 2`);
     } else details.push('⚠️ لم يتم العثور على صور في مجلد "image 1"');
+
+    // Step 4.4: Waiting screen URL
+    if (data.waitingScreen) {
+      G.waitingScreenUrl = data.waitingScreen.url;
+      // Pass to Firebase so bid.html can use it
+      if (window._fbDb && cat3RoomId) {
+        const fbRef = window._fbRef;
+        const fbSet = window._fbSet;
+        if (fbSet) fbSet(fbRef(window._fbDb, `rooms/${cat3RoomId}/waitingScreenUrl`), G.waitingScreenUrl);
+      }
+    }
 
     // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
     if (data.winnerSong) {
@@ -2369,6 +2381,7 @@ function initCat3Room(teamA, teamB) {
     connected: { a: false, b: false },
     auctionWinner: null, winningBid: null,
     answers: [], gaveUp: null,
+    waitingScreenUrl: G.waitingScreenUrl || null,
   });
   return cat3RoomId;
 }
@@ -2623,30 +2636,36 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const winnerName = winner === 'a' ? G.teamA : G.teamB;
       const winnerBid = data.winningBid || 1;
       document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
-      // Add stop timer button
-      const stopBtn = document.createElement('button');
-      stopBtn.className = 'nav-btn';
-      stopBtn.style.cssText = 'border-color:var(--neon-red);color:var(--neon-red);font-size:14px;padding:8px 20px;margin-top:4px';
-      stopBtn.textContent = '⏹ إيقاف الوقت';
-      stopBtn.onclick = () => {
-        stopBtn.disabled = true; stopBtn.textContent = '⏹ توقف الوقت';
-        if (db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
-          update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true,answerTimerEnd:Date.now()});
-        });
-      };
-      document.getElementById('winner-announce').parentNode.insertBefore(stopBtn, document.getElementById('answers-display'));
+      // Add stop timer button only once
+      if (!document.getElementById('stop-timer-btn')) {
+        const stopBtn = document.createElement('button');
+        stopBtn.id = 'stop-timer-btn';
+        stopBtn.className = 'nav-btn';
+        stopBtn.style.cssText = 'border-color:var(--neon-red);color:var(--neon-red);font-size:14px;padding:8px 20px;margin-top:4px';
+        stopBtn.textContent = '⏹ إيقاف الوقت';
+        stopBtn.onclick = () => {
+          stopBtn.disabled = true; stopBtn.textContent = '⏹ توقف الوقت';
+          if (db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
+            update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true,answerTimerEnd:Date.now()});
+          });
+        };
+        document.getElementById('winner-announce').parentNode.insertBefore(stopBtn, document.getElementById('answers-display'));
+      }
 
       // Show answers and validation
       const answers = data.answers || [];
       const display = document.getElementById('answers-display');
+      const answersConfirmed = data.answersConfirmed || false;
+      const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= Date.now();
+      const showResults = answersConfirmed || ansTimeUp;
       display.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;align-items:center';
       display.innerHTML = answers.map((a,i) => `
         <div style="padding:12px 20px;border-radius:12px;font-size:17px;font-weight:700;
           display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:600px;
-          background:${a.status==='correct'?'rgba(57,255,20,0.1)':a.status==='wrong'?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
-          border:2px solid ${a.status==='correct'?'var(--neon-green)':a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
+          background:${showResults&&a.status==='correct'?'rgba(57,255,20,0.1)':showResults&&a.status==='wrong'?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
+          border:2px solid ${showResults&&a.status==='correct'?'var(--neon-green)':showResults&&a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
           <span style="flex:1;text-align:center">${i+1}. ${a.text}</span>
-          <span style="font-size:22px">${a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'}</span>
+          <span style="font-size:22px">${showResults?(a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'):'⏳'}</span>
         </div>`).join('');
 
       // Auto-validate pending answers via Cloudflare Worker + Claude AI
@@ -2655,33 +2674,45 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
       }
 
-      // Manual override — show buttons for pending answers
+      // Manual override buttons — always available for all answers
       const valWrap = document.getElementById('validation-wrap');
-      const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
-
-      if (pendingIdx >= 0) {
-        valWrap.style.display = 'flex';
-        document.getElementById('current-answer-text').textContent = `🤖 جاري التحقق من "${answers[pendingIdx].text}"...`;
-        document.getElementById('val-correct-btn').textContent = '✅ صح (تجاوز)';
-        document.getElementById('val-wrong-btn').textContent = '❌ غلط (تجاوز)';
-        document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
-        document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
-      } else {
-        valWrap.style.display = 'none';
-        const correct = answers.filter(a => a.status === 'correct').length;
-        const scoreEl = document.getElementById('score-result');
-        if (scoreEl.style.display === 'none' && answers.length >= winnerBid) {
-          scoreEl.style.display = 'block';
-          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-          scoreEl.textContent = correct >= winnerBid
-            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
-          if (!scoreEl._scored) {
-            scoreEl._scored = true;
-            if (correct >= winnerBid) addScore(winner, 4);
-            else addScore(winner, -2);
+      if (showResults && answers.length > 0) {
+        // Find first answer needing review
+        const reviewIdx = answers.findIndex(a => !a._reviewed);
+        if (reviewIdx >= 0) {
+          valWrap.style.display = 'flex';
+          const ans = answers[reviewIdx];
+          document.getElementById('current-answer-text').textContent =
+            `جواب ${reviewIdx+1}: "${ans.text}" ${ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري التحقق...'}`;
+          document.getElementById('val-correct-btn').textContent = '✅ صح';
+          document.getElementById('val-wrong-btn').textContent = '❌ غلط';
+          document.getElementById('val-correct-btn').onclick = () => {
+            answers[reviewIdx]._reviewed = true;
+            validateCat3(reviewIdx, 'correct', roomId, winnerBid, winner, answers);
+          };
+          document.getElementById('val-wrong-btn').onclick = () => {
+            answers[reviewIdx]._reviewed = true;
+            validateCat3(reviewIdx, 'wrong', roomId, winnerBid, winner, answers);
+          };
+        } else {
+          valWrap.style.display = 'none';
+          const correct = answers.filter(a => a.status === 'correct').length;
+          const scoreEl = document.getElementById('score-result');
+          if (scoreEl.style.display === 'none') {
+            scoreEl.style.display = 'block';
+            scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+            scoreEl.textContent = correct >= winnerBid
+              ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+              : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+            if (!scoreEl._scored) {
+              scoreEl._scored = true;
+              if (correct >= winnerBid) addScore(winner, 4);
+              else addScore(winner, -2);
+            }
           }
         }
+      } else {
+        valWrap.style.display = 'none';
       }
     }
 
