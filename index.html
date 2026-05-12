@@ -2703,7 +2703,8 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
   });
 }
 
-// ── AI AUTO-VALIDATION ──
+// ── AI VALIDATION via Cloudflare Worker ──
+const WORKER_URL = 'https://3al-balcon-proxy.raed-harb.workers.dev';
 const _validatingSet = new Set();
 
 async function autoValidateAnswers(answers, roomId, question, winnerBid, winner, winnerName) {
@@ -2719,44 +2720,25 @@ async function autoValidateAnswers(answers, roomId, question, winnerBid, winner,
     if (_validatingSet.has(key)) continue;
     _validatingSet.add(key);
 
-    // Show validating state on UI
-    const display = document.getElementById('answers-display');
-    if (display) {
-      const chips = display.querySelectorAll('div[data-idx]');
-    }
-
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 50,
-          system: "أنت محكّم في مسابقة. أجب بكلمة واحدة فقط: صح أو غلط",
-          messages: [{
-            role: "user",
-            content: `السؤال: "${question}"
-جواب اللاعب: "${ans.text}"
-اقبل المرادفات والإجابات بالعربي أو الإنجليزي. صح أو غلط؟`
-          }]
-        })
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, answer: ans.text })
       });
 
-      if (!response.ok) {
-        _validatingSet.delete(key);
-        continue;
-      }
+      if (!response.ok) { _validatingSet.delete(key); continue; }
 
       const data = await response.json();
-      const result = (data.content?.[0]?.text || '').trim();
-      const status = result.includes('صح') ? 'correct' : 'wrong';
+      const status = data.status || 'pending';
 
-      // Update Firebase
-      const snap = await get(fbRef(db, `rooms/${roomId}/answers`));
-      const freshAnswers = snap.val() || [];
-      if (freshAnswers[i] && (!freshAnswers[i].status || freshAnswers[i].status === 'pending')) {
-        freshAnswers[i] = { text: ans.text, status };
-        await update(fbRef(db, `rooms/${roomId}`), { answers: freshAnswers });
+      if (status !== 'pending') {
+        const snap = await get(fbRef(db, `rooms/${roomId}/answers`));
+        const fresh = snap.val() || [];
+        if (fresh[i] && (!fresh[i].status || fresh[i].status === 'pending')) {
+          fresh[i] = { text: ans.text, status };
+          await update(fbRef(db, `rooms/${roomId}`), { answers: fresh });
+        }
       }
     } catch(e) {
       _validatingSet.delete(key);
