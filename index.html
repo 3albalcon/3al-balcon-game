@@ -2633,26 +2633,33 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
         </div>`).join('');
 
-      // Validation buttons for pending
+      // Auto-validate new pending answers with AI
+      const pendingAnswers = answers.filter(a => !a.status || a.status === 'pending');
+      if (pendingAnswers.length > 0) {
+        autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
+      }
+
+      // Show manual override buttons just in case
       const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
       const valWrap = document.getElementById('validation-wrap');
       if (pendingIdx >= 0) {
         valWrap.style.display = 'flex';
-        document.getElementById('current-answer-text').textContent = `"${answers[pendingIdx].text}"`;
+        document.getElementById('current-answer-text').textContent = `🤖 جاري التحقق من "${answers[pendingIdx].text}"...`;
         document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
         document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
-      } else if (answers.length >= winnerBid) {
+      } else if (answers.length >= winnerBid && answers.every(a => a.status && a.status !== 'pending')) {
         valWrap.style.display = 'none';
         const correct = answers.filter(a => a.status === 'correct').length;
         const scoreEl = document.getElementById('score-result');
-        scoreEl.style.display = 'block';
-        scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-        scoreEl.textContent = correct >= winnerBid
-          ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-          : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
-        // Auto-award points
-        if (correct >= winnerBid) addScore(winner, 4);
-        else addScore(winner, -2);
+        if (scoreEl.style.display === 'none') {
+          scoreEl.style.display = 'block';
+          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+          scoreEl.textContent = correct >= winnerBid
+            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+          if (correct >= winnerBid) addScore(winner, 4);
+          else addScore(winner, -2);
+        }
       }
     }
 
@@ -2672,6 +2679,60 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       });
     }
   });
+}
+
+// ── AI AUTO-VALIDATION ──
+async function autoValidateAnswers(answers, roomId, question, winnerBid, winner, winnerName) {
+  const pendingAnswers = answers.filter((a,i) => {
+    return (!a.status || a.status === 'pending') && !a._validating;
+  });
+  if (pendingAnswers.length === 0) return;
+
+  // Mark as validating to avoid double-calls
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  if (!db) return;
+  const { get, update } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
+
+  for (let i = 0; i < answers.length; i++) {
+    const ans = answers[i];
+    if (ans.status && ans.status !== 'pending') continue;
+    if (ans._validating) continue;
+
+    // Mark as validating
+    answers[i]._validating = true;
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 100,
+          messages: [{
+            role: "user",
+            content: `السؤال: "${question}"
+الجواب الذي كتبه اللاعب: "${ans.text}"
+
+هل هذا الجواب صحيح؟ اقبل أي إجابة منطقية، مترادفات، أو إجابات بالعربي أو الإنجليزي.
+أجب بكلمة واحدة فقط: صح أو غلط`
+          }]
+        })
+      });
+      const data = await response.json();
+      const result = data.content?.[0]?.text?.trim() || '';
+      const status = result.includes('صح') ? 'correct' : 'wrong';
+
+      // Update this answer
+      const snap = await get(fbRef(db, `rooms/${roomId}/answers`));
+      const currentAnswers = snap.val() || answers;
+      currentAnswers[i] = { text: ans.text, status };
+      await update(fbRef(db, `rooms/${roomId}`), { answers: currentAnswers });
+    } catch(e) {
+      // On error, leave as pending for manual validation
+      answers[i]._validating = false;
+    }
+  }
 }
 
 async function validateCat3(idx, status, roomId, winnerBid, winner, currentAnswers) {

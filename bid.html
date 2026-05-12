@@ -216,14 +216,22 @@ window.setReady = async function() {
 };
 
 window.placeBid = async function(amount) {
-  myBid += amount;
+  // Get the current highest bid from Firebase first
+  const snap = await get(ref(db, `rooms/${roomId}/bids`));
+  const bids = snap.val() || {};
+  const myCurrentBid = bids[team]?.value || 1;
+  const otherCurrentBid = bids[other]?.value || 1;
+  const highestBid = Math.max(myCurrentBid, otherCurrentBid);
+
+  // New bid must be higher than the highest existing bid
+  myBid = highestBid + amount;
   document.getElementById('bid-display').textContent = myBid;
-  setBidButtons(false);
+  document.querySelectorAll('.bid-btn').forEach(b => b.disabled = true);
   document.getElementById('bid-status-msg').style.display = 'flex';
   document.getElementById('bid-status-msg').textContent = `✅ مزايدتك: ${myBid} — انتظر رد الفريق الثاني`;
 
   // Flash
-  flash(`+${amount} 🔥`, 'var(--yellow)');
+  flash(`${myBid} 🔥`, 'var(--yellow)');
 
   const now = Date.now();
   await update(ref(db, `rooms/${roomId}`), {
