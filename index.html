@@ -2633,58 +2633,35 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           <span style="font-size:18px">${a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'}</span>
         </div>`).join('');
 
-      // Auto-validate pending answers with AI
+      // Auto-validate pending answers via Cloudflare Worker + Claude AI
       const pendingAnswers = answers.filter(a => !a.status || a.status === 'pending');
       if (pendingAnswers.length > 0) {
         autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
       }
 
-      // After AI — show manual review for each answer (in order)
+      // Manual override — show buttons for pending answers
       const valWrap = document.getElementById('validation-wrap');
-      const allValidated = answers.length >= winnerBid && answers.every(a => a.status && a.status !== 'pending');
+      const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
 
-      if (!allValidated) {
-        // Show manual override for first pending
-        const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
-        if (pendingIdx >= 0) {
-          valWrap.style.display = 'flex';
-          document.getElementById('current-answer-text').textContent = `"${answers[pendingIdx].text}" — 🤖 جاري التحقق...`;
-          document.getElementById('val-correct-btn').textContent = '✅ صح (تجاوز AI)';
-          document.getElementById('val-wrong-btn').textContent = '❌ غلط (تجاوز AI)';
-          document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
-          document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
-        }
-      } else {
-        // All validated — show manual review loop for all answers
+      if (pendingIdx >= 0) {
         valWrap.style.display = 'flex';
-        document.getElementById('val-correct-btn').textContent = '✅ صح';
-        document.getElementById('val-wrong-btn').textContent = '❌ غلط';
-
-        // Find first answer that needs human review (show each one)
-        const reviewIdx = answers.findIndex((a,i) => a._reviewed !== true);
-        if (reviewIdx >= 0 && reviewIdx < answers.length) {
-          const ans = answers[reviewIdx];
-          document.getElementById('current-answer-text').innerHTML =
-            `جواب ${reviewIdx+1}: "${ans.text}" — AI قال: ${ans.status==='correct'?'✅ صح':'❌ غلط'}`;
-          document.getElementById('val-correct-btn').onclick = () => {
-            answers[reviewIdx]._reviewed = true;
-            validateCat3(reviewIdx, 'correct', roomId, winnerBid, winner, answers);
-          };
-          document.getElementById('val-wrong-btn').onclick = () => {
-            answers[reviewIdx]._reviewed = true;
-            validateCat3(reviewIdx, 'wrong', roomId, winnerBid, winner, answers);
-          };
-        } else {
-          // All reviewed — show score
-          valWrap.style.display = 'none';
-          const correct = answers.filter(a => a.status === 'correct').length;
-          const scoreEl = document.getElementById('score-result');
-          if (scoreEl.style.display === 'none') {
-            scoreEl.style.display = 'block';
-            scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-            scoreEl.textContent = correct >= winnerBid
-              ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-              : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+        document.getElementById('current-answer-text').textContent = `🤖 جاري التحقق من "${answers[pendingIdx].text}"...`;
+        document.getElementById('val-correct-btn').textContent = '✅ صح (تجاوز)';
+        document.getElementById('val-wrong-btn').textContent = '❌ غلط (تجاوز)';
+        document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
+        document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
+      } else {
+        valWrap.style.display = 'none';
+        const correct = answers.filter(a => a.status === 'correct').length;
+        const scoreEl = document.getElementById('score-result');
+        if (scoreEl.style.display === 'none' && answers.length >= winnerBid) {
+          scoreEl.style.display = 'block';
+          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+          scoreEl.textContent = correct >= winnerBid
+            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+          if (!scoreEl._scored) {
+            scoreEl._scored = true;
             if (correct >= winnerBid) addScore(winner, 4);
             else addScore(winner, -2);
           }
