@@ -2345,231 +2345,373 @@ function revealImage() {
 let auctionCountdown = null;
 let auctionWinner = null;
 
+// ══════════════════════════════════════════
+// CATEGORY 3 — FIREBASE BIDDING (REBUILT)
+// ══════════════════════════════════════════
+let cat3RoomId = null; // single roomId for whole category session
+let cat3Listener = null;
+
+function initCat3Room(teamA, teamB) {
+  // Generate one roomId for the whole session
+  cat3RoomId = `cat3_${Date.now()}`;
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  const fbSet = window._fbSet;
+  if (!db) return;
+  fbSet(fbRef(db, `rooms/${cat3RoomId}`), {
+    teamA, teamB,
+    phase: 'waiting',
+    questionIndex: -1,
+    question: '',
+    bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
+    readyA: false, readyB: false,
+    connected: { a: false, b: false },
+    auctionWinner: null, winningBid: null,
+    answers: [], gaveUp: null,
+  });
+  return cat3RoomId;
+}
+
 function renderBidding(r, qIndex, sa) {
   const qs = G.questions.r3;
   const raw = qs[qIndex] || null;
   const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
-  const roomId = `bid_q${qIndex}_${Date.now()}`;
-  G.bids = [1, 1];
-  auctionWinner = null;
-  if(auctionCountdown) { clearInterval(auctionCountdown); auctionCountdown = null; }
 
+  // First question — show QR codes and init room
+  if (qIndex === 0) {
+    cat3RoomId = initCat3Room(G.teamA, G.teamB);
+  }
+
+  const roomId = cat3RoomId;
   const baseUrl = 'https://raedharb.github.io/3al-balcon-game/bid.html';
   const qrUrlA = `${baseUrl}?t=a&r=${roomId}`;
   const qrUrlB = `${baseUrl}?t=b&r=${roomId}`;
 
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
-    <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q}</div>
 
-    <!-- QR codes -->
-    <div id="bid-qr-section" style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;width:100%">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div style="font-size:14px;font-weight:700;color:#E50158">${G.teamA}</div>
-        <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)"><div id="qr-bid-a"></div></div>
-        <div id="bid-status-a" style="font-size:12px;color:rgba(255,255,255,0.4)">⏳ انتظر</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div style="font-size:14px;font-weight:700;color:#E2DA51">${G.teamB}</div>
-        <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)"><div id="qr-bid-b"></div></div>
-        <div id="bid-status-b" style="font-size:12px;color:rgba(255,255,255,0.4)">⏳ انتظر</div>
+    <!-- QR WAITING PHASE -->
+    <div id="cat3-qr-phase" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
+      <div style="font-size:16px;font-weight:700;color:var(--neon-cyan);text-shadow:var(--glow-cyan)">📱 الفريقين يسكنون الكود</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:14px;font-weight:700;color:#E50158">${G.teamA}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)"><div id="qr-a"></div></div>
+          <div id="conn-a" style="font-size:12px;color:rgba(255,255,255,0.3)">⏳ انتظر</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:14px;font-weight:700;color:#E2DA51">${G.teamB}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)"><div id="qr-b"></div></div>
+          <div id="conn-b" style="font-size:12px;color:rgba(255,255,255,0.3)">⏳ انتظر</div>
+        </div>
       </div>
     </div>
 
-    <!-- Live bid display -->
-    <div style="display:flex;gap:32px;align-items:center;justify-content:center;width:100%">
-      <div style="text-align:center">
-        <div style="font-size:12px;color:rgba(255,255,255,0.4)">${G.teamA}</div>
-        <div id="main-bid-a" style="font-size:56px;font-weight:900;color:#E50158;text-shadow:0 0 16px rgba(229,1,88,0.5)">—</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-        <div style="font-size:18px;color:rgba(255,255,255,0.3);font-weight:900">VS</div>
-        <!-- countdown -->
-        <div id="bid-countdown-num" style="font-size:48px;font-weight:900;color:var(--neon-red);text-shadow:var(--glow-red);display:none;animation:pulse 1s infinite"></div>
-        <div id="bid-countdown-label" style="font-size:11px;color:var(--text2);display:none">ثانية للرد</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:12px;color:rgba(255,255,255,0.4)">${G.teamB}</div>
-        <div id="main-bid-b" style="font-size:56px;font-weight:900;color:#E2DA51;text-shadow:0 0 16px rgba(226,218,81,0.5)">—</div>
+    <!-- READY PHASE -->
+    <div id="cat3-ready-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
+      <div style="font-size:18px;font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green)">✅ كلا الفريقين متصلين!</div>
+      <div style="font-size:14px;color:var(--text2)">انتظر حتى يضغط كلا الفريقين جاهز...</div>
+      <div id="ready-indicators" style="display:flex;gap:20px;justify-content:center">
+        <div id="ready-a" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamA}</div>
+        <div id="ready-b" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamB}</div>
       </div>
     </div>
 
-    <!-- Auction winner + answers area -->
-    <div id="auction-result-area" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
-      <div id="auction-winner-msg" style="font-size:22px;font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
+    <!-- COUNTDOWN PHASE -->
+    <div id="cat3-countdown-phase" style="display:none;align-items:center;justify-content:center;width:100%">
+      <div id="main-countdown" style="font-size:clamp(100px,25vw,200px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow);animation:pulse 0.8s infinite;line-height:1">3</div>
+    </div>
+
+    <!-- BIDDING PHASE -->
+    <div id="cat3-bidding-phase" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
+      <div class="question-text-box slide-in" id="q-text" style="font-size:${dynFont(q)}">${q}</div>
+      <div style="display:flex;gap:32px;align-items:center;justify-content:center;width:100%">
+        <div style="text-align:center">
+          <div style="font-size:12px;color:rgba(255,255,255,0.4)">${G.teamA}</div>
+          <div id="bid-a" style="font-size:64px;font-weight:900;color:#E50158;text-shadow:0 0 20px rgba(229,1,88,0.6)">—</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div id="bid-countdown-num" style="font-size:52px;font-weight:900;color:var(--neon-red);text-shadow:var(--glow-red);display:none;animation:pulse 1s infinite"></div>
+          <div id="bid-countdown-label" style="font-size:11px;color:var(--text2);display:none"></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:12px;color:rgba(255,255,255,0.4)">${G.teamB}</div>
+          <div id="bid-b" style="font-size:64px;font-weight:900;color:#E2DA51;text-shadow:0 0 20px rgba(226,218,81,0.6)">—</div>
+        </div>
+      </div>
+      <div id="bid-event-msg" style="font-size:16px;font-weight:700;color:var(--neon-yellow);text-align:center;min-height:24px"></div>
+    </div>
+
+    <!-- WINNER ANNOUNCEMENT -->
+    <div id="cat3-winner-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
+      <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
       <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px"></div>
-      <!-- Host validation buttons -->
-      <div id="validation-area" style="display:none;flex-direction:column;gap:8px;width:100%">
-        <div style="font-size:13px;color:var(--text2);text-align:center">الضيف كتب — صح أو غلط؟</div>
-        <div id="validation-buttons"></div>
+      <div id="validation-wrap" style="display:none;flex-direction:column;gap:8px;width:100%">
+        <div style="font-size:13px;color:var(--text2);text-align:center">✅ صح أو ❌ غلط؟</div>
+        <div id="current-answer-text" style="font-size:20px;font-weight:700;color:#fff;text-align:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px"></div>
+        <div style="display:flex;gap:10px">
+          <button id="val-correct-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-green);background:rgba(57,255,20,0.1);color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;cursor:pointer">✅ صح</button>
+          <button id="val-wrong-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-red);background:rgba(255,45,45,0.1);color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;cursor:pointer">❌ غلط</button>
+        </div>
       </div>
+      <div id="score-result" style="font-size:18px;font-weight:700;text-align:center;display:none"></div>
+    </div>
+
+    <!-- BID FLASH OVERLAY -->
+    <div id="bid-flash" style="position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.1s">
+      <div id="bid-flash-text" style="font-size:clamp(60px,20vw,160px);font-weight:900;text-align:center;line-height:1"></div>
     </div>
 
     ${scorePanelHTML(4, 2)}
     <div class="nav-btns">
       ${isLast
         ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
-        : `<button class="nav-btn primary" onclick="nextQ()">السؤال التالي ←</button>`
+        : `<button class="nav-btn primary" onclick="nextCat3Question()">السؤال التالي ←</button>`
       }
     </div>`;
 
-  // QR codes
+  // Generate QR codes
   setTimeout(() => {
     if (typeof QRCode !== 'undefined') {
-      new QRCode(document.getElementById('qr-bid-a'), { text: qrUrlA, width: 120, height: 120, colorDark: '#000', colorLight: '#fff' });
-      new QRCode(document.getElementById('qr-bid-b'), { text: qrUrlB, width: 120, height: 120, colorDark: '#000', colorLight: '#fff' });
+      new QRCode(document.getElementById('qr-a'), { text: qrUrlA, width: 120, height: 120, colorDark:'#000', colorLight:'#fff' });
+      new QRCode(document.getElementById('qr-b'), { text: qrUrlB, width: 120, height: 120, colorDark:'#000', colorLight:'#fff' });
     }
   }, 100);
 
+  startCat3Listener(roomId, q, qIndex, isLast);
+}
+
+function showBidFlash(msg, color) {
+  const overlay = document.getElementById('bid-flash');
+  const text = document.getElementById('bid-flash-text');
+  if (!overlay || !text) return;
+  text.textContent = msg;
+  text.style.color = color;
+  overlay.style.background = color === '#39FF14' ? 'rgba(0,20,0,0.88)' : 'rgba(20,15,0,0.88)';
+  overlay.style.opacity = '1';
+  setTimeout(() => { overlay.style.opacity = '0'; }, 900);
+}
+
+let cat3BidCountdownInterval = null;
+let cat3LastBidder = null;
+
+function startCat3Listener(roomId, q, qIndex, isLast) {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
-  const fbOnValue = window._fbOnValue;
+  const fbUpdate = (path, data) => {
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => update(fbRef(db, path), data));
+  };
+
   if (!db) return;
+  if (cat3Listener) cat3Listener();
 
-  let bidCountdownInterval = null;
-  let lastBidder = null;
-
-  // Initialize room
-  fbSet(fbRef(db, `rooms/${roomId}`), {
-    question: q, teamA: G.teamA, teamB: G.teamB,
-    phase: 'bidding', auctionWinner: null, winningBid: null,
-  });
-
-  // Listen for room changes
-  fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
+  cat3Listener = window._fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
     const data = snap.val();
     if (!data) return;
 
+    const conn = data.connected || {};
     const bids = data.bids || {};
-    const bidA = bids.a ? bids.a.value : null;
-    const bidB = bids.b ? bids.b.value : null;
+    const bidA = bids.a?.value;
+    const bidB = bids.b?.value;
 
-    // Update live bid display
-    if (bidA !== null) {
-      document.getElementById('main-bid-a').textContent = bidA;
-      document.getElementById('bid-status-a').textContent = `✅ ${bidA} أجوبة`;
-      document.getElementById('bid-status-a').style.color = '#E50158';
-    }
-    if (bidB !== null) {
-      document.getElementById('main-bid-b').textContent = bidB;
-      document.getElementById('bid-status-b').textContent = `✅ ${bidB} أجوبة`;
-      document.getElementById('bid-status-b').style.color = '#E2DA51';
+    // Phase: waiting — show connection status
+    if (!conn.a || !conn.b) {
+      document.getElementById('conn-a').textContent = conn.a ? '✅ متصل' : '⏳ انتظر';
+      document.getElementById('conn-a').style.color = conn.a ? '#39FF14' : 'rgba(255,255,255,0.3)';
+      document.getElementById('conn-b').textContent = conn.b ? '✅ متصل' : '⏳ انتظر';
+      document.getElementById('conn-b').style.color = conn.b ? '#39FF14' : 'rgba(255,255,255,0.3)';
+      return;
     }
 
-    // Start/reset 10s countdown when someone bids
-    if (data.countdown && data.countdown.startTime && data.lastBidder !== lastBidder) {
-      lastBidder = data.lastBidder;
-      clearInterval(bidCountdownInterval);
+    // Both connected — show ready phase
+    if (data.phase === 'waiting') {
+      document.getElementById('cat3-qr-phase').style.display = 'none';
+      document.getElementById('cat3-ready-phase').style.display = 'flex';
+      document.getElementById('conn-a').textContent = '✅ متصل';
+      document.getElementById('conn-b').textContent = '✅ متصل';
+    }
 
-      const elapsed = Date.now() - data.countdown.startTime;
-      let secs = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
-      const numEl = document.getElementById('bid-countdown-num');
-      const labelEl = document.getElementById('bid-countdown-label');
-      const waitingTeamName = data.lastBidder === 'a' ? G.teamB : G.teamA;
+    // Ready indicators
+    if (data.readyA) { document.getElementById('ready-a').textContent = `✅ ${G.teamA}`; document.getElementById('ready-a').style.color = '#39FF14'; }
+    if (data.readyB) { document.getElementById('ready-b').textContent = `✅ ${G.teamB}`; document.getElementById('ready-b').style.color = '#39FF14'; }
 
-      numEl.style.display = 'block';
-      labelEl.style.display = 'block';
-      numEl.textContent = secs;
-      labelEl.textContent = `${waitingTeamName} — ثانية للرد`;
+    // Both ready — start countdown
+    if (data.readyA && data.readyB && data.phase === 'ready') {
+      fbUpdate(`rooms/${roomId}`, { phase: 'countdown', question: q, questionIndex: qIndex });
+    }
 
-      bidCountdownInterval = setInterval(() => {
-        secs--;
-        numEl.textContent = secs;
-        if (secs <= 0) {
-          clearInterval(bidCountdownInterval);
-          numEl.style.display = 'none';
-          labelEl.style.display = 'none';
-          // Determine winner
-          const winner = data.lastBidder;
-          const winnerBid = winner === 'a' ? bidA : bidB;
-          const winnerName = winner === 'a' ? G.teamA : G.teamB;
-          if (data.phase === 'bidding') {
-            fbSet(fbRef(db, `rooms/${roomId}/phase`), 'answering');
-            fbSet(fbRef(db, `rooms/${roomId}/auctionWinner`), winner);
-            fbSet(fbRef(db, `rooms/${roomId}/winningBid`), winnerBid);
-            auctionWinner = winner;
-            // Show result area
-            document.getElementById('bid-qr-section').style.display = 'none';
-            const ra = document.getElementById('auction-result-area');
-            ra.style.display = 'flex';
-            document.getElementById('auction-winner-msg').textContent =
-              `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
-            startTimer(60);
-          }
+    // Countdown
+    if (data.phase === 'countdown') {
+      document.getElementById('cat3-ready-phase').style.display = 'none';
+      document.getElementById('cat3-countdown-phase').style.display = 'flex';
+      let n = 3;
+      const cdEl = document.getElementById('main-countdown');
+      const cd = setInterval(() => {
+        n--;
+        if (cdEl) cdEl.textContent = n;
+        if (n <= 0) {
+          clearInterval(cd);
+          fbUpdate(`rooms/${roomId}`, { phase: 'bidding' });
         }
       }, 1000);
     }
 
-    // Show answers as they come in + validation
-    if (data.answers && data.answers.length > 0 && data.auctionWinner) {
+    // Bidding
+    if (data.phase === 'bidding') {
+      document.getElementById('cat3-countdown-phase').style.display = 'none';
+      document.getElementById('cat3-qr-phase').style.display = 'none';
+      document.getElementById('cat3-ready-phase').style.display = 'none';
+      document.getElementById('cat3-bidding-phase').style.display = 'flex';
+
+      // Update bid displays
+      if (bidA !== undefined) document.getElementById('bid-a').textContent = bidA;
+      if (bidB !== undefined) document.getElementById('bid-b').textContent = bidB;
+
+      // Handle countdown
+      if (data.bidCountdownEnd && data.lastBidder && data.lastBidder !== cat3LastBidder) {
+        cat3LastBidder = data.lastBidder;
+        clearInterval(cat3BidCountdownInterval);
+
+        const winnerName = data.lastBidder === 'a' ? G.teamA : G.teamB;
+        const waitingName = data.lastBidder === 'a' ? G.teamB : G.teamA;
+        const bidVal = data.lastBidder === 'a' ? bidA : bidB;
+
+        // Flash on main screen
+        showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
+        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندها 10 ثواني للرد!`;
+
+        const numEl = document.getElementById('bid-countdown-num');
+        const labelEl = document.getElementById('bid-countdown-label');
+        numEl.style.display = 'block';
+        labelEl.style.display = 'block';
+        labelEl.textContent = `${waitingName} تحتاج ترد`;
+
+        cat3BidCountdownInterval = setInterval(() => {
+          const remaining = Math.max(0, Math.ceil((data.bidCountdownEnd - Date.now()) / 1000));
+          numEl.textContent = remaining;
+          if (remaining <= 0) {
+            clearInterval(cat3BidCountdownInterval);
+            numEl.style.display = 'none';
+            labelEl.style.display = 'none';
+            // Winner is last bidder
+            if (data.phase === 'bidding') {
+              const winner = data.lastBidder;
+              const winnerBid = winner === 'a' ? bidA : bidB;
+              fbUpdate(`rooms/${roomId}`, {
+                phase: 'answering',
+                auctionWinner: winner,
+                winningBid: winnerBid,
+                answerTimerEnd: Date.now() + 60000,
+                answers: []
+              });
+            }
+          }
+        }, 200);
+      }
+    }
+
+    // Answering phase
+    if (data.phase === 'answering') {
+      clearInterval(cat3BidCountdownInterval);
+      document.getElementById('cat3-bidding-phase').style.display = 'none';
+      document.getElementById('cat3-winner-phase').style.display = 'flex';
+      const winner = data.auctionWinner;
+      const winnerName = winner === 'a' ? G.teamA : G.teamB;
+      const winnerBid = data.winningBid || 1;
+      document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
+
+      // Show answers and validation
+      const answers = data.answers || [];
       const display = document.getElementById('answers-display');
-      const valArea = document.getElementById('validation-area');
-      const valBtns = document.getElementById('validation-buttons');
-      display.innerHTML = data.answers.map((a, i) => `
+      display.innerHTML = answers.map((a,i) => `
         <div style="padding:10px 16px;border-radius:10px;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between;
           background:${a.status==='correct'?'rgba(57,255,20,0.1)':a.status==='wrong'?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
           border:1.5px solid ${a.status==='correct'?'var(--neon-green)':a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
           <span>${i+1}. ${a.text}</span>
           <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
-        </div>
-      `).join('');
+        </div>`).join('');
 
-      // Show validation buttons for pending answers
-      const pending = data.answers.filter(a => !a.status || a.status === 'pending');
-      if (pending.length > 0) {
-        valArea.style.display = 'flex';
-        const lastPendingIdx = data.answers.findIndex(a => !a.status || a.status === 'pending');
-        const ans = data.answers[lastPendingIdx];
-        valBtns.innerHTML = `
-          <div style="display:flex;gap:10px;justify-content:center">
-            <div style="font-size:16px;font-weight:700;color:#fff;text-align:center;padding:8px 0">"${ans.text}"</div>
-          </div>
-          <div style="display:flex;gap:10px;justify-content:center">
-            <button onclick="validateAnswer(${lastPendingIdx}, 'correct', '${roomId}')"
-              style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-green);background:rgba(57,255,20,0.1);color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">
-              ✅ صح
-            </button>
-            <button onclick="validateAnswer(${lastPendingIdx}, 'wrong', '${roomId}')"
-              style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-red);background:rgba(255,45,45,0.1);color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">
-              ❌ غلط
-            </button>
-          </div>`;
-      } else {
-        valArea.style.display = 'none';
+      // Validation buttons for pending
+      const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
+      const valWrap = document.getElementById('validation-wrap');
+      if (pendingIdx >= 0) {
+        valWrap.style.display = 'flex';
+        document.getElementById('current-answer-text').textContent = `"${answers[pendingIdx].text}"`;
+        document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
+        document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
+      } else if (answers.length >= winnerBid) {
+        valWrap.style.display = 'none';
+        const correct = answers.filter(a => a.status === 'correct').length;
+        const scoreEl = document.getElementById('score-result');
+        scoreEl.style.display = 'block';
+        scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+        scoreEl.textContent = correct >= winnerBid
+          ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+          : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+        // Auto-award points
+        if (correct >= winnerBid) addScore(winner, 4);
+        else addScore(winner, -2);
       }
+    }
+
+    // Give up
+    if (data.gaveUp) {
+      const gaveUpName = data.gaveUp === 'a' ? G.teamA : G.teamB;
+      document.getElementById('bid-event-msg').textContent = `🏳️ ${gaveUpName} تخلى!`;
+    }
+  });
+
+  // Update phase to 'ready' when both connected
+  window._fbOnValue(fbRef(db, `rooms/${roomId}/connected`), (snap) => {
+    const conn = snap.val() || {};
+    if (conn.a && conn.b) {
+      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+        update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
+      });
     }
   });
 }
 
-function validateAnswer(idx, status, roomId) {
+async function validateCat3(idx, status, roomId, winnerBid, winner, currentAnswers) {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   if (!db) return;
-  // Read current answers, update status, write back
-  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
-    get(fbRef(db, `rooms/${roomId}/answers`)).then(snap => {
-      const answers = snap.val() || [];
-      answers[idx] = { ...answers[idx], status };
-      window._fbSet(fbRef(db, `rooms/${roomId}/answers`), answers);
+  const { get, update } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
+  const snap = await get(fbRef(db, `rooms/${roomId}/answers`));
+  const answers = snap.val() || currentAnswers;
+  answers[idx] = { ...answers[idx], status };
+  await update(fbRef(db, `rooms/${roomId}`), { answers });
+}
+
+function nextCat3Question() {
+  // Reset ready states and answers for next question
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  if (db && cat3RoomId) {
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+      update(fbRef(db, `rooms/${cat3RoomId}`), {
+        phase: 'ready',
+        readyA: false, readyB: false,
+        bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
+        lastBidder: null, bidCountdownEnd: null,
+        auctionWinner: null, winningBid: null,
+        answers: [], gaveUp: null,
+      });
     });
-  });
+  }
+  cat3LastBidder = null;
+  nextQ();
 }
 
-function startBidTimer(winner, targetCount, roomId) {}
-
-function changeBid(team, delta) {
-  const idx = team === 'a' ? 0 : 1;
-  G.bids[idx] = Math.max(1, G.bids[idx] + delta);
-  document.getElementById('bid-'+team) && (document.getElementById('bid-'+team).textContent = G.bids[idx]);
-}
-
+function changeBid(team, delta) {}
 function declareLead(team) {}
 function announceAuctionWinner(team) {}
 function startWritingTimer(winnerName) {}
+function startBidTimer(winner, targetCount, roomId) {}
+function validateAnswer(idx, status, roomId) {}
 
-// ══════════════════════════════════════════
 function renderBuzzerAudio(r, qIndex, sa) {
   const qs = G.questions.r4 || [];
   const raw = qs[qIndex] || null;
