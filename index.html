@@ -2350,6 +2350,7 @@ let auctionWinner = null;
 // ══════════════════════════════════════════
 let cat3RoomId = null; // single roomId for whole category session
 let cat3Listener = null;
+let cat3LastBidCountdownEnd = null;
 
 function initCat3Room(teamA, teamB) {
   // Generate one roomId for the whole session
@@ -2446,7 +2447,7 @@ function renderBidding(r, qIndex, sa) {
     <!-- WINNER ANNOUNCEMENT -->
     <div id="cat3-winner-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
       <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
-      <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px"></div>
+      <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center"></div>
       <div id="validation-wrap" style="display:none;flex-direction:column;gap:8px;width:100%">
         <div style="font-size:13px;color:var(--text2);text-align:center">✅ صح أو ❌ غلط؟</div>
         <div id="current-answer-text" style="font-size:20px;font-weight:700;color:#fff;text-align:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px"></div>
@@ -2570,8 +2571,9 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       if (bidB !== undefined) document.getElementById('bid-b').textContent = bidB;
 
       // Handle countdown
-      if (data.bidCountdownEnd && data.lastBidder && data.lastBidder !== cat3LastBidder) {
+      if (data.bidCountdownEnd && data.lastBidder && data.bidCountdownEnd !== cat3LastBidCountdownEnd) {
         cat3LastBidder = data.lastBidder;
+        cat3LastBidCountdownEnd = data.bidCountdownEnd;
         clearInterval(cat3BidCountdownInterval);
 
         const winnerName = data.lastBidder === 'a' ? G.teamA : G.teamB;
@@ -2621,16 +2623,30 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const winnerName = winner === 'a' ? G.teamA : G.teamB;
       const winnerBid = data.winningBid || 1;
       document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
+      // Add stop timer button
+      const stopBtn = document.createElement('button');
+      stopBtn.className = 'nav-btn';
+      stopBtn.style.cssText = 'border-color:var(--neon-red);color:var(--neon-red);font-size:14px;padding:8px 20px;margin-top:4px';
+      stopBtn.textContent = '⏹ إيقاف الوقت';
+      stopBtn.onclick = () => {
+        stopBtn.disabled = true; stopBtn.textContent = '⏹ توقف الوقت';
+        if (db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
+          update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true,answerTimerEnd:Date.now()});
+        });
+      };
+      document.getElementById('winner-announce').parentNode.insertBefore(stopBtn, document.getElementById('answers-display'));
 
       // Show answers and validation
       const answers = data.answers || [];
       const display = document.getElementById('answers-display');
+      display.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;align-items:center';
       display.innerHTML = answers.map((a,i) => `
-        <div style="padding:10px 16px;border-radius:10px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px;
+        <div style="padding:12px 20px;border-radius:12px;font-size:17px;font-weight:700;
+          display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:600px;
           background:${a.status==='correct'?'rgba(57,255,20,0.1)':a.status==='wrong'?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
-          border:1.5px solid ${a.status==='correct'?'var(--neon-green)':a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
-          <span style="flex:1">${i+1}. ${a.text}</span>
-          <span style="font-size:18px">${a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'}</span>
+          border:2px solid ${a.status==='correct'?'var(--neon-green)':a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
+          <span style="flex:1;text-align:center">${i+1}. ${a.text}</span>
+          <span style="font-size:22px">${a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'}</span>
         </div>`).join('');
 
       // Auto-validate pending answers via Cloudflare Worker + Claude AI
@@ -2760,19 +2776,24 @@ async function validateCat3(idx, status, roomId, winnerBid, winner, currentAnswe
 }
 
 function nextCat3Question() {
-  // Reset ready states and answers for next question
   const db = window._fbDb;
   const fbRef = window._fbRef;
   if (db && cat3RoomId) {
     import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
-      update(fbRef(db, `rooms/${cat3RoomId}`), {
-        phase: 'ready',
-        readyA: false, readyB: false,
-        bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
-        lastBidder: null, bidCountdownEnd: null,
-        auctionWinner: null, winningBid: null,
-        answers: [], gaveUp: null,
-      });
+      // First signal nextquestion so phones show logo
+      update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'nextquestion' });
+      // Then after a moment reset for next question
+      setTimeout(() => {
+        update(fbRef(db, `rooms/${cat3RoomId}`), {
+          phase: 'ready',
+          readyA: false, readyB: false,
+          bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
+          lastBidder: null, bidCountdownEnd: null,
+          auctionWinner: null, winningBid: null,
+          answers: [], gaveUp: null,
+          answersConfirmed: false,
+        });
+      }, 1500);
     });
   }
   cat3LastBidder = null;

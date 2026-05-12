@@ -9,7 +9,8 @@
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --pink:#FF2D78;--cyan:#00EFFF;--yellow:#FFE600;--green:#39FF14;--red:#FF2D2D;--dark:#060d1f;--a:#E50158;--b:#E2DA51; }
 body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:12px 14px 24px;gap:10px;overflow-x:hidden; }
-.logo { font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:3px; }
+.logo-text { font-size:28px;font-weight:900;color:var(--yellow);text-shadow:0 0 20px rgba(255,230,0,0.6);letter-spacing:4px;text-align:center; }
+.logo-sub { font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:3px; }
 .team-badge { font-size:22px;font-weight:900;padding:8px 24px;border-radius:100px;border:2px solid;text-align:center;width:100%; }
 .badge-a { color:var(--a);border-color:var(--a);box-shadow:0 0 16px rgba(229,1,88,0.4);background:rgba(229,1,88,0.08); }
 .badge-b { color:var(--b);border-color:var(--b);box-shadow:0 0 16px rgba(226,218,81,0.4);background:rgba(226,218,81,0.08); }
@@ -19,9 +20,9 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 .cdown-num { color:var(--red);text-shadow:0 0 20px rgba(255,45,45,0.6);animation:pulse 0.8s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.95)} }
 .timer-wrap { width:100%;display:flex;flex-direction:column;align-items:center;gap:4px; }
-.timer-big { font-size:52px;font-weight:900;color:var(--yellow);text-shadow:0 0 16px rgba(255,230,0,0.6);line-height:1; }
+.timer-big { font-size:52px;font-weight:900;line-height:1; }
 .timer-bar { width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden; }
-.timer-fill { height:100%;border-radius:100px;transition:width 0.5s linear; }
+.timer-fill { height:100%;border-radius:100px;transition:width 0.3s linear; }
 .sbox { width:100%;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:700;text-align:center;line-height:1.4; }
 .s-cyan { background:rgba(0,239,255,0.08);border:2px solid var(--cyan);color:var(--cyan); }
 .s-red { background:rgba(255,45,45,0.08);border:2px solid var(--red);color:var(--red); }
@@ -30,7 +31,6 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 .btn { width:100%;padding:14px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;cursor:pointer;transition:all 0.15s;border:2px solid; }
 .btn:active { transform:scale(0.96); }
 .btn:disabled { opacity:0.3;cursor:default;transform:none; }
-.btn-y { background:rgba(255,230,0,0.1);border-color:var(--yellow);color:var(--yellow); }
 .btn-g { background:rgba(57,255,20,0.1);border-color:var(--green);color:var(--green); }
 .btn-c { background:rgba(0,239,255,0.1);border-color:var(--cyan);color:var(--cyan); }
 .bid-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%; }
@@ -48,17 +48,16 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 .flash.show { opacity:1; }
 .flash-text { font-size:clamp(48px,15vw,120px);font-weight:900;text-align:center; }
 .q-ind { font-size:11px;color:rgba(255,255,255,0.35);text-align:center; }
-/* Answering layout — fixed input at bottom */
-.ans-layout { width:100%;display:flex;flex-direction:column;gap:8px;flex:1; }
-.ans-scroll { overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;max-height:180px; }
+.ans-scroll { overflow-y:auto;max-height:200px;display:flex;flex-direction:column;gap:6px;width:100%; }
 .ans-fixed { display:flex;flex-direction:column;gap:8px;width:100%; }
+/* Logo waiting screen */
+.logo-screen { width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px; }
 </style>
 </head>
 <body>
-<div class="logo">3AL BALCON — مزاد علني</div>
+<div class="logo-sub">3AL BALCON — مزاد علني</div>
 <div class="team-badge" id="team-badge">جاري الاتصال...</div>
 <div class="q-ind" id="q-ind"></div>
-
 <div class="flash" id="flash"><div class="flash-text" id="flash-text"></div></div>
 
 <!-- WAITING -->
@@ -68,7 +67,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 
 <!-- READY -->
 <div id="ph-ready" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
-  <div class="sbox s-cyan" id="ready-msg">انتظر...</div>
+  <div class="sbox s-cyan" id="ready-msg">⏳ انتظر الفريق الثاني...</div>
   <button class="btn btn-g" id="ready-btn" onclick="setReady()">✅ جاهز للبدء!</button>
 </div>
 
@@ -83,7 +82,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
   <div class="big-num bid-num" id="bid-val">1</div>
   <div class="timer-wrap">
     <div class="timer-bar"><div class="timer-fill" id="bid-fill" style="width:100%;background:var(--yellow)"></div></div>
-    <div id="bid-timer-label" style="font-size:12px;color:rgba(255,255,255,0.4)">—</div>
+    <div class="timer-big" id="bid-timer-num" style="color:var(--yellow)">10</div>
   </div>
   <div class="sbox s-yellow" id="bid-msg" style="display:none"></div>
   <div class="bid-grid">
@@ -95,35 +94,26 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
   </div>
 </div>
 
-<!-- LOST -->
-<div id="ph-lost" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
-  <div class="q-box" id="q-lost"></div>
-  <div class="sbox s-red">❌ خسرتوا المزاد — حظ أحسن!</div>
+<!-- LOGO WAITING (lost bidding or time over) -->
+<div id="ph-logo" style="width:100%;display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px">
+  <div class="logo-text">3AL BALCON</div>
+  <div style="font-size:14px;color:rgba(255,255,255,0.4);text-align:center" id="logo-msg">انتظر...</div>
 </div>
 
-<!-- ANSWERING — fixed layout -->
+<!-- ANSWERING -->
 <div id="ph-answering" style="width:100%;display:flex;flex-direction:column;gap:8px;flex:1;display:none">
   <div class="q-box" id="q-ans"></div>
-  <!-- Timer — big and centered -->
   <div class="timer-wrap">
-    <div class="timer-big" id="ans-timer-num">60</div>
+    <div class="timer-big" id="ans-timer-num" style="color:var(--yellow)">60</div>
     <div class="timer-bar"><div class="timer-fill" id="ans-fill" style="width:100%;background:var(--green)"></div></div>
   </div>
   <div class="sbox s-green" id="ans-title">اكتبوا الأجوبة!</div>
-  <!-- Submitted answers — scrollable -->
   <div id="ans-scroll" class="ans-scroll"></div>
-  <!-- Fixed input area at bottom -->
   <div class="ans-fixed">
     <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
     <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()">✅ أضف الجواب</button>
     <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none">🔒 تأكيد الأجوبة النهائية</button>
   </div>
-</div>
-
-<!-- DONE -->
-<div id="ph-done" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
-  <div class="sbox s-yellow" id="done-msg">⏳ انتظر السؤال التالي...</div>
-  <div id="final-list" style="display:flex;flex-direction:column;gap:6px"></div>
 </div>
 
 <script type="module">
@@ -152,16 +142,17 @@ let submitted = [];
 let totalAns = 0;
 let phase = '';
 let lastBidder = null;
+let lastBidCountdownEnd = null;
 let bidInterval = null;
 let ansInterval = null;
-let locked = false; // no changes when locked
+let locked = false;
 
 await update(ref(db,`rooms/${roomId}/connected`), {[team]:true});
 
 const badge = document.getElementById('team-badge');
 
 function showPhase(name) {
-  ['waiting','ready','countdown','bidding','lost','answering','done'].forEach(p=>{
+  ['waiting','ready','countdown','bidding','logo','answering'].forEach(p=>{
     const el=document.getElementById('ph-'+p);
     if(el) el.style.display = p===name?'flex':'none';
   });
@@ -177,17 +168,34 @@ function flash(msg, color) {
 
 function setBidBtns(en) { document.querySelectorAll('.bid-btn').forEach(b=>b.disabled=!en); }
 
-function startTimer(fillId, labelId, bigId, endTime, total, color) {
-  const fill=document.getElementById(fillId);
-  const label=document.getElementById(labelId);
-  const big=bigId?document.getElementById(bigId):null;
-  return setInterval(()=>{
-    const rem=Math.max(0,endTime-Date.now());
-    const pct=(rem/total)*100;
-    if(fill){fill.style.width=pct+'%';fill.style.background=pct<20?'var(--red)':color;}
-    if(label) label.textContent=Math.ceil(rem/1000)+' ثانية';
-    if(big) { big.textContent=Math.ceil(rem/1000); big.style.color=pct<20?'var(--red)':'var(--yellow)'; }
-  },200);
+function startBidTimer(endTime) {
+  clearInterval(bidInterval);
+  const fill = document.getElementById('bid-fill');
+  const num = document.getElementById('bid-timer-num');
+  const total = 10000;
+  bidInterval = setInterval(()=>{
+    const rem = Math.max(0, endTime - Date.now());
+    const pct = (rem/total)*100;
+    const secs = Math.ceil(rem/1000);
+    if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<30?'var(--red)':'var(--yellow)'; }
+    if(num){ num.textContent=secs; num.style.color=pct<30?'var(--red)':'var(--yellow)'; }
+    if(rem<=0) clearInterval(bidInterval);
+  },100);
+}
+
+function startAnsTimer(endTime) {
+  clearInterval(ansInterval);
+  const fill = document.getElementById('ans-fill');
+  const num = document.getElementById('ans-timer-num');
+  const total = 60000;
+  ansInterval = setInterval(()=>{
+    const rem = Math.max(0, endTime - Date.now());
+    const pct = (rem/total)*100;
+    const secs = Math.ceil(rem/1000);
+    if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<20?'var(--red)':'var(--green)'; }
+    if(num){ num.textContent=secs; num.style.color=pct<20?'var(--red)':'var(--yellow)'; }
+    if(rem<=0){ clearInterval(ansInterval); lockAnswering(); }
+  },100);
 }
 
 function lockAnswering() {
@@ -198,6 +206,10 @@ function lockAnswering() {
   if(input) input.disabled=true;
   if(btn) btn.disabled=true;
   if(conf) conf.style.display='none';
+  // Show logo waiting screen
+  showPhase('logo');
+  const msg = document.getElementById('logo-msg');
+  if(msg) msg.textContent = 'انتهى الوقت — انتظر السؤال التالي';
 }
 
 function renderAnswers() {
@@ -211,13 +223,10 @@ function renderAnswers() {
       <span style="flex:1">${i+1}. ${a.text}</span>
       <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
     </div>`).join('');
-  // Scroll to bottom
   scroll.scrollTop = scroll.scrollHeight;
-  // Show confirm button when all answers submitted and not locked
   if(conf) conf.style.display = (!locked && submitted.length>=totalAns) ? 'flex' : 'none';
 }
 
-// ── Actions ──
 window.setReady = async function() {
   document.getElementById('ready-btn').disabled=true;
   document.getElementById('ready-btn').textContent='✅ جاهز!';
@@ -235,9 +244,10 @@ window.placeBid = async function(amount) {
   if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myBid} — انتظر الفريق الثاني`;}
   flash(`${myBid} 🔥`,'var(--yellow)');
   const now=Date.now();
+  const newEnd = now + 10000; // Always fresh 10 seconds
   await update(ref(db,`rooms/${roomId}`),{
     [`bids/${team}`]:{value:myBid,time:now},
-    lastBidder:team, lastBidTime:now, bidCountdownEnd:now+10000
+    lastBidder:team, lastBidTime:now, bidCountdownEnd:newEnd
   });
 };
 
@@ -247,11 +257,10 @@ window.submitAnswer = async function() {
   const val=input.value.trim();
   if(!val) return;
   if(submitted.length>=totalAns) return;
-  // Check duplicate
   const norm=(s)=>s.toLowerCase().replace(/\s+/g,'');
   if(submitted.some(a=>norm(a.text)===norm(val))) {
     input.style.borderColor='var(--red)';
-    setTimeout(()=>input.style.borderColor='',1000);
+    setTimeout(()=>input.style.borderColor='',1200);
     return;
   }
   submitted.push({text:val,status:'pending'});
@@ -265,121 +274,123 @@ window.confirmAnswers = async function() {
   if(locked) return;
   if(!confirm('تأكيد: هل الأجوبة نهائية؟')) return;
   lockAnswering();
-  await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true});
+  await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
 };
 
-// ── Firebase listener ──
+// Firebase listener
 onValue(ref(db,`rooms/${roomId}`),(snap)=>{
-  const d=snap.val();
-  if(!d) return;
+  const d=snap.val(); if(!d) return;
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
   if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=`سؤال ${d.questionIndex+1} من 5`;
-  if(d.question){['q-bid','q-lost','q-ans'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=d.question;});}
+  if(d.question){['q-bid','q-ans'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=d.question;});}
 
   const p=d.phase||'waiting';
-  if(p!==phase) handlePhaseChange(p,d);
-  else handleUpdate(p,d);
-  phase=p;
-});
 
-function handlePhaseChange(p,d) {
-  clearInterval(bidInterval); clearInterval(ansInterval);
-  if(p==='waiting'){
-    showPhase('waiting');
-    const conn=d.connected||{};
-    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل — انتظر البدء':'⏳ انتظر اتصال الفريق الثاني...';
-  }
-  else if(p==='ready'){
-    showPhase('ready');
-    const myR=team==='a'?d.readyA:d.readyB;
-    if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent='✅ جاهز!';}
-    const otherR=team==='a'?d.readyB:d.readyA;
-    document.getElementById('ready-msg').textContent=otherR?'✅ الفريق الثاني جاهز!':'⏳ انتظر الفريق الثاني...';
-  }
-  else if(p==='countdown'){
-    showPhase('countdown');
-    let n=3; const el=document.getElementById('ph-cd-num'); if(el)el.textContent=n;
-    const cd=setInterval(()=>{n--;if(el)el.textContent=n>0?n:'🎯';if(n<=0)clearInterval(cd);},1000);
-  }
-  else if(p==='bidding'){
-    myBid=(d.bids?.[team]?.value)||1;
-    showPhase('bidding');
-    document.getElementById('bid-val').textContent=myBid;
-    document.getElementById('bid-msg').style.display='none';
-    setBidBtns(true);
-    handleBidUpdate(d);
-  }
-  else if(p==='answering'){
-    if(d.auctionWinner===team){
-      totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
-      showPhase('answering');
-      renderAnswers();
-      if(d.answerTimerEnd){
-        const total=60000;
-        ansInterval=startTimer('ans-fill',null,'ans-timer-num',d.answerTimerEnd,total,'var(--green)');
-        setTimeout(()=>{ clearInterval(ansInterval); lockAnswering(); },d.answerTimerEnd-Date.now());
-      }
-    } else { showPhase('lost'); const el=document.getElementById('q-lost');if(el)el.style.display='block'; }
-  }
-  else if(p==='nextquestion'||p==='done'){
-    showPhase('done');
-    document.getElementById('done-msg').textContent=p==='done'?'🏁 انتهى المزاد!':'⏳ انتظر السؤال التالي...';
-    if(d.answers){
-      document.getElementById('final-list').innerHTML=d.answers.map((a,i)=>`
-        <div class="chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}">
-          <span>${i+1}.</span><span style="flex:1">${a.text}</span>
-          <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
-        </div>`).join('');
+  // Phase change
+  if(p!==phase) {
+    phase=p; locked=false;
+    clearInterval(bidInterval); clearInterval(ansInterval);
+
+    if(p==='waiting'){
+      showPhase('waiting');
+      const conn=d.connected||{};
+      document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل':'⏳ انتظر اتصال الفريق الثاني...';
     }
-    myBid=1; submitted=[]; locked=false; lastBidder=null;
+    else if(p==='ready'){
+      showPhase('ready');
+      const myR=team==='a'?d.readyA:d.readyB;
+      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent='✅ جاهز!';}
+      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?'✅ الفريق الثاني جاهز!':'⏳ انتظر الفريق الثاني...';
+    }
+    else if(p==='countdown'){
+      showPhase('countdown');
+      let n=3; const el=document.getElementById('ph-cd-num'); if(el)el.textContent=n;
+      const cd=setInterval(()=>{n--;if(el)el.textContent=n>0?n:'🎯';if(n<=0)clearInterval(cd);},1000);
+    }
+    else if(p==='bidding'){
+      myBid=(d.bids?.[team]?.value)||1; lastBidder=null; lastBidCountdownEnd=null;
+      showPhase('bidding');
+      document.getElementById('bid-val').textContent=myBid;
+      document.getElementById('bid-msg').style.display='none';
+      setBidBtns(true);
+    }
+    else if(p==='answering'){
+      if(d.auctionWinner===team){
+        totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
+        showPhase('answering');
+        renderAnswers();
+        if(d.answerTimerEnd) startAnsTimer(d.answerTimerEnd);
+      } else {
+        showPhase('logo');
+        document.getElementById('logo-msg').textContent='الفريق الثاني يكتب الأجوبة...';
+      }
+    }
+    else if(p==='nextquestion'){
+      // Show logo — wait for next question without refreshing
+      clearInterval(bidInterval); clearInterval(ansInterval);
+      showPhase('logo');
+      document.getElementById('logo-msg').textContent='⏳ انتظر السؤال التالي...';
+      myBid=1; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
+    }
+    else if(p==='done'){
+      showPhase('logo');
+      document.getElementById('logo-msg').textContent='🏁 انتهى المزاد!';
+    }
   }
-}
 
-function handleUpdate(p,d) {
-  if(p==='bidding') handleBidUpdate(d);
+  // Same phase updates
+  if(p==='waiting'){
+    const conn=d.connected||{};
+    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل':'⏳ انتظر اتصال الفريق الثاني...';
+  }
   if(p==='ready'){
     const otherR=team==='a'?d.readyB:d.readyA;
     if(otherR) document.getElementById('ready-msg').textContent='✅ الفريق الثاني جاهز!';
-    const myR=team==='a'?d.readyA:d.readyB;
-    if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent='✅ جاهز!';}
   }
-  if(p==='answering' && d.auctionWinner===team && d.answers){
-    submitted=d.answers; renderAnswers();
-    if(d.answersConfirmed) lockAnswering();
-  }
-  if(p==='waiting'){
-    const conn=d.connected||{};
-    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل — انتظر البدء':'⏳ انتظر اتصال الفريق الثاني...';
-  }
-}
+  if(p==='bidding'){
+    // Update bid display
+    const bids=d.bids||{};
+    const myV=bids[team]?.value||1;
+    if(myV>myBid){myBid=myV;document.getElementById('bid-val').textContent=myBid;}
 
-function handleBidUpdate(d) {
-  const bids=d.bids||{};
-  const myV=bids[team]?.value||1; const otherV=bids[other]?.value||1;
-  if(myV>myBid){myBid=myV; document.getElementById('bid-val').textContent=myBid;}
-  if(d.bidCountdownEnd && d.lastBidder && d.lastBidder!==lastBidder){
-    lastBidder=d.lastBidder;
-    clearInterval(bidInterval);
-    const forMe=d.lastBidder===other;
-    if(forMe){
-      flash(`${otherV} 🔥`,'var(--green)');
-      setBidBtns(true);
-      const msg=document.getElementById('bid-msg');
-      if(msg){msg.style.display='flex';msg.textContent=`⚡ الفريق الثاني زايد ${otherV} — زايد أو خسرت!`;}
-    }
-    bidInterval=startTimer('bid-fill','bid-timer-label',null,d.bidCountdownEnd,10000,forMe?'var(--red)':'var(--cyan)');
-    if(forMe){
-      setTimeout(async()=>{
-        const s=await get(ref(db,`rooms/${roomId}`));
-        const dd=s.val();
-        if(dd?.phase==='bidding'&&dd?.lastBidder===other){
-          await update(ref(db,`rooms/${roomId}`),{phase:'answering',auctionWinner:other,winningBid:otherV,answerTimerEnd:Date.now()+60000,answers:[]});
-        }
-      },d.bidCountdownEnd-Date.now()+300);
+    // Handle countdown — every bid starts fresh 10 seconds
+    if(d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd!==lastBidCountdownEnd){
+      lastBidCountdownEnd=d.bidCountdownEnd;
+      lastBidder=d.lastBidder;
+      startBidTimer(d.bidCountdownEnd);
+      const forMe = d.lastBidder===other;
+      if(forMe){
+        const otherV=bids[other]?.value||1;
+        flash(`${otherV} 🔥`,'var(--green)');
+        setBidBtns(true);
+        const msg=document.getElementById('bid-msg');
+        if(msg){msg.style.display='flex';msg.textContent=`⚡ الفريق الثاني زايد ${otherV} — زايد أو خسرت!`;}
+        // Auto-lose if countdown expires
+        clearTimeout(window._autoLose);
+        window._autoLose=setTimeout(async()=>{
+          const s=await get(ref(db,`rooms/${roomId}`));
+          const dd=s.val();
+          if(dd?.phase==='bidding'&&dd?.lastBidder===other&&dd?.bidCountdownEnd===d.bidCountdownEnd){
+            const otherBid=dd?.bids?.[other]?.value||1;
+            await update(ref(db,`rooms/${roomId}`),{
+              phase:'answering',auctionWinner:other,winningBid:otherBid,
+              answerTimerEnd:Date.now()+60000,answers:[]
+            });
+          }
+        }, Math.max(0, d.bidCountdownEnd-Date.now())+300);
+      } else {
+        setBidBtns(false);
+        const msg=document.getElementById('bid-msg');
+        if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myV} — انتظر الفريق الثاني`;}
+      }
     }
   }
-}
+  if(p==='answering'&&d.auctionWinner===team&&d.answers){
+    submitted=d.answers; renderAnswers();
+    if(d.answersConfirmed&&!locked) lockAnswering();
+  }
+});
 </script>
 </body>
 </html>
