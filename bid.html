@@ -121,7 +121,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, update, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -149,6 +149,15 @@ let lastBidCountdownEnd = null;
 let bidInterval = null;
 let ansInterval = null;
 let locked = false;
+
+// Get server time offset once for accurate timers
+let serverOffset = 0;
+try {
+  const offsetSnap = await get(ref(db, '.info/serverTimeOffset'));
+  serverOffset = offsetSnap.val() || 0;
+} catch(e) { serverOffset = 0; }
+
+function serverNow() { return Date.now() + serverOffset; }
 
 await update(ref(db,`rooms/${roomId}/connected`), {[team]:true});
 
@@ -408,14 +417,9 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd!==lastBidCountdownEnd){
       lastBidCountdownEnd=d.bidCountdownEnd;
       lastBidder=d.lastBidder;
-      // Adjust for server time offset
-      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({get:fbGet2})=>{
-        fbGet2(ref(db,'.info/serverTimeOffset')).then(os=>{
-          const off = os.val()||0;
-          const adjustedEnd = d.bidCountdownEnd - off;
-          startBidTimer(adjustedEnd);
-        });
-      });
+      // Use pre-fetched server offset for accurate timer
+      const adjustedEnd = d.bidCountdownEnd - serverOffset;
+      startBidTimer(adjustedEnd);
       const forMe = d.lastBidder===other;
       if(forMe){
         const otherV=bids[other]?.value||1;
