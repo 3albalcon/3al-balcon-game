@@ -2653,21 +2653,40 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         winnerArea.insertBefore(qDisplay, winnerArea.firstChild);
       }
       document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
-      // Add stop timer button only once
-      if (!document.getElementById('stop-timer-btn')) {
-        const stopBtn = document.createElement('button');
-        stopBtn.id = 'stop-timer-btn';
-        stopBtn.className = 'nav-btn';
-        stopBtn.style.cssText = 'border-color:var(--neon-red);color:var(--neon-red);font-size:14px;padding:8px 20px;margin-top:4px';
-        stopBtn.textContent = '⏹ إيقاف الوقت';
-        stopBtn.onclick = () => {
-          stopBtn.disabled = true; stopBtn.textContent = '⏹ توقف الوقت';
-          if (db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
-            update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true,answerTimerEnd:Date.now()});
-          });
-        };
-        document.getElementById('winner-announce').parentNode.insertBefore(stopBtn, document.getElementById('answers-display'));
+
+      // Show answer timer only on main screen
+      if (!document.getElementById('main-ans-timer')) {
+        const timerDiv = document.createElement('div');
+        timerDiv.id = 'main-ans-timer';
+        timerDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;width:100%';
+        timerDiv.innerHTML = `
+          <div style="font-size:52px;font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow)" id="main-ans-num">60</div>
+          <div style="width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden">
+            <div id="main-ans-fill" style="height:100%;width:100%;background:var(--neon-green);border-radius:100px;transition:width 0.5s linear"></div>
+          </div>`;
+        document.getElementById('winner-announce').after(timerDiv);
+
+        // Start countdown on main screen
+        if (data.answerTimerEnd) {
+          const total = 60000;
+          const mainTimerInterval = setInterval(() => {
+            const rem = Math.max(0, data.answerTimerEnd - Date.now());
+            const pct = (rem/total)*100;
+            const numEl = document.getElementById('main-ans-num');
+            const fillEl = document.getElementById('main-ans-fill');
+            if(numEl){ numEl.textContent=Math.ceil(rem/1000); numEl.style.color=pct<20?'var(--neon-red)':'var(--neon-yellow)'; }
+            if(fillEl){ fillEl.style.width=pct+'%'; fillEl.style.background=pct<20?'var(--neon-red)':'var(--neon-green)'; }
+            if(rem<=0){
+              clearInterval(mainTimerInterval);
+              // Signal phones time is up
+              if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
+                update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
+              });
+            }
+          }, 200);
+        }
       }
+
 
       // Show answers and validation
       const answers = data.answers || [];
@@ -2692,53 +2711,58 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       }
 
       // Manual validation with navigation
+      // Use a module-level variable for current index so nav buttons work
+      if (!window._cat3ValIdx) window._cat3ValIdx = 0;
+      if (window._cat3ValIdx >= answers.length) window._cat3ValIdx = 0;
+
       const valWrap = document.getElementById('validation-wrap');
+      const timedOut = data.answersConfirmed || (data.answerTimerEnd && data.answerTimerEnd <= Date.now());
+
       if (showResults && answers.length > 0) {
         valWrap.style.display = 'flex';
-        // Get current review index from element
-        const currentIdxEl = document.getElementById('val-current-idx');
-        let currentIdx = currentIdxEl ? parseInt(currentIdxEl.value || '0') : 0;
-        if (currentIdx >= answers.length) currentIdx = answers.length - 1;
-
+        const currentIdx = window._cat3ValIdx;
         const ans = answers[currentIdx];
         const aiResult = ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري...';
         document.getElementById('current-answer-text').textContent = `جواب ${currentIdx+1}/${answers.length}: "${ans.text}" ${aiResult}`;
 
-        // Nav buttons
         const prevBtn = document.getElementById('val-prev-btn');
         const nextBtn = document.getElementById('val-next-btn');
-        if (prevBtn) prevBtn.disabled = currentIdx === 0;
-        if (nextBtn) nextBtn.disabled = currentIdx === answers.length - 1;
+        if (prevBtn) {
+          prevBtn.disabled = currentIdx === 0;
+          prevBtn.onclick = () => { window._cat3ValIdx = Math.max(0, currentIdx-1); renderValidation(answers, roomId, winnerBid, winner, winnerName, data); };
+        }
+        if (nextBtn) {
+          nextBtn.disabled = currentIdx === answers.length - 1;
+          nextBtn.onclick = () => { window._cat3ValIdx = Math.min(answers.length-1, currentIdx+1); renderValidation(answers, roomId, winnerBid, winner, winnerName, data); };
+        }
 
-        document.getElementById('val-correct-btn').textContent = ans.status === 'correct' ? '✅ صح (محدد)' : '✅ صح';
-        document.getElementById('val-wrong-btn').textContent = ans.status === 'wrong' ? '❌ غلط (محدد)' : '❌ غلط';
+        document.getElementById('val-correct-btn').textContent = ans.status === 'correct' ? '✅ صح ✓' : '✅ صح';
+        document.getElementById('val-wrong-btn').textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
         document.getElementById('val-correct-btn').onclick = () => validateCat3(currentIdx, 'correct', roomId, winnerBid, winner, answers);
         document.getElementById('val-wrong-btn').onclick = () => validateCat3(currentIdx, 'wrong', roomId, winnerBid, winner, answers);
 
-        if (prevBtn) prevBtn.onclick = () => {
-          if(currentIdxEl) currentIdxEl.value = Math.max(0, currentIdx-1);
-        };
-        if (nextBtn) nextBtn.onclick = () => {
-          if(currentIdxEl) currentIdxEl.value = Math.min(answers.length-1, currentIdx+1);
-        };
+        // Only score after ALL answers manually validated (no pending)
+        const allManuallyDone = answers.length > 0 && answers.every(a => a.status === 'correct' || a.status === 'wrong');
+        const scoreEl = document.getElementById('score-result');
 
-        // Show score if all validated
-        const allDone = answers.every(a => a.status && a.status !== 'pending');
-        if (allDone) {
+        if (allManuallyDone && scoreEl && scoreEl.style.display === 'none') {
           const correct = answers.filter(a => a.status === 'correct').length;
-          const scoreEl = document.getElementById('score-result');
-          if (scoreEl && scoreEl.style.display === 'none') {
-            scoreEl.style.display = 'block';
-            scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-            scoreEl.textContent = correct >= winnerBid
-              ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-              : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
-            if (!scoreEl._scored) {
-              scoreEl._scored = true;
-              if (correct >= winnerBid) addScore(winner, 4);
-              else addScore(winner, -2);
-            }
+          scoreEl.style.display = 'block';
+          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+          scoreEl.textContent = correct >= winnerBid
+            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+          if (!scoreEl._scored) {
+            scoreEl._scored = true;
+            if (correct >= winnerBid) addScore(winner, 4);
+            else addScore(winner, -2);
           }
+        } else if (timedOut && answers.length < winnerBid && scoreEl && scoreEl.style.display === 'none') {
+          // Fewer answers than bid — auto lose immediately
+          scoreEl.style.display = 'block';
+          scoreEl.style.color = 'var(--neon-red)';
+          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
+          if (!scoreEl._scored) { scoreEl._scored = true; addScore(winner, -2); }
         }
       } else {
         valWrap.style.display = 'none';
@@ -2804,6 +2828,24 @@ async function autoValidateAnswers(answers, roomId, question, winnerBid, winner,
       _validatingSet.delete(key);
     }
   }
+}
+
+function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) {
+  // Re-render validation UI with current index
+  const currentIdx = window._cat3ValIdx || 0;
+  if (!answers || answers.length === 0) return;
+  const ans = answers[Math.min(currentIdx, answers.length-1)];
+  const aiResult = ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري...';
+  const textEl = document.getElementById('current-answer-text');
+  if (textEl) textEl.textContent = `جواب ${currentIdx+1}/${answers.length}: "${ans.text}" ${aiResult}`;
+  const prevBtn = document.getElementById('val-prev-btn');
+  const nextBtn = document.getElementById('val-next-btn');
+  if (prevBtn) prevBtn.disabled = currentIdx === 0;
+  if (nextBtn) nextBtn.disabled = currentIdx === answers.length - 1;
+  const correctBtn = document.getElementById('val-correct-btn');
+  const wrongBtn = document.getElementById('val-wrong-btn');
+  if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? '✅ صح ✓' : '✅ صح';
+  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
 }
 
 async function validateCat3(idx, status, roomId, winnerBid, winner, currentAnswers) {

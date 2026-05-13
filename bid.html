@@ -107,10 +107,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 <!-- ANSWERING -->
 <div id="ph-answering" style="width:100%;display:flex;flex-direction:column;gap:8px;flex:1;display:none">
   <div class="q-box" id="q-ans"></div>
-  <div class="timer-wrap">
-    <div class="timer-big" id="ans-timer-num" style="color:var(--yellow)">60</div>
-    <div class="timer-bar"><div class="timer-fill" id="ans-fill" style="width:100%;background:var(--green)"></div></div>
-  </div>
+
   <div class="sbox s-green" id="ans-title">اكتبوا الأجوبة!</div>
   <div id="ans-scroll" class="ans-scroll"></div>
   <div class="ans-fixed">
@@ -221,10 +218,6 @@ function lockAnswering() {
   if(input) input.disabled=true;
   if(btn) btn.disabled=true;
   if(conf) conf.style.display='none';
-  // Show logo waiting screen
-  showPhase('logo');
-  const msg = document.getElementById('logo-msg');
-  if(msg) msg.textContent = 'انتهى الوقت — انتظر السؤال التالي';
 }
 
 function renderAnswers() {
@@ -444,7 +437,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
         totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
         showPhase('answering');
         renderAnswers();
-        if(d.answerTimerEnd) startAnsTimer(d.answerTimerEnd);
+
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent='الفريق الثاني يكتب الأجوبة...';
