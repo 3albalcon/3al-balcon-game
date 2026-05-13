@@ -313,6 +313,72 @@ window.confirmAnswers = async function() {
   await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
 };
 
+// ── Bid update handler ──
+function handleBidUpdate(d) {
+  const bids = d.bids || {};
+  const myV = bids[team]?.value || 0;
+  const otherV = bids[other]?.value || 0;
+  if (myV > myBid) myBid = myV;
+
+  // Show highest bid
+  const highest = Math.max(myV, otherV);
+  const bidEl = document.getElementById('bid-val');
+  if (bidEl) bidEl.textContent = highest || 0;
+
+  // Show other team's bid in status
+  const msg = document.getElementById('bid-msg');
+  if (otherV > myV && otherV > 0 && msg) {
+    msg.style.display = 'flex';
+    msg.textContent = `🔥 الفريق الثاني زايد ${otherV}`;
+    msg.style.background = 'rgba(255,45,45,0.1)';
+    msg.style.borderColor = 'var(--red)';
+    msg.style.color = 'var(--red)';
+  }
+
+  // Handle new countdown
+  if (d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd !== lastBidCountdownEnd) {
+    lastBidCountdownEnd = d.bidCountdownEnd;
+    lastBidder = d.lastBidder;
+    const adjustedEnd = d.bidCountdownEnd - serverOffset;
+    startBidTimer(adjustedEnd);
+    const forMe = d.lastBidder === other;
+
+    if (forMe) {
+      flash(`${otherV} 🔥`, 'var(--green)');
+      setBidBtns(true);
+      if (msg) {
+        msg.style.display = 'flex';
+        msg.textContent = `⚡ الفريق الثاني زايد ${otherV} — زايد أو خسرت!`;
+        msg.style.background = 'rgba(255,45,45,0.1)';
+        msg.style.borderColor = 'var(--red)';
+        msg.style.color = 'var(--red)';
+      }
+      // Auto-lose when countdown expires
+      clearTimeout(window._autoLose);
+      window._autoLose = setTimeout(async () => {
+        const s = await get(ref(db, `rooms/${roomId}`));
+        const dd = s.val();
+        if (dd?.phase === 'bidding' && dd?.lastBidder === other && dd?.bidCountdownEnd === d.bidCountdownEnd) {
+          const otherBid = dd?.bids?.[other]?.value || 0;
+          await update(ref(db, `rooms/${roomId}`), {
+            phase: 'answering', auctionWinner: other, winningBid: otherBid,
+            answerTimerEnd: serverNow() + 60000, answers: []
+          });
+        }
+      }, Math.max(500, d.bidCountdownEnd - serverNow() + 500));
+    } else {
+      setBidBtns(false);
+      if (msg) {
+        msg.style.display = 'flex';
+        msg.textContent = `✅ مزايدتك: ${myV} — انتظر الفريق الثاني`;
+        msg.style.background = 'rgba(255,230,0,0.08)';
+        msg.style.borderColor = 'var(--yellow)';
+        msg.style.color = 'var(--yellow)';
+      }
+    }
+  }
+}
+
 // Firebase listener
 onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   const d=snap.val(); if(!d) return;
@@ -358,9 +424,11 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     else if(p==='bidding'){
       myBid=(d.bids?.[team]?.value)||0; lastBidder=null; lastBidCountdownEnd=null;
       showPhase('bidding');
-      document.getElementById('bid-val').textContent=myBid;
+      document.getElementById('bid-val').textContent=0;
       document.getElementById('bid-msg').style.display='none';
       setBidBtns(true);
+      // Run bid update immediately to sync state
+      handleBidUpdate(d);
     }
     else if(p==='answering'){
       if(d.auctionWinner===team){
@@ -395,58 +463,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     const otherR=team==='a'?d.readyB:d.readyA;
     if(otherR) document.getElementById('ready-msg').textContent='✅ الفريق الثاني جاهز!';
   }
-  if(p==='bidding'){
-    const bids=d.bids||{};
-    const myV=bids[team]?.value||0;
-    const otherV=bids[other]?.value||0;
-    if(myV>myBid){myBid=myV;}
-    // Always show highest bid
-    const highest=Math.max(myV, otherV);
-    document.getElementById('bid-val').textContent=highest;
-    // Update status message to show both bids
-    const msg=document.getElementById('bid-msg');
-    if(msg && otherV > 0 && otherV > myV) {
-      msg.style.display='flex';
-      msg.textContent=`🔥 الفريق الثاني زايد ${otherV} — زايد!`;
-      msg.style.background='rgba(255,45,45,0.1)';
-      msg.style.borderColor='var(--red)';
-      msg.style.color='var(--red)';
-    }
-
-    // Handle countdown — every bid starts fresh 10 seconds
-    if(d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd!==lastBidCountdownEnd){
-      lastBidCountdownEnd=d.bidCountdownEnd;
-      lastBidder=d.lastBidder;
-      // Use pre-fetched server offset for accurate timer
-      const adjustedEnd = d.bidCountdownEnd - serverOffset;
-      startBidTimer(adjustedEnd);
-      const forMe = d.lastBidder===other;
-      if(forMe){
-        const otherV=bids[other]?.value||1;
-        flash(`${otherV} 🔥`,'var(--green)');
-        setBidBtns(true);
-        const msg=document.getElementById('bid-msg');
-        if(msg){msg.style.display='flex';msg.textContent=`⚡ الفريق الثاني زايد ${otherV} — زايد أو خسرت!`;}
-        // Auto-lose if countdown expires
-        clearTimeout(window._autoLose);
-        window._autoLose=setTimeout(async()=>{
-          const s=await get(ref(db,`rooms/${roomId}`));
-          const dd=s.val();
-          if(dd?.phase==='bidding'&&dd?.lastBidder===other&&dd?.bidCountdownEnd===d.bidCountdownEnd){
-            const otherBid=dd?.bids?.[other]?.value||1;
-            await update(ref(db,`rooms/${roomId}`),{
-              phase:'answering',auctionWinner:other,winningBid:otherBid,
-              answerTimerEnd:Date.now()+60000,answers:[]
-            });
-          }
-        }, Math.max(0, d.bidCountdownEnd-Date.now())+500);
-      } else {
-        setBidBtns(false);
-        const msg=document.getElementById('bid-msg');
-        if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myV} — انتظر الفريق الثاني`;}
-      }
-    }
-  }
+  if(p==='bidding') handleBidUpdate(d);
   if(p==='answering'&&d.auctionWinner===team&&d.answers){
     submitted=d.answers; renderAnswers();
     if(d.answersConfirmed&&!locked) lockAnswering();

@@ -2577,18 +2577,20 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       }, 1000);
     }
 
-    // Bidding
+    // Bidding — always update bid displays regardless of phase change
     if (data.phase === 'bidding') {
       document.getElementById('cat3-countdown-phase').style.display = 'none';
       document.getElementById('cat3-qr-phase').style.display = 'none';
       document.getElementById('cat3-ready-phase').style.display = 'none';
       document.getElementById('cat3-bidding-phase').style.display = 'flex';
 
-      // Update bid displays
-      if (bidA !== undefined) document.getElementById('bid-a').textContent = bidA;
-      if (bidB !== undefined) document.getElementById('bid-b').textContent = bidB;
+      // Always update bid displays
+      const bidAEl = document.getElementById('bid-a');
+      const bidBEl = document.getElementById('bid-b');
+      if (bidAEl) bidAEl.textContent = bidA !== undefined && bidA > 0 ? bidA : '—';
+      if (bidBEl) bidBEl.textContent = bidB !== undefined && bidB > 0 ? bidB : '—';
 
-      // Handle countdown
+      // Handle new countdown
       if (data.bidCountdownEnd && data.lastBidder && data.bidCountdownEnd !== cat3LastBidCountdownEnd) {
         cat3LastBidder = data.lastBidder;
         cat3LastBidCountdownEnd = data.bidCountdownEnd;
@@ -2600,7 +2602,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
         // Flash on main screen
         showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
-        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندها 10 ثواني للرد!`;
+        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندها 15 ثانية للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
         const labelEl = document.getElementById('bid-countdown-label');
