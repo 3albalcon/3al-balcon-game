@@ -249,28 +249,32 @@ window.setReady = async function() {
 };
 
 window.placeBid = async function(amount) {
-  const snap=await get(ref(db,`rooms/${roomId}/bids`));
-  const bids=snap.val()||{};
-  const highest=Math.max(bids['a']?.value||0, bids['b']?.value||0, myBid);
-  myBid=highest+amount;
-  document.getElementById('bid-val').textContent=myBid;
-  setBidBtns(false);
-  const msg=document.getElementById('bid-msg');
-  if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myBid} — انتظر الفريق الثاني`;}
-  flash(`${myBid} 🔥`,'var(--yellow)');
+  try {
+    const snap=await get(ref(db,`rooms/${roomId}/bids`));
+    const bids=snap.val()||{};
+    const highest=Math.max(bids['a']?.value||0, bids['b']?.value||0, myBid);
+    myBid=highest+amount;
+    document.getElementById('bid-val').textContent=myBid;
+    setBidBtns(false);
+    const msg=document.getElementById('bid-msg');
+    if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myBid}`;
+      msg.style.background='rgba(255,230,0,0.08)';msg.style.borderColor='var(--yellow)';msg.style.color='var(--yellow)';}
+    flash(`${myBid} 🔥`,'var(--yellow)');
 
-  // Use Firebase server time offset for accurate cross-device timing
-  const { serverTimestamp, get: fbGet } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
-  const offsetSnap = await fbGet(ref(db, '.info/serverTimeOffset'));
-  const offset = offsetSnap.val() || 0;
-  const serverNow = Date.now() + offset;
-  const newEnd = serverNow + 15500; // 10s + 500ms buffer for propagation
+    const now = serverNow();
+    const newEnd = now + 15000;
 
-  await update(ref(db,`rooms/${roomId}`),{
-    [`bids/${team}`]:{value:myBid,time:serverNow},
-    lastBidder:team, lastBidTime:serverNow, bidCountdownEnd:newEnd
-  });
+    await update(ref(db,`rooms/${roomId}`),{
+      [`bids/${team}`]:{value:myBid,time:now},
+      lastBidder:team, lastBidTime:now, bidCountdownEnd:newEnd
+    });
+    document.getElementById('debug-room').textContent = `✅ bid ok: ${myBid} | room: ${roomId}`;
+  } catch(err) {
+    document.getElementById('debug-room').textContent = `❌ ERROR: ${err.message}`;
+    setBidBtns(true);
+  }
 };
+
 
 let editingIdx = null;
 window.editAnswer = function(idx) {
