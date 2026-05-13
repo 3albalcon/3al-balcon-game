@@ -1047,7 +1047,7 @@ audio, video { display: none; }
     display:flex;align-items:center;gap:8px;justify-content:center;
   ">
     <span id="data-status-icon">⏳</span>
-    <span id="data-status-text">جاري تحميل الأسئلة والصور...</span>
+    <span id="data-status-text">⏳ عم نحضّر الأسئلة و الصور</span>
   </div>
 
   <div class="rounds-grid" id="rounds-grid"></div>
@@ -1778,7 +1778,7 @@ function updateDataStatus() {
 
   if (questionsReady && imagesReady) {
     icon.textContent = '✅';
-    text.textContent = 'كل شي جاهز!';
+    text.textContent = '✅ كل شي جاهز';
     text.style.color = 'var(--neon-green)';
     text.style.textShadow = 'var(--glow-green)';
     icon.style.color = 'var(--neon-green)';
@@ -1789,11 +1789,11 @@ function updateDataStatus() {
     }, 3000);
   } else if (questionsReady && !imagesReady) {
     icon.textContent = '⏳';
-    text.textContent = 'الأسئلة جاهزة — جاري تحميل الصور...';
+    text.textContent = '⏳ الأسئلة جاهزة — عم نحضّر الصور';
     text.style.color = 'var(--neon-yellow)';
   } else {
     icon.textContent = '⏳';
-    text.textContent = 'جاري تحميل الأسئلة والصور...';
+    text.textContent = '⏳ عم نحضّر الأسئلة و الصور';
     text.style.color = 'var(--neon-yellow)';
   }
 }
@@ -1980,7 +1980,7 @@ function openRound(id) {
   };
 
   if (dataMap[id] && !dataMap[id]()) {
-    showToast('⏳ لسا بتتحمل البيانات — انتظر ثانية!');
+    showToast('⏳ شوي و منكون جاهزين');
     return;
   }
 
@@ -2376,7 +2376,7 @@ function initCat3Room(teamA, teamB) {
     phase: 'waiting',
     questionIndex: -1,
     question: '',
-    bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
+    bids: { a: { value: 0, time: 0 }, b: { value: 0, time: 0 } },
     readyA: false, readyB: false,
     connected: { a: false, b: false },
     auctionWinner: null, winningBid: null,
@@ -2609,7 +2609,8 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         labelEl.textContent = `${waitingName} تحتاج ترد`;
 
         cat3BidCountdownInterval = setInterval(() => {
-          const remaining = Math.max(0, Math.ceil((data.bidCountdownEnd - Date.now()) / 1000));
+          const serverOff = 0; // server offset handled on phone side
+            const remaining = Math.max(0, Math.ceil((data.bidCountdownEnd - Date.now()) / 1000));
           numEl.textContent = remaining;
           if (remaining <= 0) {
             clearInterval(cat3BidCountdownInterval);
@@ -2826,7 +2827,7 @@ function nextCat3Question() {
         update(fbRef(db, `rooms/${cat3RoomId}`), {
           phase: 'ready',
           readyA: false, readyB: false,
-          bids: { a: { value: 1, time: 0 }, b: { value: 1, time: 0 } },
+          bids: { a: { value: 0, time: 0 }, b: { value: 0, time: 0 } },
           lastBidder: null, bidCountdownEnd: null,
           auctionWinner: null, winningBid: null,
           answers: [], gaveUp: null,

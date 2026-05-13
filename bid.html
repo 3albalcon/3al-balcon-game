@@ -62,7 +62,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 
 <!-- WAITING -->
 <div id="ph-waiting" style="width:100%;display:flex;flex-direction:column;gap:10px">
-  <div class="sbox s-cyan" id="wait-msg">⏳ انتظر اتصال الفريق الثاني...</div>
+  <div class="sbox s-cyan" id="wait-msg">⏳ بانتظار الفريق الثاني...</div>
 </div>
 
 <!-- READY -->
@@ -79,10 +79,10 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 <!-- BIDDING -->
 <div id="ph-bidding" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
   <div class="q-box" id="q-bid"></div>
-  <div class="big-num bid-num" id="bid-val">1</div>
+  <div class="big-num bid-num" id="bid-val">0</div>
   <div class="timer-wrap">
     <div class="timer-bar"><div class="timer-fill" id="bid-fill" style="width:100%;background:var(--yellow)"></div></div>
-    <div class="timer-big" id="bid-timer-num" style="color:var(--yellow)">10</div>
+    <div class="timer-big" id="bid-timer-num" style="color:var(--yellow)">15</div>
   </div>
   <div class="sbox s-yellow" id="bid-msg" style="display:none"></div>
   <div class="bid-grid">
@@ -140,7 +140,7 @@ const roomId = params.get('r') || 'room1';
 const other = team === 'a' ? 'b' : 'a';
 if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">رابط غلط</div>'; throw new Error(); }
 
-let myBid = 1;
+let myBid = 0;
 let submitted = [];
 let totalAns = 0;
 let phase = '';
@@ -175,7 +175,7 @@ function startBidTimer(endTime) {
   if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval=null;
   const fill = document.getElementById('bid-fill');
   const num = document.getElementById('bid-timer-num');
-  const total = 10000;
+  const total = 15000;
   function tick() {
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
@@ -240,7 +240,7 @@ window.setReady = async function() {
 window.placeBid = async function(amount) {
   const snap=await get(ref(db,`rooms/${roomId}/bids`));
   const bids=snap.val()||{};
-  const highest=Math.max(bids['a']?.value||1, bids['b']?.value||1, myBid);
+  const highest=Math.max(bids['a']?.value||0, bids['b']?.value||0, myBid);
   myBid=highest+amount;
   document.getElementById('bid-val').textContent=myBid;
   setBidBtns(false);
@@ -253,7 +253,7 @@ window.placeBid = async function(amount) {
   const offsetSnap = await fbGet(ref(db, '.info/serverTimeOffset'));
   const offset = offsetSnap.val() || 0;
   const serverNow = Date.now() + offset;
-  const newEnd = serverNow + 10500; // 10s + 500ms buffer for propagation
+  const newEnd = serverNow + 15500; // 10s + 500ms buffer for propagation
 
   await update(ref(db,`rooms/${roomId}`),{
     [`bids/${team}`]:{value:myBid,time:serverNow},
@@ -333,7 +333,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(p==='waiting'){
       showPhase('waiting');
       const conn=d.connected||{};
-      document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل':'⏳ انتظر اتصال الفريق الثاني...';
+      document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني ناطر':'⏳ بانتظار الفريق الثاني...';
     }
     else if(p==='ready'){
       showPhase('ready');
@@ -347,7 +347,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
       const cd=setInterval(()=>{n--;if(el)el.textContent=n>0?n:'🎯';if(n<=0)clearInterval(cd);},1000);
     }
     else if(p==='bidding'){
-      myBid=(d.bids?.[team]?.value)||1; lastBidder=null; lastBidCountdownEnd=null;
+      myBid=(d.bids?.[team]?.value)||0; lastBidder=null; lastBidCountdownEnd=null;
       showPhase('bidding');
       document.getElementById('bid-val').textContent=myBid;
       document.getElementById('bid-msg').style.display='none';
@@ -369,7 +369,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
       if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
       showPhase('logo');
       document.getElementById('logo-msg').textContent='⏳ انتظر السؤال التالي...';
-      myBid=1; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
+      myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
     }
     else if(p==='done'){
       showPhase('logo');
@@ -380,17 +380,29 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   // Same phase updates
   if(p==='waiting'){
     const conn=d.connected||{};
-    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني متصل':'⏳ انتظر اتصال الفريق الثاني...';
+    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني ناطر':'⏳ بانتظار الفريق الثاني...';
   }
   if(p==='ready'){
     const otherR=team==='a'?d.readyB:d.readyA;
     if(otherR) document.getElementById('ready-msg').textContent='✅ الفريق الثاني جاهز!';
   }
   if(p==='bidding'){
-    // Update bid display
     const bids=d.bids||{};
-    const myV=bids[team]?.value||1;
-    if(myV>myBid){myBid=myV;document.getElementById('bid-val').textContent=myBid;}
+    const myV=bids[team]?.value||0;
+    const otherV=bids[other]?.value||0;
+    if(myV>myBid){myBid=myV;}
+    // Always show highest bid
+    const highest=Math.max(myV, otherV);
+    document.getElementById('bid-val').textContent=highest;
+    // Update status message to show both bids
+    const msg=document.getElementById('bid-msg');
+    if(msg && otherV > 0 && otherV > myV) {
+      msg.style.display='flex';
+      msg.textContent=`🔥 الفريق الثاني زايد ${otherV} — زايد!`;
+      msg.style.background='rgba(255,45,45,0.1)';
+      msg.style.borderColor='var(--red)';
+      msg.style.color='var(--red)';
+    }
 
     // Handle countdown — every bid starts fresh 10 seconds
     if(d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd!==lastBidCountdownEnd){
@@ -423,7 +435,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
               answerTimerEnd:Date.now()+60000,answers:[]
             });
           }
-        }, Math.max(0, d.bidCountdownEnd-Date.now())+300);
+        }, Math.max(0, d.bidCountdownEnd-Date.now())+500);
       } else {
         setBidBtns(false);
         const msg=document.getElementById('bid-msg');
