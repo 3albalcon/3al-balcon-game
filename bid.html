@@ -58,6 +58,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 <div class="logo-sub">3AL BALCON — مزاد علني</div>
 <div class="team-badge" id="team-badge">جاري الاتصال...</div>
 <div class="q-ind" id="q-ind"></div>
+<div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;word-break:break-all" id="debug-room"></div>
 <div class="flash" id="flash"><div class="flash-text" id="flash-text"></div></div>
 
 <!-- WAITING -->
@@ -160,6 +161,7 @@ try {
 function serverNow() { return Date.now() + serverOffset; }
 
 await update(ref(db,`rooms/${roomId}/connected`), {[team]:true});
+document.getElementById('debug-room').textContent = `room: ${roomId} | team: ${team}`;
 
 const badge = document.getElementById('team-badge');
 
@@ -381,7 +383,10 @@ function handleBidUpdate(d) {
 
 // Firebase listener
 onValue(ref(db,`rooms/${roomId}`),(snap)=>{
-  const d=snap.val(); if(!d) return;
+  const d=snap.val(); 
+  // Debug - show connection status
+  document.title = `${team} | ${d?.phase||'?'} | bidA:${d?.bids?.a?.value||0} bidB:${d?.bids?.b?.value||0}`;
+  if(!d) return;
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
   if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=`سؤال ${d.questionIndex+1} من 5`;
