@@ -247,11 +247,17 @@ window.placeBid = async function(amount) {
   const msg=document.getElementById('bid-msg');
   if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myBid} — انتظر الفريق الثاني`;}
   flash(`${myBid} 🔥`,'var(--yellow)');
-  const now=Date.now();
-  const newEnd = now + 10000; // Always fresh 10 seconds
+
+  // Use Firebase server time offset for accurate cross-device timing
+  const { serverTimestamp, get: fbGet } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
+  const offsetSnap = await fbGet(ref(db, '.info/serverTimeOffset'));
+  const offset = offsetSnap.val() || 0;
+  const serverNow = Date.now() + offset;
+  const newEnd = serverNow + 10500; // 10s + 500ms buffer for propagation
+
   await update(ref(db,`rooms/${roomId}`),{
-    [`bids/${team}`]:{value:myBid,time:now},
-    lastBidder:team, lastBidTime:now, bidCountdownEnd:newEnd
+    [`bids/${team}`]:{value:myBid,time:serverNow},
+    lastBidder:team, lastBidTime:serverNow, bidCountdownEnd:newEnd
   });
 };
 
@@ -390,7 +396,14 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(d.bidCountdownEnd && d.lastBidder && d.bidCountdownEnd!==lastBidCountdownEnd){
       lastBidCountdownEnd=d.bidCountdownEnd;
       lastBidder=d.lastBidder;
-      startBidTimer(d.bidCountdownEnd);
+      // Adjust for server time offset
+      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({get:fbGet2})=>{
+        fbGet2(ref(db,'.info/serverTimeOffset')).then(os=>{
+          const off = os.val()||0;
+          const adjustedEnd = d.bidCountdownEnd - off;
+          startBidTimer(adjustedEnd);
+        });
+      });
       const forMe = d.lastBidder===other;
       if(forMe){
         const otherV=bids[other]?.value||1;

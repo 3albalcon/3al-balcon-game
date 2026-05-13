@@ -2462,11 +2462,16 @@ function renderBidding(r, qIndex, sa) {
       <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
       <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center"></div>
       <div id="validation-wrap" style="display:none;flex-direction:column;gap:8px;width:100%">
-        <div style="font-size:13px;color:var(--text2);text-align:center">✅ صح أو ❌ غلط؟</div>
-        <div id="current-answer-text" style="font-size:20px;font-weight:700;color:#fff;text-align:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px"></div>
+        <input type="hidden" id="val-current-idx" value="0">
+        <div style="font-size:13px;color:var(--text2);text-align:center">تحقق من كل جواب</div>
+        <div id="current-answer-text" style="font-size:18px;font-weight:700;color:#fff;text-align:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px;direction:rtl"></div>
         <div style="display:flex;gap:10px">
-          <button id="val-correct-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-green);background:rgba(57,255,20,0.1);color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;cursor:pointer">✅ صح</button>
-          <button id="val-wrong-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-red);background:rgba(255,45,45,0.1);color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;cursor:pointer">❌ غلط</button>
+          <button id="val-correct-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-green);background:rgba(57,255,20,0.1);color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">✅ صح</button>
+          <button id="val-wrong-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-red);background:rgba(255,45,45,0.1);color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">❌ غلط</button>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button id="val-prev-btn" class="nav-btn" style="font-size:13px;padding:8px 20px" onclick="">← السابق</button>
+          <button id="val-next-btn" class="nav-btn" style="font-size:13px;padding:8px 20px" onclick="">التالي →</button>
         </div>
       </div>
       <div id="score-result" style="font-size:18px;font-weight:700;text-align:center;display:none"></div>
@@ -2635,6 +2640,15 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const winner = data.auctionWinner;
       const winnerName = winner === 'a' ? G.teamA : G.teamB;
       const winnerBid = data.winningBid || 1;
+      // Show question at top of winner area
+      const winnerArea = document.getElementById('cat3-winner-phase');
+      if (winnerArea && !document.getElementById('winner-q-display')) {
+        const qDisplay = document.createElement('div');
+        qDisplay.id = 'winner-q-display';
+        qDisplay.style.cssText = 'width:100%;text-align:center;font-size:18px;font-weight:700;color:var(--neon-cyan);text-shadow:var(--glow-cyan);padding:12px 16px;background:rgba(0,239,255,0.06);border:2px solid var(--neon-cyan);border-radius:14px;';
+        qDisplay.textContent = q;
+        winnerArea.insertBefore(qDisplay, winnerArea.firstChild);
+      }
       document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
       // Add stop timer button only once
       if (!document.getElementById('stop-timer-btn')) {
@@ -2674,31 +2688,43 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
       }
 
-      // Manual override buttons — always available for all answers
+      // Manual validation with navigation
       const valWrap = document.getElementById('validation-wrap');
       if (showResults && answers.length > 0) {
-        // Find first answer needing review
-        const reviewIdx = answers.findIndex(a => !a._reviewed);
-        if (reviewIdx >= 0) {
-          valWrap.style.display = 'flex';
-          const ans = answers[reviewIdx];
-          document.getElementById('current-answer-text').textContent =
-            `جواب ${reviewIdx+1}: "${ans.text}" ${ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري التحقق...'}`;
-          document.getElementById('val-correct-btn').textContent = '✅ صح';
-          document.getElementById('val-wrong-btn').textContent = '❌ غلط';
-          document.getElementById('val-correct-btn').onclick = () => {
-            answers[reviewIdx]._reviewed = true;
-            validateCat3(reviewIdx, 'correct', roomId, winnerBid, winner, answers);
-          };
-          document.getElementById('val-wrong-btn').onclick = () => {
-            answers[reviewIdx]._reviewed = true;
-            validateCat3(reviewIdx, 'wrong', roomId, winnerBid, winner, answers);
-          };
-        } else {
-          valWrap.style.display = 'none';
+        valWrap.style.display = 'flex';
+        // Get current review index from element
+        const currentIdxEl = document.getElementById('val-current-idx');
+        let currentIdx = currentIdxEl ? parseInt(currentIdxEl.value || '0') : 0;
+        if (currentIdx >= answers.length) currentIdx = answers.length - 1;
+
+        const ans = answers[currentIdx];
+        const aiResult = ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري...';
+        document.getElementById('current-answer-text').textContent = `جواب ${currentIdx+1}/${answers.length}: "${ans.text}" ${aiResult}`;
+
+        // Nav buttons
+        const prevBtn = document.getElementById('val-prev-btn');
+        const nextBtn = document.getElementById('val-next-btn');
+        if (prevBtn) prevBtn.disabled = currentIdx === 0;
+        if (nextBtn) nextBtn.disabled = currentIdx === answers.length - 1;
+
+        document.getElementById('val-correct-btn').textContent = ans.status === 'correct' ? '✅ صح (محدد)' : '✅ صح';
+        document.getElementById('val-wrong-btn').textContent = ans.status === 'wrong' ? '❌ غلط (محدد)' : '❌ غلط';
+        document.getElementById('val-correct-btn').onclick = () => validateCat3(currentIdx, 'correct', roomId, winnerBid, winner, answers);
+        document.getElementById('val-wrong-btn').onclick = () => validateCat3(currentIdx, 'wrong', roomId, winnerBid, winner, answers);
+
+        if (prevBtn) prevBtn.onclick = () => {
+          if(currentIdxEl) currentIdxEl.value = Math.max(0, currentIdx-1);
+        };
+        if (nextBtn) nextBtn.onclick = () => {
+          if(currentIdxEl) currentIdxEl.value = Math.min(answers.length-1, currentIdx+1);
+        };
+
+        // Show score if all validated
+        const allDone = answers.every(a => a.status && a.status !== 'pending');
+        if (allDone) {
           const correct = answers.filter(a => a.status === 'correct').length;
           const scoreEl = document.getElementById('score-result');
-          if (scoreEl.style.display === 'none') {
+          if (scoreEl && scoreEl.style.display === 'none') {
             scoreEl.style.display = 'block';
             scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
             scoreEl.textContent = correct >= winnerBid
