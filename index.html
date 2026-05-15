@@ -1512,12 +1512,6 @@ async function loadFromDrive(urlOverride) {
       }
     }
 
-    // Host wallpaper — push to Firebase for host phone background
-    if (window._fbDb && window._fbSet && window._fbRef) {
-      const wallUrl = data.hostWallpaper?.url || data.waitingScreen?.url || null;
-      if (wallUrl) window._fbSet(window._fbRef(window._fbDb, 'hostWallpaper'), wallUrl);
-    }
-
     // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
     if (data.winnerSong) {
       try {
@@ -2036,15 +2030,12 @@ function openRound(id) {
 function nextQ() {
   G.currentQ++;
   renderSlide();
-  pushHostState();
 }
 
 function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
   stopTimer();
-  // Always sync host state when slide changes
-  setTimeout(pushHostState, 100);
 
   // Reset slide-area to default for all rounds
   sa.style.paddingTop = '';
@@ -3613,7 +3604,6 @@ function pushHostState() {
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
     currentRound: G.currentRound?.id || null,
-    currentQ: G.currentQ,
     teamA: G.teamA,
     teamB: G.teamB,
     scoreA: G.scoreA,
@@ -3622,7 +3612,7 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = Date.now(); // ignore any commands written before game started
+let _lastHostCmdTs = 0;
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
@@ -3633,41 +3623,24 @@ function startHostCmdListener() {
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
-
     if (cmd === 'next') {
-      if (G.currentRound) { nextQ(); }
-    } else if (cmd === 'prev') {
-      if (G.currentRound && G.currentQ > -1) {
-        G.currentQ--;
-        renderSlide();
-        pushHostState();
-      }
+      // Click next button if visible
+      const nextBtn = document.querySelector('.nav-btn.primary');
+      if (nextBtn) nextBtn.click();
     } else if (cmd === 'result') {
       showResult();
-    } else if (cmd === 'titleSlide') {
-      if (G.currentRound) {
-        G.currentQ = -1;
-        renderSlide();
-        pushHostState();
-      }
+    } else if (cmd === 'back') {
+      show('game-screen');
+      G.currentQ = -1;
+      renderSlide();
     } else if (cmd === 'menu') {
-      G.currentRound = null;
       show('menu-screen');
       buildMenu();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      if (roundId) {
-        if (G.done.has(roundId)) return;
+      if (roundId && !G.done.has(roundId)) {
         const round = ROUNDS.find(r => r.id === roundId);
-        if (round) {
-          G.currentRound = round;
-          G.currentQ = -1;
-          document.getElementById('gh-title').textContent = round.name;
-          updateHeaderScores();
-          show('game-screen');
-          renderSlide();
-          pushHostState();
-        }
+        if (round) openRound(roundId);
       }
     }
   });
