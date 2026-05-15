@@ -1506,10 +1506,10 @@ async function loadFromDrive(urlOverride) {
       }
     }
 
-    // Step 5: Videos — just store IDs, no download needed
+    // Step 5: Videos — shuffle and store IDs
     if (videos.length > 0) {
       setLoadProgress(90);
-      G.media['r5'] = videos.map(f => ({
+      G.media['r5'] = shuffle([...videos]).map(f => ({
         url: f.directUrl || f.url,
         driveId: f.id,
         name: f.name,
@@ -1727,25 +1727,41 @@ async function loadCSVFiles(csvFiles) {
     return arr;
   }
 
-  const url = DRIVE_SCRIPT_URL;
+  // Try direct Drive URL first (fast, no Apps Script) — fallback to Apps Script if CORS blocked
   const fetches = Object.entries(csvFiles).map(async ([key, driveUrl]) => {
     try {
-      const idMatch = driveUrl.match(/id=([^&]+)/);
-      if (!idMatch) return { key, rows: null };
-      const fileId = idMatch[1];
-      const res = await fetch(`${url}?action=file&id=${fileId}&t=${Date.now()}`, { redirect: 'follow' });
-      const data = await res.json();
-      if (data.error || !data.data) return { key, rows: null };
-      const text = decodeURIComponent(escape(atob(data.data)));
+      // Direct fetch — works if file is publicly shared
+      const res = await fetch(driveUrl + '&t=' + Date.now(), { redirect: 'follow' });
+      if (!res.ok) throw new Error('direct fetch failed');
+      const text = await res.text();
+      if (text.includes('<!DOCTYPE') || text.includes('<html')) throw new Error('got HTML not CSV');
       return { key, rows: parseCSV(text) };
-    } catch(e) { return { key, rows: null }; }
+    } catch(e) {
+      // Fallback to Apps Script base64
+      try {
+        const idMatch = driveUrl.match(/id=([^&]+)/);
+        if (!idMatch) return { key, rows: null };
+        const fileId = idMatch[1];
+        const res = await fetch(`${DRIVE_SCRIPT_URL}?action=file&id=${fileId}&t=${Date.now()}`, { redirect: 'follow' });
+        const data = await res.json();
+        if (data.error || !data.data) return { key, rows: null };
+        const text = decodeURIComponent(escape(atob(data.data)));
+        return { key, rows: parseCSV(text) };
+      } catch(e2) { return { key, rows: null }; }
+    }
   });
 
   const results = await Promise.all(fetches);
 
   results.forEach(({ key, rows }) => {
     if (!rows || rows.length === 0) return;
-    if (key === 'cat3') {
+    if (key === 'images_csv') {
+      // Single CSV for all images — shuffle then split 10/10
+      const mapped = rows.map(r => ({ filename: r[0]?.trim(), answer: r[1]?.trim() })).filter(x => x.filename);
+      const shuffled = shuffle(mapped);
+      G.questions.r1csv = shuffled.slice(0, 10);
+      G.questions.r2csv = shuffled.slice(10, 20);
+    } else if (key === 'cat3') {
       G.questions.r3 = shuffle(rows.map(r => r[0]).filter(Boolean));
     } else if (key === 'cat410') {
       const items = rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q);
