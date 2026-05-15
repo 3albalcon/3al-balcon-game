@@ -3620,7 +3620,7 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = 0;
+let _lastHostCmdTs = Date.now(); // ignore any commands written before game started
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
