@@ -2482,7 +2482,6 @@ function renderBidding(r, qIndex, sa) {
       <div id="bid-flash-text" style="font-size:clamp(60px,20vw,160px);font-weight:900;text-align:center;line-height:1"></div>
     </div>
 
-    ${scorePanelHTML(4, 2)}
     <div class="nav-btns">
       ${isLast
         ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
@@ -2602,7 +2601,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
         // Flash on main screen
         showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
-        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندها 15 ثانية للرد!`;
+        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 15 ثانية للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
         const labelEl = document.getElementById('bid-countdown-label');
@@ -2669,7 +2668,14 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         // Start countdown on main screen
         if (data.answerTimerEnd) {
           const total = 60000;
-          const mainTimerInterval = setInterval(() => {
+          window._mainTimerInterval = setInterval(() => {
+            // Stop if answers confirmed
+            if (data.answersConfirmed) {
+              clearInterval(window._mainTimerInterval);
+              const numEl = document.getElementById('main-ans-num');
+              if(numEl) { numEl.textContent='⏹'; numEl.style.color='var(--neon-green)'; }
+              return;
+            }
             const rem = Math.max(0, data.answerTimerEnd - Date.now());
             const pct = (rem/total)*100;
             const numEl = document.getElementById('main-ans-num');
@@ -2677,8 +2683,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             if(numEl){ numEl.textContent=Math.ceil(rem/1000); numEl.style.color=pct<20?'var(--neon-red)':'var(--neon-yellow)'; }
             if(fillEl){ fillEl.style.width=pct+'%'; fillEl.style.background=pct<20?'var(--neon-red)':'var(--neon-green)'; }
             if(rem<=0){
-              clearInterval(mainTimerInterval);
-              // Signal phones time is up
+              clearInterval(window._mainTimerInterval);
               if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
                 update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
               });
@@ -2710,55 +2715,51 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
       }
 
-      // Manual validation with navigation
-      // Use a module-level variable for current index so nav buttons work
-      if (!window._cat3ValIdx) window._cat3ValIdx = 0;
-      if (window._cat3ValIdx >= answers.length) window._cat3ValIdx = 0;
-
+      // Manual validation — one by one, auto-advance after each
       const valWrap = document.getElementById('validation-wrap');
       const timedOut = data.answersConfirmed || (data.answerTimerEnd && data.answerTimerEnd <= Date.now());
 
       if (showResults && answers.length > 0) {
-        valWrap.style.display = 'flex';
-        const currentIdx = window._cat3ValIdx;
-        const ans = answers[currentIdx];
-        const aiResult = ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري...';
-        document.getElementById('current-answer-text').textContent = `جواب ${currentIdx+1}/${answers.length}: "${ans.text}" ${aiResult}`;
+        // Find first unvalidated answer
+        const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
 
-        const prevBtn = document.getElementById('val-prev-btn');
-        const nextBtn = document.getElementById('val-next-btn');
-        if (prevBtn) {
-          prevBtn.disabled = currentIdx === 0;
-          prevBtn.onclick = () => { window._cat3ValIdx = Math.max(0, currentIdx-1); renderValidation(answers, roomId, winnerBid, winner, winnerName, data); };
-        }
-        if (nextBtn) {
-          nextBtn.disabled = currentIdx === answers.length - 1;
-          nextBtn.onclick = () => { window._cat3ValIdx = Math.min(answers.length-1, currentIdx+1); renderValidation(answers, roomId, winnerBid, winner, winnerName, data); };
-        }
-
-        document.getElementById('val-correct-btn').textContent = ans.status === 'correct' ? '✅ صح ✓' : '✅ صح';
-        document.getElementById('val-wrong-btn').textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
-        document.getElementById('val-correct-btn').onclick = () => validateCat3(currentIdx, 'correct', roomId, winnerBid, winner, answers);
-        document.getElementById('val-wrong-btn').onclick = () => validateCat3(currentIdx, 'wrong', roomId, winnerBid, winner, answers);
-
-        // Only score after ALL answers manually validated (no pending)
-        const allManuallyDone = answers.length > 0 && answers.every(a => a.status === 'correct' || a.status === 'wrong');
-        const scoreEl = document.getElementById('score-result');
-
-        if (allManuallyDone && scoreEl && scoreEl.style.display === 'none') {
+        if (pendingIdx >= 0) {
+          valWrap.style.display = 'flex';
+          const ans = answers[pendingIdx];
+          const aiHint = ans.status === 'correct' ? ' (AI: ✅)' : ans.status === 'wrong' ? ' (AI: ❌)' : '';
+          document.getElementById('current-answer-text').textContent =
+            `${pendingIdx+1}/${answers.length}: "${ans.text}"${aiHint}`;
+          document.getElementById('val-correct-btn').textContent = '✅ صح';
+          document.getElementById('val-wrong-btn').textContent = '❌ غلط';
+          document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
+          document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
+          // Hide prev/next
+          const prev = document.getElementById('val-prev-btn');
+          const next = document.getElementById('val-next-btn');
+          if(prev) prev.style.display='none';
+          if(next) next.style.display='none';
+        } else {
+          // All validated — calculate score
+          valWrap.style.display = 'none';
           const correct = answers.filter(a => a.status === 'correct').length;
-          scoreEl.style.display = 'block';
-          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-          scoreEl.textContent = correct >= winnerBid
-            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
-          if (!scoreEl._scored) {
-            scoreEl._scored = true;
-            if (correct >= winnerBid) addScore(winner, 4);
-            else addScore(winner, -2);
+          const scoreEl = document.getElementById('score-result');
+          if (scoreEl && scoreEl.style.display === 'none') {
+            scoreEl.style.display = 'block';
+            scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+            scoreEl.textContent = correct >= winnerBid
+              ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
+              : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+            if (!scoreEl._scored) {
+              scoreEl._scored = true;
+              if (correct >= winnerBid) addScore(winner, 4);
+              else addScore(winner, -2);
+            }
           }
-        } else if (timedOut && answers.length < winnerBid && scoreEl && scoreEl.style.display === 'none') {
-          // Fewer answers than bid — auto lose immediately
+        }
+      } else if (timedOut && answers.length < winnerBid) {
+        valWrap.style.display = 'none';
+        const scoreEl = document.getElementById('score-result');
+        if (scoreEl && scoreEl.style.display === 'none') {
           scoreEl.style.display = 'block';
           scoreEl.style.color = 'var(--neon-red)';
           scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
