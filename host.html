@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Host — 3AL BALCON</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --dark:#060d1f; --yellow:#FFE600; --green:#39FF14; --cyan:#00EFFF; --red:#FF2D2D; }
+body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:16px; }
+.logo { font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:3px; }
+.badge { font-size:13px; font-weight:700; color:var(--yellow); background:rgba(255,230,0,0.1); border:1px solid var(--yellow); padding:4px 14px; border-radius:100px; }
+.cat-name { font-size:18px; font-weight:700; color:var(--cyan); text-shadow:0 0 12px rgba(0,239,255,0.5); text-align:center; }
+.question { font-size:clamp(20px,5vw,36px); font-weight:900; color:#fff; text-align:center; line-height:1.4; padding:16px 20px; background:rgba(255,255,255,0.05); border-radius:14px; border:2px solid rgba(255,255,255,0.15); width:100%; direction:rtl; }
+.answer-label { font-size:12px; color:rgba(255,255,255,0.4); letter-spacing:2px; }
+.answer { font-size:clamp(24px,6vw,52px); font-weight:900; color:var(--green); text-shadow:0 0 20px rgba(57,255,20,0.6); text-align:center; line-height:1.2; direction:rtl; }
+.waiting { font-size:16px; color:rgba(255,255,255,0.3); text-align:center; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.q-num { font-size:12px; color:rgba(255,255,255,0.3); }
+</style>
+</head>
+<body>
+
+<div class="logo">HOST — 3AL BALCON</div>
+<div class="badge" id="mode-badge">⏳ انتظر...</div>
+<div class="cat-name" id="cat-name"></div>
+<div class="q-num" id="q-num"></div>
+<div class="question" id="question" style="display:none"></div>
+<div class="answer-label" id="ans-label" style="display:none">✅ الجواب الصحيح</div>
+<div class="answer" id="answer" style="display:none"></div>
+<div class="waiting" id="waiting">انتظر بدء السؤال...</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const cfg = {
+  apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
+  authDomain:"al-balcon.firebaseapp.com",
+  databaseURL:"https://al-balcon-default-rtdb.firebaseio.com",
+  projectId:"al-balcon",
+  storageBucket:"al-balcon.firebasestorage.app",
+  messagingSenderId:"556294454945",
+  appId:"1:556294454945:web:770c330e71a4e484277ae0"
+};
+
+const app = initializeApp(cfg);
+const db = getDatabase(app);
+
+onValue(ref(db, 'hostView'), (snap) => {
+  const d = snap.val();
+  const badge = document.getElementById('mode-badge');
+  const catName = document.getElementById('cat-name');
+  const qNum = document.getElementById('q-num');
+  const questionEl = document.getElementById('question');
+  const ansLabel = document.getElementById('ans-label');
+  const answerEl = document.getElementById('answer');
+  const waiting = document.getElementById('waiting');
+
+  if (!d || !d.active) {
+    badge.textContent = '⏳ انتظر...';
+    catName.textContent = '';
+    questionEl.style.display = 'none';
+    ansLabel.style.display = 'none';
+    answerEl.style.display = 'none';
+    waiting.style.display = 'block';
+    return;
+  }
+
+  badge.textContent = '🎙 مقدّم البرنامج';
+  catName.textContent = d.categoryName || '';
+  qNum.textContent = d.questionNum || '';
+  waiting.style.display = 'none';
+
+  if (d.question) {
+    questionEl.style.display = 'block';
+    questionEl.textContent = d.question;
+  }
+
+  if (d.answer) {
+    ansLabel.style.display = 'block';
+    answerEl.style.display = 'block';
+    answerEl.textContent = d.answer;
+  } else {
+    ansLabel.style.display = 'none';
+    answerEl.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>

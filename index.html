@@ -1020,6 +1020,23 @@ audio, video { display: none; }
     onmouseover="this.style.borderColor='var(--neon-cyan)';this.style.color='var(--neon-cyan)';this.style.textShadow='var(--glow-cyan)'"
     onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';this.style.textShadow='none'"
     >🚪 اغلاق اللعبة</button>
+    <button onclick="toggleHostMode()" id="host-mode-btn" style="
+      background:transparent;border:1.5px solid rgba(255,255,255,0.2);
+      color:rgba(255,255,255,0.35);font-size:12px;font-weight:700;
+      padding:7px 18px;border-radius:100px;font-family:'Cairo',sans-serif;
+      cursor:pointer;transition:all 0.2s;letter-spacing:1px;
+    "
+    onmouseover="this.style.borderColor='var(--neon-yellow)';this.style.color='var(--neon-yellow)'"
+    onmouseout="if(!window._hostMode){this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';}"
+    >🎙 مقدّم البرنامج</button>
+  </div>
+
+  <!-- Host QR — top right, hidden by default -->
+  <div id="host-qr-wrap" style="position:absolute;top:16px;right:20px;display:none;flex-direction:column;align-items:center;gap:4px;z-index:5">
+    <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid var(--neon-yellow);box-shadow:0 0 16px rgba(255,230,0,0.4)">
+      <div id="host-qr"></div>
+    </div>
+    <div style="font-size:10px;color:var(--neon-yellow);font-weight:700">للمقدّم فقط</div>
   </div>
 
   <div class="scoreboard">
@@ -3250,6 +3267,7 @@ function renderCharades(r, qIndex, sa) {
   const item = items[qIndex] || `اسم ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
+  updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, item, item);
   const encoded = encodeURIComponent(item);
   const qrData = `https://raedharb.github.io/3al-balcon-game/act.html?n=${encoded}`;
 
@@ -3530,6 +3548,48 @@ function pickWildcard(team, cardIndex) {
       show('menu-screen');
     }, 500);
   }, 5000);
+}
+
+// ── HOST MODE ──
+window._hostMode = false;
+
+function toggleHostMode() {
+  window._hostMode = !window._hostMode;
+  const btn = document.getElementById('host-mode-btn');
+  const qrWrap = document.getElementById('host-qr-wrap');
+  if (window._hostMode) {
+    btn.style.borderColor = 'var(--neon-yellow)';
+    btn.style.color = 'var(--neon-yellow)';
+    btn.style.textShadow = 'var(--glow-yellow)';
+    btn.textContent = '🎙 مقدّم البرنامج ✓';
+    qrWrap.style.display = 'flex';
+    const qrEl = document.getElementById('host-qr');
+    qrEl.innerHTML = '';
+    if (typeof QRCode !== 'undefined') {
+      new QRCode(qrEl, { text: 'https://raedharb.github.io/3al-balcon-game/host.html', width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
+    }
+    pushHostView({ active: true, question: '', answer: '', categoryName: '', questionNum: '' });
+  } else {
+    btn.style.borderColor = 'rgba(255,255,255,0.2)';
+    btn.style.color = 'rgba(255,255,255,0.35)';
+    btn.style.textShadow = 'none';
+    btn.textContent = '🎙 مقدّم البرنامج';
+    qrWrap.style.display = 'none';
+    pushHostView({ active: false });
+  }
+}
+
+function pushHostView(data) {
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  const fbSet = window._fbSet;
+  if (!db || !fbSet) return;
+  fbSet(fbRef(db, 'hostView'), data);
+}
+
+function updateHostView(categoryName, questionNum, question, answer) {
+  if (!window._hostMode) return;
+  pushHostView({ active: true, categoryName, questionNum, question: question || '', answer: answer || '' });
 }
 
 // ── RESET GAME ──
