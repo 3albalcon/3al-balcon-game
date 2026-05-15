@@ -1152,6 +1152,7 @@ window._fbDb = db;
 window._fbRef = ref;
 window._fbSet = set;
 window._fbOnValue = onValue;
+setTimeout(startHostCmdListener, 500);
 </script>
 <script>
 // ══════════════════════════════════════════
@@ -2023,6 +2024,7 @@ function openRound(id) {
   updateHeaderScores();
   show('game-screen');
   renderSlide();
+  pushHostState();
 }
 
 function nextQ() {
@@ -2405,6 +2407,7 @@ function initCat3Room(teamA, teamB) {
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
   if (!db) return;
+  setTimeout(pushHostState, 300);
   fbSet(fbRef(db, `rooms/${cat3RoomId}`), {
     teamA, teamB,
     phase: 'waiting',
@@ -3591,6 +3594,56 @@ function pushHostView(data) {
   try {
     fbSet(fbRef(db, 'hostView'), { ...data, ts: Date.now() });
   } catch(e) { console.error('pushHostView error:', e); }
+}
+
+function pushHostState() {
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  const fbSet = window._fbSet;
+  if (!db || !fbSet || !fbRef) return;
+  fbSet(fbRef(db, 'hostState'), {
+    done: [...(G.done || [])],
+    currentRound: G.currentRound?.id || null,
+    teamA: G.teamA,
+    teamB: G.teamB,
+    scoreA: G.scoreA,
+    scoreB: G.scoreB,
+    cat3RoomId: cat3RoomId || null,
+  });
+}
+
+let _lastHostCmdTs = 0;
+function startHostCmdListener() {
+  const db = window._fbDb;
+  const fbRef = window._fbRef;
+  const fbOnValue = window._fbOnValue;
+  if (!db || !fbOnValue) return;
+  fbOnValue(fbRef(db, 'hostCmd'), (snap) => {
+    const d = snap.val();
+    if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
+    _lastHostCmdTs = d.ts;
+    const cmd = d.cmd;
+    if (cmd === 'next') {
+      // Click next button if visible
+      const nextBtn = document.querySelector('.nav-btn.primary');
+      if (nextBtn) nextBtn.click();
+    } else if (cmd === 'result') {
+      showResult();
+    } else if (cmd === 'back') {
+      show('game-screen');
+      G.currentQ = -1;
+      renderSlide();
+    } else if (cmd === 'menu') {
+      show('menu-screen');
+      buildMenu();
+    } else if (cmd === 'openCat') {
+      const roundId = d.data?.id;
+      if (roundId && !G.done.has(roundId)) {
+        const round = ROUNDS.find(r => r.id === roundId);
+        if (round) openRound(roundId);
+      }
+    }
+  });
 }
 
 function updateHostView(categoryName, questionNum, question, answer) {

@@ -2,38 +2,112 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Host — 3AL BALCON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Host Remote — 3AL BALCON</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-:root { --dark:#060d1f; --yellow:#FFE600; --green:#39FF14; --cyan:#00EFFF; --red:#FF2D2D; }
-body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:16px; }
-.logo { font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:3px; }
-.badge { font-size:13px; font-weight:700; color:var(--yellow); background:rgba(255,230,0,0.1); border:1px solid var(--yellow); padding:4px 14px; border-radius:100px; }
-.cat-name { font-size:18px; font-weight:700; color:var(--cyan); text-shadow:0 0 12px rgba(0,239,255,0.5); text-align:center; }
-.question { font-size:clamp(20px,5vw,36px); font-weight:900; color:#fff; text-align:center; line-height:1.4; padding:16px 20px; background:rgba(255,255,255,0.05); border-radius:14px; border:2px solid rgba(255,255,255,0.15); width:100%; direction:rtl; }
-.answer-label { font-size:12px; color:rgba(255,255,255,0.4); letter-spacing:2px; }
-.answer { font-size:clamp(24px,6vw,52px); font-weight:900; color:var(--green); text-shadow:0 0 20px rgba(57,255,20,0.6); text-align:center; line-height:1.2; direction:rtl; }
-.waiting { font-size:16px; color:rgba(255,255,255,0.3); text-align:center; animation:pulse 2s infinite; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root { --dark:#060d1f; --yellow:#FFE600; --green:#39FF14; --cyan:#00EFFF; --red:#FF2D2D; --pink:#FF2D78; }
+body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-height:100dvh; display:flex; flex-direction:column; padding:12px 14px 32px; gap:10px; overflow-x:hidden; }
+.logo { font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:3px; text-align:center; }
+.tab-bar { display:flex; gap:6px; width:100%; }
+.tab { flex:1; padding:10px 0; border-radius:10px; border:1.5px solid rgba(255,255,255,0.15); background:transparent; color:rgba(255,255,255,0.4); font-family:'Cairo',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.tab.active { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.08); text-shadow:0 0 8px rgba(255,230,0,0.5); }
+.panel { display:none; flex-direction:column; gap:10px; width:100%; }
+.panel.active { display:flex; }
+
+/* Q&A Panel */
+.cat-label { font-size:13px; font-weight:700; color:var(--cyan); text-align:center; }
+.q-num { font-size:11px; color:rgba(255,255,255,0.3); text-align:center; }
+.q-box { background:rgba(0,239,255,0.06); border:2px solid var(--cyan); border-radius:12px; padding:14px; font-size:16px; font-weight:700; text-align:center; line-height:1.5; direction:rtl; }
+.ans-box { background:rgba(57,255,20,0.06); border:2px solid var(--green); border-radius:12px; padding:12px; font-size:18px; font-weight:900; text-align:center; color:var(--green); text-shadow:0 0 12px rgba(57,255,20,0.5); direction:rtl; }
+.waiting { font-size:14px; color:rgba(255,255,255,0.3); text-align:center; animation:pulse 2s infinite; padding:20px; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.q-num { font-size:12px; color:rgba(255,255,255,0.3); }
+
+/* Control Panel */
+.ctrl-btn { width:100%; padding:14px; border-radius:12px; font-family:'Cairo',sans-serif; font-size:16px; font-weight:900; cursor:pointer; border:2px solid; transition:all 0.15s; }
+.ctrl-btn:active { transform:scale(0.96); }
+.btn-next { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.08); }
+.btn-back { border-color:var(--cyan); color:var(--cyan); background:rgba(0,239,255,0.08); }
+.btn-result { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.08); }
+.btn-menu { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.5); background:transparent; font-size:13px; padding:10px; }
+.divider { font-size:11px; color:rgba(255,255,255,0.2); text-align:center; letter-spacing:2px; padding:4px 0; }
+
+/* Categories grid */
+.cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; }
+.cat-btn { padding:12px 8px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.7); font-family:'Cairo',sans-serif; font-size:12px; font-weight:700; cursor:pointer; text-align:center; line-height:1.4; transition:all 0.2s; }
+.cat-btn:active { transform:scale(0.95); }
+.cat-btn.done { opacity:0.35; cursor:not-allowed; text-decoration:line-through; }
+.cat-btn.current { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.08); }
+
+/* Cat 3 Panel */
+.bid-row { display:flex; gap:10px; justify-content:center; align-items:center; width:100%; }
+.bid-team { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+.bid-name { font-size:12px; font-weight:700; }
+.bid-val { font-size:48px; font-weight:900; line-height:1; }
+.answers-list { display:flex; flex-direction:column; gap:6px; width:100%; }
+.ans-chip { padding:8px 12px; border-radius:8px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.chip-p { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); }
+.chip-ok { background:rgba(57,255,20,0.1); border:1px solid var(--green); color:var(--green); }
+.chip-no { background:rgba(255,45,45,0.1); border:1px solid var(--red); color:var(--red); }
+.score-preview { text-align:center; font-size:14px; font-weight:700; padding:10px; border-radius:10px; }
 </style>
 </head>
 <body>
 
-<div class="logo">HOST — 3AL BALCON</div>
-<div class="badge" id="mode-badge">⏳ انتظر...</div>
-<div class="cat-name" id="cat-name"></div>
-<div class="q-num" id="q-num"></div>
-<div class="question" id="question" style="display:none"></div>
-<div class="answer-label" id="ans-label" style="display:none">✅ الجواب الصحيح</div>
-<div class="answer" id="answer" style="display:none"></div>
-<div class="waiting" id="waiting">انتظر بدء السؤال...</div>
+<div class="logo">🎙 HOST REMOTE — 3AL BALCON</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('qa')">السؤال والجواب</button>
+  <button class="tab" onclick="switchTab('ctrl')">التحكم</button>
+  <button class="tab" onclick="switchTab('cat3')">المزاد</button>
+</div>
+
+<!-- Q&A Panel -->
+<div class="panel active" id="panel-qa">
+  <div class="cat-label" id="qa-cat"></div>
+  <div class="q-num" id="qa-num"></div>
+  <div class="q-box" id="qa-q" style="display:none"></div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center">✅ الجواب الصحيح</div>
+  <div class="ans-box" id="qa-a" style="display:none"></div>
+  <div class="waiting" id="qa-wait">انتظر بدء السؤال...</div>
+</div>
+
+<!-- Control Panel -->
+<div class="panel" id="panel-ctrl">
+  <div class="divider">— تحكم السؤال الحالي —</div>
+  <button class="ctrl-btn btn-next" onclick="sendCmd('next')">التالي ← السؤال التالي</button>
+  <button class="ctrl-btn btn-result" onclick="sendCmd('result')">🏆 النتيجة</button>
+  <button class="ctrl-btn btn-back" onclick="sendCmd('back')">← العودة للقائمة</button>
+  <div class="divider">— اختر فقرة —</div>
+  <div class="cat-grid" id="cat-grid"></div>
+  <button class="ctrl-btn btn-menu" onclick="sendCmd('menu')">🏠 الصفحة الرئيسية</button>
+</div>
+
+<!-- Cat 3 Panel -->
+<div class="panel" id="panel-cat3">
+  <div class="cat-label">مزاد علني — المزايدة</div>
+  <div class="bid-row">
+    <div class="bid-team">
+      <div class="bid-name" id="c3-name-a" style="color:#E50158">الفريق أ</div>
+      <div class="bid-val" id="c3-bid-a" style="color:#E50158">—</div>
+    </div>
+    <div style="font-size:18px;color:rgba(255,255,255,0.3);font-weight:900">VS</div>
+    <div class="bid-team">
+      <div class="bid-name" id="c3-name-b" style="color:#E2DA51">الفريق ب</div>
+      <div class="bid-val" id="c3-bid-b" style="color:#E2DA51">—</div>
+    </div>
+  </div>
+  <div class="divider" id="c3-winner-label" style="display:none"></div>
+  <div class="divider">— أجوبة الفريق الرابح —</div>
+  <div id="c3-answers" class="answers-list"></div>
+  <div id="c3-score" class="score-preview" style="display:none"></div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -48,44 +122,108 @@ const cfg = {
 const app = initializeApp(cfg);
 const db = getDatabase(app);
 
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['qa','ctrl','cat3'][i]===tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+};
+
+window.sendCmd = function(cmd, data = {}) {
+  set(ref(db, 'hostCmd'), { cmd, data, ts: Date.now() });
+};
+
+// Listen to hostView for Q&A
 onValue(ref(db, 'hostView'), (snap) => {
   const d = snap.val();
-  const badge = document.getElementById('mode-badge');
-  const catName = document.getElementById('cat-name');
-  const qNum = document.getElementById('q-num');
-  const questionEl = document.getElementById('question');
-  const ansLabel = document.getElementById('ans-label');
-  const answerEl = document.getElementById('answer');
-  const waiting = document.getElementById('waiting');
+  const wait = document.getElementById('qa-wait');
+  const qEl = document.getElementById('qa-q');
+  const aEl = document.getElementById('qa-a');
+  const catEl = document.getElementById('qa-cat');
+  const numEl = document.getElementById('qa-num');
 
-  if (!d || !d.active) {
-    badge.textContent = '⏳ انتظر...';
-    catName.textContent = '';
-    questionEl.style.display = 'none';
-    ansLabel.style.display = 'none';
-    answerEl.style.display = 'none';
-    waiting.style.display = 'block';
+  if (!d || !d.active || !d.question) {
+    wait.style.display = 'block';
+    qEl.style.display = 'none';
+    aEl.style.display = 'none';
+    catEl.textContent = '';
+    numEl.textContent = '';
     return;
   }
 
-  badge.textContent = '🎙 مقدّم البرنامج';
-  catName.textContent = d.categoryName || '';
-  qNum.textContent = d.questionNum || '';
-  waiting.style.display = 'none';
-
-  if (d.question) {
-    questionEl.style.display = 'block';
-    questionEl.textContent = d.question;
-  }
-
+  wait.style.display = 'none';
+  catEl.textContent = d.categoryName || '';
+  numEl.textContent = d.questionNum || '';
+  qEl.style.display = 'block';
+  qEl.textContent = d.question;
   if (d.answer) {
-    ansLabel.style.display = 'block';
-    answerEl.style.display = 'block';
-    answerEl.textContent = d.answer;
+    aEl.style.display = 'block';
+    aEl.textContent = d.answer;
   } else {
-    ansLabel.style.display = 'none';
-    answerEl.style.display = 'none';
+    aEl.style.display = 'none';
   }
+});
+
+// Listen to hostState for categories and current state
+onValue(ref(db, 'hostState'), (snap) => {
+  const d = snap.val();
+  if (!d) return;
+
+  // Build category grid
+  const ROUNDS = [
+    { id:'r1', num:1, name:'وين شايفو هالوجه؟' },
+    { id:'r2', num:2, name:'ما تذكرتني بعد؟' },
+    { id:'r3', num:3, name:'مزاد علني' },
+    { id:'r10',num:4, name:'متفرقات سريعة' },
+    { id:'r4', num:5, name:'سمعني الدندنة' },
+    { id:'r5', num:6, name:'سكوت و ركز' },
+    { id:'r6', num:7, name:'يا حبيبي قرب ليي' },
+    { id:'r7', num:8, name:'يا قريب يا غريب' },
+    { id:'r8', num:9, name:'سكر تمك' },
+    { id:'r9', num:10, name:'من كل وادي عصا' },
+  ];
+  const done = d.done || [];
+  const current = d.currentRound;
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = ROUNDS.map(r => `
+    <button class="cat-btn ${done.includes(r.id)?'done':''} ${current===r.id?'current':''}"
+      onclick="${done.includes(r.id)?'':'sendCmd(\'openCat\',{id:\''+r.id+'\'})'}"
+      ${done.includes(r.id)?'disabled':''}>
+      فقرة ${r.num}<br>${r.name}
+    </button>`).join('');
+
+  // Team names
+  if (d.teamA) document.getElementById('c3-name-a').textContent = d.teamA;
+  if (d.teamB) document.getElementById('c3-name-b').textContent = d.teamB;
+});
+
+// Listen to cat3 room for bids/answers
+onValue(ref(db, 'hostState/cat3RoomId'), (snap) => {
+  const roomId = snap.val();
+  if (!roomId) return;
+  onValue(ref(db, `rooms/${roomId}`), (rSnap) => {
+    const d = rSnap.val();
+    if (!d) return;
+    const bids = d.bids || {};
+    document.getElementById('c3-bid-a').textContent = bids.a?.value || '—';
+    document.getElementById('c3-bid-b').textContent = bids.b?.value || '—';
+
+    const winnerLabel = document.getElementById('c3-winner-label');
+    if (d.auctionWinner) {
+      const wName = d.auctionWinner === 'a' ? d.teamA : d.teamB;
+      winnerLabel.style.display = 'block';
+      winnerLabel.textContent = `🏆 الرابح: ${wName} بـ ${d.winningBid} أجوبة`;
+    } else {
+      winnerLabel.style.display = 'none';
+    }
+
+    const ansList = document.getElementById('c3-answers');
+    const answers = d.answers || [];
+    ansList.innerHTML = answers.map((a,i) => `
+      <div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}">
+        <span>${i+1}.</span><span style="flex:1">${a.text}</span>
+        <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
+      </div>`).join('') || '<div style="color:rgba(255,255,255,0.3);text-align:center;font-size:13px">لم تُكتب أجوبة بعد</div>';
+  });
 });
 </script>
 </body>
