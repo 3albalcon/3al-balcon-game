@@ -81,9 +81,10 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 <div id="ph-bidding" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
   <div class="q-box" id="q-bid"></div>
   <div class="big-num bid-num" id="bid-val">0</div>
-  <div class="timer-wrap">
+<!-- Timer hidden on phone — only on main screen -->
+  <div style="display:none">
     <div class="timer-bar"><div class="timer-fill" id="bid-fill" style="width:100%;background:var(--yellow)"></div></div>
-    <div class="timer-big" id="bid-timer-num" style="color:var(--yellow)">15</div>
+    <div id="bid-timer-num">15</div>
   </div>
   <div class="sbox s-yellow" id="bid-msg" style="display:none"></div>
   <div class="bid-grid">

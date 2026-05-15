@@ -2659,23 +2659,26 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         timerDiv.id = 'main-ans-timer';
         timerDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;width:100%';
         timerDiv.innerHTML = `
-          <div style="font-size:52px;font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow)" id="main-ans-num">⏳</div>
+          <div style="font-size:clamp(80px,15vw,160px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow);line-height:1" id="main-ans-num">⏳</div>
           <div style="width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden">
             <div id="main-ans-fill" style="height:100%;width:100%;background:var(--neon-green);border-radius:100px;transition:width 0.5s linear"></div>
           </div>
-          <div style="font-size:12px;color:var(--text2)">ينتظر الفريق الرابح يبدأ الكتابة...</div>`;
+          <div style="font-size:16px;font-weight:700;color:var(--neon-yellow);text-shadow:var(--glow-yellow);text-align:center;animation:pulse 1.5s infinite" id="waiting-write-msg">🏆 الفريق الرابح — اضغط "ابدأ الكتابة" على الجوال لتبدأ!</div>`;
         document.getElementById('winner-announce').after(timerDiv);
       }
 
       // Start timer when writingStarted fires
       if (data.writingStarted && data.answerTimerEnd && !window._mainTimerStarted) {
         window._mainTimerStarted = true;
-        const timerLabel = document.querySelector('#main-ans-timer div:last-child');
-        if(timerLabel) timerLabel.style.display='none';
+        const waitMsg = document.getElementById('waiting-write-msg');
+        if(waitMsg) waitMsg.style.display='none';
         const total = 60000;
         clearInterval(window._mainTimerInterval);
-        window._mainTimerInterval = setInterval(() => {
-          if (data.answersConfirmed) {
+        window._mainTimerInterval = setInterval(async () => {
+          // Check live Firebase for confirmedAnswers
+          const liveSnap = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js")
+            .then(({get}) => get(window._fbRef(window._fbDb, `rooms/${roomId}/answersConfirmed`)));
+          if (liveSnap && liveSnap.val()) {
             clearInterval(window._mainTimerInterval);
             const numEl = document.getElementById('main-ans-num');
             if(numEl) { numEl.textContent='⏹'; numEl.style.color='var(--neon-green)'; }
@@ -2724,20 +2727,25 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const timedOut = data.answersConfirmed || (data.writingStarted && data.answerTimerEnd && data.answerTimerEnd <= Date.now());
 
       if (showResults && answers.length > 0) {
+        // Store current roomId for validation buttons
+        window._currentCat3Room = roomId;
+        window._currentCat3Answers = answers;
         // Find first unvalidated answer
         const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
 
         if (pendingIdx >= 0) {
           valWrap.style.display = 'flex';
           const ans = answers[pendingIdx];
-          const aiHint = ans.status === 'correct' ? ' (AI: ✅)' : ans.status === 'wrong' ? ' (AI: ❌)' : '';
+          const aiHint = ans.status === 'correct' ? ' — AI: ✅' : ans.status === 'wrong' ? ' — AI: ❌' : '';
           document.getElementById('current-answer-text').textContent =
             `${pendingIdx+1}/${answers.length}: "${ans.text}"${aiHint}`;
           document.getElementById('val-correct-btn').textContent = '✅ صح';
           document.getElementById('val-wrong-btn').textContent = '❌ غلط';
-          document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId);
-          document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId);
-          // Hide prev/next
+          // Use data attributes to avoid stale closures
+          document.getElementById('val-correct-btn').dataset.idx = pendingIdx;
+          document.getElementById('val-wrong-btn').dataset.idx = pendingIdx;
+          document.getElementById('val-correct-btn').onclick = function() { validateCat3(parseInt(this.dataset.idx), 'correct', window._currentCat3Room); };
+          document.getElementById('val-wrong-btn').onclick = function() { validateCat3(parseInt(this.dataset.idx), 'wrong', window._currentCat3Room); };
           const prev = document.getElementById('val-prev-btn');
           const next = document.getElementById('val-next-btn');
           if(prev) prev.style.display='none';
