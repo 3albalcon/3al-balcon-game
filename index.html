@@ -2653,43 +2653,47 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       }
       document.getElementById('winner-announce').textContent = `🏆 ${winnerName} ربح المزاد بـ ${winnerBid} أجوبة!`;
 
-      // Show answer timer only on main screen
+      // Show answer timer on main screen — only start when team clicks "ابدأ الكتابة"
       if (!document.getElementById('main-ans-timer')) {
         const timerDiv = document.createElement('div');
         timerDiv.id = 'main-ans-timer';
         timerDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;width:100%';
         timerDiv.innerHTML = `
-          <div style="font-size:52px;font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow)" id="main-ans-num">60</div>
+          <div style="font-size:52px;font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow)" id="main-ans-num">⏳</div>
           <div style="width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden">
             <div id="main-ans-fill" style="height:100%;width:100%;background:var(--neon-green);border-radius:100px;transition:width 0.5s linear"></div>
-          </div>`;
+          </div>
+          <div style="font-size:12px;color:var(--text2)">ينتظر الفريق الرابح يبدأ الكتابة...</div>`;
         document.getElementById('winner-announce').after(timerDiv);
+      }
 
-        // Start countdown on main screen
-        if (data.answerTimerEnd) {
-          const total = 60000;
-          window._mainTimerInterval = setInterval(() => {
-            // Stop if answers confirmed
-            if (data.answersConfirmed) {
-              clearInterval(window._mainTimerInterval);
-              const numEl = document.getElementById('main-ans-num');
-              if(numEl) { numEl.textContent='⏹'; numEl.style.color='var(--neon-green)'; }
-              return;
-            }
-            const rem = Math.max(0, data.answerTimerEnd - Date.now());
-            const pct = (rem/total)*100;
+      // Start timer when writingStarted fires
+      if (data.writingStarted && data.answerTimerEnd && !window._mainTimerStarted) {
+        window._mainTimerStarted = true;
+        const timerLabel = document.querySelector('#main-ans-timer div:last-child');
+        if(timerLabel) timerLabel.style.display='none';
+        const total = 60000;
+        clearInterval(window._mainTimerInterval);
+        window._mainTimerInterval = setInterval(() => {
+          if (data.answersConfirmed) {
+            clearInterval(window._mainTimerInterval);
             const numEl = document.getElementById('main-ans-num');
-            const fillEl = document.getElementById('main-ans-fill');
-            if(numEl){ numEl.textContent=Math.ceil(rem/1000); numEl.style.color=pct<20?'var(--neon-red)':'var(--neon-yellow)'; }
-            if(fillEl){ fillEl.style.width=pct+'%'; fillEl.style.background=pct<20?'var(--neon-red)':'var(--neon-green)'; }
-            if(rem<=0){
-              clearInterval(window._mainTimerInterval);
-              if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
-                update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
-              });
-            }
-          }, 200);
-        }
+            if(numEl) { numEl.textContent='⏹'; numEl.style.color='var(--neon-green)'; }
+            return;
+          }
+          const rem = Math.max(0, data.answerTimerEnd - Date.now());
+          const pct = (rem/total)*100;
+          const numEl = document.getElementById('main-ans-num');
+          const fillEl = document.getElementById('main-ans-fill');
+          if(numEl){ numEl.textContent=Math.ceil(rem/1000); numEl.style.color=pct<20?'var(--neon-red)':'var(--neon-yellow)'; }
+          if(fillEl){ fillEl.style.width=pct+'%'; fillEl.style.background=pct<20?'var(--neon-red)':'var(--neon-green)'; }
+          if(rem<=0){
+            clearInterval(window._mainTimerInterval);
+            if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
+              update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
+            });
+          }
+        }, 200);
       }
 
 
@@ -2698,7 +2702,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const display = document.getElementById('answers-display');
       const answersConfirmed = data.answersConfirmed || false;
       const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= Date.now();
-      const showResults = answersConfirmed || ansTimeUp;
+      const showResults = answersConfirmed || (data.writingStarted && ansTimeUp);
       display.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;align-items:center';
       display.innerHTML = answers.map((a,i) => `
         <div style="padding:12px 20px;border-radius:12px;font-size:17px;font-weight:700;
@@ -2717,7 +2721,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
       // Manual validation — one by one, auto-advance after each
       const valWrap = document.getElementById('validation-wrap');
-      const timedOut = data.answersConfirmed || (data.answerTimerEnd && data.answerTimerEnd <= Date.now());
+      const timedOut = data.answersConfirmed || (data.writingStarted && data.answerTimerEnd && data.answerTimerEnd <= Date.now());
 
       if (showResults && answers.length > 0) {
         // Find first unvalidated answer
@@ -2731,8 +2735,8 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             `${pendingIdx+1}/${answers.length}: "${ans.text}"${aiHint}`;
           document.getElementById('val-correct-btn').textContent = '✅ صح';
           document.getElementById('val-wrong-btn').textContent = '❌ غلط';
-          document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId, winnerBid, winner, answers);
-          document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId, winnerBid, winner, answers);
+          document.getElementById('val-correct-btn').onclick = () => validateCat3(pendingIdx, 'correct', roomId);
+          document.getElementById('val-wrong-btn').onclick = () => validateCat3(pendingIdx, 'wrong', roomId);
           // Hide prev/next
           const prev = document.getElementById('val-prev-btn');
           const next = document.getElementById('val-next-btn');
@@ -2849,15 +2853,17 @@ function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) 
   if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
 }
 
-async function validateCat3(idx, status, roomId, winnerBid, winner, currentAnswers) {
+async function validateCat3(idx, status, roomId) {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   if (!db) return;
   const { get, update } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
   const snap = await get(fbRef(db, `rooms/${roomId}/answers`));
-  const answers = snap.val() || currentAnswers;
-  answers[idx] = { ...answers[idx], status };
-  await update(fbRef(db, `rooms/${roomId}`), { answers });
+  const answers = snap.val() || [];
+  if (answers[idx]) {
+    answers[idx] = { text: answers[idx].text, status };
+    await update(fbRef(db, `rooms/${roomId}`), { answers });
+  }
 }
 
 function nextCat3Question() {

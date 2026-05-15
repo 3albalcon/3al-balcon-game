@@ -110,7 +110,11 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 
   <div class="sbox s-green" id="ans-title">اكتبوا الأجوبة!</div>
   <div id="ans-scroll" class="ans-scroll"></div>
-  <div class="ans-fixed">
+  <!-- Start writing button -->
+  <div id="start-writing-wrap" style="width:100%;display:flex;flex-direction:column;gap:8px">
+    <button class="btn btn-g" id="start-writing-btn" onclick="startWriting()">✏️ ابدأ الكتابة</button>
+  </div>
+  <div class="ans-fixed" id="ans-input-wrap" style="display:none">
     <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
     <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()">✅ أضف الجواب</button>
     <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none">🔒 تأكيد الأجوبة النهائية</button>
@@ -212,12 +216,10 @@ function startAnsTimer(endTime) {
 
 function lockAnswering() {
   locked = true;
-  const input=document.getElementById('ans-input');
-  const btn=document.getElementById('ans-submit-btn');
-  const conf=document.getElementById('confirm-btn');
-  if(input) input.disabled=true;
-  if(btn) btn.disabled=true;
-  if(conf) conf.style.display='none';
+  const iwrap = document.getElementById('ans-input-wrap');
+  const swrap = document.getElementById('start-writing-wrap');
+  if(iwrap) iwrap.style.display='none';
+  if(swrap) swrap.style.display='none';
 }
 
 function renderAnswers() {
@@ -234,6 +236,17 @@ function renderAnswers() {
   scroll.scrollTop = scroll.scrollHeight;
   if(conf) conf.style.display = (!locked && submitted.length>=totalAns) ? 'flex' : 'none';
 }
+
+window.startWriting = async function() {
+  document.getElementById('start-writing-wrap').style.display = 'none';
+  document.getElementById('ans-input-wrap').style.display = 'flex';
+  // Signal main screen to start the 60-second timer
+  await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: serverNow() + 60000 });
+  setTimeout(() => {
+    const inp = document.getElementById('ans-input');
+    if(inp) { inp.disabled=false; inp.focus(); }
+  }, 100);
+};
 
 window.setReady = async function() {
   document.getElementById('ready-btn').disabled=true;
