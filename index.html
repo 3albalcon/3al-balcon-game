@@ -2752,32 +2752,29 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           }).join('');
         }
 
-        // Check if all validated — show score
+        // Show score preview (no points yet — applied on next question click)
         const allDone = answers.every(a => a.status === 'correct' || a.status === 'wrong');
-        if (allDone) {
+        const scoreEl = document.getElementById('score-result');
+        if (allDone && scoreEl) {
           const correct = answers.filter(a => a.status === 'correct').length;
-          const scoreEl = document.getElementById('score-result');
-          if (scoreEl && scoreEl.style.display === 'none') {
-            scoreEl.style.display = 'block';
-            scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
-            scoreEl.textContent = correct >= winnerBid
-              ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط!`
-              : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
-            if (!scoreEl._scored) {
-              scoreEl._scored = true;
-              if (correct >= winnerBid) addScore(winner, 4);
-              else addScore(winner, -2);
-            }
-          }
+          scoreEl.style.display = 'block';
+          scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
+          scoreEl.textContent = correct >= winnerBid
+            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط (عند الانتقال للسؤال التالي)`
+            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط (عند الانتقال للسؤال التالي)`;
+          // Store pending score in window for nextCat3Question to apply
+          window._pendingCat3Score = { winner, correct, winnerBid };
+        } else if (scoreEl) {
+          scoreEl.style.display = 'none';
         }
       } else if (timedOut && answers.length < winnerBid) {
         valWrap.style.display = 'none';
         const scoreEl = document.getElementById('score-result');
-        if (scoreEl && scoreEl.style.display === 'none') {
+        if (scoreEl) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = 'var(--neon-red)';
-          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
-          if (!scoreEl._scored) { scoreEl._scored = true; addScore(winner, -2); }
+          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط (عند الانتقال للسؤال التالي)`;
+          window._pendingCat3Score = { winner, correct: 0, winnerBid };
         }
       } else {
         valWrap.style.display = 'none';
@@ -2884,6 +2881,14 @@ async function validateCat3(idx, status, roomId) {
 }
 
 function nextCat3Question() {
+  // Apply pending score before moving to next question
+  if (window._pendingCat3Score) {
+    const { winner, correct, winnerBid } = window._pendingCat3Score;
+    if (correct >= winnerBid) addScore(winner, 4);
+    else addScore(winner, -2);
+    window._pendingCat3Score = null;
+  }
+
   const db = window._fbDb;
   const fbRef = window._fbRef;
   if (db && cat3RoomId) {
@@ -3347,6 +3352,13 @@ function renderBuzzerQuestion(r, qIndex, sa) {
 // RESULT
 // ══════════════════════════════════════════
 function showResult() {
+  // Apply pending cat3 score if any
+  if (window._pendingCat3Score) {
+    const { winner, correct, winnerBid } = window._pendingCat3Score;
+    if (correct >= winnerBid) addScore(winner, 4);
+    else addScore(winner, -2);
+    window._pendingCat3Score = null;
+  }
   stopTimer();
   G.done.add(G.currentRound.id);
   const sa = document.getElementById('slide-area');
