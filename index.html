@@ -2461,18 +2461,9 @@ function renderBidding(r, qIndex, sa) {
     <div id="cat3-winner-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
       <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
       <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center"></div>
-      <div id="validation-wrap" style="display:none;flex-direction:column;gap:8px;width:100%">
-        <input type="hidden" id="val-current-idx" value="0">
-        <div style="font-size:13px;color:var(--text2);text-align:center">تحقق من كل جواب</div>
-        <div id="current-answer-text" style="font-size:18px;font-weight:700;color:#fff;text-align:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px;direction:rtl"></div>
-        <div style="display:flex;gap:10px">
-          <button id="val-correct-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-green);background:rgba(57,255,20,0.1);color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">✅ صح</button>
-          <button id="val-wrong-btn" style="flex:1;padding:14px;border-radius:12px;border:2px solid var(--neon-red);background:rgba(255,45,45,0.1);color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;cursor:pointer">❌ غلط</button>
-        </div>
-        <div style="display:flex;gap:10px;justify-content:center">
-          <button id="val-prev-btn" class="nav-btn" style="font-size:13px;padding:8px 20px" onclick="">← السابق</button>
-          <button id="val-next-btn" class="nav-btn" style="font-size:13px;padding:8px 20px" onclick="">التالي →</button>
-        </div>
+      <div id="validation-wrap" style="display:none;flex-direction:column;gap:6px;width:100%;max-width:700px;margin:0 auto">
+        <div style="font-size:13px;color:var(--text2);text-align:center">🤖 AI validated — override if needed</div>
+        <div id="val-answers-list" style="display:flex;flex-direction:column;gap:8px;width:100%"></div>
       </div>
       <div id="score-result" style="font-size:18px;font-weight:700;text-align:center;display:none"></div>
     </div>
@@ -2726,33 +2717,44 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const valWrap = document.getElementById('validation-wrap');
       const timedOut = data.answersConfirmed || (data.writingStarted && data.answerTimerEnd && data.answerTimerEnd <= Date.now());
 
-      if (showResults && answers.length > 0) {
-        // Store current roomId for validation buttons
-        window._currentCat3Room = roomId;
-        window._currentCat3Answers = answers;
-        // Find first unvalidated answer
-        const pendingIdx = answers.findIndex(a => !a.status || a.status === 'pending');
+      window._currentCat3Room = roomId;
 
-        if (pendingIdx >= 0) {
-          valWrap.style.display = 'flex';
-          const ans = answers[pendingIdx];
-          const aiHint = ans.status === 'correct' ? ' — AI: ✅' : ans.status === 'wrong' ? ' — AI: ❌' : '';
-          document.getElementById('current-answer-text').textContent =
-            `${pendingIdx+1}/${answers.length}: "${ans.text}"${aiHint}`;
-          document.getElementById('val-correct-btn').textContent = '✅ صح';
-          document.getElementById('val-wrong-btn').textContent = '❌ غلط';
-          // Use data attributes to avoid stale closures
-          document.getElementById('val-correct-btn').dataset.idx = pendingIdx;
-          document.getElementById('val-wrong-btn').dataset.idx = pendingIdx;
-          document.getElementById('val-correct-btn').onclick = function() { validateCat3(parseInt(this.dataset.idx), 'correct', window._currentCat3Room); };
-          document.getElementById('val-wrong-btn').onclick = function() { validateCat3(parseInt(this.dataset.idx), 'wrong', window._currentCat3Room); };
-          const prev = document.getElementById('val-prev-btn');
-          const next = document.getElementById('val-next-btn');
-          if(prev) prev.style.display='none';
-          if(next) next.style.display='none';
-        } else {
-          // All validated — calculate score
-          valWrap.style.display = 'none';
+      if (showResults && answers.length > 0) {
+        valWrap.style.display = 'flex';
+        const valList = document.getElementById('val-answers-list');
+        if (valList) {
+          valList.innerHTML = answers.map((a, i) => {
+            const isCorrect = a.status === 'correct';
+            const isWrong = a.status === 'wrong';
+            const isPending = !a.status || a.status === 'pending';
+            return `
+              <div style="
+                display:flex;align-items:center;gap:10px;padding:12px 16px;
+                border-radius:12px;
+                background:${isCorrect?'rgba(57,255,20,0.1)':isWrong?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
+                border:2px solid ${isCorrect?'var(--neon-green)':isWrong?'var(--neon-red)':'rgba(255,255,255,0.2)'};
+              ">
+                <span style="font-size:16px;font-weight:700;flex:1;color:#fff;direction:rtl">${i+1}. ${a.text}</span>
+                <span style="font-size:18px">${isPending?'🤖⏳':isCorrect?'✅':'❌'}</span>
+                <button data-i="${i}" data-s="correct" onclick="overrideVal(this)"
+                  style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-green);
+                  background:${isCorrect?'rgba(57,255,20,0.3)':'rgba(57,255,20,0.05)'};
+                  color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
+                  ✅
+                </button>
+                <button data-i="${i}" data-s="wrong" onclick="overrideVal(this)"
+                  style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-red);
+                  background:${isWrong?'rgba(255,45,45,0.3)':'rgba(255,45,45,0.05)'};
+                  color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
+                  ❌
+                </button>
+              </div>`;
+          }).join('');
+        }
+
+        // Check if all validated — show score
+        const allDone = answers.every(a => a.status === 'correct' || a.status === 'wrong');
+        if (allDone) {
           const correct = answers.filter(a => a.status === 'correct').length;
           const scoreEl = document.getElementById('score-result');
           if (scoreEl && scoreEl.style.display === 'none') {
@@ -2859,6 +2861,13 @@ function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) 
   const wrongBtn = document.getElementById('val-wrong-btn');
   if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? '✅ صح ✓' : '✅ صح';
   if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
+}
+
+// Override validation result
+function overrideVal(btn) {
+  const idx = parseInt(btn.dataset.i);
+  const status = btn.dataset.s;
+  validateCat3(idx, status, window._currentCat3Room);
 }
 
 async function validateCat3(idx, status, roomId) {
