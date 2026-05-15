@@ -1512,6 +1512,12 @@ async function loadFromDrive(urlOverride) {
       }
     }
 
+    // Host wallpaper — push to Firebase for host phone background
+    if (window._fbDb && window._fbSet && window._fbRef) {
+      const wallUrl = data.hostWallpaper?.url || data.waitingScreen?.url || null;
+      if (wallUrl) window._fbSet(window._fbRef(window._fbDb, 'hostWallpaper'), wallUrl);
+    }
+
     // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
     if (data.winnerSong) {
       try {
@@ -2037,6 +2043,8 @@ function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
   stopTimer();
+  // Always sync host state when slide changes
+  setTimeout(pushHostState, 100);
 
   // Reset slide-area to default for all rounds
   sa.style.paddingTop = '';
@@ -3614,7 +3622,7 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = 0;
+let _lastHostCmdTs = Date.now(); // ignore any commands written before game started
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
@@ -3627,14 +3635,10 @@ function startHostCmdListener() {
     const cmd = d.cmd;
 
     if (cmd === 'next') {
-      if (G.currentRound) {
-        nextQ();
-        pushHostState();
-      }
+      if (G.currentRound) { nextQ(); }
     } else if (cmd === 'prev') {
-      if (G.currentRound && G.currentQ > 0) {
+      if (G.currentRound && G.currentQ > -1) {
         G.currentQ--;
-        const sa = document.getElementById('slide-area');
         renderSlide();
         pushHostState();
       }
@@ -3652,8 +3656,18 @@ function startHostCmdListener() {
       buildMenu();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      if (roundId && !G.done.has(roundId)) {
-        openRound(roundId);
+      if (roundId) {
+        if (G.done.has(roundId)) return;
+        const round = ROUNDS.find(r => r.id === roundId);
+        if (round) {
+          G.currentRound = round;
+          G.currentQ = -1;
+          document.getElementById('gh-title').textContent = round.name;
+          updateHeaderScores();
+          show('game-screen');
+          renderSlide();
+          pushHostState();
+        }
       }
     }
   });
