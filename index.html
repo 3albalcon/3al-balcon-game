@@ -2030,6 +2030,7 @@ function openRound(id) {
 function nextQ() {
   G.currentQ++;
   renderSlide();
+  pushHostState();
 }
 
 function renderSlide() {
@@ -3604,6 +3605,7 @@ function pushHostState() {
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
     currentRound: G.currentRound?.id || null,
+    currentQ: G.currentQ,
     teamA: G.teamA,
     teamB: G.teamB,
     scoreA: G.scoreA,
@@ -3623,24 +3625,35 @@ function startHostCmdListener() {
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
+
     if (cmd === 'next') {
-      // Click next button if visible
-      const nextBtn = document.querySelector('.nav-btn.primary');
-      if (nextBtn) nextBtn.click();
+      if (G.currentRound) {
+        nextQ();
+        pushHostState();
+      }
+    } else if (cmd === 'prev') {
+      if (G.currentRound && G.currentQ > 0) {
+        G.currentQ--;
+        const sa = document.getElementById('slide-area');
+        renderSlide();
+        pushHostState();
+      }
     } else if (cmd === 'result') {
       showResult();
-    } else if (cmd === 'back') {
-      show('game-screen');
-      G.currentQ = -1;
-      renderSlide();
+    } else if (cmd === 'titleSlide') {
+      if (G.currentRound) {
+        G.currentQ = -1;
+        renderSlide();
+        pushHostState();
+      }
     } else if (cmd === 'menu') {
+      G.currentRound = null;
       show('menu-screen');
       buildMenu();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
       if (roundId && !G.done.has(roundId)) {
-        const round = ROUNDS.find(r => r.id === roundId);
-        if (round) openRound(roundId);
+        openRound(roundId);
       }
     }
   });
