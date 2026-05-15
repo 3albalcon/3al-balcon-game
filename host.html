@@ -175,10 +175,26 @@ body {
       <div class="waiting" id="waiting-msg">انتظر بدء اللعبة...</div>
     </div>
 
-    <!-- Category selector — shown on menu or when requested -->
+    <!-- Category selector -->
     <div id="cat-section" style="display:flex;flex-direction:column;gap:8px">
       <div class="section-label">— اختر فقرة —</div>
       <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <!-- Roulette panel — shown when 🎰 tapped -->
+    <div id="roulette-panel" style="display:none;flex-direction:column;gap:10px;align-items:center">
+      <div class="section-label">— شو بدنا نختار —</div>
+      <!-- Roulette strip -->
+      <div style="width:100%;height:120px;background:rgba(0,0,0,0.4);border:2px solid var(--yellow);border-radius:14px;overflow:hidden;position:relative">
+        <div style="position:absolute;top:50%;left:0;right:0;height:2px;background:var(--yellow);transform:translateY(-50%);z-index:2;box-shadow:0 0 8px var(--yellow)"></div>
+        <div id="host-roulette-strip" style="display:flex;flex-direction:column;align-items:center;gap:0;transition:transform 0.05s linear;padding:40px 0"></div>
+      </div>
+      <div id="host-roulette-result" style="font-size:16px;font-weight:900;color:var(--yellow);text-align:center;min-height:20px"></div>
+      <div style="display:flex;gap:8px;width:100%">
+        <button class="cbtn cbtn-y" onclick="hostSpin()" id="host-spin-btn">🎰 دوّر!</button>
+        <button class="cbtn cbtn-g" id="host-go-btn" style="display:none" onclick="hostGoRoulette()">← ابدأ!</button>
+      </div>
+      <button class="cbtn cbtn-w cbtn-sm" onclick="closeRoulette()" style="width:100%">✕ إغلاق</button>
     </div>
 
   </div><!-- end scroll-area -->
@@ -195,7 +211,7 @@ body {
       <button class="cbtn cbtn-y cbtn-sm" onclick="sendCmd('result')">🏆 النتيجة</button>
     </div>
     <div class="btn-row">
-      <button class="cbtn cbtn-sm" onclick="sendCmd('roulette')" style="border-color:var(--red);color:var(--red);background:rgba(255,45,120,0.07);font-size:13px">🎰 شو بدنا نختار</button>
+      <button class="cbtn cbtn-sm" onclick="openRoulettePanel()" style="border-color:var(--red);color:var(--red);background:rgba(255,45,120,0.07);font-size:13px">🎰 شو بدنا نختار</button>
     </div>
   </div>
 
@@ -393,6 +409,7 @@ onValue(ref(db,'hostView'), snap => {
 onValue(ref(db,'hostState'), snap => {
   const d = snap.val() || {};
   hostStateData = d;
+  hostRouletteRounds = ROUNDS.filter(r => !(d.done||[]).includes(r.id));
 
   // Cat3 room changed
   if (d.cat3RoomId && d.cat3RoomId !== cat3RoomId) {
@@ -404,6 +421,76 @@ onValue(ref(db,'hostState'), snap => {
   }
   update();
 });
+
+// ── Roulette on host phone ──
+let hostRouletteTarget = null;
+let hostRouletteRounds = [];
+let hostRouletteInterval = null;
+
+window.openRoulettePanel = function() {
+  document.getElementById('roulette-panel').style.display = 'flex';
+  document.getElementById('cat-section').style.display = 'none';
+  document.getElementById('host-roulette-result').textContent = '';
+  document.getElementById('host-go-btn').style.display = 'none';
+  // Tell main screen to open roulette too
+  sendCmd('showRoulette');
+};
+
+window.closeRoulette = function() {
+  document.getElementById('roulette-panel').style.display = 'none';
+  document.getElementById('cat-section').style.display = 'flex';
+  clearInterval(hostRouletteInterval);
+};
+
+window.hostSpin = function() {
+  const done = (hostStateData?.done) || [];
+  const remaining = ROUNDS.filter(r => !done.includes(r.id));
+  if (!remaining.length) return;
+
+  document.getElementById('host-spin-btn').disabled = true;
+  document.getElementById('host-go-btn').style.display = 'none';
+  document.getElementById('host-roulette-result').textContent = '';
+
+  const strip = document.getElementById('host-roulette-strip');
+  const winner = remaining[Math.floor(Math.random() * remaining.length)];
+  hostRouletteTarget = winner;
+
+  // Build items for animation
+  const items = [];
+  for (let i = 0; i < 30; i++) items.push(remaining[i % remaining.length]);
+
+  let idx = 0;
+  let speed = 80;
+  let ticks = 0;
+  const totalTicks = 40;
+
+  clearInterval(hostRouletteInterval);
+  hostRouletteInterval = setInterval(() => {
+    ticks++;
+    const item = items[idx % items.length];
+    strip.innerHTML = `<div style="font-size:15px;font-weight:900;color:var(--yellow);text-align:center;padding:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%">فقرة ${item.num}: ${item.name}</div>`;
+    idx++;
+
+    // Slow down near end
+    if (ticks > totalTicks * 0.7) speed = Math.min(speed + 15, 400);
+
+    if (ticks >= totalTicks) {
+      clearInterval(hostRouletteInterval);
+      strip.innerHTML = `<div style="font-size:15px;font-weight:900;color:var(--yellow);text-align:center;padding:8px">فقرة ${winner.num}: ${winner.name}</div>`;
+      document.getElementById('host-roulette-result').textContent = `🎯 ${winner.name}`;
+      document.getElementById('host-go-btn').style.display = 'flex';
+      document.getElementById('host-spin-btn').disabled = false;
+      // Tell main screen to spin too
+      sendCmd('spinRoulette', { targetId: winner.id });
+    }
+  }, speed);
+};
+
+window.hostGoRoulette = function() {
+  if (!hostRouletteTarget) return;
+  sendCmd('openCat', { id: hostRouletteTarget.id });
+  closeRoulette();
+};
 
 // Wallpaper
 onValue(ref(db,'hostWallpaper'), snap => {

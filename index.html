@@ -3610,6 +3610,7 @@ function pushHostState() {
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
   if (!db || !fbSet || !fbRef) return;
+  const gameScreenVisible = document.getElementById('game-screen')?.style?.display !== 'none';
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
     currentRound: G.currentRound?.id || null,
@@ -3619,6 +3620,7 @@ function pushHostState() {
     scoreA: G.scoreA,
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
+    onGameScreen: gameScreenVisible,
   });
 }
 
@@ -3636,22 +3638,17 @@ function startHostCmdListener() {
 
     if (cmd === 'next') {
       if (G.currentRound) {
-        // Skip title (-1) and rules (0) slides — go straight to first question
-        if (G.currentQ < 1) {
-          G.currentQ = 1;
-          renderSlide();
-          pushHostState();
-        } else {
-          nextQ();
+        // Make sure we're on game screen
+        if (document.getElementById('game-screen').style.display === 'none') {
+          show('game-screen');
         }
+        nextQ();
       }
     } else if (cmd === 'prev') {
-      if (G.currentRound && G.currentQ > 1) {
-        G.currentQ--;
+      if (G.currentRound && G.currentQ > 0) {
+        G.currentQ = Math.max(-1, G.currentQ - 1);
         renderSlide();
         pushHostState();
-      } else if (G.currentRound && G.currentQ === 1) {
-        // Stay on first question — don't go to rules
       }
     } else if (cmd === 'result') {
       showResult();
@@ -3686,10 +3683,22 @@ function startHostCmdListener() {
       buildMenu();
       setTimeout(() => {
         const panel = document.getElementById('roulette-panel');
-        if (panel) {
-          panel.style.display = 'flex';
-          spinRoulette();
-        }
+        if (panel) panel.style.display = 'flex';
+      }, 300);
+    } else if (cmd === 'showRoulette') {
+      show('menu-screen');
+      buildMenu();
+      setTimeout(() => {
+        const panel = document.getElementById('roulette-panel');
+        if (panel) panel.style.display = 'flex';
+      }, 300);
+    } else if (cmd === 'spinRoulette') {
+      // Spin to specific target
+      show('menu-screen');
+      buildMenu();
+      setTimeout(() => {
+        const panel = document.getElementById('roulette-panel');
+        if (panel) { panel.style.display = 'flex'; spinRoulette(); }
       }, 300);
     }
   });
