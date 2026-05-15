@@ -2043,6 +2043,8 @@ function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
   stopTimer();
+  // Always sync host state when slide changes
+  setTimeout(pushHostState, 100);
 
   // Reset slide-area to default for all rounds
   sa.style.paddingTop = '';
@@ -3633,14 +3635,10 @@ function startHostCmdListener() {
     const cmd = d.cmd;
 
     if (cmd === 'next') {
-      if (G.currentRound) {
-        nextQ();
-        pushHostState();
-      }
+      if (G.currentRound) { nextQ(); }
     } else if (cmd === 'prev') {
-      if (G.currentRound && G.currentQ > 0) {
+      if (G.currentRound && G.currentQ > -1) {
         G.currentQ--;
-        const sa = document.getElementById('slide-area');
         renderSlide();
         pushHostState();
       }
