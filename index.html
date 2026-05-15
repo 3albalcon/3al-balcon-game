@@ -2332,6 +2332,7 @@ function renderBuzzerImage(r, qIndex, sa) {
   const minus = r.id === 'r1' ? 0 : 1;
   const total = r.count;
 
+  updateHostView(r.name, `صورة ${qIndex+1} من ${total}`, item?.answer || '', item?.answer || '');
   // Move content up 5cm for image rounds
   sa.style.paddingTop = '';
   sa.style.justifyContent = '';
@@ -2960,6 +2961,7 @@ function renderBuzzerAudio(r, qIndex, sa) {
   const songA = raw ? getA(raw) : null;
   const isLast = qIndex >= r.count - 1;
 
+  updateHostView(r.name, `أغنية ${qIndex+1} من ${r.count}`, songQ || '', songA || '');
   sa.innerHTML = `
     <div class="question-number">أغنية ${qIndex+1} من ${r.count}</div>
 
@@ -3212,6 +3214,7 @@ function renderClosest(r, qIndex, sa) {
   const isLast = qIndex >= r.count - 1;
   const pts = r.id === 'r6' ? 2 : 4;
 
+  updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
     <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `السؤال ${qIndex+1}`}</div>
@@ -3368,6 +3371,7 @@ function renderBuzzerQuestion(r, qIndex, sa) {
   const ans = raw ? getA(raw) : '';
   const isLast = qIndex >= r.count - 1;
 
+  updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
     <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `السؤال ${qIndex+1}`}</div>
@@ -3583,8 +3587,10 @@ function pushHostView(data) {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
-  if (!db || !fbSet) return;
-  fbSet(fbRef(db, 'hostView'), data);
+  if (!db || !fbSet || !fbRef) return;
+  try {
+    fbSet(fbRef(db, 'hostView'), { ...data, ts: Date.now() });
+  } catch(e) { console.error('pushHostView error:', e); }
 }
 
 function updateHostView(categoryName, questionNum, question, answer) {
