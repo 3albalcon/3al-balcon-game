@@ -301,10 +301,23 @@ function buildMainContent(hostView, hostState, cat3Data) {
 
   // Title slide
   if (hostState.currentQ === -1) {
-    mc.innerHTML = `<div class="q-box" style="font-size:20px;color:var(--yellow)">${round?.name||''}</div>`;
+    mc.innerHTML = `
+      <div class="q-box" style="font-size:20px;color:var(--yellow);border-color:var(--yellow)">
+        🎬 ${round?.name||''}
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center">شاشة العنوان — اضغط التالي للقوانين</div>`;
     revealBtn.style.display = 'none';
-    document.getElementById('btn-next').disabled = false;
-    document.getElementById('btn-prev').disabled = true;
+    return;
+  }
+
+  // Rules slide
+  if (hostState.currentQ === 0) {
+    mc.innerHTML = `
+      <div class="q-box" style="font-size:16px;color:var(--cyan);border-color:var(--cyan)">
+        📋 قوانين اللعبة<br>${round?.name||''}
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center">اضغط التالي لبدء الأسئلة</div>`;
+    revealBtn.style.display = 'none';
     return;
   }
 
@@ -377,7 +390,9 @@ function update() {
   // Status bar
   document.getElementById('status-cat').textContent = round ? `فقرة ${round.num}: ${round.name}` : 'القائمة الرئيسية';
   const q = state?.currentQ;
+  const maxQ = state?.roundCount || 10;
   document.getElementById('status-q').textContent =
+    q === undefined ? '' :
     q === -1 ? 'العنوان' :
     q === 0 ? 'القوانين' :
     q >= 1 ? `سؤال ${q}` : '';
