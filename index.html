@@ -1512,12 +1512,6 @@ async function loadFromDrive(urlOverride) {
       }
     }
 
-    // Host wallpaper — push to Firebase for host phone background
-    if (window._fbDb && window._fbSet && window._fbRef) {
-      const wallUrl = data.hostWallpaper?.url || data.waitingScreen?.url || null;
-      if (wallUrl) window._fbSet(window._fbRef(window._fbDb, 'hostWallpaper'), wallUrl);
-    }
-
     // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
     if (data.winnerSong) {
       try {
@@ -2043,8 +2037,6 @@ function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
   stopTimer();
-  // Always sync host state when slide changes
-  setTimeout(pushHostState, 100);
 
   // Reset slide-area to default for all rounds
   sa.style.paddingTop = '';
@@ -3610,7 +3602,6 @@ function pushHostState() {
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
   if (!db || !fbSet || !fbRef) return;
-  const gameScreenVisible = document.getElementById('game-screen')?.style?.display !== 'none';
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
     currentRound: G.currentRound?.id || null,
@@ -3620,11 +3611,10 @@ function pushHostState() {
     scoreA: G.scoreA,
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
-    onGameScreen: gameScreenVisible,
   });
 }
 
-let _lastHostCmdTs = Date.now(); // ignore any commands written before game started
+let _lastHostCmdTs = 0;
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
@@ -3638,15 +3628,13 @@ function startHostCmdListener() {
 
     if (cmd === 'next') {
       if (G.currentRound) {
-        // Make sure we're on game screen
-        if (document.getElementById('game-screen').style.display === 'none') {
-          show('game-screen');
-        }
         nextQ();
+        pushHostState();
       }
     } else if (cmd === 'prev') {
       if (G.currentRound && G.currentQ > 0) {
-        G.currentQ = Math.max(-1, G.currentQ - 1);
+        G.currentQ--;
+        const sa = document.getElementById('slide-area');
         renderSlide();
         pushHostState();
       }
@@ -3664,42 +3652,9 @@ function startHostCmdListener() {
       buildMenu();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      if (roundId) {
-        if (G.done.has(roundId)) return;
-        const round = ROUNDS.find(r => r.id === roundId);
-        if (round) {
-          G.currentRound = round;
-          G.currentQ = -1;
-          document.getElementById('gh-title').textContent = round.name;
-          updateHeaderScores();
-          show('game-screen');
-          renderSlide();
-          pushHostState();
-        }
+      if (roundId && !G.done.has(roundId)) {
+        openRound(roundId);
       }
-    } else if (cmd === 'roulette') {
-      // Show menu and trigger roulette
-      show('menu-screen');
-      buildMenu();
-      setTimeout(() => {
-        const panel = document.getElementById('roulette-panel');
-        if (panel) panel.style.display = 'flex';
-      }, 300);
-    } else if (cmd === 'showRoulette') {
-      show('menu-screen');
-      buildMenu();
-      setTimeout(() => {
-        const panel = document.getElementById('roulette-panel');
-        if (panel) panel.style.display = 'flex';
-      }, 300);
-    } else if (cmd === 'spinRoulette') {
-      // Spin to specific target
-      show('menu-screen');
-      buildMenu();
-      setTimeout(() => {
-        const panel = document.getElementById('roulette-panel');
-        if (panel) { panel.style.display = 'flex'; spinRoulette(); }
-      }, 300);
     }
   });
 }
