@@ -3635,12 +3635,23 @@ function startHostCmdListener() {
     const cmd = d.cmd;
 
     if (cmd === 'next') {
-      if (G.currentRound) { nextQ(); }
+      if (G.currentRound) {
+        // Skip title (-1) and rules (0) slides — go straight to first question
+        if (G.currentQ < 1) {
+          G.currentQ = 1;
+          renderSlide();
+          pushHostState();
+        } else {
+          nextQ();
+        }
+      }
     } else if (cmd === 'prev') {
-      if (G.currentRound && G.currentQ > -1) {
+      if (G.currentRound && G.currentQ > 1) {
         G.currentQ--;
         renderSlide();
         pushHostState();
+      } else if (G.currentRound && G.currentQ === 1) {
+        // Stay on first question — don't go to rules
       }
     } else if (cmd === 'result') {
       showResult();
@@ -3669,6 +3680,17 @@ function startHostCmdListener() {
           pushHostState();
         }
       }
+    } else if (cmd === 'roulette') {
+      // Show menu and trigger roulette
+      show('menu-screen');
+      buildMenu();
+      setTimeout(() => {
+        const panel = document.getElementById('roulette-panel');
+        if (panel) {
+          panel.style.display = 'flex';
+          spinRoulette();
+        }
+      }, 300);
     }
   });
 }

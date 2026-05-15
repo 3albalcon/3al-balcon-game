@@ -194,6 +194,9 @@ body {
       <button class="cbtn cbtn-y cbtn-sm" id="btn-reveal" onclick="revealAnswer()" style="display:none">👁 الجواب</button>
       <button class="cbtn cbtn-y cbtn-sm" onclick="sendCmd('result')">🏆 النتيجة</button>
     </div>
+    <div class="btn-row">
+      <button class="cbtn cbtn-sm" onclick="sendCmd('roulette')" style="border-color:var(--red);color:var(--red);background:rgba(255,45,120,0.07);font-size:13px">🎰 شو بدنا نختار</button>
+    </div>
   </div>
 
 </div><!-- end content -->
@@ -358,7 +361,10 @@ function update() {
   // Status bar
   document.getElementById('status-cat').textContent = round ? `فقرة ${round.num}: ${round.name}` : 'القائمة الرئيسية';
   const q = state?.currentQ;
-  document.getElementById('status-q').textContent = q === -1 ? 'العنوان' : q >= 0 ? `سؤال ${q+1}` : '';
+  document.getElementById('status-q').textContent =
+    q === -1 ? 'العنوان' :
+    q === 0 ? 'القوانين' :
+    q >= 1 ? `سؤال ${q}` : '';
 
   // Scores
   if (state.teamA) document.getElementById('sc-na').textContent = state.teamA;
