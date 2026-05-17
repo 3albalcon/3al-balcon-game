@@ -141,8 +141,13 @@ const ROUNDS = [
 
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
 
+// Session ID from URL - same session as main screen
+const params = new URLSearchParams(window.location.search);
+const SESSION = params.get('s') || 'main';
+const P = (path) => `sessions/${SESSION}/${path}`;
+
 // Send command to main screen
-window.c = (cmd, data={}) => set(ref(db,'hostCmd'), {cmd, data, ts:Date.now()});
+window.c = (cmd, data={}) => set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
 
 window.goMenu = () => {
   c('menu');
@@ -293,8 +298,8 @@ function scoreSection(round) {
 }
 
 // Firebase listeners
-onValue(ref(db,'hostView'), s => { view = s.val()||{}; render(); });
-onValue(ref(db,'hostState'), s => {
+onValue(ref(db,P('hostView')), s => { view = s.val()||{}; render(); });
+onValue(ref(db,P('hostState')), s => {
   state = s.val()||{};
   if (state.cat3RoomId && state.cat3RoomId !== cat3Room) {
     cat3Room = state.cat3RoomId;
@@ -304,10 +309,10 @@ onValue(ref(db,'hostState'), s => {
 });
 
 // Listen to scores separately for instant update
-onValue(ref(db,'hostState/scoreA'), s => { if(s.val()!==null){state.scoreA=s.val(); render();} });
-onValue(ref(db,'hostState/scoreB'), s => { if(s.val()!==null){state.scoreB=s.val(); render();} });
-onValue(ref(db,'rouletteResult'), s => { roulette = s.val(); render(); });
-onValue(ref(db,'hostWallpaper'), s => {
+onValue(ref(db,P('hostState/scoreA')), s => { if(s.val()!==null){state.scoreA=s.val(); render();} });
+onValue(ref(db,P('hostState/scoreB')), s => { if(s.val()!==null){state.scoreB=s.val(); render();} });
+onValue(ref(db,P('rouletteResult')), s => { roulette = s.val(); render(); });
+onValue(ref(db,P('hostWallpaper')), s => {
   const url = s.val();
   if (url) document.body.style.backgroundImage = `url('${url}')`;
 });

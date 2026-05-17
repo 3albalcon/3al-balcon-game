@@ -1157,7 +1157,7 @@ window.addEventListener('load', () => {
   // Clear any stale hostCmd from previous session
   setTimeout(() => {
     if (window._fbDb && window._fbRef && window._fbSet) {
-      window._fbSet(window._fbRef(window._fbDb, 'hostCmd'), { cmd: '', ts: 0 });
+      window._fbSet(window._fbRef(window._fbDb, _path('hostCmd')), { cmd: '', ts: 0 });
     }
     startHostCmdListener();
   }, 1500);
@@ -1664,6 +1664,8 @@ function startGame() {
   const rawB = document.getElementById('team-b-name').textContent.trim();
   G.teamA = rawA.length > 0 ? rawA : 'الفريق الأول';
   G.teamB = rawB.length > 0 ? rawB : 'الفريق الثاني';
+  // Generate unique session ID for this game — prevents parallel game interference
+  window._gameSession = 's' + Date.now().toString(36) + Math.random().toString(36).substr(2,4);
   buildMenu();
   show('menu-screen');
 }
@@ -2350,6 +2352,8 @@ function renderBuzzerImage(r, qIndex, sa) {
   const plus = 2;
   const minus = r.id === 'r1' ? 0 : 1;
   const total = r.count;
+  // Mark as image category for big next button
+  sa.dataset.catType = 'image';
 
   updateHostView(r.name, `صورة ${qIndex+1} من ${total}`, `صورة ${qIndex+1}`, item?.answer || '');
   // Move content up 5cm for image rounds
@@ -3059,18 +3063,23 @@ function renderTeamVideo(r, qIndex, sa) {
       <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
         <div class="video-container">
           ${item.driveId ? `
-            <div id="video-frame-wrap-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000;cursor:pointer" onclick="playDriveVideo('${item.driveId}', ${qIndex})">
-              <div style="font-size:60px">▶</div>
-              <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7)">اضغط لتشغيل الفيديو</div>
+            <div id="video-frame-wrap-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#000;cursor:pointer;border-radius:12px"
+              onclick="playDriveVideo('${item.driveId}', ${qIndex})">
+              <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
+                <div style="font-size:36px;margin-right:-4px">▶</div>
+              </div>
+              <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.7)">اضغط لتشغيل الفيديو</div>
             </div>
             <iframe
               id="video-frame-${qIndex}"
+              src=""
               style="width:100%;height:100%;border:none;display:none;"
-              allow="autoplay; fullscreen"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
               allowfullscreen
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
             ></iframe>
           ` : `
-            <video id="video-el" src="${item.url}" controls style="width:100%;height:100%;display:block;object-fit:contain"></video>
+            <video id="video-el" src="${item.url}" controls playsinline style="width:100%;height:100%;display:block;object-fit:contain"></video>
           `}
         </div>
       </div>
@@ -3139,14 +3148,19 @@ function renderTeamVideo(r, qIndex, sa) {
 }
 
 function playDriveVideo(driveId, qIndex) {
-  // Load iframe on tap — works on tablets
   const wrap = document.getElementById('video-frame-wrap-' + qIndex);
   const frame = document.getElementById('video-frame-' + qIndex);
   if (wrap) wrap.style.display = 'none';
   if (frame) {
+    // Use uc?export=view for better tablet compatibility
     frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
     frame.style.display = 'block';
   }
+}
+
+// Also allow opening in new tab as fallback for very restrictive devices
+function openVideoNewTab(driveId) {
+  window.open(`https://drive.google.com/file/d/${driveId}/view`, '_blank');
 }
 
 function openVideoFullscreen(qIndex) {
@@ -3345,10 +3359,10 @@ function renderCharades(r, qIndex, sa) {
       ${timerHTML(60)}
       ${scorePanelHTML(3, 1)}
 
-      <div class="nav-btns">
+      <div class="nav-btns" style="justify-content:center;padding:20px 0">
         ${isLast
-          ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
-          : `<button class="nav-btn primary" onclick="nextQ()">الدور التالي ←</button>`
+          ? `<button class="nav-btn primary" onclick="showResult()" style="font-size:clamp(20px,3vw,32px);padding:20px 60px;min-width:280px">النتيجة 🏆</button>`
+          : `<button class="nav-btn primary" onclick="nextQ()" style="font-size:clamp(20px,3vw,32px);padding:20px 60px;min-width:280px">التالي ←</button>`
         }
       </div>
     </div>
@@ -3434,6 +3448,8 @@ function showResult() {
     else addScore(winner, -2);
     window._pendingCat3Score = null;
   }
+  // Mark current round as done
+  if (G.currentRound) { G.done.add(G.currentRound.id); }
   G.currentRound = null;
   setTimeout(pushHostState, 200);
   stopTimer();
@@ -3609,7 +3625,8 @@ function toggleHostMode() {
     const qrEl = document.getElementById('host-qr');
     qrEl.innerHTML = '';
     if (typeof QRCode !== 'undefined') {
-      new QRCode(qrEl, { text: 'https://3albalcon.github.io/3al-balcon-game/host.html', width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
+      const hostUrl = `https://3albalcon.github.io/3al-balcon-game/host.html?s=${window._gameSession||'main'}`;
+      new QRCode(qrEl, { text: hostUrl, width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
     }
     pushHostView({ active: true, question: '', answer: '', categoryName: '', questionNum: '' });
   } else {
@@ -3622,13 +3639,16 @@ function toggleHostMode() {
   }
 }
 
+function _sess() { return window._gameSession || 'main'; }
+function _path(p) { return `sessions/${_sess()}/${p}`; }
+
 function pushHostView(data) {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
   if (!db || !fbSet || !fbRef) return;
   try {
-    fbSet(fbRef(db, 'hostView'), { ...data, ts: Date.now() });
+    fbSet(fbRef(db, _path('hostView')), { ...data, ts: Date.now() });
   } catch(e) { console.error('pushHostView error:', e); }
 }
 
@@ -3639,7 +3659,7 @@ function pushHostState() {
   if (!db || !fbSet || !fbRef) return;
   const gameScreenVisible = document.getElementById('game-screen')?.style?.display !== 'none';
   const r = G.currentRound;
-  fbSet(fbRef(db, 'hostState'), {
+  fbSet(fbRef(db, _path('hostState')), {
     done: [...(G.done || [])],
     currentRound: r?.id || null,
     currentRoundName: r?.name || null,
@@ -3669,7 +3689,7 @@ function startHostCmdListener() {
     return;
   }
   console.log('✅ Host cmd listener started');
-  fbOnValue(fbRef(db, 'hostCmd'), (snap) => {
+  fbOnValue(fbRef(db, _path('hostCmd')), (snap) => {
     const d = snap.val();
     console.log('hostCmd received:', d);
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
@@ -3718,31 +3738,36 @@ function startHostCmdListener() {
           pushHostState();
           // Clear roulette highlight
           const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
-          if (db && fbSet) fbSet(fbRef(db, 'rouletteResult'), null);
+          if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), null);
         }
       }
     } else if (cmd === 'roulette') {
       G.currentRound = null;
       show('menu-screen');
       buildMenu();
+      // Show roulette panel with animation, THEN spin
       setTimeout(() => {
         const panel = document.getElementById('roulette-panel');
-        if (panel) {
-          panel.style.display = 'flex';
-          // Force layout recalc before spinning
-          panel.offsetHeight;
-        }
-      }, 300);
-      setTimeout(() => {
-        spinRoulette();
-      }, 800);
+        if (panel) { panel.style.display = 'flex'; panel.offsetHeight; }
+        const spinBtn = document.getElementById('roulette-spin-btn');
+        if (spinBtn) spinBtn.click(); // simulate click on the spin button
+      }, 500);
     } else if (cmd === 'videoPlay') {
       const v = document.getElementById('video-el');
-      if (v) { v.play(); }
-      // For Drive video — tap to load
+      if (v) { v.play(); return; }
+      // For Drive video — trigger tap
       const qIdx = G.currentQ - 1;
       const item = G.media.r5?.[qIdx];
-      if (item?.driveId) playDriveVideo(item.driveId, qIdx);
+      if (item?.driveId) {
+        const wrap = document.getElementById('video-frame-wrap-' + qIdx);
+        if (wrap && wrap.style.display !== 'none') {
+          playDriveVideo(item.driveId, qIdx);
+        } else {
+          // Already playing - reload
+          const frame = document.getElementById('video-frame-' + qIdx);
+          if (frame) { const s = frame.src; frame.src = ''; setTimeout(()=>frame.src=s, 100); }
+        }
+      }
     } else if (cmd === 'videoRepeat') {
       const v = document.getElementById('video-el');
       if (v) { v.currentTime = 0; v.play(); }
@@ -3994,7 +4019,7 @@ function spinRoulette() {
     // Push roulette result to Firebase so host phone highlights it
     pushHostState();
     const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
-    if (db && fbSet) fbSet(fbRef(db, 'rouletteResult'), { id: winner.id, name: winner.name, ts: Date.now() });
+    if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), { id: winner.id, name: winner.name, ts: Date.now() });
   }, 3200);
 }
 
