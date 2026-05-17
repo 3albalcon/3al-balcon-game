@@ -1152,7 +1152,9 @@ window._fbDb = db;
 window._fbRef = ref;
 window._fbSet = set;
 window._fbOnValue = onValue;
-setTimeout(startHostCmdListener, 500);
+window._fbGet = get;
+// Start host listener after regular scripts are ready
+window.addEventListener('load', () => setTimeout(startHostCmdListener, 1000));
 </script>
 <script>
 // ══════════════════════════════════════════
@@ -1163,7 +1165,7 @@ setTimeout(startHostCmdListener, 500);
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlcVC9ncwtg9QEl6TYz93PXFL9dMfa2FOeBi8MDETGg2SYYUXM--BZIvz2jW3_ZAHgmg/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXJ0cdo2qRrJs4gmUG3kiLrf6MGgMW6lHhxyBnDmpqGuqJpBqkOa5plQ106G0wJ1S4bQ/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -2030,12 +2032,14 @@ function openRound(id) {
 function nextQ() {
   G.currentQ++;
   renderSlide();
+  pushHostState();
 }
 
 function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
   stopTimer();
+  setTimeout(pushHostState, 150);
 
   // Reset slide-area to default for all rounds
   sa.style.paddingTop = '';
@@ -2056,12 +2060,14 @@ function renderSlide() {
         <p>${r.pts}</p>
         <button class="nav-btn" onclick="nextQ()" style="margin-top:16px;font-size:16px;padding:12px 28px;">📋 قوانين اللعبة ←</button>
       </div>`;
+    updateHostView(r.name, 'العنوان', r.name, '');
     return;
   }
 
   // === RULES SLIDE (q=0) ===
   if (G.currentQ === 0) {
     renderRules(r, sa);
+    updateHostView(r.name, 'القوانين', `قوانين: ${r.name}`, '');
     return;
   }
 
@@ -2435,7 +2441,7 @@ function renderBidding(r, qIndex, sa) {
   }
 
   const roomId = cat3RoomId;
-  const baseUrl = 'https://raedharb.github.io/3al-balcon-game/bid.html';
+  const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
   const qrUrlA = `${baseUrl}?t=a&r=${roomId}`;
   const qrUrlB = `${baseUrl}?t=b&r=${roomId}`;
 
@@ -3275,7 +3281,7 @@ function renderCharades(r, qIndex, sa) {
 
   updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, item, item);
   const encoded = encodeURIComponent(item);
-  const qrData = `https://raedharb.github.io/3al-balcon-game/act.html?n=${encoded}`;
+  const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}`;
 
   sa.innerHTML = `
     <div style="position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px">
@@ -3573,7 +3579,7 @@ function toggleHostMode() {
     const qrEl = document.getElementById('host-qr');
     qrEl.innerHTML = '';
     if (typeof QRCode !== 'undefined') {
-      new QRCode(qrEl, { text: 'https://raedharb.github.io/3al-balcon-game/host.html', width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
+      new QRCode(qrEl, { text: 'https://3albalcon.github.io/3al-balcon-game/host.html', width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
     }
     pushHostView({ active: true, question: '', answer: '', categoryName: '', questionNum: '' });
   } else {
@@ -3601,47 +3607,75 @@ function pushHostState() {
   const fbRef = window._fbRef;
   const fbSet = window._fbSet;
   if (!db || !fbSet || !fbRef) return;
+  const gameScreenVisible = document.getElementById('game-screen')?.style?.display !== 'none';
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
     currentRound: G.currentRound?.id || null,
+    currentQ: G.currentQ,
     teamA: G.teamA,
     teamB: G.teamB,
     scoreA: G.scoreA,
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
+    onGameScreen: gameScreenVisible,
   });
 }
 
-let _lastHostCmdTs = 0;
+let _lastHostCmdTs = Date.now(); // ignore stale commands from previous sessions
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
   const fbOnValue = window._fbOnValue;
-  if (!db || !fbOnValue) return;
+  if (!db || !fbOnValue || !fbRef) {
+    console.warn('startHostCmdListener: Firebase not ready, retrying...');
+    setTimeout(startHostCmdListener, 1000);
+    return;
+  }
+  console.log('✅ Host cmd listener started');
   fbOnValue(fbRef(db, 'hostCmd'), (snap) => {
     const d = snap.val();
+    console.log('hostCmd received:', d);
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
+    console.log('Executing cmd:', cmd);
+
     if (cmd === 'next') {
-      // Click next button if visible
-      const nextBtn = document.querySelector('.nav-btn.primary');
-      if (nextBtn) nextBtn.click();
+      if (G.currentRound) { nextQ(); }
+      else { console.warn('next: no currentRound'); }
+    } else if (cmd === 'prev') {
+      if (G.currentRound && G.currentQ > -1) {
+        G.currentQ--;
+        renderSlide();
+        pushHostState();
+      }
     } else if (cmd === 'result') {
       showResult();
-    } else if (cmd === 'back') {
-      show('game-screen');
-      G.currentQ = -1;
-      renderSlide();
     } else if (cmd === 'menu') {
+      G.currentRound = null;
       show('menu-screen');
       buildMenu();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
       if (roundId && !G.done.has(roundId)) {
         const round = ROUNDS.find(r => r.id === roundId);
-        if (round) openRound(roundId);
+        if (round) {
+          G.currentRound = round;
+          G.currentQ = -1;
+          document.getElementById('gh-title').textContent = round.name;
+          updateHeaderScores();
+          show('game-screen');
+          renderSlide();
+          pushHostState();
+        }
       }
+    } else if (cmd === 'roulette') {
+      show('menu-screen');
+      buildMenu();
+      setTimeout(() => {
+        const panel = document.getElementById('roulette-panel');
+        if (panel) panel.style.display = 'flex';
+      }, 300);
     }
   });
 }
