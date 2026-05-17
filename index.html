@@ -1869,7 +1869,7 @@ function buildMenu() {
   // Wildcard badges next to team names
   const badgesA = document.getElementById('wc-badges-a');
   const badgesB = document.getElementById('wc-badges-b');
-  if (badgesA) badgesA.innerHTML = G.earnedWCA.map((c, i) => `
+  if (badgesA) badgesA.innerHTML = ''; if (false && badgesA) badgesA.innerHTML = G.earnedWCA.map((c, i) => `
     <span onclick="useEarnedWildcard('a',${i})" title="${c.q}: ${c.a}" style="
       cursor:${c.used?'default':'pointer'};
       font-size:22px;
@@ -2051,8 +2051,11 @@ function openRound(id) {
 function nextQ() {
   const r = G.currentRound;
   if (!r) return;
-  // Cap at last question - don't go beyond round count
-  if (G.currentQ >= r.count) return;
+  // If at last question, go to result instead
+  if (G.currentQ >= r.count) {
+    showResult();
+    return;
+  }
   G.currentQ++;
   renderSlide();
   pushHostState();
@@ -3466,18 +3469,15 @@ function showResult() {
   }
   // Mark current round as done
   if (G.currentRound) { G.done.add(G.currentRound.id); }
-  G.currentRound = null;
-  setTimeout(pushHostState, 200);
   stopTimer();
-  G.done.add(G.currentRound.id);
   const sa = document.getElementById('slide-area');
   const winner = G.scoreA > G.scoreB ? G.teamA : G.scoreB > G.scoreA ? G.teamB : null;
 
   // Check if any team crossed a new 50-point milestone
   const newMilestoneA = Math.floor(G.scoreA / 50);
   const newMilestoneB = Math.floor(G.scoreB / 50);
-  const wcEligibleA = newMilestoneA > G.wcMilestoneA;
-  const wcEligibleB = newMilestoneB > G.wcMilestoneB;
+  const wcEligibleA = false; // wildcards disabled
+  const wcEligibleB = false; // wildcards disabled
 
   sa.innerHTML = `
     <div class="result-card fade-in">
@@ -3522,6 +3522,9 @@ function showResult() {
         ">🃏 ${G.teamB} — اختر بطاقة حظّك اليوم!</button>` : ''}
       <button class="nav-btn primary" onclick="backToMenu()">← العودة للقائمة</button>
     </div>`;
+  // Clear current round and sync host state
+  G.currentRound = null;
+  setTimeout(pushHostState, 200);
 }
 
 // ── Wildcard popup: team picks 1 from the 3 session cards
