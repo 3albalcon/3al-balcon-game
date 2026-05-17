@@ -2037,6 +2037,10 @@ function openRound(id) {
 }
 
 function nextQ() {
+  const r = G.currentRound;
+  if (!r) return;
+  // Cap at last question - don't go beyond round count
+  if (G.currentQ >= r.count) return;
   G.currentQ++;
   renderSlide();
   pushHostState();
@@ -3046,6 +3050,9 @@ function renderTeamVideo(r, qIndex, sa) {
     if (match) { matchedQ = match.q; matchedA = match.a; }
   }
 
+  // Push to host view
+  updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || 'شاهد الفيديو', matchedA || '');
+
   sa.innerHTML = `
     <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
     ${item ? `
@@ -3286,7 +3293,7 @@ function renderCharades(r, qIndex, sa) {
   const item = items[qIndex] || `اسم ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
-  updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, item, item);
+  updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, 'كلمة سرية للممثل', item);
   const encoded = encodeURIComponent(item);
   const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}`;
 
@@ -3660,8 +3667,12 @@ function startHostCmdListener() {
       showResult();
     } else if (cmd === 'menu') {
       G.currentRound = null;
+      G.currentQ = -1;
       show('menu-screen');
       buildMenu();
+      // Clear host view so phone shows clean state
+      pushHostView({ active: false, question: '', answer: '', categoryName: '', questionNum: '' });
+      pushHostState();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
       if (roundId && !G.done.has(roundId)) {
@@ -3677,12 +3688,30 @@ function startHostCmdListener() {
         }
       }
     } else if (cmd === 'roulette') {
+      // Show menu, open roulette panel, and auto-spin
+      G.currentRound = null;
       show('menu-screen');
       buildMenu();
       setTimeout(() => {
         const panel = document.getElementById('roulette-panel');
-        if (panel) panel.style.display = 'flex';
-      }, 300);
+        if (panel) {
+          panel.style.display = 'flex';
+          spinRoulette();
+        }
+      }, 400);
+    } else if (cmd === 'videoReveal') {
+      // Show question after video
+      const doneBtn = document.querySelector('.nav-btn[data-video-done]') ||
+        [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
+      if (doneBtn) doneBtn.click();
+    } else if (cmd === 'revealAnswer') {
+      // Reveal answer on main screen
+      const revealBtn = document.querySelector('.answer-reveal-btn');
+      if (revealBtn) revealBtn.click();
+    } else if (cmd === 'addScore') {
+      const team = d.data?.team;
+      const pts = d.data?.pts || 0;
+      if (team) addScore(team, pts);
     }
   });
 }
@@ -3908,12 +3937,19 @@ function spinRoulette() {
     document.getElementById('roulette-go-btn').style.display = 'inline-flex';
     document.getElementById('roulette-spin-btn').textContent = '🎰 دوّر مجدداً';
     document.getElementById('roulette-spin-btn').disabled = false;
+    // Push roulette result to Firebase so host phone highlights it
+    pushHostState();
+    const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+    if (db && fbSet) fbSet(fbRef(db, 'rouletteResult'), { id: winner.id, name: winner.name, ts: Date.now() });
   }, 3200);
 }
 
 function goToRouletteRound() {
   if (!rouletteTarget) return;
   closeRoulette();
+  // Clear roulette highlight
+  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+  if (db && fbSet) fbSet(fbRef(db, 'rouletteResult'), null);
   openRound(rouletteTarget.id);
 }
 

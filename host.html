@@ -40,6 +40,7 @@ body {
 .cat-btn:active { transform:scale(0.93); }
 .cat-btn.done { opacity:0.2; cursor:not-allowed; text-decoration:line-through; }
 .cat-btn.current { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.07); }
+.cat-btn.roulette { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.1); animation:pulse 1s infinite; box-shadow:0 0 12px rgba(57,255,20,0.3); }
 
 /* Cat3 */
 .bid-row { display:flex; gap:8px; }
@@ -105,9 +106,9 @@ body {
       <button class="cbtn cbtn-g" id="btn-next" onclick="cmd('next')" disabled>التالي →</button>
     </div>
     <div class="btn-row">
-      <button class="cbtn cbtn-w" onclick="cmd('menu')">🏠 القائمة</button>
+      <button class="cbtn cbtn-w" onclick="goMenu()">🏠 القائمة</button>
       <button class="cbtn cbtn-y" id="btn-ans" onclick="toggleAnswer()" style="display:none">👁 الجواب</button>
-      <button class="cbtn cbtn-y" onclick="cmd('result')">🏆 النتيجة</button>
+
     </div>
     <div class="btn-row">
       <button class="cbtn cbtn-r" onclick="cmd('roulette')" style="font-size:12px">🎰 شو بدنا نختار</button>
@@ -146,6 +147,7 @@ const ROUNDS = [
 const HAS_REVEAL = ['r1','r2','r4','r6','r7','r9','r10'];
 
 let state = {};
+let rouletteResult = null;
 let view = {};
 let cat3 = null;
 let cat3Room = null;
@@ -157,6 +159,22 @@ window.cmd = (command, data={}) => {
   set(ref(db,'hostCmd'), { cmd:command, data, ts:Date.now() });
 };
 
+function scoreButtons() {
+  const tA = state.teamA || 'أ';
+  const tB = state.teamB || 'ب';
+  return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:4px">
+    <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center">— نقاط يدوية —</div>
+    <div style="display:flex;gap:6px">
+      <button class="cbtn cbtn-g" onclick="cmd('addScore',{team:'a',pts:2})" style="font-size:12px;padding:10px 0">+2 ${tA}</button>
+      <button class="cbtn cbtn-r" onclick="cmd('addScore',{team:'a',pts:-2})" style="font-size:12px;padding:10px 0">-2 ${tA}</button>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="cbtn cbtn-g" onclick="cmd('addScore',{team:'b',pts:2})" style="font-size:12px;padding:10px 0">+2 ${tB}</button>
+      <button class="cbtn cbtn-r" onclick="cmd('addScore',{team:'b',pts:-2})" style="font-size:12px;padding:10px 0">-2 ${tB}</button>
+    </div>
+  </div>`;
+}
+
 window.toggleAnswer = () => {
   answerShown = !answerShown;
   const aEl = document.getElementById('answer-el');
@@ -166,6 +184,7 @@ window.toggleAnswer = () => {
     aEl.className = 'a-box';
     aEl.textContent = currentAnswer;
     if (btn) btn.textContent = '🙈 اخفِ';
+    cmd('revealAnswer'); // also reveal on main screen
   } else {
     aEl.className = 'a-hidden';
     aEl.textContent = '👁 اضغط لكشف الجواب';
@@ -181,6 +200,11 @@ function render() {
   const btnPrev = document.getElementById('btn-prev');
   const btnAns = document.getElementById('btn-ans');
   const catGrid = document.getElementById('cat-grid');
+  if (!state || !state.teamA) {
+    dyn.innerHTML = '<div class="waiting">انتظر بدء اللعبة...</div>';
+    btnNext.disabled = true; btnPrev.disabled = true; btnAns.style.display='none';
+    return;
+  }
 
   // Score
   document.getElementById('sc-na').textContent = state.teamA || 'الفريق أ';
@@ -203,12 +227,17 @@ function render() {
 
   // Category grid
   const done = state.done || [];
-  catGrid.innerHTML = ROUNDS.map(r => `
-    <button class="cat-btn ${done.includes(r.id)?'done':''} ${state.currentRound===r.id?'current':''}"
-      ${done.includes(r.id)?'disabled':''}
+  const rouletteId = rouletteResult?.id;
+  catGrid.innerHTML = ROUNDS.map(r => {
+    const isDone = done.includes(r.id);
+    const isCurrent = state.currentRound === r.id;
+    const isRoulette = rouletteId === r.id && !isCurrent;
+    return `<button class="cat-btn ${isDone?'done':''} ${isCurrent?'current':''} ${isRoulette?'roulette':''}"
+      ${isDone?'disabled':''}
       onclick="cmd('openCat',{id:'${r.id}'})">
-      ${r.num}. ${r.name}
-    </button>`).join('');
+      ${isRoulette ? '🎯 ' : ''}${r.num}. ${r.name}
+    </button>`;
+  }).join('');
 
   // Dynamic content area
   if (!round || !state.onGameScreen) {
@@ -268,11 +297,28 @@ function render() {
     return;
   }
 
+  // Cat 6 — video controls
+  if (state.currentRound === 'r5') {
+    btnAns.style.display = 'none';
+    const qText = view.question || '';
+    const ans = view.answer || '';
+    dyn.innerHTML = `
+      <div class="q-box" style="color:var(--yellow);border-color:var(--yellow)">🎬 ${view.categoryName||''} — فيديو ${q}</div>
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+        <button class="cbtn cbtn-y" onclick="cmd('videoReveal')" style="font-size:13px">⏭ انتهى الفيديو — اعرض السؤال</button>
+        ${qText ? `<div class="q-box" style="font-size:14px">${qText}</div>` : ''}
+        ${ans ? `<button class="cbtn cbtn-g" onclick="cmd('revealAnswer')" style="font-size:13px">👁 كشف الجواب</button>` : ''}
+        ${ans ? `<div class="a-box" style="font-size:16px;display:none" id="host-ans-box">${ans}</div>` : ''}
+      </div>
+      ${scoreButtons()}`;
+    return;
+  }
+
   // Normal question slide
   const qText = view.question || '';
   currentAnswer = view.answer || '';
   const hasReveal = HAS_REVEAL.includes(state.currentRound) && currentAnswer;
-  answerShown = !hasReveal;
+  answerShown = false;
 
   btnAns.style.display = hasReveal ? 'flex' : 'none';
   btnAns.textContent = '👁 الجواب';
@@ -280,9 +326,10 @@ function render() {
   dyn.innerHTML = `
     ${qText ? `<div class="q-box">${qText}</div>` : '<div class="waiting">جاري تحميل السؤال...</div>'}
     <div id="answer-el" class="${hasReveal ? 'a-hidden' : (currentAnswer ? 'a-box' : '')}"
-      onclick="${hasReveal && !answerShown ? 'toggleAnswer()' : ''}">
+      onclick="${hasReveal ? 'toggleAnswer()' : ''}">
       ${hasReveal ? '👁 اضغط لكشف الجواب' : currentAnswer}
-    </div>`;
+    </div>
+    ${scoreButtons()}`;
 }
 
 // ── Firebase listeners ──
@@ -301,6 +348,21 @@ onValue(ref(db,'hostState'), snap => {
       render();
     });
   }
+  render();
+});
+
+window.goMenu = () => {
+  cmd('menu');
+  // Clear local state display
+  state = { ...state, currentRound: null, currentQ: -1, onGameScreen: false };
+  view = {};
+  answerShown = false;
+  render();
+};
+
+// Roulette result listener
+onValue(ref(db,'rouletteResult'), snap => {
+  rouletteResult = snap.val();
   render();
 });
 
