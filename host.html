@@ -169,7 +169,7 @@ function render() {
   const catGrid = document.getElementById('cat-grid');
 
   if (!state.teamA) {
-    dyn.innerHTML = '<div class="waiting">انتظر بدء اللعبة...</div>';
+    dyn.innerHTML = '<div class="waiting">⏳ انتظر بدء اللعبة...</div>';
     btnNext.disabled = true; btnPrev.disabled = true;
     return;
   }
@@ -215,8 +215,23 @@ function render() {
   // Dynamic content
   if (!round || !state.onGameScreen) {
     dyn.innerHTML = roulette
-      ? `<div class="card info-card" style="color:var(--green);border-color:var(--green)">🎯 اللعبة اختارت: ${roulette.name}</div>`
-      : '<div class="waiting">اختر فقرة من القائمة</div>';
+      ? `<div class="card info-card" style="color:var(--green);border-color:var(--green);font-size:16px;font-weight:900">🎯 اللعبة اختارت:<br>${roulette.name}</div>`
+      : `<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0">
+          <div style="font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:3px">الفريقان</div>
+          <div style="display:flex;gap:16px;justify-content:center;width:100%">
+            <div style="flex:1;text-align:center;padding:12px;background:rgba(229,1,88,0.08);border:2px solid #E50158;border-radius:12px">
+              <div style="font-size:11px;color:rgba(229,1,88,0.7)">الفريق أ</div>
+              <div style="font-size:20px;font-weight:900;color:#E50158">${state.teamA||'—'}</div>
+              <div style="font-size:22px;font-weight:900;color:#E50158">${state.scoreA||0}</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:12px;background:rgba(226,218,81,0.08);border:2px solid #E2DA51;border-radius:12px">
+              <div style="font-size:11px;color:rgba(226,218,81,0.7)">الفريق ب</div>
+              <div style="font-size:20px;font-weight:900;color:#E2DA51">${state.teamB||'—'}</div>
+              <div style="font-size:22px;font-weight:900;color:#E2DA51">${state.scoreB||0}</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.25);text-align:center">اختر فقرة من القائمة أدناه</div>
+        </div>`;
     return;
   }
 
