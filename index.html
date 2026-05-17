@@ -2351,7 +2351,7 @@ function renderBuzzerImage(r, qIndex, sa) {
   const minus = r.id === 'r1' ? 0 : 1;
   const total = r.count;
 
-  updateHostView(r.name, `صورة ${qIndex+1} من ${total}`, item?.answer || '', item?.answer || '');
+  updateHostView(r.name, `صورة ${qIndex+1} من ${total}`, `صورة ${qIndex+1}`, item?.answer || '');
   // Move content up 5cm for image rounds
   sa.style.paddingTop = '';
   sa.style.justifyContent = '';
@@ -3059,12 +3059,15 @@ function renderTeamVideo(r, qIndex, sa) {
       <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
         <div class="video-container">
           ${item.driveId ? `
+            <div id="video-frame-wrap-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000;cursor:pointer" onclick="playDriveVideo('${item.driveId}', ${qIndex})">
+              <div style="font-size:60px">▶</div>
+              <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7)">اضغط لتشغيل الفيديو</div>
+            </div>
             <iframe
-              src="https://drive.google.com/file/d/${item.driveId}/preview"
-              style="width:100%;height:100%;border:none;display:block;"
+              id="video-frame-${qIndex}"
+              style="width:100%;height:100%;border:none;display:none;"
               allow="autoplay; fullscreen"
               allowfullscreen
-              id="video-frame-${qIndex}"
             ></iframe>
           ` : `
             <video id="video-el" src="${item.url}" controls style="width:100%;height:100%;display:block;object-fit:contain"></video>
@@ -3132,6 +3135,17 @@ function renderTeamVideo(r, qIndex, sa) {
         }, { once: true });
       }
     }, 100);
+  }
+}
+
+function playDriveVideo(driveId, qIndex) {
+  // Load iframe on tap — works on tablets
+  const wrap = document.getElementById('video-frame-wrap-' + qIndex);
+  const frame = document.getElementById('video-frame-' + qIndex);
+  if (wrap) wrap.style.display = 'none';
+  if (frame) {
+    frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
+    frame.style.display = 'block';
   }
 }
 
@@ -3640,6 +3654,7 @@ function pushHostState() {
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
     onGameScreen: gameScreenVisible,
+    sessionId: window._gameSession || null,
   });
 }
 
@@ -3712,17 +3727,32 @@ function startHostCmdListener() {
       buildMenu();
       setTimeout(() => {
         const panel = document.getElementById('roulette-panel');
-        if (panel) panel.style.display = 'flex';
-      }, 200);
+        if (panel) {
+          panel.style.display = 'flex';
+          // Force layout recalc before spinning
+          panel.offsetHeight;
+        }
+      }, 300);
       setTimeout(() => {
         spinRoulette();
-      }, 600);
+      }, 800);
     } else if (cmd === 'videoPlay') {
       const v = document.getElementById('video-el');
-      if (v) v.play();
+      if (v) { v.play(); }
+      // For Drive video — tap to load
+      const qIdx = G.currentQ - 1;
+      const item = G.media.r5?.[qIdx];
+      if (item?.driveId) playDriveVideo(item.driveId, qIdx);
     } else if (cmd === 'videoRepeat') {
       const v = document.getElementById('video-el');
       if (v) { v.currentTime = 0; v.play(); }
+      // For Drive iframe — reload
+      const qIdx = G.currentQ - 1;
+      const item = G.media.r5?.[qIdx];
+      if (item?.driveId) {
+        const frame = document.getElementById('video-frame-' + qIdx);
+        if (frame && frame.src) { const s = frame.src; frame.src = ''; frame.src = s; }
+      }
     } else if (cmd === 'videoEnd') {
       const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
       if (doneBtn) doneBtn.click();
