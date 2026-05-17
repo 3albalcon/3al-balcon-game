@@ -3995,8 +3995,9 @@ function buildStrip() {
     document.getElementById('roulette-result').textContent = 'كل الفقرات انتهت! 🎉';
     return;
   }
+  // Use exactly 10 repetitions so spinRoulette offset math works
   const items = [];
-  for (let i = 0; i < 6; i++) items.push(...remaining);
+  for (let i = 0; i < 10; i++) items.push(...remaining);
   strip.innerHTML = items.map(r => `
     <div style="height:32px;display:flex;align-items:center;justify-content:center;
       font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;color:#fff;
@@ -4014,12 +4015,16 @@ function spinRoulette() {
     document.getElementById('roulette-result').textContent = 'كل الفقرات انتهت! 🎉';
     return;
   }
+  // Rebuild strip fresh each spin with only unplayed categories
+  buildStrip();
+
   const winner = remaining[Math.floor(Math.random() * remaining.length)];
   rouletteTarget = winner;
 
   const strip = document.getElementById('roulette-strip');
   const itemH = 32;
-  const baseOffset = remaining.length * 2;
+  // Land on repetition 7 (index 6) so there's plenty of scroll before landing
+  const baseOffset = remaining.length * 6;
   const winnerIdx = baseOffset + remaining.findIndex(r => r.id === winner.id);
   const targetY = -(winnerIdx * itemH) + 16;
 
@@ -4041,7 +4046,6 @@ function spinRoulette() {
     document.getElementById('roulette-go-btn').style.display = 'inline-flex';
     document.getElementById('roulette-spin-btn').textContent = '🎰 دوّر مجدداً';
     document.getElementById('roulette-spin-btn').disabled = false;
-    // Push roulette result to Firebase so host phone highlights it
     pushHostState();
     const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
     if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), { id: winner.id, name: winner.name, ts: Date.now() });
