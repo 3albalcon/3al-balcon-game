@@ -1153,8 +1153,15 @@ window._fbRef = ref;
 window._fbSet = set;
 window._fbOnValue = onValue;
 window._fbGet = get;
-// Start host listener after regular scripts are ready
-window.addEventListener('load', () => setTimeout(startHostCmdListener, 1000));
+window.addEventListener('load', () => {
+  // Clear any stale hostCmd from previous session
+  setTimeout(() => {
+    if (window._fbDb && window._fbRef && window._fbSet) {
+      window._fbSet(window._fbRef(window._fbDb, 'hostCmd'), { cmd: '', ts: 0 });
+    }
+    startHostCmdListener();
+  }, 1500);
+});
 </script>
 <script>
 // ══════════════════════════════════════════
