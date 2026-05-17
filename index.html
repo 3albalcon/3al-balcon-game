@@ -1154,12 +1154,12 @@ window._fbSet = set;
 window._fbOnValue = onValue;
 window._fbGet = get;
 window.addEventListener('load', () => {
-  // Clear any stale hostCmd from previous session
+  // Clear any stale hostCmd from previous session (on main path only)
   setTimeout(() => {
     if (window._fbDb && window._fbRef && window._fbSet) {
-      window._fbSet(window._fbRef(window._fbDb, _path('hostCmd')), { cmd: '', ts: 0 });
+      window._fbSet(window._fbRef(window._fbDb, 'sessions/main/hostCmd'), { cmd: '', ts: 0 });
     }
-    startHostCmdListener();
+    // Don't start listener yet — will start when game session is created in startGame()
   }, 1500);
 });
 </script>
@@ -1664,8 +1664,11 @@ function startGame() {
   const rawB = document.getElementById('team-b-name').textContent.trim();
   G.teamA = rawA.length > 0 ? rawA : 'الفريق الأول';
   G.teamB = rawB.length > 0 ? rawB : 'الفريق الثاني';
-  // Generate unique session ID for this game — prevents parallel game interference
+  // Generate unique session ID for this game
   window._gameSession = 's' + Date.now().toString(36) + Math.random().toString(36).substr(2,4);
+  // Restart host cmd listener on new session path
+  _lastHostCmdTs = Date.now();
+  startHostCmdListener();
   buildMenu();
   show('menu-screen');
 }
@@ -3678,7 +3681,8 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = Date.now(); // ignore stale commands from previous sessions
+let _lastHostCmdTs = Date.now();
+let _hostCmdUnsubscribe = null;
 function startHostCmdListener() {
   const db = window._fbDb;
   const fbRef = window._fbRef;
@@ -3688,10 +3692,12 @@ function startHostCmdListener() {
     setTimeout(startHostCmdListener, 1000);
     return;
   }
-  console.log('✅ Host cmd listener started');
-  fbOnValue(fbRef(db, _path('hostCmd')), (snap) => {
+  // Unsubscribe previous listener
+  if (_hostCmdUnsubscribe) { _hostCmdUnsubscribe(); _hostCmdUnsubscribe = null; }
+  const path = _path('hostCmd');
+  console.log('✅ Host cmd listener on:', path);
+  _hostCmdUnsubscribe = fbOnValue(fbRef(db, path), (snap) => {
     const d = snap.val();
-    console.log('hostCmd received:', d);
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
