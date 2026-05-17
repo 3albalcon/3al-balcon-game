@@ -308,9 +308,23 @@ onValue(ref(db,P('hostState')), s => {
   render();
 });
 
-// Listen to scores separately for instant update
-onValue(ref(db,P('hostState/scoreA')), s => { if(s.val()!==null){state.scoreA=s.val(); render();} });
-onValue(ref(db,P('hostState/scoreB')), s => { if(s.val()!==null){state.scoreB=s.val(); render();} });
+// Score sub-listeners for instant update when addScore is called
+onValue(ref(db,P('hostState/scoreA')), s => {
+  const v = s.val();
+  if (v !== null && v !== undefined) {
+    state.scoreA = v;
+    const el = document.getElementById('sc-a');
+    if (el) el.textContent = v;
+  }
+});
+onValue(ref(db,P('hostState/scoreB')), s => {
+  const v = s.val();
+  if (v !== null && v !== undefined) {
+    state.scoreB = v;
+    const el = document.getElementById('sc-b');
+    if (el) el.textContent = v;
+  }
+});
 onValue(ref(db,P('rouletteResult')), s => { roulette = s.val(); render(); });
 onValue(ref(db,P('hostWallpaper')), s => {
   const url = s.val();
