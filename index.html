@@ -1177,7 +1177,7 @@ window.addEventListener('load', () => {
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDEA8wcJCFoLFaxjJX1xusFcxiE00wJy1B5H0Dt8MGU4HrbExKM87LVFRIIF382bmjbw/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXJ0cdo2qRrJs4gmUG3kiLrf6MGgMW6lHhxyBnDmpqGuqJpBqkOa5plQ106G0wJ1S4bQ/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -3062,112 +3062,19 @@ function renderTeamVideo(r, qIndex, sa) {
   const item = hasVideo ? items[qIndex] : null;
   const isLast = qIndex >= r.count - 1;
 
-  // Match video filename to Category 6 data
+  // Match video filename to Category 6 Excel data
   let matchedQ = null, matchedA = null;
   if (item && G.questions.r5 && G.questions.r5.length) {
     const videoName = (item.name || '').replace(/\.[^/.]+$/, '').trim().toLowerCase();
     const match = G.questions.r5.find(row => {
       const rowName = (row.v || '').trim().toLowerCase();
-      return rowName && (videoName.includes(rowName) || rowName.includes(videoName));
+      return rowName && videoName.includes(rowName) || rowName.includes(videoName);
     });
     if (match) { matchedQ = match.q; matchedA = match.a; }
   }
 
   // Push to host view
   updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || 'شاهد الفيديو', matchedA || '');
-
-  // Store for host commands
-  window._cat6Q = matchedQ;
-  window._cat6A = matchedA;
-  window._cat6QIndex = qIndex;
-  window._cat6DriveId = item?.driveId || null;
-
-  sa.innerHTML = `
-    <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
-    ${item ? `
-      <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
-        <div class="video-container" id="video-container-${qIndex}">
-          ${item.driveId ? `
-            <div id="video-frame-wrap-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#000;cursor:pointer;border-radius:12px"
-              onclick="playDriveVideo('${item.driveId}', ${qIndex})">
-              <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center">
-                <div style="font-size:36px;margin-right:-4px">▶</div>
-              </div>
-              <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.7)">اضغط لتشغيل الفيديو</div>
-            </div>
-            <iframe
-              id="video-frame-${qIndex}"
-              src=""
-              style="width:100%;height:100%;border:none;display:none;"
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          ` : `
-            <video id="video-el" src="${item.url}" controls playsinline style="width:100%;height:100%;display:block;object-fit:contain"></video>
-          `}
-        </div>
-      </div>
-    ` : `
-      <div class="video-placeholder fade-in">
-        <div class="vp-icon">🎬</div>
-        <p>لم يتم رفع فيديوهات</p>
-      </div>
-    `}
-    <div id="video-question-area" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
-      <div class="question-text-box fade-in" id="vq-text" style="font-size:${dynFont(matchedQ)}">${matchedQ || '—'}</div>
-      <div id="vq-timer">${timerHTML(30)}</div>
-      ${matchedA ? `
-        <div id="vq-answer-area" style="min-height:48px;display:flex;align-items:center;justify-content:center">
-          <button class="answer-reveal-btn" id="vq-reveal-btn" onclick="revealCat6Answer()">👁 كشف الجواب</button>
-        </div>
-      ` : ''}
-    </div>
-    ${scorePanelHTML(3, 0)}
-    <div class="nav-btns">
-      ${isLast
-        ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
-        : `<button class="nav-btn primary" onclick="nextQ()">الفيديو التالي ←</button>`
-      }
-    </div>`;
-
-  // Add "انتهى الفيديو" button
-  if (item) {
-    setTimeout(() => {
-      const doneBtn = document.createElement('button');
-      doneBtn.id = 'video-done-btn';
-      doneBtn.className = 'nav-btn';
-      doneBtn.style.cssText = 'margin-top:8px;border-color:var(--neon-yellow);color:var(--neon-yellow);text-shadow:var(--glow-yellow)';
-      doneBtn.textContent = '⏭ انتهى الفيديو — اعرض السؤال';
-      doneBtn.onclick = () => showCat6Question(qIndex);
-      const navBtns = document.querySelector('.slide-area .nav-btns');
-      if (navBtns) navBtns.parentNode.insertBefore(doneBtn, navBtns);
-
-      const videoEl = document.getElementById('video-el');
-      if (videoEl) videoEl.addEventListener('ended', () => showCat6Question(qIndex));
-    }, 100);
-  }
-}
-
-function showCat6Question(qIndex) {
-  if (document.fullscreenElement) document.exitFullscreen();
-  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-  const doneBtn = document.getElementById('video-done-btn');
-  if (doneBtn) doneBtn.remove();
-  const container = document.getElementById('video-container-' + qIndex);
-  if (container) container.style.display = 'none';
-  const videoEl = document.getElementById('video-el');
-  if (videoEl) videoEl.pause();
-  const qArea = document.getElementById('video-question-area');
-  if (qArea) qArea.style.display = 'flex';
-  startTimer(30);
-}
-
-function revealCat6Answer() {
-  const area = document.getElementById('vq-answer-area');
-  if (area && window._cat6A) {
-    area.innerHTML = `<div class="answer-box fade-in">✅ ${window._cat6A}</div>`;
-  }
-}
 
   sa.innerHTML = `
     <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
@@ -3874,40 +3781,45 @@ function startHostCmdListener() {
         if (spinBtn && !spinBtn.disabled) spinBtn.click();
       }, 700);
     } else if (cmd === 'videoPlay') {
-      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      const driveId = window._cat6DriveId;
-      if (driveId) {
-        playDriveVideo(driveId, qIdx);
-      } else {
-        const v = document.getElementById('video-el');
-        if (v) v.play();
+      const v = document.getElementById('video-el');
+      if (v) { v.play(); return; }
+      // For Drive video — trigger tap
+      const qIdx = G.currentQ - 1;
+      const item = G.media.r5?.[qIdx];
+      if (item?.driveId) {
+        const wrap = document.getElementById('video-frame-wrap-' + qIdx);
+        if (wrap && wrap.style.display !== 'none') {
+          playDriveVideo(item.driveId, qIdx);
+        } else {
+          // Already playing - reload
+          const frame = document.getElementById('video-frame-' + qIdx);
+          if (frame) { const s = frame.src; frame.src = ''; setTimeout(()=>frame.src=s, 100); }
+        }
       }
     } else if (cmd === 'videoRepeat') {
-      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      const driveId = window._cat6DriveId;
-      if (driveId) {
+      const v = document.getElementById('video-el');
+      if (v) { v.currentTime = 0; v.play(); }
+      // For Drive iframe — reload
+      const qIdx = G.currentQ - 1;
+      const item = G.media.r5?.[qIdx];
+      if (item?.driveId) {
         const frame = document.getElementById('video-frame-' + qIdx);
-        if (frame && frame.src) {
-          const s = frame.src; frame.src = ''; setTimeout(() => { frame.src = s; }, 100);
-        } else { playDriveVideo(driveId, qIdx); }
-      } else {
-        const v = document.getElementById('video-el');
-        if (v) { v.currentTime = 0; v.play(); }
+        if (frame && frame.src) { const s = frame.src; frame.src = ''; frame.src = s; }
       }
+    } else if (cmd === 'videoEnd') {
+      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
+      if (doneBtn) doneBtn.click();
     } else if (cmd === 'videoReveal') {
-      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      showCat6Question(qIdx);
+      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
+      if (doneBtn) doneBtn.click();
     } else if (cmd === 'revealAnswer') {
-      revealCat6Answer();
-      const btn = document.querySelector('.answer-reveal-btn');
-      if (btn && btn.id !== 'vq-reveal-btn') btn.click();
+      const revealBtn = document.querySelector('.answer-reveal-btn');
+      if (revealBtn) revealBtn.click();
     } else if (cmd === 'addScore') {
       const team = d.data?.team;
       const pts = d.data?.pts || 0;
       if (team) addScore(team, pts);
     }
-  });
-}
   });
 }
 
