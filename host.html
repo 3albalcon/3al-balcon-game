@@ -8,112 +8,106 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --dark:#060d1f; --yellow:#FFE600; --green:#39FF14; --cyan:#00EFFF; --red:#FF2D2D; }
-body {
-  font-family:'Cairo',sans-serif; background:var(--dark); color:#fff;
-  min-height:100dvh; display:flex; flex-direction:column;
-  overflow:hidden;
-}
-.overlay { position:fixed; inset:0; background:rgba(6,13,31,0.85); z-index:0; }
-.content { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; padding:10px 12px 0; min-height:100dvh; }
+body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-height:100dvh; display:flex; flex-direction:column; background-size:cover; background-position:center; }
+.overlay { position:fixed; inset:0; background:rgba(6,13,31,0.87); z-index:0; pointer-events:none; }
+.wrap { position:relative; z-index:1; display:flex; flex-direction:column; min-height:100dvh; padding:10px 12px max(16px,env(safe-area-inset-bottom)); gap:8px; overflow-y:auto; }
+
 .logo { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:3px; text-align:center; flex-shrink:0; }
-.scroll-area { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-bottom:8px; }
-.bottom-bar { background:rgba(6,13,31,0.95); border-top:1px solid rgba(255,255,255,0.1); padding:8px 0 max(12px,env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:7px; flex-shrink:0; }
 
-.status-bar { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.12); }
-.status-cat { font-weight:900; color:var(--cyan); font-size:13px; }
-.status-q { color:rgba(255,255,255,0.4); font-size:11px; }
-.score-bar { display:flex; gap:8px; align-items:center; padding:7px 12px; border-radius:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); }
-.score-team { flex:1; display:flex; flex-direction:column; align-items:center; }
-.score-name { font-size:11px; font-weight:700; }
-.score-pts { font-size:26px; font-weight:900; line-height:1; }
+.status-bar { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.12); flex-shrink:0; }
+.s-cat { font-weight:900; color:var(--cyan); font-size:13px; }
+.s-q { color:rgba(255,255,255,0.4); font-size:11px; }
 
-.q-box { background:rgba(0,239,255,0.07); border:2px solid var(--cyan); border-radius:12px; padding:12px; font-size:16px; font-weight:700; text-align:center; line-height:1.5; direction:rtl; }
-.a-box { background:rgba(57,255,20,0.07); border:2px solid var(--green); border-radius:12px; padding:10px; font-size:22px; font-weight:900; text-align:center; color:var(--green); text-shadow:0 0 10px rgba(57,255,20,0.4); }
-.a-hidden { background:rgba(255,255,255,0.03); border:2px dashed rgba(255,255,255,0.15); border-radius:12px; padding:10px; font-size:13px; text-align:center; color:rgba(255,255,255,0.3); cursor:pointer; }
-.waiting { font-size:13px; color:rgba(255,255,255,0.3); text-align:center; animation:pulse 2s infinite; padding:12px; }
+.score-bar { display:flex; gap:8px; align-items:center; padding:7px 12px; border-radius:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
+.sc-team { flex:1; display:flex; flex-direction:column; align-items:center; }
+.sc-name { font-size:11px; font-weight:700; }
+.sc-pts { font-size:26px; font-weight:900; line-height:1; }
+
+/* Content cards */
+.card { background:rgba(0,0,0,0.4); border-radius:12px; padding:12px; border:1px solid rgba(255,255,255,0.1); }
+.q-card { border-color:var(--cyan); background:rgba(0,239,255,0.06); font-size:16px; font-weight:700; text-align:center; line-height:1.5; direction:rtl; }
+.a-card { border-color:var(--green); background:rgba(57,255,20,0.06); font-size:20px; font-weight:900; text-align:center; color:var(--green); text-shadow:0 0 10px rgba(57,255,20,0.3); direction:rtl; }
+.info-card { font-size:13px; font-weight:700; text-align:center; color:rgba(255,255,255,0.5); padding:10px; }
+.waiting { font-size:13px; color:rgba(255,255,255,0.3); text-align:center; animation:pulse 2s infinite; padding:16px; }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-.section-lbl { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:2px; text-align:center; }
+
+/* Buttons */
+.btn-row { display:flex; gap:6px; }
+.btn { flex:1; padding:12px 0; border-radius:10px; font-family:'Cairo',sans-serif; font-size:13px; font-weight:900; cursor:pointer; border:2px solid; text-align:center; transition:all 0.15s; }
+.btn:active { transform:scale(0.93); }
+.btn:disabled { opacity:0.2; cursor:default; transform:none; }
+.btn-g { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.06); }
+.btn-c { border-color:var(--cyan); color:var(--cyan); background:rgba(0,239,255,0.06); }
+.btn-y { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.06); }
+.btn-w { border-color:rgba(255,255,255,0.18); color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.03); }
+.btn-r { border-color:var(--red); color:var(--red); background:rgba(255,45,45,0.06); }
+.btn-sm { font-size:12px; padding:9px 0; }
+
+/* Score buttons */
+.score-btns { display:flex; flex-direction:column; gap:6px; }
+.score-btns .btn-row .btn { font-size:12px; }
 
 /* Cat grid */
+.lbl { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:2px; text-align:center; }
 .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.cat-btn { padding:10px 6px; border-radius:9px; border:1.5px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.3); color:rgba(255,255,255,0.65); font-family:'Cairo',sans-serif; font-size:11px; font-weight:700; cursor:pointer; text-align:center; line-height:1.4; transition:all 0.2s; }
+.cat-btn { padding:10px 6px; border-radius:9px; border:1.5px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.3); color:rgba(255,255,255,0.6); font-family:'Cairo',sans-serif; font-size:11px; font-weight:700; cursor:pointer; text-align:center; line-height:1.4; transition:all 0.2s; }
 .cat-btn:active { transform:scale(0.93); }
-.cat-btn.done { opacity:0.2; cursor:not-allowed; text-decoration:line-through; }
-.cat-btn.current { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.07); }
-.cat-btn.roulette { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.1); animation:pulse 1s infinite; box-shadow:0 0 12px rgba(57,255,20,0.3); }
+.cat-btn.done { opacity:0.15; cursor:not-allowed; text-decoration:line-through; }
+.cat-btn.current { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.07); cursor:not-allowed; }
+.cat-btn.roulette { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.08); animation:pulse 1s infinite; box-shadow:0 0 10px rgba(57,255,20,0.25); }
+.cat-btn.locked { opacity:0.3; cursor:not-allowed; }
 
 /* Cat3 */
 .bid-row { display:flex; gap:8px; }
 .bid-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px; border-radius:10px; }
-.bid-card-a { background:rgba(229,1,88,0.08); border:1.5px solid #E50158; }
-.bid-card-b { background:rgba(226,218,81,0.08); border:1.5px solid #E2DA51; }
+.bid-a { background:rgba(229,1,88,0.08); border:1.5px solid #E50158; }
+.bid-b { background:rgba(226,218,81,0.08); border:1.5px solid #E2DA51; }
 .bid-n { font-size:11px; font-weight:700; }
 .bid-v { font-size:36px; font-weight:900; line-height:1; }
 .ans-chip { padding:7px 10px; border-radius:7px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:5px; }
 .chip-p { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); }
 .chip-ok { background:rgba(57,255,20,0.07); border:1px solid var(--green); color:var(--green); }
 .chip-no { background:rgba(255,45,45,0.07); border:1px solid var(--red); color:var(--red); }
-
-/* Buttons */
-.btn-row { display:flex; gap:6px; }
-.cbtn { flex:1; padding:13px 0; border-radius:11px; font-family:'Cairo',sans-serif; font-size:14px; font-weight:900; cursor:pointer; border:2px solid; transition:all 0.15s; text-align:center; }
-.cbtn:active { transform:scale(0.93); }
-.cbtn:disabled { opacity:0.2; cursor:default; transform:none; }
-.cbtn-g { border-color:var(--green); color:var(--green); background:rgba(57,255,20,0.06); }
-.cbtn-c { border-color:var(--cyan); color:var(--cyan); background:rgba(0,239,255,0.06); }
-.cbtn-y { border-color:var(--yellow); color:var(--yellow); background:rgba(255,230,0,0.06); }
-.cbtn-w { border-color:rgba(255,255,255,0.18); color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.03); font-size:12px; }
-.cbtn-r { border-color:var(--red); color:var(--red); background:rgba(255,45,45,0.06); font-size:12px; }
 </style>
 </head>
 <body>
 <div class="overlay" id="bg-overlay"></div>
-<div class="content">
+<div class="wrap" id="main-wrap">
   <div class="logo">🎙 HOST — 3AL BALCON</div>
 
-  <div class="scroll-area">
-    <!-- Status + Score -->
-    <div class="status-bar">
-      <span class="status-cat" id="s-cat">—</span>
-      <span class="status-q" id="s-q"></span>
-    </div>
-    <div class="score-bar">
-      <div class="score-team">
-        <div class="score-name" id="sc-na" style="color:#E50158">الفريق أ</div>
-        <div class="score-pts" id="sc-a" style="color:#E50158">0</div>
-      </div>
-      <div style="font-size:14px;color:rgba(255,255,255,0.15);font-weight:900">VS</div>
-      <div class="score-team">
-        <div class="score-name" id="sc-nb" style="color:#E2DA51">الفريق ب</div>
-        <div class="score-pts" id="sc-b" style="color:#E2DA51">0</div>
-      </div>
-    </div>
-
-    <!-- Dynamic content -->
-    <div id="dyn-content">
-      <div class="waiting">انتظر بدء اللعبة...</div>
-    </div>
-
-    <!-- Category grid -->
-    <div class="section-lbl">— اختر فقرة —</div>
-    <div class="cat-grid" id="cat-grid"></div>
+  <div class="status-bar">
+    <span class="s-cat" id="s-cat">—</span>
+    <span class="s-q" id="s-q"></span>
   </div>
 
-  <!-- Fixed bottom controls -->
-  <div class="bottom-bar">
-    <div class="btn-row">
-      <button class="cbtn cbtn-c" id="btn-prev" onclick="cmd('prev')" disabled>← السابق</button>
-      <button class="cbtn cbtn-g" id="btn-next" onclick="cmd('next')" disabled>التالي →</button>
+  <div class="score-bar">
+    <div class="sc-team">
+      <div class="sc-name" id="sc-na" style="color:#E50158">أ</div>
+      <div class="sc-pts" id="sc-a" style="color:#E50158">0</div>
     </div>
-    <div class="btn-row">
-      <button class="cbtn cbtn-w" onclick="goMenu()">🏠 القائمة</button>
-      <button class="cbtn cbtn-y" id="btn-ans" onclick="toggleAnswer()" style="display:none">👁 الجواب</button>
-
-    </div>
-    <div class="btn-row">
-      <button class="cbtn cbtn-r" onclick="cmd('roulette')" style="font-size:12px">🎰 شو بدنا نختار</button>
+    <div style="font-size:12px;color:rgba(255,255,255,0.15)">VS</div>
+    <div class="sc-team">
+      <div class="sc-name" id="sc-nb" style="color:#E2DA51">ب</div>
+      <div class="sc-pts" id="sc-b" style="color:#E2DA51">0</div>
     </div>
   </div>
+
+  <!-- Dynamic content -->
+  <div id="dyn"></div>
+
+  <!-- Nav controls — always visible -->
+  <div class="btn-row" id="nav-row">
+    <button class="btn btn-c btn-sm" id="btn-prev" onclick="c('prev')" disabled>← السابق</button>
+    <button class="btn btn-g btn-sm" id="btn-next" onclick="c('next')" disabled>التالي →</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-w btn-sm" onclick="goMenu()">🏠 القائمة</button>
+    <button class="btn btn-r btn-sm btn-sm" onclick="c('roulette')">🎰 شو بدنا نختار</button>
+  </div>
+
+  <!-- Category grid — always at bottom -->
+  <div class="lbl">— اختر فقرة —</div>
+  <div class="cat-grid" id="cat-grid"></div>
 </div>
 
 <script type="module">
@@ -133,242 +127,179 @@ const app = initializeApp(cfg);
 const db = getDatabase(app);
 
 const ROUNDS = [
-  {id:'r1',num:1,name:'وين شايفو هالوجه؟'},
-  {id:'r2',num:2,name:'ما تذكرتني بعد؟'},
-  {id:'r3',num:3,name:'مزاد علني'},
-  {id:'r10',num:4,name:'متفرقات سريعة'},
-  {id:'r4',num:5,name:'سمعني الدندنة'},
-  {id:'r5',num:6,name:'سكوت و ركز'},
-  {id:'r6',num:7,name:'يا حبيبي قرب ليي'},
-  {id:'r7',num:8,name:'يا قريب يا غريب'},
-  {id:'r8',num:9,name:'سكر تمك'},
-  {id:'r9',num:10,name:'من كل وادي عصا'},
+  {id:'r1',num:1,name:'وين شايفو هالوجه؟',plus:2,minus:0},
+  {id:'r2',num:2,name:'ما تذكرتني بعد؟',plus:1,minus:0},
+  {id:'r3',num:3,name:'مزاد علني',plus:4,minus:-2},
+  {id:'r10',num:4,name:'متفرقات سريعة',plus:2,minus:0},
+  {id:'r4',num:5,name:'سمعني الدندنة',plus:2,minus:0},
+  {id:'r5',num:6,name:'سكوت و ركز',plus:3,minus:0},
+  {id:'r6',num:7,name:'يا حبيبي قرب ليي',plus:2,minus:-1},
+  {id:'r7',num:8,name:'يا قريب يا غريب',plus:4,minus:-2},
+  {id:'r8',num:9,name:'سكر تمك',plus:2,minus:0},
+  {id:'r9',num:10,name:'من كل وادي عصا',plus:2,minus:0},
 ];
-const HAS_REVEAL = ['r1','r2','r4','r6','r7','r9','r10'];
 
-let state = {};
-let rouletteResult = null;
-let view = {};
-let cat3 = null;
-let cat3Room = null;
-let answerShown = false;
-let currentAnswer = '';
+let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
 
-// ── Send command ──
-window.cmd = (command, data={}) => {
-  set(ref(db,'hostCmd'), { cmd:command, data, ts:Date.now() });
+// Send command to main screen
+window.c = (cmd, data={}) => set(ref(db,'hostCmd'), {cmd, data, ts:Date.now()});
+
+window.goMenu = () => {
+  c('menu');
+  state = {...state, currentRound:null, currentQ:-1, onGameScreen:false};
+  view = {};
+  render();
 };
 
-function scoreButtons() {
-  const tA = state.teamA || 'أ';
-  const tB = state.teamB || 'ب';
-  return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:4px">
-    <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center">— نقاط يدوية —</div>
-    <div style="display:flex;gap:6px">
-      <button class="cbtn cbtn-g" onclick="cmd('addScore',{team:'a',pts:2})" style="font-size:12px;padding:10px 0">+2 ${tA}</button>
-      <button class="cbtn cbtn-r" onclick="cmd('addScore',{team:'a',pts:-2})" style="font-size:12px;padding:10px 0">-2 ${tA}</button>
-    </div>
-    <div style="display:flex;gap:6px">
-      <button class="cbtn cbtn-g" onclick="cmd('addScore',{team:'b',pts:2})" style="font-size:12px;padding:10px 0">+2 ${tB}</button>
-      <button class="cbtn cbtn-r" onclick="cmd('addScore',{team:'b',pts:-2})" style="font-size:12px;padding:10px 0">-2 ${tB}</button>
-    </div>
-  </div>`;
-}
-
-window.toggleAnswer = () => {
-  answerShown = !answerShown;
-  const aEl = document.getElementById('answer-el');
-  const btn = document.getElementById('btn-ans');
-  if (!aEl) return;
-  if (answerShown) {
-    aEl.className = 'a-box';
-    aEl.textContent = currentAnswer;
-    if (btn) btn.textContent = '🙈 اخفِ';
-    cmd('revealAnswer'); // also reveal on main screen
-  } else {
-    aEl.className = 'a-hidden';
-    aEl.textContent = '👁 اضغط لكشف الجواب';
-    aEl.onclick = toggleAnswer;
-    if (btn) btn.textContent = '👁 الجواب';
-  }
-};
-
-// ── Render dynamic content ──
 function render() {
-  const dyn = document.getElementById('dyn-content');
+  const sCat = document.getElementById('s-cat');
+  const sQ = document.getElementById('s-q');
+  const scNa = document.getElementById('sc-na');
+  const scNb = document.getElementById('sc-nb');
+  const scA = document.getElementById('sc-a');
+  const scB = document.getElementById('sc-b');
+  const dyn = document.getElementById('dyn');
   const btnNext = document.getElementById('btn-next');
   const btnPrev = document.getElementById('btn-prev');
-  const btnAns = document.getElementById('btn-ans');
   const catGrid = document.getElementById('cat-grid');
-  if (!state || !state.teamA) {
+
+  if (!state.teamA) {
     dyn.innerHTML = '<div class="waiting">انتظر بدء اللعبة...</div>';
-    btnNext.disabled = true; btnPrev.disabled = true; btnAns.style.display='none';
+    btnNext.disabled = true; btnPrev.disabled = true;
     return;
   }
 
-  // Score
-  document.getElementById('sc-na').textContent = state.teamA || 'الفريق أ';
-  document.getElementById('sc-nb').textContent = state.teamB || 'الفريق ب';
-  document.getElementById('sc-a').textContent = state.scoreA || 0;
-  document.getElementById('sc-b').textContent = state.scoreB || 0;
+  // Scores
+  scNa.textContent = state.teamA || 'أ';
+  scNb.textContent = state.teamB || 'ب';
+  scA.textContent = state.scoreA || 0;
+  scB.textContent = state.scoreB || 0;
 
   // Status
   const round = ROUNDS.find(r => r.id === state.currentRound);
   const q = state.currentQ;
-  document.getElementById('s-cat').textContent = round ? `فقرة ${round.num}: ${round.name}` : 'القائمة';
-  document.getElementById('s-q').textContent =
-    q === undefined || q === null ? '' :
-    q === -1 ? 'العنوان' : q === 0 ? 'القوانين' : `سؤال ${q}`;
+  sCat.textContent = round ? `فقرة ${round.num}: ${round.name}` : 'القائمة';
+  sQ.textContent = q===-1?'العنوان':q===0?'القوانين':q>=1?`سؤال ${q}`:'';
 
   // Nav buttons
   const inGame = state.onGameScreen && !!state.currentRound;
+  const maxQ = state.currentRoundCount || 10;
   btnNext.disabled = !inGame;
-  btnPrev.disabled = !inGame || (q === undefined || q <= -1);
+  btnPrev.disabled = !inGame || q <= -1;
 
   // Category grid
   const done = state.done || [];
-  const rouletteId = rouletteResult?.id;
+  const inCat = !!state.currentRound && state.onGameScreen;
   catGrid.innerHTML = ROUNDS.map(r => {
     const isDone = done.includes(r.id);
     const isCurrent = state.currentRound === r.id;
-    const isRoulette = rouletteId === r.id && !isCurrent;
-    return `<button class="cat-btn ${isDone?'done':''} ${isCurrent?'current':''} ${isRoulette?'roulette':''}"
-      ${isDone?'disabled':''}
-      onclick="cmd('openCat',{id:'${r.id}'})">
-      ${isRoulette ? '🎯 ' : ''}${r.num}. ${r.name}
+    const isRoulette = roulette?.id === r.id && !isCurrent && !isDone;
+    const isLocked = inCat && !isCurrent; // lock all others when in a category
+    const cls = isDone?'done':isCurrent?'current':isRoulette?'roulette':isLocked?'locked':'';
+    const disabled = isDone || isCurrent || isLocked;
+    return `<button class="cat-btn ${cls}" ${disabled?'disabled':''}
+      onclick="${disabled?'':'c(\'openCat\',{id:\''+r.id+'\'})'} ">
+      ${isRoulette?'🎯 ':''}${r.num}. ${r.name}
     </button>`;
   }).join('');
 
-  // Dynamic content area
+  // Dynamic content
   if (!round || !state.onGameScreen) {
-    dyn.innerHTML = '<div class="waiting">اختر فقرة من القائمة أعلاه</div>';
-    btnAns.style.display = 'none';
+    dyn.innerHTML = roulette
+      ? `<div class="card info-card" style="color:var(--green);border-color:var(--green)">🎯 اللعبة اختارت: ${roulette.name}</div>`
+      : '<div class="waiting">اختر فقرة من القائمة</div>';
     return;
   }
 
-  // Title slide
   if (q === -1) {
-    dyn.innerHTML = `
-      <div class="q-box" style="color:var(--yellow);border-color:var(--yellow);font-size:18px">🎬 ${round.name}</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center">التالي → قوانين اللعبة</div>`;
-    btnAns.style.display = 'none';
+    dyn.innerHTML = `<div class="card q-card" style="color:var(--yellow);border-color:var(--yellow);font-size:18px">🎬 ${round.name}</div>
+      <div class="info-card">التالي → قوانين اللعبة</div>`;
     return;
   }
-
-  // Rules slide
   if (q === 0) {
-    dyn.innerHTML = `
-      <div class="q-box" style="color:var(--cyan);border-color:var(--cyan)">📋 قوانين: ${round.name}</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center">التالي → السؤال الأول</div>`;
-    btnAns.style.display = 'none';
+    dyn.innerHTML = `<div class="card q-card" style="color:var(--cyan)">📋 قوانين: ${round.name}</div>
+      <div class="info-card">التالي → السؤال الأول</div>`;
     return;
   }
 
-  // Cat 3 — bidding
+  // Cat 3
   if (state.currentRound === 'r3') {
-    btnAns.style.display = 'none';
     if (!cat3) { dyn.innerHTML = '<div class="waiting">انتظر بدء المزاد...</div>'; return; }
-    const bids = cat3.bids || {};
-    const answers = cat3.answers || [];
-    const wName = cat3.auctionWinner === 'a' ? cat3.teamA : cat3.auctionWinner === 'b' ? cat3.teamB : null;
+    const bids = cat3.bids||{};
+    const answers = cat3.answers||[];
     dyn.innerHTML = `
-      ${cat3.question ? `<div class="q-box">${cat3.question}</div>` : ''}
+      ${cat3.question?`<div class="card q-card">${cat3.question}</div>`:''}
       <div class="bid-row">
-        <div class="bid-card bid-card-a">
-          <div class="bid-n" style="color:#E50158">${cat3.teamA||'أ'}</div>
-          <div class="bid-v" style="color:#E50158">${bids.a?.value||'—'}</div>
-        </div>
+        <div class="bid-card bid-a"><div class="bid-n" style="color:#E50158">${cat3.teamA||'أ'}</div><div class="bid-v" style="color:#E50158">${bids.a?.value||'—'}</div></div>
         <div style="font-size:12px;color:rgba(255,255,255,0.2);align-self:center">VS</div>
-        <div class="bid-card bid-card-b">
-          <div class="bid-n" style="color:#E2DA51">${cat3.teamB||'ب'}</div>
-          <div class="bid-v" style="color:#E2DA51">${bids.b?.value||'—'}</div>
-        </div>
+        <div class="bid-card bid-b"><div class="bid-n" style="color:#E2DA51">${cat3.teamB||'ب'}</div><div class="bid-v" style="color:#E2DA51">${bids.b?.value||'—'}</div></div>
       </div>
-      ${wName ? `<div style="font-size:12px;font-weight:700;color:var(--green);text-align:center">🏆 ${wName} — ${cat3.winningBid} أجوبة</div>` : ''}
+      ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB} — ${cat3.winningBid} أجوبة</div>`:''}
       <div style="display:flex;flex-direction:column;gap:5px">
-        ${answers.length ? answers.map((a,i)=>`
-          <div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}">
-            <span>${i+1}.</span><span style="flex:1">${a.text}</span>
-            <span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span>
-          </div>`).join('') :
-          '<div style="color:rgba(255,255,255,0.2);font-size:11px;text-align:center">لا أجوبة بعد</div>'
-        }
+        ${answers.length?answers.map((a,i)=>`<div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}"><span>${i+1}.</span><span style="flex:1">${a.text}</span><span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span></div>`).join(''):'<div class="info-card">لا أجوبة بعد</div>'}
       </div>`;
     return;
   }
 
   // Cat 6 — video controls
   if (state.currentRound === 'r5') {
-    btnAns.style.display = 'none';
-    const qText = view.question || '';
-    const ans = view.answer || '';
     dyn.innerHTML = `
-      <div class="q-box" style="color:var(--yellow);border-color:var(--yellow)">🎬 ${view.categoryName||''} — فيديو ${q}</div>
-      <div style="display:flex;flex-direction:column;gap:8px;width:100%">
-        <button class="cbtn cbtn-y" onclick="cmd('videoReveal')" style="font-size:13px">⏭ انتهى الفيديو — اعرض السؤال</button>
-        ${qText ? `<div class="q-box" style="font-size:14px">${qText}</div>` : ''}
-        ${ans ? `<button class="cbtn cbtn-g" onclick="cmd('revealAnswer')" style="font-size:13px">👁 كشف الجواب</button>` : ''}
-        ${ans ? `<div class="a-box" style="font-size:16px;display:none" id="host-ans-box">${ans}</div>` : ''}
+      <div class="card q-card" style="color:var(--yellow);border-color:var(--yellow)">🎬 فيديو ${q} من ${state.currentRoundCount||4}</div>
+      <div class="btn-row">
+        <button class="btn btn-g btn-sm" onclick="c('videoPlay')">▶ تشغيل</button>
+        <button class="btn btn-y btn-sm" onclick="c('videoRepeat')">🔁 إعادة</button>
+        <button class="btn btn-r btn-sm" onclick="c('videoEnd')">⏹ إنهاء</button>
       </div>
-      ${scoreButtons()}`;
+      <button class="btn btn-c btn-sm" onclick="c('videoReveal')" style="width:100%">📋 عرض السؤال</button>
+      ${view.answer?`<div class="card a-card">${view.answer}</div>`:''}
+      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="width:100%">👁 كشف الجواب للجميع</button>`:''}
+      ${scoreSection(round)}`;
     return;
   }
 
-  // Normal question slide
+  // All other categories
   const qText = view.question || '';
-  currentAnswer = view.answer || '';
-  const hasReveal = HAS_REVEAL.includes(state.currentRound) && currentAnswer;
-  answerShown = false;
-
-  btnAns.style.display = hasReveal ? 'flex' : 'none';
-  btnAns.textContent = '👁 الجواب';
-
+  const ans = view.answer || '';
   dyn.innerHTML = `
-    ${qText ? `<div class="q-box">${qText}</div>` : '<div class="waiting">جاري تحميل السؤال...</div>'}
-    <div id="answer-el" class="${hasReveal ? 'a-hidden' : (currentAnswer ? 'a-box' : '')}"
-      onclick="${hasReveal ? 'toggleAnswer()' : ''}">
-      ${hasReveal ? '👁 اضغط لكشف الجواب' : currentAnswer}
-    </div>
-    ${scoreButtons()}`;
+    ${qText?`<div class="card q-card">${qText}</div>`:'<div class="waiting">جاري تحميل السؤال...</div>'}
+    ${ans?`<div class="card a-card">${ans}</div>`:''}
+    ${ans?`<button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="width:100%;margin-top:2px">👁 كشف الجواب للجميع</button>`:''}
+    ${scoreSection(round)}`;
 }
 
-// ── Firebase listeners ──
-onValue(ref(db,'hostView'), snap => {
-  view = snap.val() || {};
-  render();
-});
+function scoreSection(round) {
+  if (!round) return '';
+  const tA = state.teamA||'أ';
+  const tB = state.teamB||'ب';
+  const plus = round.plus || 2;
+  const minus = round.minus || 0;
+  let html = `<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+    <div class="lbl">— نقاط يدوية —</div>
+    <div class="btn-row">
+      <button class="btn btn-g btn-sm" onclick="c('addScore',{team:'a',pts:${plus}})">+${plus} ${tA}</button>
+      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'a',pts:${minus}})">${minus} ${tA}</button>`:''}
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-g btn-sm" onclick="c('addScore',{team:'b',pts:${plus}})">+${plus} ${tB}</button>
+      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'b',pts:${minus}})">${minus} ${tB}</button>`:''}
+    </div>
+  </div>`;
+  return html;
+}
 
-onValue(ref(db,'hostState'), snap => {
-  state = snap.val() || {};
-  // Cat3 room watcher
+// Firebase listeners
+onValue(ref(db,'hostView'), s => { view = s.val()||{}; render(); });
+onValue(ref(db,'hostState'), s => {
+  state = s.val()||{};
   if (state.cat3RoomId && state.cat3RoomId !== cat3Room) {
     cat3Room = state.cat3RoomId;
-    onValue(ref(db,`rooms/${cat3Room}`), rSnap => {
-      cat3 = rSnap.val();
-      render();
-    });
+    onValue(ref(db,`rooms/${cat3Room}`), r => { cat3 = r.val(); render(); });
   }
   render();
 });
-
-window.goMenu = () => {
-  cmd('menu');
-  // Clear local state display
-  state = { ...state, currentRound: null, currentQ: -1, onGameScreen: false };
-  view = {};
-  answerShown = false;
-  render();
-};
-
-// Roulette result listener
-onValue(ref(db,'rouletteResult'), snap => {
-  rouletteResult = snap.val();
-  render();
-});
-
-// Wallpaper
-onValue(ref(db,'hostWallpaper'), snap => {
-  const url = snap.val();
+onValue(ref(db,'rouletteResult'), s => { roulette = s.val(); render(); });
+onValue(ref(db,'hostWallpaper'), s => {
+  const url = s.val();
   if (url) document.body.style.backgroundImage = `url('${url}')`;
 });
 </script>

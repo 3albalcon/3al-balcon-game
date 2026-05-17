@@ -3420,6 +3420,8 @@ function showResult() {
     else addScore(winner, -2);
     window._pendingCat3Score = null;
   }
+  G.currentRound = null;
+  setTimeout(pushHostState, 200);
   stopTimer();
   G.done.add(G.currentRound.id);
   const sa = document.getElementById('slide-area');
@@ -3622,9 +3624,15 @@ function pushHostState() {
   const fbSet = window._fbSet;
   if (!db || !fbSet || !fbRef) return;
   const gameScreenVisible = document.getElementById('game-screen')?.style?.display !== 'none';
+  const r = G.currentRound;
   fbSet(fbRef(db, 'hostState'), {
     done: [...(G.done || [])],
-    currentRound: G.currentRound?.id || null,
+    currentRound: r?.id || null,
+    currentRoundName: r?.name || null,
+    currentRoundPts: r?.pts || null,
+    currentRoundPlus: r?.plus || null,
+    currentRoundMinus: r?.minus || null,
+    currentRoundCount: r?.count || null,
     currentQ: G.currentQ,
     teamA: G.teamA,
     teamB: G.teamB,
@@ -3655,7 +3663,14 @@ function startHostCmdListener() {
     console.log('Executing cmd:', cmd);
 
     if (cmd === 'next') {
-      if (G.currentRound) { nextQ(); }
+      if (G.currentRound) {
+        const r = G.currentRound;
+        if (G.currentQ >= r.count) {
+          showResult();
+        } else {
+          nextQ();
+        }
+      }
       else { console.warn('next: no currentRound'); }
     } else if (cmd === 'prev') {
       if (G.currentRound && G.currentQ > -1) {
@@ -3675,7 +3690,8 @@ function startHostCmdListener() {
       pushHostState();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      if (roundId && !G.done.has(roundId)) {
+      // Only allow if not currently in a category AND not already done
+      if (roundId && !G.done.has(roundId) && !G.currentRound) {
         const round = ROUNDS.find(r => r.id === roundId);
         if (round) {
           G.currentRound = round;
@@ -3685,27 +3701,35 @@ function startHostCmdListener() {
           show('game-screen');
           renderSlide();
           pushHostState();
+          // Clear roulette highlight
+          const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+          if (db && fbSet) fbSet(fbRef(db, 'rouletteResult'), null);
         }
       }
     } else if (cmd === 'roulette') {
-      // Show menu, open roulette panel, and auto-spin
       G.currentRound = null;
       show('menu-screen');
       buildMenu();
       setTimeout(() => {
         const panel = document.getElementById('roulette-panel');
-        if (panel) {
-          panel.style.display = 'flex';
-          spinRoulette();
-        }
-      }, 400);
+        if (panel) panel.style.display = 'flex';
+      }, 200);
+      setTimeout(() => {
+        spinRoulette();
+      }, 600);
+    } else if (cmd === 'videoPlay') {
+      const v = document.getElementById('video-el');
+      if (v) v.play();
+    } else if (cmd === 'videoRepeat') {
+      const v = document.getElementById('video-el');
+      if (v) { v.currentTime = 0; v.play(); }
+    } else if (cmd === 'videoEnd') {
+      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
+      if (doneBtn) doneBtn.click();
     } else if (cmd === 'videoReveal') {
-      // Show question after video
-      const doneBtn = document.querySelector('.nav-btn[data-video-done]') ||
-        [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
+      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
       if (doneBtn) doneBtn.click();
     } else if (cmd === 'revealAnswer') {
-      // Reveal answer on main screen
       const revealBtn = document.querySelector('.answer-reveal-btn');
       if (revealBtn) revealBtn.click();
     } else if (cmd === 'addScore') {
