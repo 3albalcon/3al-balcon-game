@@ -1177,7 +1177,7 @@ window.addEventListener('load', () => {
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDEA8wcJCFoLFaxjJX1xusFcxiE00wJy1B5H0Dt8MGU4HrbExKM87LVFRIIF382bmjbw/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwALe0MIvue59PQ_hM4mDJKCFP4PClYcVA1QKvhdKHM56dtwrbrZFZaZHns6UlcpiMarw/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -3178,29 +3178,18 @@ function openVideoNewTab(driveId) {
 }
 
 function openVideoOverlay(driveId, directUrl, qIndex) {
-  // Simply load the iframe src on tap — no fullscreen, no overlay
-  // This is a user gesture so browsers allow it
   const container = document.getElementById('video-container-' + qIndex);
   if (!container) return;
-
-  if (driveId) {
-    container.innerHTML = `
-      <iframe
-        src="https://drive.google.com/file/d/${driveId}/preview"
-        style="width:100%;height:100%;border:none;display:block;"
-        allow="autoplay; fullscreen"
-        allowfullscreen
-        id="video-frame-${qIndex}"
-      ></iframe>`;
-    container.onclick = null; // remove tap handler after loading
-  } else if (directUrl) {
-    container.innerHTML = `
-      <video src="${directUrl}" autoplay controls playsinline
-        style="width:100%;height:100%;display:block;object-fit:contain;background:#000;"
-        id="video-el">
-      </video>`;
-    container.onclick = null;
-  }
+  const src = directUrl || (driveId ? `https://drive.google.com/uc?export=download&id=${driveId}` : '');
+  if (!src) return;
+  container.innerHTML = `
+    <video autoplay controls playsinline
+      style="width:100%;height:100%;display:block;object-fit:contain;background:#000;"
+      id="video-el-${qIndex}">
+      <source src="${src}" type="video/mp4">
+    </video>`;
+  container.style.cursor = 'default';
+  container.onclick = null;
 }
 
 function openVideoFullscreen(qIndex) {
