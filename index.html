@@ -1177,7 +1177,7 @@ window.addEventListener('load', () => {
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXJ0cdo2qRrJs4gmUG3kiLrf6MGgMW6lHhxyBnDmpqGuqJpBqkOa5plQ106G0wJ1S4bQ/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDEA8wcJCFoLFaxjJX1xusFcxiE00wJy1B5H0Dt8MGU4HrbExKM87LVFRIIF382bmjbw/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -3082,23 +3082,15 @@ function renderTeamVideo(r, qIndex, sa) {
       <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
         <div class="video-container">
           ${item.driveId ? `
-            <div id="video-frame-wrap-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#000;cursor:pointer;border-radius:12px"
-              onclick="playDriveVideo('${item.driveId}', ${qIndex})">
-              <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
-                <div style="font-size:36px;margin-right:-4px">▶</div>
-              </div>
-              <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.7)">اضغط لتشغيل الفيديو</div>
-            </div>
             <iframe
-              id="video-frame-${qIndex}"
-              src=""
-              style="width:100%;height:100%;border:none;display:none;"
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              src="https://drive.google.com/file/d/${item.driveId}/preview"
+              style="width:100%;height:100%;border:none;display:block;"
+              allow="autoplay; fullscreen"
               allowfullscreen
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
+              id="video-frame-${qIndex}"
             ></iframe>
           ` : `
-            <video id="video-el" src="${item.url}" controls playsinline style="width:100%;height:100%;display:block;object-fit:contain"></video>
+            <video id="video-el" src="${item.url}" controls style="width:100%;height:100%;display:block;object-fit:contain"></video>
           `}
         </div>
       </div>
@@ -3167,13 +3159,16 @@ function renderTeamVideo(r, qIndex, sa) {
 }
 
 function playDriveVideo(driveId, qIndex) {
-  const wrap = document.getElementById('video-frame-wrap-' + qIndex);
+  // Reload the iframe to restart the video
   const frame = document.getElementById('video-frame-' + qIndex);
-  if (wrap) wrap.style.display = 'none';
   if (frame) {
-    // Use uc?export=view for better tablet compatibility
-    frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
-    frame.style.display = 'block';
+    const src = `https://drive.google.com/file/d/${driveId}/preview`;
+    if (!frame.src || frame.src === 'about:blank') {
+      frame.src = src;
+    } else {
+      frame.src = '';
+      setTimeout(() => { frame.src = src; }, 100);
+    }
   }
 }
 
