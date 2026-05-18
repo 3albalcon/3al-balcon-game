@@ -280,10 +280,22 @@ function render() {
     return;
   }
 
-  // All other categories
+  // Closest categories (r6, r7) — show question reveal and answer reveal buttons
   const qText = view.question || '';
   const ans = view.answer || '';
-  // For image/charades cats, don't show question (it's just 'صورة X'), only answer
+  if (['r6','r7'].includes(state.currentRound)) {
+    dyn.innerHTML = `
+      ${qText ? `<div class="card q-card">${qText}</div>` : '<div class="waiting">اضغط عرض السؤال أولاً</div>'}
+      ${ans ? `<div class="card a-card">${ans}</div>` : ''}
+      <div class="btn-row">
+        <button class="btn btn-c btn-sm" onclick="c('showQuestion')" style="font-size:12px">📋 عرض السؤال</button>
+        <button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="font-size:12px">👁 كشف الجواب</button>
+      </div>
+      ${scoreSection(round)}`;
+    return;
+  }
+
+  // All other categories
   const isImgCat = ['r1','r2','r8'].includes(state.currentRound);
   dyn.innerHTML = `
     ${!isImgCat && qText ? `<div class="card q-card">${qText}</div>` : ''}
