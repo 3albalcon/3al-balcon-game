@@ -2211,7 +2211,7 @@ function renderRules(r, sa) {
         connectedA: false, connectedB: false,
         question: null, answerA: null, answerB: null,
         phase: 'waiting', ts: Date.now(),
-        wallpaper: G.hostWallpaperUrl || null
+        wallpaper: G.waitingScreenUrl || G.hostWallpaperUrl || null
       });
       // Listen for connections
       fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
@@ -2347,9 +2347,9 @@ function timerHTML(seconds=60) {
       </svg>
       <div class="timer-number" id="timer-num">${seconds}</div>
     </div>
-    <div style="display:flex;gap:10px">
-      <button class="timer-btn" onclick="startTimer(${seconds})">▶ ابدأ</button>
-      <button class="timer-btn" onclick="stopTimer()" style="background:rgba(255,45,45,0.1);border:2px solid var(--neon-red);color:#ffffff;box-shadow:var(--glow-red)">⏹ وقف</button>
+    <div style="display:flex;gap:8px">
+      <button class="timer-btn" style="font-size:13px;padding:7px 18px" onclick="startTimer(${seconds})">▶ ابدأ</button>
+      <button class="timer-btn" style="font-size:13px;padding:7px 18px;background:rgba(255,45,45,0.1);border:2px solid var(--neon-red);color:#ffffff;box-shadow:var(--glow-red)" onclick="stopTimer()">⏹ وقف</button>
     </div>`;
 }
 
@@ -3378,16 +3378,16 @@ function renderClosest(r, qIndex, sa) {
     <!-- Timer -->
     <div id="timer-area" style="display:none">${timerHTML(30)}</div>
 
-    <!-- Answers — compact two-column -->
+    <!-- Answers — compact equal-size two-column -->
     <div id="closest-answers-area" style="display:none">
       <div style="display:flex;gap:12px;justify-content:center;width:100%">
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px;border-radius:12px;background:rgba(229,1,88,0.07);border:1.5px solid rgba(229,1,88,0.3)">
-          <div style="font-size:12px;font-weight:700;color:#E50158">${G.teamA}</div>
-          <div id="ans-box-a" style="font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#39FF14">—</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:12px;background:rgba(229,1,88,0.07);border:1.5px solid rgba(229,1,88,0.3);min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#E50158;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamA}</div>
+          <div id="ans-box-a" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center">—</div>
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px;border-radius:12px;background:rgba(226,218,81,0.07);border:1.5px solid rgba(226,218,81,0.3)">
-          <div style="font-size:12px;font-weight:700;color:#E2DA51">${G.teamB}</div>
-          <div id="ans-box-b" style="font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#39FF14">—</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:12px;background:rgba(226,218,81,0.07);border:1.5px solid rgba(226,218,81,0.3);min-width:0">
+          <div style="font-size:12px;font-weight:700;color:#E2DA51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamB}</div>
+          <div id="ans-box-b" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center">—</div>
         </div>
       </div>
     </div>
@@ -3395,14 +3395,14 @@ function renderClosest(r, qIndex, sa) {
     <div id="closest-result"></div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-      <button class="answer-reveal-btn" id="btn-show-q" onclick="showClosestQuestion('${roomId}')">📋 عرض السؤال</button>
-      <button class="answer-reveal-btn" id="btn-reveal-ans" style="display:none" onclick="revealClosestNow()">👁 كشف الجواب الصح</button>
+      <button class="answer-reveal-btn" id="btn-show-q" style="font-size:clamp(12px,1.6vw,16px);padding:9px 20px" onclick="showClosestQuestion('${roomId}')">📋 عرض السؤال</button>
+      <button class="answer-reveal-btn" id="btn-reveal-ans" style="display:none;font-size:clamp(12px,1.6vw,16px);padding:9px 20px" onclick="revealClosestNow()">👁 كشف الجواب الصح</button>
     </div>
 
-    <div class="nav-btns">
+    <div class="nav-btns" style="padding:8px 0">
       ${isLast
-        ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
-        : `<button class="nav-btn primary" onclick="nextQ()">السؤال التالي ←</button>`
+        ? `<button class="nav-btn primary" onclick="showResult()" style="font-size:clamp(12px,1.6vw,16px);padding:9px 28px;min-width:140px">النتيجة 🏆</button>`
+        : `<button class="nav-btn primary" onclick="nextQ()" style="font-size:clamp(12px,1.6vw,16px);padding:9px 28px;min-width:140px">السؤال التالي ←</button>`
       }
     </div>`;
 }
