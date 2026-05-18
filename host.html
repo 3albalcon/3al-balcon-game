@@ -284,11 +284,12 @@ function render() {
   const qText = view.question || '';
   const ans = view.answer || '';
   if (['r6','r7'].includes(state.currentRound)) {
+    const isFirstQ = (state.currentQ || 0) <= 1;
     dyn.innerHTML = `
       ${qText ? `<div class="card q-card">${qText}</div>` : '<div class="waiting">اضغط عرض السؤال أولاً</div>'}
       ${ans ? `<div class="card a-card">${ans}</div>` : ''}
       <div class="btn-row">
-        <button class="btn btn-c btn-sm" onclick="c('showQuestion')" style="font-size:12px">📋 عرض السؤال</button>
+        ${isFirstQ ? `<button class="btn btn-c btn-sm" onclick="c('showQuestion')" style="font-size:12px">📋 عرض السؤال</button>` : ''}
         <button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="font-size:12px">👁 كشف الجواب</button>
       </div>`;
     return;
