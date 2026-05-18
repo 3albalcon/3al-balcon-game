@@ -1543,6 +1543,7 @@ async function loadFromDrive(urlOverride) {
       setLoadProgress(90);
       G.media['r5'] = shuffle([...videos]).map(f => ({
         url: f.directUrl || f.url,
+        directUrl: f.directUrl || null,
         driveId: f.id,
         name: f.name,
         type: 'video'
@@ -3080,15 +3081,14 @@ function renderTeamVideo(r, qIndex, sa) {
     <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
     ${item ? `
       <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
-        <div class="video-container">
+        <div class="video-container" id="video-container-${qIndex}" style="cursor:pointer;position:relative" onclick="openVideoOverlay('${item.driveId||''}','${item.directUrl||item.url||''}',${qIndex})">
           ${item.driveId ? `
-            <iframe
-              src="https://drive.google.com/file/d/${item.driveId}/preview"
-              style="width:100%;height:100%;border:none;display:block;"
-              allow="autoplay; fullscreen"
-              allowfullscreen
-              id="video-frame-${qIndex}"
-            ></iframe>
+            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000">
+              <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
+                <span style="font-size:40px;margin-right:-6px">▶</span>
+              </div>
+              <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);font-family:Cairo,sans-serif">اضغط لتشغيل الفيديو</div>
+            </div>
           ` : `
             <video id="video-el" src="${item.url}" controls style="width:100%;height:100%;display:block;object-fit:contain"></video>
           `}
@@ -3177,74 +3177,50 @@ function openVideoNewTab(driveId) {
   window.open(`https://drive.google.com/file/d/${driveId}/view`, '_blank');
 }
 
-function openVideoFullscreen(qIndex) {
-  const item = G.media.r5 ? G.media.r5[G.currentQ - 1] : null;
-  if (!item) return;
+function openVideoOverlay(driveId, directUrl, qIndex) {
+  const existing = document.getElementById('video-fs-overlay');
+  if (existing) existing.remove();
 
-  // Create fullscreen overlay
   const overlay = document.createElement('div');
   overlay.id = 'video-fs-overlay';
-  overlay.style.cssText = `
-    position:fixed;inset:0;z-index:9999;
-    background:#000;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-  `;
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;';
 
-  if (item.driveId) {
-    // Drive iframe — autoplay via URL param
+  const closeBtn = `<button onclick="closeVideoFullscreen()" style="position:absolute;top:16px;right:20px;background:rgba(0,0,0,0.7);border:2px solid rgba(255,255,255,0.4);border-radius:100px;color:#fff;font-size:14px;font-weight:700;padding:8px 20px;cursor:pointer;font-family:Cairo,sans-serif;z-index:10;">✕ إغلاق</button>`;
+
+  if (driveId) {
+    // Use Drive preview iframe — works on all devices when file is shared
     overlay.innerHTML = `
-      <iframe
-        src="https://drive.google.com/file/d/${item.driveId}/preview?autoplay=1"
+      <iframe src="https://drive.google.com/file/d/${driveId}/preview"
         style="width:100vw;height:100vh;border:none;"
-        allow="autoplay; fullscreen"
-        allowfullscreen
-        id="fs-video-frame"
-      ></iframe>
-      <button onclick="closeVideoFullscreen()" style="
-        position:absolute;top:16px;right:20px;
-        background:rgba(0,0,0,0.7);
-        border:2px solid rgba(255,255,255,0.4);
-        border-radius:100px;
-        color:#fff;font-size:14px;font-weight:700;
-        padding:8px 20px;cursor:pointer;
-        font-family:'Cairo',sans-serif;
-        z-index:10;
-      ">✕ إغلاق الفيديو</button>
-    `;
+        allow="autoplay; fullscreen" allowfullscreen id="fs-video-frame"></iframe>
+      ${closeBtn}`;
   } else {
-    // Local video — autoplay and auto-close on end
+    // Local file — use native video tag
+    const src = directUrl || '';
     overlay.innerHTML = `
-      <video id="fs-video-el" src="${item.url}"
-        autoplay controls
-        style="width:100vw;height:100vh;object-fit:contain;background:#000;">
-      </video>
-      <button onclick="closeVideoFullscreen()" style="
-        position:absolute;top:16px;right:20px;
-        background:rgba(0,0,0,0.7);
-        border:2px solid rgba(255,255,255,0.4);
-        border-radius:100px;
-        color:#fff;font-size:14px;font-weight:700;
-        padding:8px 20px;cursor:pointer;
-        font-family:'Cairo',sans-serif;z-index:10;
-      ">✕ إغلاق الفيديو</button>
-    `;
+      <video id="fs-video-el" src="${src}" autoplay controls playsinline
+        style="width:100vw;height:100vh;object-fit:contain;background:#000;"></video>
+      ${closeBtn}`;
   }
 
   document.body.appendChild(overlay);
 
-  // Request actual browser fullscreen
-  if (overlay.requestFullscreen) overlay.requestFullscreen();
+  if (overlay.requestFullscreen) overlay.requestFullscreen().catch(()=>{});
   else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
 
-  // Auto-close when local video ends
   setTimeout(() => {
     const vid = document.getElementById('fs-video-el');
     if (vid) vid.addEventListener('ended', closeVideoFullscreen);
   }, 100);
 
-  // Also close on fullscreen exit (user pressed Escape)
   document.addEventListener('fullscreenchange', onFsChange);
   document.addEventListener('webkitfullscreenchange', onFsChange);
+}
+
+function openVideoFullscreen(qIndex) {
+  const item = G.media.r5 ? G.media.r5[qIndex] : null;
+  if (!item) return;
+  openVideoOverlay(item.driveId || '', item.url || '', qIndex);
 }
 
 function onFsChange() {
@@ -3776,37 +3752,21 @@ function startHostCmdListener() {
         if (spinBtn && !spinBtn.disabled) spinBtn.click();
       }, 700);
     } else if (cmd === 'videoPlay') {
-      const v = document.getElementById('video-el');
-      if (v) { v.play(); return; }
-      // For Drive video — trigger tap
-      const qIdx = G.currentQ - 1;
+      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const item = G.media.r5?.[qIdx];
-      if (item?.driveId) {
-        const wrap = document.getElementById('video-frame-wrap-' + qIdx);
-        if (wrap && wrap.style.display !== 'none') {
-          playDriveVideo(item.driveId, qIdx);
-        } else {
-          // Already playing - reload
-          const frame = document.getElementById('video-frame-' + qIdx);
-          if (frame) { const s = frame.src; frame.src = ''; setTimeout(()=>frame.src=s, 100); }
-        }
-      }
+      if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx);
     } else if (cmd === 'videoRepeat') {
-      const v = document.getElementById('video-el');
-      if (v) { v.currentTime = 0; v.play(); }
-      // For Drive iframe — reload
-      const qIdx = G.currentQ - 1;
+      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const item = G.media.r5?.[qIdx];
-      if (item?.driveId) {
-        const frame = document.getElementById('video-frame-' + qIdx);
-        if (frame && frame.src) { const s = frame.src; frame.src = ''; frame.src = s; }
-      }
-    } else if (cmd === 'videoEnd') {
-      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
-      if (doneBtn) doneBtn.click();
+      closeVideoFullscreen();
+      setTimeout(() => { if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx); }, 300);
     } else if (cmd === 'videoReveal') {
-      const doneBtn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.includes('انتهى الفيديو'));
-      if (doneBtn) doneBtn.click();
+      closeVideoFullscreen();
+      const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
+      const qArea = document.getElementById('video-question-area');
+      const container = document.getElementById('video-container-' + qIdx);
+      if (container) container.style.display = 'none';
+      if (qArea) { qArea.style.display = 'flex'; startTimer(30); }
     } else if (cmd === 'revealAnswer') {
       const revealBtn = document.querySelector('.answer-reveal-btn');
       if (revealBtn) revealBtn.click();
