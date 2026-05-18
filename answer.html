@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>أدخل جوابك — 3AL BALCON</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Cairo',sans-serif; background:#060d1f; color:#fff; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:20px; }
+.logo { font-size:11px; color:rgba(255,255,255,0.25); letter-spacing:3px; }
+.team-btns { display:flex; gap:10px; width:100%; }
+.team-btn { flex:1; padding:14px; border-radius:12px; font-family:'Cairo',sans-serif; font-size:16px; font-weight:900; cursor:pointer; border:2px solid; transition:all 0.2s; }
+.team-btn-a { border-color:#E50158; color:#E50158; background:rgba(229,1,88,0.08); }
+.team-btn-b { border-color:#E2DA51; color:#E2DA51; background:rgba(226,218,81,0.08); }
+.team-btn.selected-a { background:rgba(229,1,88,0.25); box-shadow:0 0 20px rgba(229,1,88,0.4); }
+.team-btn.selected-b { background:rgba(226,218,81,0.25); box-shadow:0 0 20px rgba(226,218,81,0.4); }
+.question-box { background:rgba(0,239,255,0.06); border:2px solid rgba(0,239,255,0.3); border-radius:12px; padding:16px; font-size:18px; font-weight:700; text-align:center; line-height:1.5; width:100%; direction:rtl; }
+.input-wrap { width:100%; display:flex; flex-direction:column; gap:8px; }
+.ans-input { width:100%; padding:16px; font-family:'Cairo',sans-serif; font-size:28px; font-weight:900; text-align:center; border-radius:12px; border:2px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.07); color:#fff; outline:none; }
+.ans-input:focus { border-color:#FFE600; box-shadow:0 0 16px rgba(255,230,0,0.3); }
+.submit-btn { width:100%; padding:16px; border-radius:12px; font-family:'Cairo',sans-serif; font-size:18px; font-weight:900; cursor:pointer; border:2px solid #39FF14; color:#39FF14; background:rgba(57,255,20,0.08); transition:all 0.2s; }
+.submit-btn:disabled { opacity:0.3; cursor:default; }
+.status { font-size:14px; font-weight:700; text-align:center; min-height:24px; }
+.waiting { color:rgba(255,255,255,0.4); animation:pulse 2s infinite; }
+.done { color:#39FF14; font-size:20px; }
+.already { color:#FFE600; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+</style>
+</head>
+<body>
+<div class="logo">3AL BALCON — أدخل جوابك</div>
+
+<div class="question-box" id="q-box">جاري تحميل السؤال...</div>
+
+<div class="team-btns">
+  <button class="team-btn team-btn-a" id="btn-a" onclick="selectTeam('a')">الفريق أ</button>
+  <button class="team-btn team-btn-b" id="btn-b" onclick="selectTeam('b')">الفريق ب</button>
+</div>
+
+<div class="input-wrap" id="input-wrap" style="display:none">
+  <div style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center" id="team-label"></div>
+  <input type="number" class="ans-input" id="ans-input" placeholder="0" inputmode="numeric">
+  <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">✅ تأكيد الجواب</button>
+</div>
+
+<div class="status" id="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const cfg = {
+  apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
+  authDomain:"al-balcon.firebaseapp.com",
+  databaseURL:"https://al-balcon-default-rtdb.firebaseio.com",
+  projectId:"al-balcon",
+  storageBucket:"al-balcon.firebasestorage.app",
+  messagingSenderId:"556294454945",
+  appId:"1:556294454945:web:770c330e71a4e484277ae0"
+};
+const app = initializeApp(cfg);
+const db = getDatabase(app);
+
+const params = new URLSearchParams(window.location.search);
+const roomId = params.get('r');
+const session = params.get('s') || 'main';
+
+if (!roomId) {
+  document.getElementById('q-box').textContent = 'رابط غير صحيح';
+} else {
+  // Listen to room for question and team names
+  onValue(ref(db, `closest/${roomId}`), snap => {
+    const d = snap.val();
+    if (!d) return;
+    document.getElementById('q-box').textContent = d.question || '—';
+    if (d.teamA) document.getElementById('btn-a').textContent = d.teamA;
+    if (d.teamB) document.getElementById('btn-b').textContent = d.teamB;
+    // Show submitted status
+    const status = document.getElementById('status');
+    const bothDone = d.answerA !== undefined && d.answerA !== null &&
+                     d.answerB !== undefined && d.answerB !== null;
+    if (bothDone && !window._myTeam) {
+      status.className = 'status already';
+      status.textContent = '✅ كلا الفريقين أرسلا أجوبتهم!';
+    }
+  });
+}
+
+let selectedTeam = null;
+
+window.selectTeam = (team) => {
+  selectedTeam = team;
+  document.getElementById('btn-a').className = 'team-btn team-btn-a' + (team==='a'?' selected-a':'');
+  document.getElementById('btn-b').className = 'team-btn team-btn-b' + (team==='b'?' selected-b':'');
+  document.getElementById('input-wrap').style.display = 'flex';
+  const names = { a: document.getElementById('btn-a').textContent, b: document.getElementById('btn-b').textContent };
+  document.getElementById('team-label').textContent = `جواب ${names[team]}`;
+  document.getElementById('ans-input').focus();
+  window._myTeam = team;
+};
+
+window.submitAnswer = async () => {
+  const val = document.getElementById('ans-input').value.trim();
+  if (!val || !selectedTeam || !roomId) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+
+  await set(ref(db, `closest/${roomId}/answer${selectedTeam==='a'?'A':'B'}`), parseFloat(val));
+
+  document.getElementById('input-wrap').style.display = 'none';
+  document.getElementById('team-btns') && (document.querySelector('.team-btns').style.display = 'none');
+  document.getElementById('status').className = 'status done';
+  document.getElementById('status').textContent = '✅ تم إرسال جوابك!';
+};
+</script>
+</body>
+</html>
