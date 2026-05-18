@@ -70,11 +70,13 @@ const isA = team === 'a';
 // Set team color
 document.documentElement.style.setProperty('--tc', isA ? '#E50158' : '#E2DA51');
 
-// Load wallpaper
-onValue(ref(db, `sessions/${session}/hostWallpaper`), s => {
-  const url = s.val();
-  if (url) document.body.style.backgroundImage = `url('${url}')`;
-});
+// Load wallpaper from room data
+let _wallSet = false;
+function applyWallpaper(url) {
+  if (!url || _wallSet) return;
+  _wallSet = true;
+  document.body.style.backgroundImage = `url('${url}')`;
+}
 
 let submitted = false;
 let roomData = {};
@@ -88,6 +90,9 @@ if (!roomId || !team) {
   onValue(ref(db, `closest/${roomId}`), snap => {
     const d = snap.val(); if (!d) return;
     roomData = d;
+
+    // Apply wallpaper
+    if (d.wallpaper) applyWallpaper(d.wallpaper);
 
     // Team name
     const name = isA ? d.teamA : d.teamB;
