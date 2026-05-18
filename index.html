@@ -3240,64 +3240,86 @@ function renderClosest(r, qIndex, sa) {
 
   updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
 
-  // Create unique room for this question
+  // Unique room per question
   const roomId = `closest_${r.id}_${qIndex}_${Date.now()}`;
   window._closestRoomId = roomId;
   window._closestCorrect = ans;
   window._closestPts = pts;
+  window._closestAnswers = { a: null, b: null };
 
-  // Write question to Firebase
-  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+  // Write room to Firebase
+  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet; const fbOnValue = window._fbOnValue;
   if (db && fbSet) {
     fbSet(fbRef(db, `closest/${roomId}`), {
       question: q, teamA: G.teamA, teamB: G.teamB,
       answerA: null, answerB: null, ts: Date.now()
     });
-    // Listen for answers
-    window._fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
+    // Listen for answers — only reveal when timer runs out or host clicks reveal
+    fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
       const d = snap.val();
       if (!d) return;
-      const aSubmitted = d.answerA !== null && d.answerA !== undefined;
-      const bSubmitted = d.answerB !== null && d.answerB !== undefined;
-      // Update answer display
-      const boxA = document.getElementById('ans-box-a');
-      const boxB = document.getElementById('ans-box-b');
-      if (boxA && aSubmitted) { boxA.textContent = d.answerA; boxA.style.color = '#39FF14'; boxA.style.textShadow = '0 0 12px rgba(57,255,20,0.6)'; }
-      if (boxB && bSubmitted) { boxB.textContent = d.answerB; boxB.style.color = '#39FF14'; boxB.style.textShadow = '0 0 12px rgba(57,255,20,0.6)'; }
-      // Both submitted — auto reveal
-      if (aSubmitted && bSubmitted) {
-        setTimeout(() => revealClosestAuto(d.answerA, d.answerB, parseFloat(ans)||0, pts), 800);
-      }
+      window._closestAnswers = { a: d.answerA, b: d.answerB };
+      // Update submitted indicators only
+      const indA = document.getElementById('submitted-a');
+      const indB = document.getElementById('submitted-b');
+      if (indA && d.answerA !== null && d.answerA !== undefined) indA.style.display = 'block';
+      if (indB && d.answerB !== null && d.answerB !== undefined) indB.style.display = 'block';
     });
   }
 
-  const answerUrl = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&s=${window._gameSession||'main'}`;
+  const urlA = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=a&s=${window._gameSession||'main'}`;
+  const urlB = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=b&s=${window._gameSession||'main'}`;
 
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
-    <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q}</div>
 
-    <!-- QR Code -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-      <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid var(--neon-cyan);box-shadow:0 0 16px rgba(0,239,255,0.3)">
-        <div id="closest-qr"></div>
-      </div>
-      <div style="font-size:12px;color:var(--neon-cyan);font-weight:700">امسح الكود وأدخل جوابك</div>
+    <!-- Question hidden until timer starts -->
+    <div id="q-hidden" style="font-size:16px;color:rgba(255,255,255,0.35);font-family:'Cairo',sans-serif;text-align:center">
+      ⏳ يبدأ السؤال عند الضغط على ابدأ
+    </div>
+    <div id="q-visible" style="display:none">
+      <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q}</div>
     </div>
 
-    <!-- Answer boxes -->
-    <div class="close-display">
-      <div class="close-team">
-        <div class="ct-name">${G.teamA}</div>
-        <div id="ans-box-a" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:rgba(255,255,255,0.2);min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+    ${timerHTML(30)}
+
+    <!-- Two QR codes side by side -->
+    <div style="display:flex;gap:20px;justify-content:center;align-items:flex-start;flex-wrap:wrap;width:100%">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-size:13px;font-weight:900;color:#E50158">${G.teamA}</div>
+        <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+          <div id="qr-a"></div>
+        </div>
+        <div id="submitted-a" style="display:none;font-size:12px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
       </div>
-      <div class="close-team">
-        <div class="ct-name">${G.teamB}</div>
-        <div id="ans-box-b" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:rgba(255,255,255,0.2);min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-size:13px;font-weight:900;color:#E2DA51">${G.teamB}</div>
+        <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+          <div id="qr-b"></div>
+        </div>
+        <div id="submitted-b" style="display:none;font-size:12px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
+      </div>
+    </div>
+
+    <!-- Answer boxes — hidden until revealed -->
+    <div id="closest-answers" style="display:none">
+      <div class="close-display">
+        <div class="close-team">
+          <div class="ct-name">${G.teamA}</div>
+          <div id="ans-box-a" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:#39FF14;min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+        </div>
+        <div class="close-team">
+          <div class="ct-name">${G.teamB}</div>
+          <div id="ans-box-b" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:#39FF14;min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+        </div>
       </div>
     </div>
 
     <div id="closest-result"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="answer-reveal-btn" id="reveal-closest-btn" onclick="revealClosestNow()">👁 كشف الأجوبة</button>
+    </div>
 
     <div class="nav-btns">
       ${isLast
@@ -3306,36 +3328,64 @@ function renderClosest(r, qIndex, sa) {
       }
     </div>`;
 
-  // Generate QR
+  // Generate QR codes
   setTimeout(() => {
-    const qrEl = document.getElementById('closest-qr');
-    if (qrEl && typeof QRCode !== 'undefined') {
-      new QRCode(qrEl, { text: answerUrl, width: 130, height: 130, colorDark: '#000', colorLight: '#fff' });
+    if (typeof QRCode !== 'undefined') {
+      new QRCode(document.getElementById('qr-a'), { text: urlA, width: 130, height: 130, colorDark: '#000', colorLight: '#fff' });
+      new QRCode(document.getElementById('qr-b'), { text: urlB, width: 130, height: 130, colorDark: '#000', colorLight: '#fff' });
     }
   }, 100);
+
+  // Override startTimer to also show question
+  const origStartTimer = window._origStartTimer || startTimer;
+  window._origStartTimer = origStartTimer;
+  const timerBtn = sa.querySelector('.timer-btn');
+  if (timerBtn) {
+    const origOnclick = timerBtn.onclick;
+    timerBtn.addEventListener('click', () => {
+      document.getElementById('q-hidden').style.display = 'none';
+      document.getElementById('q-visible').style.display = 'block';
+    }, { once: true });
+  }
 }
 
-function revealClosestAuto(a, b, correct, pts) {
+function revealClosestNow() {
+  const a = window._closestAnswers?.a;
+  const b = window._closestAnswers?.b;
+  const correct = parseFloat(window._closestCorrect) || 0;
+  const pts = window._closestPts || 2;
+
+  // Show answer boxes
+  const answersDiv = document.getElementById('closest-answers');
+  if (answersDiv) answersDiv.style.display = 'block';
+  const boxA = document.getElementById('ans-box-a');
+  const boxB = document.getElementById('ans-box-b');
+  if (boxA) boxA.textContent = a !== null && a !== undefined ? a : '—';
+  if (boxB) boxB.textContent = b !== null && b !== undefined ? b : '—';
+
+  if (a === null || a === undefined || b === null || b === undefined) {
+    const result = document.getElementById('closest-result');
+    if (result) result.innerHTML = `<div class="answer-box fade-in">الجواب الصحيح: ${window._closestCorrect}</div>`;
+    return;
+  }
+
   const diffA = Math.abs(parseFloat(a) - correct);
   const diffB = Math.abs(parseFloat(b) - correct);
   let msg = '';
-  let winnerColor = '#FFE600';
-  // Highlight winner in answer boxes
-  const boxA = document.getElementById('ans-box-a');
-  const boxB = document.getElementById('ans-box-b');
   if (diffA < diffB) {
     addScore('a', pts);
-    msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${correct}`;
+    msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
     if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
   } else if (diffB < diffA) {
     addScore('b', pts);
-    msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${correct}`;
+    msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
     if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
   } else {
-    msg = `تعادل! — الجواب: ${correct}`;
+    msg = `تعادل! — الجواب: ${window._closestCorrect}`;
   }
   const result = document.getElementById('closest-result');
   if (result) result.innerHTML = `<div class="answer-box fade-in" style="font-size:clamp(18px,3vw,28px)">${msg}</div>`;
+  stopTimer();
 }
 
 // ══════════════════════════════════════════
