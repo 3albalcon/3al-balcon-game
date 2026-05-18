@@ -2354,7 +2354,6 @@ function timerHTML(seconds=60) {
       </div>
       <div style="display:flex;gap:8px;justify-content:center">
         <button class="timer-btn" style="padding:5px 16px" onclick="startTimer(${seconds})">▶ ابدأ</button>
-        <button class="timer-btn" style="padding:5px 16px;background:rgba(255,45,45,0.1);border-color:var(--neon-red);color:#fff;box-shadow:var(--glow-red)" onclick="stopTimer()">⏹ وقف</button>
       </div>
     </div>`;
 }
@@ -3350,7 +3349,7 @@ function renderClosest(r, qIndex, sa) {
 
     fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
       const d = snap.val(); if (!d) return;
-      window._closestAnswers = { a: d.answerA, b: d.answerB };
+      window._closestAnswers = { a: d.answerA, b: d.answerB, tsA: d.answeredAtA, tsB: d.answeredAtB };
       const dotA = document.getElementById('dot-a');
       const dotB = document.getElementById('dot-b');
       if (dotA) dotA.style.background = d.connectedA ? '#39FF14' : 'rgba(255,255,255,0.2)';
@@ -3394,16 +3393,16 @@ function renderClosest(r, qIndex, sa) {
     <!-- Timer -->
     <div id="timer-area" style="${qIndex > 0 ? '' : 'display:none'}">${timerHTML(30)}</div>
 
-    <!-- Answers — compact equal-size two-column -->
-    <div id="closest-answers-area" style="display:none">
+    <!-- Answers — wide equal boxes -->
+    <div id="closest-answers-area" style="display:none;width:100%">
       <div style="display:flex;gap:12px;justify-content:center;width:100%">
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:12px;background:rgba(229,1,88,0.07);border:1.5px solid rgba(229,1,88,0.3);min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#E50158;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamA}</div>
-          <div id="ans-box-a" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center">—</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(229,1,88,0.07);border:2px solid rgba(229,1,88,0.35);min-width:0">
+          <div style="font-size:13px;font-weight:700;color:#E50158;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamA}</div>
+          <div id="ans-box-a" style="font-size:clamp(22px,3.5vw,40px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center">—</div>
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:12px;background:rgba(226,218,81,0.07);border:1.5px solid rgba(226,218,81,0.3);min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#E2DA51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamB}</div>
-          <div id="ans-box-b" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center">—</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(226,218,81,0.07);border:2px solid rgba(226,218,81,0.35);min-width:0">
+          <div style="font-size:13px;font-weight:700;color:#E2DA51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamB}</div>
+          <div id="ans-box-b" style="font-size:clamp(22px,3.5vw,40px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center">—</div>
         </div>
       </div>
     </div>
@@ -3424,13 +3423,15 @@ function renderClosest(r, qIndex, sa) {
 }
 
 function showClosestQuestion(roomId) {
-  document.getElementById('q-hidden-msg').style.display = 'none';
-  document.getElementById('q-visible').style.display = 'block';
-  document.getElementById('timer-area').style.display = 'flex';
-  document.getElementById('btn-show-q').style.display = 'none';
-  document.getElementById('btn-reveal-ans').style.display = 'inline-flex';
-  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
-  if (db && fbSet) fbSet(fbRef(db, `closest/${roomId}/phase`), 'active');
+  document.getElementById('q-hidden-msg') && (document.getElementById('q-hidden-msg').style.display = 'none');
+  document.getElementById('q-visible') && (document.getElementById('q-visible').style.display = 'block');
+  document.getElementById('timer-area') && (document.getElementById('timer-area').style.display = 'flex');
+  document.getElementById('btn-show-q') && (document.getElementById('btn-show-q').style.display = 'none');
+  document.getElementById('btn-reveal-ans') && (document.getElementById('btn-reveal-ans').style.display = 'inline-flex');
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+    const db = window._fbDb; const fbRef = window._fbRef;
+    if (db && fbRef) update(fbRef(db, `closest/${roomId}`), { phase: 'active' });
+  });
   startTimer(30);
 }
 
@@ -3448,35 +3449,61 @@ function showClosestAnswers() {
 }
 
 function revealClosestNow() {
-  // Guard: only reveal once per question
   if (window._closestRevealDone) return;
   window._closestRevealDone = true;
-
-  // Disable the reveal button
   const revealBtn = document.getElementById('btn-reveal-ans');
   if (revealBtn) { revealBtn.disabled = true; revealBtn.style.opacity = '0.4'; }
 
   showClosestAnswers();
   const a = window._closestAnswers?.a;
   const b = window._closestAnswers?.b;
+  const tsA = window._closestAnswers?.tsA || 0;
+  const tsB = window._closestAnswers?.tsB || 0;
   const correct = parseFloat(window._closestCorrect) || 0;
   const pts = window._closestPts || 2;
   const boxA = document.getElementById('ans-box-a');
   const boxB = document.getElementById('ans-box-b');
   let msg = '';
-  if (a === null || a === undefined || b === null || b === undefined) {
+  const aValid = a !== null && a !== undefined;
+  const bValid = b !== null && b !== undefined;
+
+  if (!aValid && !bValid) {
     msg = `الجواب الصحيح: ${window._closestCorrect}`;
+  } else if (aValid && !bValid) {
+    // Only team A answered
+    addScore('a', pts);
+    msg = `🏆 ${G.teamA} أجاب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+    if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
+  } else if (bValid && !aValid) {
+    // Only team B answered
+    addScore('b', pts);
+    msg = `🏆 ${G.teamB} أجاب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+    if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
   } else {
+    // Both answered
     const diffA = Math.abs(parseFloat(a) - correct);
     const diffB = Math.abs(parseFloat(b) - correct);
     if (diffA < diffB) {
-      addScore('a', pts); msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      addScore('a', pts);
+      msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
       if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
     } else if (diffB < diffA) {
-      addScore('b', pts); msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      addScore('b', pts);
+      msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
       if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
     } else {
-      msg = `تعادل! — الجواب: ${window._closestCorrect}`;
+      // Same distance — first submitted wins
+      if (tsA && tsB && tsA < tsB) {
+        addScore('a', pts);
+        msg = `🏆 ${G.teamA} أسرع! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+        if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
+      } else if (tsB && tsA && tsB < tsA) {
+        addScore('b', pts);
+        msg = `🏆 ${G.teamB} أسرع! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+        if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
+      } else {
+        msg = `تعادل! — الجواب: ${window._closestCorrect}`;
+      }
     }
   }
   const result = document.getElementById('closest-result');
@@ -3955,12 +3982,11 @@ function startHostCmdListener() {
       if (container) container.style.display = 'none';
       if (qArea) { qArea.style.display = 'flex'; startTimer(30); }
     } else if (cmd === 'showQuestion') {
-      // For closest categories — trigger show question button
       const btnShowQ = document.getElementById('btn-show-q');
       if (btnShowQ && btnShowQ.style.display !== 'none') btnShowQ.click();
-      // Works for closest category reveal button
-      const closestReveal = document.getElementById('btn-reveal-ans');
-      if (closestReveal && closestReveal.style.display !== 'none') {
+    } else if (cmd === 'revealAnswer') {
+      // For closest categories
+      if (G.currentRound?.id === 'r6' || G.currentRound?.id === 'r7') {
         revealClosestNow();
       } else {
         const btn = document.querySelector('.answer-reveal-btn');
