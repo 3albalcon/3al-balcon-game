@@ -3178,49 +3178,34 @@ function openVideoNewTab(driveId) {
 }
 
 function openVideoOverlay(driveId, directUrl, qIndex) {
-  const existing = document.getElementById('video-fs-overlay');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'video-fs-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-
-  const closeBtn = `<button onclick="closeVideoFullscreen()" style="position:absolute;top:16px;right:20px;background:rgba(0,0,0,0.7);border:2px solid rgba(255,255,255,0.4);border-radius:100px;color:#fff;font-size:14px;font-weight:700;padding:8px 20px;cursor:pointer;font-family:Cairo,sans-serif;z-index:10;">✕ إغلاق</button>`;
+  // Simply load the iframe src on tap — no fullscreen, no overlay
+  // This is a user gesture so browsers allow it
+  const container = document.getElementById('video-container-' + qIndex);
+  if (!container) return;
 
   if (driveId) {
-    // Use Drive preview iframe — works on all devices when file is shared
-    overlay.innerHTML = `
-      <iframe src="https://drive.google.com/file/d/${driveId}/preview"
-        style="width:100vw;height:100vh;border:none;"
-        allow="autoplay; fullscreen" allowfullscreen id="fs-video-frame"></iframe>
-      ${closeBtn}`;
-  } else {
-    // Local file — use native video tag
-    const src = directUrl || '';
-    overlay.innerHTML = `
-      <video id="fs-video-el" src="${src}" autoplay controls playsinline
-        style="width:100vw;height:100vh;object-fit:contain;background:#000;"></video>
-      ${closeBtn}`;
+    container.innerHTML = `
+      <iframe
+        src="https://drive.google.com/file/d/${driveId}/preview"
+        style="width:100%;height:100%;border:none;display:block;"
+        allow="autoplay; fullscreen"
+        allowfullscreen
+        id="video-frame-${qIndex}"
+      ></iframe>`;
+    container.onclick = null; // remove tap handler after loading
+  } else if (directUrl) {
+    container.innerHTML = `
+      <video src="${directUrl}" autoplay controls playsinline
+        style="width:100%;height:100%;display:block;object-fit:contain;background:#000;"
+        id="video-el">
+      </video>`;
+    container.onclick = null;
   }
-
-  document.body.appendChild(overlay);
-
-  if (overlay.requestFullscreen) overlay.requestFullscreen().catch(()=>{});
-  else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
-
-  setTimeout(() => {
-    const vid = document.getElementById('fs-video-el');
-    if (vid) vid.addEventListener('ended', closeVideoFullscreen);
-  }, 100);
-
-  document.addEventListener('fullscreenchange', onFsChange);
-  document.addEventListener('webkitfullscreenchange', onFsChange);
 }
 
 function openVideoFullscreen(qIndex) {
-  const item = G.media.r5 ? G.media.r5[qIndex] : null;
-  if (!item) return;
-  openVideoOverlay(item.driveId || '', item.url || '', qIndex);
+  const item = G.media.r5?.[qIndex];
+  if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIndex);
 }
 
 function onFsChange() {
@@ -3758,10 +3743,13 @@ function startHostCmdListener() {
     } else if (cmd === 'videoRepeat') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const item = G.media.r5?.[qIdx];
-      closeVideoFullscreen();
-      setTimeout(() => { if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx); }, 300);
+      if (item) {
+        // Reload iframe by re-triggering openVideoOverlay
+        const frame = document.getElementById('video-frame-' + qIdx);
+        if (frame) { const s = frame.src; frame.src = ''; setTimeout(() => frame.src = s, 100); }
+        else openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx);
+      }
     } else if (cmd === 'videoReveal') {
-      closeVideoFullscreen();
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const qArea = document.getElementById('video-question-area');
       const container = document.getElementById('video-container-' + qIdx);
