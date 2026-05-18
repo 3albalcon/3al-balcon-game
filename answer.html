@@ -98,8 +98,18 @@ if (!roomId || !team) {
     const name = isA ? d.teamA : d.teamB;
     document.getElementById('team-badge').textContent = name || (isA ? 'الفريق أ' : 'الفريق ب');
 
-    // Phase: waiting → show waiting message
-    // Phase: active → show question + input
+    // Reset for new question if phase goes back to waiting
+    if (d.phase === 'waiting' && submitted) {
+      submitted = false;
+      document.getElementById('done-section').style.display = 'none';
+      document.getElementById('state-waiting').style.display = 'block';
+      document.getElementById('input-section').style.display = 'none';
+      document.getElementById('q-box').style.display = 'none';
+      document.getElementById('ans-input').value = '';
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    // Phase active → show question + input
     if (d.phase === 'active' && !submitted) {
       document.getElementById('state-waiting').style.display = 'none';
       if (d.question) {
