@@ -2196,6 +2196,87 @@ const RULES = {
 
 function renderRules(r, sa) {
   const rules = RULES[r.id] || [];
+  const isClosest = r.slides === 'closest';
+
+  // For closest categories, create Firebase room and QRs on rules page
+  if (isClosest) {
+    const roomId = `closest_${r.id}_${Date.now()}`;
+    window._closestRoomId = roomId;
+    window._closestAnswers = { a: null, b: null };
+    window._closestConnected = { a: false, b: false };
+
+    const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet; const fbOnValue = window._fbOnValue;
+    if (db && fbSet) {
+      fbSet(fbRef(db, `closest/${roomId}`), {
+        teamA: G.teamA, teamB: G.teamB,
+        connectedA: false, connectedB: false,
+        question: null, answerA: null, answerB: null,
+        phase: 'waiting', ts: Date.now()
+      });
+      // Listen for connections
+      fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
+        const d = snap.val();
+        if (!d) return;
+        window._closestConnected = { a: !!d.connectedA, b: !!d.connectedB };
+        const dotA = document.getElementById('dot-a');
+        const dotB = document.getElementById('dot-b');
+        if (dotA) { dotA.style.background = d.connectedA ? '#39FF14' : 'rgba(255,255,255,0.2)'; dotA.title = d.connectedA ? 'متصل' : 'غير متصل'; }
+        if (dotB) { dotB.style.background = d.connectedB ? '#39FF14' : 'rgba(255,255,255,0.2)'; dotB.title = d.connectedB ? 'متصل' : 'غير متصل'; }
+      });
+    }
+
+    const urlA = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=a&s=${window._gameSession||'main'}`;
+    const urlB = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=b&s=${window._gameSession||'main'}`;
+
+    sa.innerHTML = `
+      <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;width:100%;flex-wrap:wrap;" class="fade-in">
+
+        <!-- Left QR — Team A -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+            <div id="qr-a-rules"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.5)">
+            <div id="dot-a" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s"></div>
+            <span id="dot-a-label">غير متصل</span>
+          </div>
+        </div>
+
+        <!-- Rules in middle -->
+        <div class="rules-card" style="flex:1;min-width:200px">
+          <h2>📋 قوانين — ${r.name}</h2>
+          <ul class="rules-list">
+            ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
+          </ul>
+        </div>
+
+        <!-- Right QR — Team B -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+            <div id="qr-b-rules"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.5)">
+            <div id="dot-b" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s"></div>
+            <span id="dot-b-label">غير متصل</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button class="nav-btn primary" onclick="nextQ()">ابدأ اللعبة ←</button>
+      </div>`;
+
+    setTimeout(() => {
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById('qr-a-rules'), { text: urlA, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+        new QRCode(document.getElementById('qr-b-rules'), { text: urlB, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+      }
+    }, 100);
+    return;
+  }
+
   sa.innerHTML = `
     <div class="rules-card fade-in">
       <h2>📋 قوانين — ${r.name}</h2>
@@ -3240,148 +3321,132 @@ function renderClosest(r, qIndex, sa) {
 
   updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
 
-  // Unique room per question
-  const roomId = `closest_${r.id}_${qIndex}_${Date.now()}`;
+  // Reuse existing room from rules page
+  const roomId = window._closestRoomId || `closest_${r.id}_${qIndex}_${Date.now()}`;
   window._closestRoomId = roomId;
   window._closestCorrect = ans;
   window._closestPts = pts;
   window._closestAnswers = { a: null, b: null };
 
-  // Write room to Firebase
   const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet; const fbOnValue = window._fbOnValue;
   if (db && fbSet) {
-    fbSet(fbRef(db, `closest/${roomId}`), {
-      question: q, teamA: G.teamA, teamB: G.teamB,
-      answerA: null, answerB: null, ts: Date.now()
-    });
-    // Listen for answers — only reveal when timer runs out or host clicks reveal
+    fbSet(fbRef(db, `closest/${roomId}/question`), q);
+    fbSet(fbRef(db, `closest/${roomId}/phase`), 'waiting');
+    fbSet(fbRef(db, `closest/${roomId}/answerA`), null);
+    fbSet(fbRef(db, `closest/${roomId}/answerB`), null);
+
     fbOnValue(fbRef(db, `closest/${roomId}`), (snap) => {
-      const d = snap.val();
-      if (!d) return;
+      const d = snap.val(); if (!d) return;
       window._closestAnswers = { a: d.answerA, b: d.answerB };
-      // Update submitted indicators only
-      const indA = document.getElementById('submitted-a');
-      const indB = document.getElementById('submitted-b');
-      if (indA && d.answerA !== null && d.answerA !== undefined) indA.style.display = 'block';
-      if (indB && d.answerB !== null && d.answerB !== undefined) indB.style.display = 'block';
+      const dotA = document.getElementById('dot-a');
+      const dotB = document.getElementById('dot-b');
+      if (dotA) dotA.style.background = d.connectedA ? '#39FF14' : 'rgba(255,255,255,0.2)';
+      if (dotB) dotB.style.background = d.connectedB ? '#39FF14' : 'rgba(255,255,255,0.2)';
+      const subA = document.getElementById('sub-a');
+      const subB = document.getElementById('sub-b');
+      if (subA && d.answerA !== null && d.answerA !== undefined) subA.style.display = 'block';
+      if (subB && d.answerB !== null && d.answerB !== undefined) subB.style.display = 'block';
+      const bothDone = d.answerA !== null && d.answerA !== undefined &&
+                       d.answerB !== null && d.answerB !== undefined;
+      if (bothDone) showClosestAnswers();
     });
   }
 
-  const urlA = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=a&s=${window._gameSession||'main'}`;
-  const urlB = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=b&s=${window._gameSession||'main'}`;
-
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
-
-    <!-- Question hidden until timer starts -->
-    <div id="q-hidden" style="font-size:16px;color:rgba(255,255,255,0.35);font-family:'Cairo',sans-serif;text-align:center">
-      ⏳ يبدأ السؤال عند الضغط على ابدأ
+    <div id="q-hidden-msg" style="font-size:16px;color:rgba(255,255,255,0.35);text-align:center;padding:12px">
+      ⏳ اضغط "عرض السؤال" لبدء الجولة
     </div>
     <div id="q-visible" style="display:none">
       <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q}</div>
     </div>
-
-    ${timerHTML(30)}
-
-    <!-- Two QR codes side by side -->
-    <div style="display:flex;gap:20px;justify-content:center;align-items:flex-start;flex-wrap:wrap;width:100%">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div style="font-size:13px;font-weight:900;color:#E50158">${G.teamA}</div>
-        <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
-          <div id="qr-a"></div>
+    <div style="display:flex;gap:24px;justify-content:center;align-items:center">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
+          <div id="dot-a" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>${G.teamA}
         </div>
-        <div id="submitted-a" style="display:none;font-size:12px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
+        <div id="sub-a" style="display:none;font-size:11px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-        <div style="font-size:13px;font-weight:900;color:#E2DA51">${G.teamB}</div>
-        <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
-          <div id="qr-b"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
+          <div id="dot-b" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>${G.teamB}
         </div>
-        <div id="submitted-b" style="display:none;font-size:12px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
+        <div id="sub-b" style="display:none;font-size:11px;color:#39FF14;font-weight:700">✅ أرسل جوابه</div>
       </div>
     </div>
-
-    <!-- Answer boxes — hidden until revealed -->
-    <div id="closest-answers" style="display:none">
+    <div id="timer-area" style="display:none">${timerHTML(30)}</div>
+    <div id="closest-answers-area" style="display:none">
       <div class="close-display">
         <div class="close-team">
           <div class="ct-name">${G.teamA}</div>
-          <div id="ans-box-a" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:#39FF14;min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+          <div id="ans-box-a" style="font-size:clamp(32px,5vw,56px);font-weight:900;color:#39FF14;min-height:64px;display:flex;align-items:center;justify-content:center">—</div>
         </div>
         <div class="close-team">
           <div class="ct-name">${G.teamB}</div>
-          <div id="ans-box-b" style="font-size:clamp(28px,5vw,52px);font-weight:900;color:#39FF14;min-height:60px;display:flex;align-items:center;justify-content:center">—</div>
+          <div id="ans-box-b" style="font-size:clamp(32px,5vw,56px);font-weight:900;color:#39FF14;min-height:64px;display:flex;align-items:center;justify-content:center">—</div>
         </div>
       </div>
     </div>
-
     <div id="closest-result"></div>
-
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <button class="answer-reveal-btn" id="reveal-closest-btn" onclick="revealClosestNow()">👁 كشف الأجوبة</button>
+      <button class="answer-reveal-btn" id="btn-show-q" onclick="showClosestQuestion('${roomId}')">📋 عرض السؤال</button>
+      <button class="answer-reveal-btn" id="btn-reveal-ans" style="display:none" onclick="revealClosestNow()">👁 كشف الجواب الصح</button>
     </div>
-
     <div class="nav-btns">
       ${isLast
         ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
         : `<button class="nav-btn primary" onclick="nextQ()">السؤال التالي ←</button>`
       }
     </div>`;
+}
 
-  // Generate QR codes
-  setTimeout(() => {
-    if (typeof QRCode !== 'undefined') {
-      new QRCode(document.getElementById('qr-a'), { text: urlA, width: 130, height: 130, colorDark: '#000', colorLight: '#fff' });
-      new QRCode(document.getElementById('qr-b'), { text: urlB, width: 130, height: 130, colorDark: '#000', colorLight: '#fff' });
-    }
-  }, 100);
+function showClosestQuestion(roomId) {
+  document.getElementById('q-hidden-msg').style.display = 'none';
+  document.getElementById('q-visible').style.display = 'block';
+  document.getElementById('timer-area').style.display = 'flex';
+  document.getElementById('btn-show-q').style.display = 'none';
+  document.getElementById('btn-reveal-ans').style.display = 'inline-flex';
+  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+  if (db && fbSet) fbSet(fbRef(db, `closest/${roomId}/phase`), 'active');
+  startTimer(30);
+}
 
-  // Override startTimer to also show question
-  const origStartTimer = window._origStartTimer || startTimer;
-  window._origStartTimer = origStartTimer;
-  const timerBtn = sa.querySelector('.timer-btn');
-  if (timerBtn) {
-    const origOnclick = timerBtn.onclick;
-    timerBtn.addEventListener('click', () => {
-      document.getElementById('q-hidden').style.display = 'none';
-      document.getElementById('q-visible').style.display = 'block';
-    }, { once: true });
-  }
+function showClosestAnswers() {
+  const area = document.getElementById('closest-answers-area');
+  const boxA = document.getElementById('ans-box-a');
+  const boxB = document.getElementById('ans-box-b');
+  if (!area) return;
+  area.style.display = 'block';
+  const a = window._closestAnswers?.a;
+  const b = window._closestAnswers?.b;
+  if (boxA) boxA.textContent = a !== null && a !== undefined ? a : '—';
+  if (boxB) boxB.textContent = b !== null && b !== undefined ? b : '—';
+  if (a !== null && a !== undefined && b !== null && b !== undefined) stopTimer();
 }
 
 function revealClosestNow() {
+  showClosestAnswers();
   const a = window._closestAnswers?.a;
   const b = window._closestAnswers?.b;
   const correct = parseFloat(window._closestCorrect) || 0;
   const pts = window._closestPts || 2;
-
-  // Show answer boxes
-  const answersDiv = document.getElementById('closest-answers');
-  if (answersDiv) answersDiv.style.display = 'block';
   const boxA = document.getElementById('ans-box-a');
   const boxB = document.getElementById('ans-box-b');
-  if (boxA) boxA.textContent = a !== null && a !== undefined ? a : '—';
-  if (boxB) boxB.textContent = b !== null && b !== undefined ? b : '—';
-
-  if (a === null || a === undefined || b === null || b === undefined) {
-    const result = document.getElementById('closest-result');
-    if (result) result.innerHTML = `<div class="answer-box fade-in">الجواب الصحيح: ${window._closestCorrect}</div>`;
-    return;
-  }
-
-  const diffA = Math.abs(parseFloat(a) - correct);
-  const diffB = Math.abs(parseFloat(b) - correct);
   let msg = '';
-  if (diffA < diffB) {
-    addScore('a', pts);
-    msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
-    if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
-  } else if (diffB < diffA) {
-    addScore('b', pts);
-    msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
-    if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
+  if (a === null || a === undefined || b === null || b === undefined) {
+    msg = `الجواب الصحيح: ${window._closestCorrect}`;
   } else {
-    msg = `تعادل! — الجواب: ${window._closestCorrect}`;
+    const diffA = Math.abs(parseFloat(a) - correct);
+    const diffB = Math.abs(parseFloat(b) - correct);
+    if (diffA < diffB) {
+      addScore('a', pts); msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
+    } else if (diffB < diffA) {
+      addScore('b', pts); msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 12px;background:rgba(255,230,0,0.1)';
+    } else {
+      msg = `تعادل! — الجواب: ${window._closestCorrect}`;
+    }
   }
   const result = document.getElementById('closest-result');
   if (result) result.innerHTML = `<div class="answer-box fade-in" style="font-size:clamp(18px,3vw,28px)">${msg}</div>`;

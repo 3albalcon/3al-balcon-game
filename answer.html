@@ -7,85 +7,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-:root { --team-color: #00EFFF; }
-body {
-  font-family:'Cairo',sans-serif; color:#fff;
-  min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:24px 20px; gap:18px;
-  background:#060d1f; background-size:cover; background-position:center;
-  position:relative; overflow:hidden;
-}
-.overlay { position:fixed; inset:0; background:rgba(6,13,31,0.82); z-index:0; }
-.content { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:400px; }
-.logo { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:3px; text-align:center; }
-.team-badge {
-  padding:10px 32px; border-radius:100px; font-size:20px; font-weight:900;
-  border:2px solid var(--team-color); color:var(--team-color);
-  background:rgba(0,0,0,0.4); text-align:center;
-  box-shadow:0 0 20px color-mix(in srgb, var(--team-color) 40%, transparent);
-}
-.question-box {
-  background:rgba(0,0,0,0.5); border:2px solid rgba(255,255,255,0.15);
-  border-radius:14px; padding:16px; font-size:18px; font-weight:700;
-  text-align:center; line-height:1.5; width:100%; direction:rtl;
-}
-.waiting-q {
-  font-size:15px; color:rgba(255,255,255,0.4); text-align:center;
-  animation:pulse 2s infinite; padding:8px;
-}
-.input-section { display:flex; flex-direction:column; gap:12px; width:100%; }
-.ans-input {
-  width:100%; padding:18px; font-family:'Cairo',sans-serif;
-  font-size:36px; font-weight:900; text-align:center;
-  border-radius:14px; border:2px solid var(--team-color);
-  background:rgba(0,0,0,0.5); color:#fff; outline:none;
-  box-shadow:0 0 16px color-mix(in srgb, var(--team-color) 30%, transparent);
-}
-.ans-input:focus { background:rgba(0,0,0,0.7); }
-.submit-btn {
-  width:100%; padding:18px; border-radius:14px;
-  font-family:'Cairo',sans-serif; font-size:20px; font-weight:900;
-  cursor:pointer; border:2px solid #39FF14; color:#39FF14;
-  background:rgba(57,255,20,0.08); transition:all 0.2s;
-  box-shadow:0 0 16px rgba(57,255,20,0.2);
-}
-.submit-btn:active { transform:scale(0.96); background:rgba(57,255,20,0.2); }
-.submit-btn:disabled { opacity:0.25; cursor:default; transform:none; }
-.status-done {
-  display:flex; flex-direction:column; align-items:center; gap:12px;
-  padding:24px; border-radius:16px;
-  background:rgba(57,255,20,0.06); border:2px solid #39FF14;
-  text-align:center; width:100%;
-}
-.status-done .checkmark { font-size:52px; }
-.status-done .msg1 { font-size:22px; font-weight:900; color:#39FF14; }
-.status-done .msg2 { font-size:14px; color:rgba(255,255,255,0.5); animation:pulse 2s infinite; }
+:root { --tc: #00EFFF; }
+body { font-family:'Cairo',sans-serif; color:#fff; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 20px; gap:18px; background:#060d1f; background-size:cover; background-position:center; }
+.overlay { position:fixed; inset:0; background:rgba(6,13,31,0.83); z-index:0; }
+.content { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:380px; }
+.logo { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:3px; }
+.badge { padding:10px 32px; border-radius:100px; font-size:20px; font-weight:900; border:2px solid var(--tc); color:var(--tc); background:rgba(0,0,0,0.4); text-align:center; box-shadow:0 0 20px color-mix(in srgb,var(--tc) 35%,transparent); }
+.q-box { background:rgba(0,0,0,0.5); border:2px solid rgba(255,255,255,0.15); border-radius:14px; padding:16px; font-size:18px; font-weight:700; text-align:center; line-height:1.5; width:100%; direction:rtl; }
+.waiting { font-size:15px; color:rgba(255,255,255,0.4); text-align:center; animation:pulse 2s infinite; }
+.ans-input { width:100%; padding:18px; font-family:'Cairo',sans-serif; font-size:36px; font-weight:900; text-align:center; border-radius:14px; border:2px solid var(--tc); background:rgba(0,0,0,0.5); color:#fff; outline:none; }
+.submit-btn { width:100%; padding:18px; border-radius:14px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; cursor:pointer; border:2px solid #39FF14; color:#39FF14; background:rgba(57,255,20,0.08); }
+.submit-btn:active { background:rgba(57,255,20,0.2); transform:scale(0.97); }
+.done-card { display:flex; flex-direction:column; align-items:center; gap:10px; padding:24px; border-radius:16px; background:rgba(57,255,20,0.06); border:2px solid #39FF14; width:100%; text-align:center; }
+.done-icon { font-size:52px; }
+.done-title { font-size:22px; font-weight:900; color:#39FF14; }
+.done-msg { font-size:14px; color:rgba(255,255,255,0.45); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
 </style>
 </head>
 <body>
-<div class="overlay" id="bg-overlay"></div>
+<div class="overlay"></div>
 <div class="content">
   <div class="logo">3AL BALCON</div>
-  <div class="team-badge" id="team-badge">جاري التحميل...</div>
-  <div class="question-box" id="q-box" style="display:none"></div>
-  <div class="waiting-q" id="waiting-q">⏳ انتظر بدء السؤال...</div>
-  <div class="input-section" id="input-section" style="display:none">
+  <div class="badge" id="team-badge">جاري التحميل...</div>
+  <div class="waiting" id="state-waiting">⏳ انتظر بدء السؤال من المقدّم...</div>
+  <div id="q-box" class="q-box" style="display:none"></div>
+  <div id="input-section" style="display:none;flex-direction:column;gap:12px;width:100%">
     <input type="number" class="ans-input" id="ans-input" placeholder="أدخل رقمك" inputmode="numeric">
     <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">✅ إرسال الجواب</button>
   </div>
   <div id="done-section" style="display:none">
-    <div class="status-done">
-      <div class="checkmark">✅</div>
-      <div class="msg1">تم إرسال جوابك!</div>
-      <div class="msg2" id="waiting-msg">في انتظار الفريق الآخر...</div>
+    <div class="done-card">
+      <div class="done-icon">✅</div>
+      <div class="done-title">تم إرسال جوابك!</div>
+      <div class="done-msg" id="done-msg">في انتظار الفريق الآخر...</div>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -99,54 +61,57 @@ const cfg = {
 const app = initializeApp(cfg);
 const db = getDatabase(app);
 
-const params = new URLSearchParams(window.location.search);
-const roomId = params.get('r');
-const team = params.get('t'); // 'a' or 'b'
-const session = params.get('s') || 'main';
-
-// Team color
+const p = new URLSearchParams(location.search);
+const roomId = p.get('r');
+const team = p.get('t');       // 'a' or 'b'
+const session = p.get('s') || 'main';
 const isA = team === 'a';
-document.documentElement.style.setProperty('--team-color', isA ? '#E50158' : '#E2DA51');
 
-// Load host wallpaper as background
-onValue(ref(db, `sessions/${session}/hostWallpaper`), snap => {
-  const url = snap.val();
+// Set team color
+document.documentElement.style.setProperty('--tc', isA ? '#E50158' : '#E2DA51');
+
+// Load wallpaper
+onValue(ref(db, `sessions/${session}/hostWallpaper`), s => {
+  const url = s.val();
   if (url) document.body.style.backgroundImage = `url('${url}')`;
 });
 
 let submitted = false;
-let roomData = null;
+let roomData = {};
 
 if (!roomId || !team) {
   document.getElementById('team-badge').textContent = 'رابط غير صحيح';
 } else {
+  // Mark connected
+  update(ref(db, `closest/${roomId}`), { [`connected${isA?'A':'B'}`]: true });
+
   onValue(ref(db, `closest/${roomId}`), snap => {
-    const d = snap.val();
-    if (!d) return;
+    const d = snap.val(); if (!d) return;
     roomData = d;
 
-    // Set team name
-    const teamName = isA ? d.teamA : d.teamB;
-    document.getElementById('team-badge').textContent = teamName || (isA ? 'الفريق أ' : 'الفريق ب');
+    // Team name
+    const name = isA ? d.teamA : d.teamB;
+    document.getElementById('team-badge').textContent = name || (isA ? 'الفريق أ' : 'الفريق ب');
 
-    // Show question and input (question visible as soon as page loads for the player)
-    if (d.question) {
-      document.getElementById('q-box').textContent = d.question;
-      document.getElementById('q-box').style.display = 'block';
-      document.getElementById('waiting-q').style.display = 'none';
-      if (!submitted) document.getElementById('input-section').style.display = 'flex';
+    // Phase: waiting → show waiting message
+    // Phase: active → show question + input
+    if (d.phase === 'active' && !submitted) {
+      document.getElementById('state-waiting').style.display = 'none';
+      if (d.question) {
+        document.getElementById('q-box').textContent = d.question;
+        document.getElementById('q-box').style.display = 'block';
+      }
+      document.getElementById('input-section').style.display = 'flex';
     }
 
-    // Check if both submitted
-    const myAns = isA ? d.answerA : d.answerB;
-    const otherAns = isA ? d.answerB : d.answerA;
-
+    // Update done message
     if (submitted) {
-      const waitMsg = document.getElementById('waiting-msg');
-      if (otherAns !== null && otherAns !== undefined) {
-        if (waitMsg) waitMsg.textContent = '✅ كلا الفريقين أرسلا أجوبتهم!';
-      } else {
-        if (waitMsg) waitMsg.textContent = 'في انتظار الفريق الآخر...';
+      const other = isA ? d.answerB : d.answerA;
+      const doneMsg = document.getElementById('done-msg');
+      if (doneMsg) {
+        doneMsg.textContent = (other !== null && other !== undefined)
+          ? '✅ كلا الفريقين أرسلا أجوبتهم!'
+          : 'في انتظار الفريق الآخر...';
       }
     }
   });
@@ -154,25 +119,22 @@ if (!roomId || !team) {
 
 window.submitAnswer = async () => {
   const val = document.getElementById('ans-input').value.trim();
-  if (!val || !roomId || !team) return;
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
+  if (!val || submitted) return;
+  document.getElementById('submit-btn').disabled = true;
   submitted = true;
-
-  const field = isA ? 'answerA' : 'answerB';
-  await set(ref(db, `closest/${roomId}/${field}`), parseFloat(val));
-
+  await update(ref(db, `closest/${roomId}`), {
+    [`answer${isA?'A':'B'}`]: parseFloat(val)
+  });
   document.getElementById('input-section').style.display = 'none';
+  document.getElementById('q-box').style.display = 'none';
   document.getElementById('done-section').style.display = 'block';
-
-  // Check if other team already submitted
+  // Check if other already answered
   const other = isA ? roomData?.answerB : roomData?.answerA;
-  const waitMsg = document.getElementById('waiting-msg');
-  if (other !== null && other !== undefined) {
-    if (waitMsg) waitMsg.textContent = '✅ كلا الفريقين أرسلا أجوبتهم!';
-  } else {
-    if (waitMsg) waitMsg.textContent = 'في انتظار الفريق الآخر...';
+  const doneMsg = document.getElementById('done-msg');
+  if (doneMsg) {
+    doneMsg.textContent = (other !== null && other !== undefined)
+      ? '✅ كلا الفريقين أرسلا أجوبتهم!'
+      : 'في انتظار الفريق الآخر...';
   }
 };
 </script>
