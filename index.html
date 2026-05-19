@@ -3264,25 +3264,24 @@ function openVideoNewTab(driveId) {
 function openVideoOverlay(driveId, directUrl, qIndex) {
   const container = document.getElementById('video-container-' + qIndex);
   if (!container) return;
-  if (driveId) {
-    container.innerHTML = `
-      <iframe
-        src="https://drive.google.com/file/d/${driveId}/preview"
-        style="width:100%;height:100%;border:none;display:block;"
-        allow="autoplay; fullscreen"
-        allowfullscreen
-        id="video-frame-${qIndex}"
-      ></iframe>`;
-  } else if (directUrl) {
+
+  // Use GitHub-hosted video — works on all devices including Android tablets
+  const item = G.media.r5?.[qIndex];
+  const fileName = item?.name || '';
+  const githubUrl = fileName
+    ? `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(fileName)}`
+    : directUrl || '';
+
+  if (githubUrl) {
     container.innerHTML = `
       <video autoplay controls playsinline
-        style="width:100%;height:100%;display:block;object-fit:contain;"
+        style="width:100%;height:100%;display:block;object-fit:contain;background:#000;"
         id="video-el-${qIndex}">
-        <source src="${directUrl}" type="video/mp4">
+        <source src="${githubUrl}" type="video/mp4">
       </video>`;
+    container.style.cursor = 'default';
+    container.onclick = null;
   }
-  container.style.cursor = 'default';
-  container.onclick = null;
 }
 
 function openVideoFullscreen(qIndex) {
@@ -3965,15 +3964,18 @@ function startHostCmdListener() {
     } else if (cmd === 'videoPlay') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const item = G.media.r5?.[qIdx];
-      if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx);
+      if (item) {
+        const v = document.getElementById('video-el-' + qIdx);
+        if (v) { v.play(); }
+        else openVideoOverlay(item.driveId||'', item.url||'', qIdx);
+      }
     } else if (cmd === 'videoRepeat') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      const item = G.media.r5?.[qIdx];
-      if (item) {
-        // Reload iframe by re-triggering openVideoOverlay
-        const frame = document.getElementById('video-frame-' + qIdx);
-        if (frame) { const s = frame.src; frame.src = ''; setTimeout(() => frame.src = s, 100); }
-        else openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIdx);
+      const v = document.getElementById('video-el-' + qIdx);
+      if (v) { v.currentTime = 0; v.play(); }
+      else {
+        const item = G.media.r5?.[qIdx];
+        if (item) openVideoOverlay(item.driveId||'', item.url||'', qIdx);
       }
     } else if (cmd === 'videoReveal') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
