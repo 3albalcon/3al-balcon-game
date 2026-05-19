@@ -3147,56 +3147,56 @@ function renderTeamVideo(r, qIndex, sa) {
   const item = hasVideo ? items[qIndex] : null;
   const isLast = qIndex >= r.count - 1;
 
-  // Match video filename to Category 6 Excel data
+  // Match video filename to CSV data
   let matchedQ = null, matchedA = null;
   if (item && G.questions.r5 && G.questions.r5.length) {
     const videoName = (item.name || '').replace(/\.[^/.]+$/, '').trim().toLowerCase();
     const match = G.questions.r5.find(row => {
       const rowName = (row.v || '').trim().toLowerCase();
-      return rowName && videoName.includes(rowName) || rowName.includes(videoName);
+      return rowName && (videoName.includes(rowName) || rowName.includes(videoName));
     });
     if (match) { matchedQ = match.q; matchedA = match.a; }
   }
 
-  // Push to host view
-  updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || 'شاهد الفيديو', matchedA || '');
+  // Store for host commands
+  window._cat6Q = matchedQ;
+  window._cat6A = matchedA;
+  window._cat6QIndex = qIndex;
+  window._cat6DriveId = item?.driveId || null;
+  window._cat6Phase = 'video'; // video → question → answer
+
+  updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || '', matchedA || '');
 
   sa.innerHTML = `
     <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
-    ${item ? `
-      <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;display:flex;justify-content:center;" class="fade-in">
-        <div class="video-container" id="video-container-${qIndex}" style="cursor:pointer;position:relative" onclick="openVideoOverlay('${item.driveId||''}','${item.directUrl||item.url||''}',${qIndex})">
-          ${item.driveId ? `
-            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000">
-              <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
-                <span style="font-size:40px;margin-right:-6px">▶</span>
-              </div>
-              <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);font-family:Cairo,sans-serif">اضغط لتشغيل الفيديو</div>
-            </div>
-          ` : `
-            <video id="video-el" src="${item.url}" controls style="width:100%;height:100%;display:block;object-fit:contain"></video>
-          `}
+
+    <!-- VIDEO AREA -->
+    <div style="width:100%;max-width:1440px;margin:0 auto;" class="fade-in">
+      <div class="video-container" id="video-container-${qIndex}" style="cursor:pointer;position:relative"
+        onclick="cat6PlayVideo(${qIndex})">
+        <div id="video-placeholder-${qIndex}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000">
+          <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
+            <span style="font-size:40px;margin-right:-6px">▶</span>
+          </div>
+          <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);font-family:Cairo,sans-serif">اضغط لتشغيل الفيديو</div>
         </div>
       </div>
-    ` : `
-      <div class="video-placeholder fade-in">
-        <div class="vp-icon">🎬</div>
-        <p>لم يتم رفع فيديوهات<br>ارفع الفيديوهات من الإعدادات</p>
-      </div>
-    `}
-    <div id="video-question-area" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
-      <div class="question-text-box fade-in" id="vq-text" style="font-size:${dynFont(matchedQ)}">${matchedQ || '—'}</div>
-      <div id="vq-timer">${timerHTML(30)}</div>
-      ${matchedA ? `
-        <div id="vq-answer-area" style="min-height:48px;display:flex;align-items:center;justify-content:center">
-          <button class="answer-reveal-btn" onclick="
-            document.getElementById('vq-answer-area').innerHTML=
-            '<div class=&quot;answer-box fade-in&quot;>✅ ${matchedA.replace(/"/g,'&quot;').replace(/'/g,"\\'")} </div>'">
-            👁 كشف الجواب
-          </button>
-        </div>
-      ` : ''}
     </div>
+
+    <!-- SHOW QUESTION BUTTON — visible after video plays -->
+    <div id="cat6-show-q-btn" style="display:none;justify-content:center">
+      <button class="answer-reveal-btn" onclick="cat6ShowQuestion(${qIndex})">📋 عرض السؤال</button>
+    </div>
+
+    <!-- QUESTION AREA — hidden until shown -->
+    <div id="video-question-area" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
+      <div class="question-text-box fade-in" style="font-size:${dynFont(matchedQ)}">${matchedQ || '—'}</div>
+      <div id="vq-timer">${timerHTML(30)}</div>
+      <div id="vq-answer-area" style="min-height:48px;display:flex;align-items:center;justify-content:center">
+        ${matchedA ? `<button class="answer-reveal-btn" id="cat6-reveal-btn" onclick="cat6RevealAnswer()">👁 كشف الجواب</button>` : ''}
+      </div>
+    </div>
+
     ${scorePanelHTML(3, 0)}
     <div class="nav-btns">
       ${isLast
@@ -3204,56 +3204,56 @@ function renderTeamVideo(r, qIndex, sa) {
         : `<button class="nav-btn primary" onclick="nextQ()">الفيديو التالي ←</button>`
       }
     </div>`;
+}
 
-  // Show a manual "انتهى الفيديو" button + auto-detect video end
-  if (item) {
-    setTimeout(() => {
-      const qArea = document.getElementById('video-question-area');
-      const doneBtn = document.createElement('button');
-      doneBtn.className = 'nav-btn';
-      doneBtn.style.cssText = 'margin-top:8px;border-color:var(--neon-yellow);color:var(--neon-yellow);text-shadow:var(--glow-yellow)';
-      doneBtn.textContent = '⏭ انتهى الفيديو — اعرض السؤال';
-      doneBtn.onclick = () => {
-        // Exit fullscreen
-        if (document.fullscreenElement) document.exitFullscreen();
-        else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-        doneBtn.remove();
-        const frame = document.getElementById('video-frame-' + qIndex);
-        const videoEl = document.getElementById('video-el');
-        if (frame) frame.closest('.video-container').style.display = 'none';
-        if (videoEl) { videoEl.pause(); videoEl.closest('.video-container').style.display = 'none'; }
-        if (qArea) qArea.style.display = 'flex';
-        startTimer(30);
-      };
-      const navBtns = document.querySelector('.slide-area .nav-btns');
-      if (navBtns) navBtns.parentNode.insertBefore(doneBtn, navBtns);
+function cat6PlayVideo(qIndex) {
+  const item = G.media.r5?.[qIndex];
+  if (!item) return;
+  const container = document.getElementById('video-container-' + qIndex);
+  if (!container) return;
+  const fileName = item.name || '';
+  const src = fileName
+    ? `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(fileName)}`
+    : item.url || '';
+  container.innerHTML = `
+    <video autoplay controls playsinline
+      style="width:100%;height:100%;display:block;object-fit:contain;background:#000;"
+      id="video-el-${qIndex}">
+      <source src="${src}" type="video/mp4">
+    </video>`;
+  container.style.cursor = 'default';
+  container.onclick = null;
+  window._cat6Phase = 'video';
+  // Show "عرض السؤال" button once video starts
+  setTimeout(() => {
+    const showBtn = document.getElementById('cat6-show-q-btn');
+    if (showBtn) showBtn.style.display = 'flex';
+  }, 500);
+  // Auto-show question button when video ends
+  const vid = document.getElementById('video-el-' + qIndex);
+  if (vid) vid.addEventListener('ended', () => {
+    const showBtn = document.getElementById('cat6-show-q-btn');
+    if (showBtn) showBtn.style.display = 'flex';
+  });
+}
 
-      // Auto-detect video end for local files
-      const videoEl = document.getElementById('video-el');
-      if (videoEl) {
-        videoEl.addEventListener('ended', () => doneBtn.click());
-        // Auto fullscreen for local video
-        videoEl.addEventListener('play', () => {
-          if (videoEl.requestFullscreen) videoEl.requestFullscreen();
-          else if (videoEl.webkitRequestFullscreen) videoEl.webkitRequestFullscreen();
-        }, { once: true });
-      }
-    }, 100);
-  }
+function cat6ShowQuestion(qIndex) {
+  window._cat6Phase = 'question';
+  const container = document.getElementById('video-container-' + qIndex);
+  const showBtn = document.getElementById('cat6-show-q-btn');
+  const qArea = document.getElementById('video-question-area');
+  // Pause video if playing
+  const vid = document.getElementById('video-el-' + qIndex);
+  if (vid) vid.pause();
+  if (container) container.style.display = 'none';
+  if (showBtn) showBtn.style.display = 'none';
+  if (qArea) qArea.style.display = 'flex';
+  startTimer(30);
 }
 
 function playDriveVideo(driveId, qIndex) {
-  // Reload the iframe to restart the video
-  const frame = document.getElementById('video-frame-' + qIndex);
-  if (frame) {
-    const src = `https://drive.google.com/file/d/${driveId}/preview`;
-    if (!frame.src || frame.src === 'about:blank') {
-      frame.src = src;
-    } else {
-      frame.src = '';
-      setTimeout(() => { frame.src = src; }, 100);
-    }
-  }
+  // Kept for compatibility — now uses GitHub videos
+  cat6PlayVideo(qIndex);
 }
 
 // Also allow opening in new tab as fallback for very restrictive devices
@@ -3963,26 +3963,19 @@ function startHostCmdListener() {
       }, 700);
     } else if (cmd === 'videoPlay') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      const item = G.media.r5?.[qIdx];
-      if (item) {
-        const v = document.getElementById('video-el-' + qIdx);
-        if (v) { v.play(); }
-        else openVideoOverlay(item.driveId||'', item.url||'', qIdx);
-      }
+      const v = document.getElementById('video-el-' + qIdx);
+      if (v) { v.play(); }
+      else cat6PlayVideo(qIdx);
     } else if (cmd === 'videoRepeat') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
       const v = document.getElementById('video-el-' + qIdx);
       if (v) { v.currentTime = 0; v.play(); }
-      else {
-        const item = G.media.r5?.[qIdx];
-        if (item) openVideoOverlay(item.driveId||'', item.url||'', qIdx);
-      }
+      else cat6PlayVideo(qIdx);
     } else if (cmd === 'videoReveal') {
       const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-      const qArea = document.getElementById('video-question-area');
-      const container = document.getElementById('video-container-' + qIdx);
-      if (container) container.style.display = 'none';
-      if (qArea) { qArea.style.display = 'flex'; startTimer(30); }
+      cat6ShowQuestion(qIdx);
+    } else if (cmd === 'revealCat6Answer') {
+      cat6RevealAnswer();
     } else if (cmd === 'showQuestion') {
       const btnShowQ = document.getElementById('btn-show-q');
       if (btnShowQ && btnShowQ.style.display !== 'none') btnShowQ.click();

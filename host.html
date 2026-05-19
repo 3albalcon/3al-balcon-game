@@ -268,15 +268,14 @@ function render() {
   // Cat 6 — video controls
   if (state.currentRound === 'r5') {
     dyn.innerHTML = `
-      <div class="card q-card" style="color:var(--yellow);border-color:var(--yellow)">🎬 فيديو ${q} من ${state.currentRoundCount||4}</div>
+      <div class="card q-card" style="color:var(--yellow);border-color:var(--yellow)">🎬 فيديو ${q >= 1 ? q : ''} من ${state.currentRoundCount||4}</div>
       <div class="btn-row">
         <button class="btn btn-g btn-sm" onclick="c('videoPlay')">▶ تشغيل</button>
         <button class="btn btn-y btn-sm" onclick="c('videoRepeat')">🔁 إعادة</button>
       </div>
       <button class="btn btn-c btn-sm" onclick="c('videoReveal')" style="width:100%">📋 عرض السؤال</button>
-      ${view.answer?`<div class="card a-card">${view.answer}</div>`:''}
-      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="width:100%">👁 كشف الجواب للجميع</button>`:''}
-      ${scoreSection(round)}`;
+      ${view.answer?`<div class="card a-card" style="font-size:15px">${view.answer}</div>`:''}
+      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealCat6Answer')" style="width:100%">👁 كشف الجواب للجميع</button>`:''}`;
     return;
   }
 
