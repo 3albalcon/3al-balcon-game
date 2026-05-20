@@ -101,7 +101,7 @@ body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-h
     <button class="btn btn-g" id="btn-next" onclick="c('next')" disabled style="font-size:18px;padding:16px 0">التالي →</button>
   </div>
   <div class="btn-row">
-    <button class="btn btn-w btn-sm" onclick="goMenu()">🏠 القائمة</button>
+    <button class="btn btn-sm" onclick="goMenu()" style="flex:1;border-color:#FF8C00;color:#FF8C00;background:rgba(255,140,0,0.08);box-shadow:0 0 8px rgba(255,140,0,0.3)">🏠 القائمة</button>
     <button class="btn btn-r btn-sm" id="btn-roulette" onclick="c('roulette')">🎰 شو بدنا نختار</button>
   </div>
 
@@ -161,6 +161,13 @@ function loadCat6Answers() {
   if (_cat6RoomListener) { _cat6RoomListener(); _cat6RoomListener = null; }
   _cat6RoomListener = onValue(ref(db, `cat6/${roomId}`), snap => {
     const d = snap.val(); if (!d) return;
+    // Reset judgement when new question starts
+    if (d.phase === 'waiting') {
+      _cat6Judged = { a: null, b: null };
+      const area = document.getElementById('cat6-judge-area');
+      if (area) area.innerHTML = '';
+      return;
+    }
     const area = document.getElementById('cat6-judge-area');
     if (!area) return;
     const ansA = d.answerA || null;

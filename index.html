@@ -2632,9 +2632,28 @@ function renderBidding(r, qIndex, sa) {
   const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
-  // First question — show QR codes and init room
+  // First question — init room. Subsequent questions — reset room for next question
   if (qIndex === 0) {
     cat3RoomId = initCat3Room(G.teamA, G.teamB);
+  } else {
+    // Reset room for next question keeping teams connected
+    setTimeout(() => {
+      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+        const db = window._fbDb; const fbRef = window._fbRef;
+        if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), {
+          phase: 'nextquestion',
+          readyA: false, readyB: false,
+          bids: { a: { value: 0, time: 0 }, b: { value: 0, time: 0 } },
+          lastBidder: null, bidCountdownEnd: null,
+          auctionWinner: null, winningBid: null,
+          answers: [], answersConfirmed: false, gaveUp: null,
+          question: q, questionIndex: qIndex
+        });
+        setTimeout(() => {
+          if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'ready' });
+        }, 1500);
+      });
+    }, 300);
   }
 
   const roomId = cat3RoomId;
@@ -2645,8 +2664,8 @@ function renderBidding(r, qIndex, sa) {
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
 
-    <!-- QR WAITING PHASE -->
-    <div id="cat3-qr-phase" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
+    <!-- QR WAITING PHASE — only for first question -->
+    <div id="cat3-qr-phase" style="display:${qIndex === 0 ? 'flex' : 'none'};flex-direction:column;align-items:center;gap:16px;width:100%">
       <div style="font-size:16px;font-weight:700;color:var(--neon-cyan);text-shadow:var(--glow-cyan)">📱 الفريقين يسكنون الكود</div>
       <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
@@ -3244,7 +3263,21 @@ function renderTeamVideo(r, qIndex, sa) {
   window._cat6Phase = 'video';
   window._cat6Judgement = {};
   window._cat6TimestampA = 0;
-  window._cat6TimestampB = 0; // video → question → answer
+  window._cat6TimestampB = 0;
+
+  // Reset answers in Firebase for new question
+  const roomId = window._cat6RoomId;
+  if (roomId) {
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+      const db = window._fbDb; const fbRef = window._fbRef;
+      if (db && fbRef) update(fbRef(db, `cat6/${roomId}`), {
+        question: matchedQ || '',
+        answerA: null, answerB: null,
+        answeredAtA: null, answeredAtB: null,
+        phase: 'waiting'
+      });
+    });
+  } // video → question → answer
 
   updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || '', matchedA || '');
 
@@ -4220,7 +4253,7 @@ function startHostCmdListener() {
 }
 
 function updateHostView(categoryName, questionNum, question, answer) {
-  if (!window._hostMode) return;
+  // Always push — host phone needs this data
   pushHostView({ active: true, categoryName, questionNum, question: question || '', answer: answer || '' });
 }
 
@@ -4360,7 +4393,7 @@ function announceWinner() {
     if (winnerAudio) { winnerAudio.pause(); winnerAudio.currentTime = 0; }
     overlay.style.opacity = '0';
     setTimeout(() => overlay.remove(), 500);
-  }, 10000);
+  }, 15000);
 }
 
 // ══════════════════════════════════════════
