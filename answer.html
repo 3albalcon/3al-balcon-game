@@ -15,9 +15,11 @@ body { font-family:'Cairo',sans-serif; color:#fff; min-height:100dvh; display:fl
 .badge { padding:10px 32px; border-radius:100px; font-size:20px; font-weight:900; border:2px solid var(--tc); color:var(--tc); background:rgba(0,0,0,0.4); text-align:center; box-shadow:0 0 20px color-mix(in srgb,var(--tc) 35%,transparent); }
 .q-box { background:rgba(0,0,0,0.5); border:2px solid rgba(255,255,255,0.15); border-radius:14px; padding:16px; font-size:18px; font-weight:700; text-align:center; line-height:1.5; width:100%; direction:rtl; }
 .waiting { font-size:15px; color:rgba(255,255,255,0.4); text-align:center; animation:pulse 2s infinite; }
-.ans-input { width:100%; padding:18px; font-family:'Cairo',sans-serif; font-size:36px; font-weight:900; text-align:center; border-radius:14px; border:2px solid var(--tc); background:rgba(0,0,0,0.5); color:#fff; outline:none; }
+.ans-input { width:100%; padding:16px; font-family:'Cairo',sans-serif; font-size:22px; font-weight:900; text-align:center; border-radius:14px; border:2px solid var(--tc); background:rgba(0,0,0,0.5); color:#fff; outline:none; direction:rtl; }
+.ans-input:focus { background:rgba(0,0,0,0.7); }
 .submit-btn { width:100%; padding:18px; border-radius:14px; font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; cursor:pointer; border:2px solid #39FF14; color:#39FF14; background:rgba(57,255,20,0.08); }
 .submit-btn:active { background:rgba(57,255,20,0.2); transform:scale(0.97); }
+.submit-btn:disabled { opacity:0.25; cursor:default; transform:none; }
 .done-card { display:flex; flex-direction:column; align-items:center; gap:10px; padding:24px; border-radius:16px; background:rgba(57,255,20,0.06); border:2px solid #39FF14; width:100%; text-align:center; }
 .done-icon { font-size:52px; }
 .done-title { font-size:22px; font-weight:900; color:#39FF14; }
@@ -33,7 +35,7 @@ body { font-family:'Cairo',sans-serif; color:#fff; min-height:100dvh; display:fl
   <div class="waiting" id="state-waiting">⏳ انتظر بدء السؤال من المقدّم...</div>
   <div id="q-box" class="q-box" style="display:none"></div>
   <div id="input-section" style="display:none;flex-direction:column;gap:12px;width:100%">
-    <input type="number" class="ans-input" id="ans-input" placeholder="أدخل رقمك" inputmode="numeric">
+    <input id="ans-input" class="ans-input" placeholder="أدخل جوابك هنا" inputmode="text" autocomplete="off" autocorrect="off">
     <button class="submit-btn" id="submit-btn" onclick="submitAnswer()">✅ إرسال الجواب</button>
   </div>
   <div id="done-section" style="display:none">
@@ -47,7 +49,7 @@ body { font-family:'Cairo',sans-serif; color:#fff; min-height:100dvh; display:fl
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -64,48 +66,62 @@ const db = getDatabase(app);
 const p = new URLSearchParams(location.search);
 const roomId = p.get('r');
 const team = p.get('t');       // 'a' or 'b'
+const mode = p.get('m') || 'number'; // 'number' or 'text'
 const session = p.get('s') || 'main';
 const isA = team === 'a';
 
-// Set team color
+// Team color
 document.documentElement.style.setProperty('--tc', isA ? '#E50158' : '#E2DA51');
 
-// Load wallpaper from room data
+// Input mode
+const input = document.getElementById('ans-input');
+if (mode === 'number') {
+  input.type = 'number';
+  input.inputMode = 'numeric';
+  input.placeholder = 'أدخل رقمك';
+  input.style.fontSize = '36px';
+} else {
+  input.type = 'text';
+  input.inputMode = 'text';
+  input.placeholder = 'أدخل جوابك هنا';
+}
+
+let submitted = false;
+let roomData = {};
 let _wallSet = false;
+
 function applyWallpaper(url) {
   if (!url || _wallSet) return;
   _wallSet = true;
   document.body.style.backgroundImage = `url('${url}')`;
 }
 
-let submitted = false;
-let roomData = {};
-
 if (!roomId || !team) {
   document.getElementById('team-badge').textContent = 'رابط غير صحيح';
 } else {
-  // Mark connected
-  update(ref(db, `closest/${roomId}`), { [`connected${isA?'A':'B'}`]: true });
+  const dbPath = mode === 'text' ? `cat6/${roomId}` : `closest/${roomId}`;
 
-  onValue(ref(db, `closest/${roomId}`), snap => {
+  // Mark connected
+  update(ref(db, dbPath), { [`connected${isA?'A':'B'}`]: true });
+
+  onValue(ref(db, dbPath), snap => {
     const d = snap.val(); if (!d) return;
     roomData = d;
 
-    // Apply wallpaper
     if (d.wallpaper) applyWallpaper(d.wallpaper);
 
     // Team name
     const name = isA ? d.teamA : d.teamB;
     document.getElementById('team-badge').textContent = name || (isA ? 'الفريق أ' : 'الفريق ب');
 
-    // Reset for new question if phase goes back to waiting
+    // Reset for new question
     if (d.phase === 'waiting' && submitted) {
       submitted = false;
       document.getElementById('done-section').style.display = 'none';
       document.getElementById('state-waiting').style.display = 'block';
       document.getElementById('input-section').style.display = 'none';
       document.getElementById('q-box').style.display = 'none';
-      document.getElementById('ans-input').value = '';
+      input.value = '';
       document.getElementById('submit-btn').disabled = false;
     }
 
@@ -117,6 +133,7 @@ if (!roomId || !team) {
         document.getElementById('q-box').style.display = 'block';
       }
       document.getElementById('input-section').style.display = 'flex';
+      input.focus();
     }
 
     // Update done message
@@ -124,7 +141,7 @@ if (!roomId || !team) {
       const other = isA ? d.answerB : d.answerA;
       const doneMsg = document.getElementById('done-msg');
       if (doneMsg) {
-        doneMsg.textContent = (other !== null && other !== undefined)
+        doneMsg.textContent = (other !== null && other !== undefined && other !== '')
           ? '✅ كلا الفريقين أرسلا أجوبتهم!'
           : 'في انتظار الفريق الآخر...';
       }
@@ -133,22 +150,26 @@ if (!roomId || !team) {
 }
 
 window.submitAnswer = async () => {
-  const val = document.getElementById('ans-input').value.trim();
+  const val = input.value.trim();
   if (!val || submitted) return;
   document.getElementById('submit-btn').disabled = true;
   submitted = true;
-  await update(ref(db, `closest/${roomId}`), {
-    [`answer${isA?'A':'B'}`]: parseFloat(val),
-    [`answeredAt${isA?'A':'B'}`]: Date.now()
+
+  const dbPath = mode === 'text' ? `cat6/${roomId}` : `closest/${roomId}`;
+  const now = Date.now();
+  await update(ref(db, dbPath), {
+    [`answer${isA?'A':'B'}`]: val,
+    [`answeredAt${isA?'A':'B'}`]: now
   });
+
   document.getElementById('input-section').style.display = 'none';
   document.getElementById('q-box').style.display = 'none';
   document.getElementById('done-section').style.display = 'block';
-  // Check if other already answered
+
   const other = isA ? roomData?.answerB : roomData?.answerA;
   const doneMsg = document.getElementById('done-msg');
   if (doneMsg) {
-    doneMsg.textContent = (other !== null && other !== undefined)
+    doneMsg.textContent = (other !== null && other !== undefined && other !== '')
       ? '✅ كلا الفريقين أرسلا أجوبتهم!'
       : 'في انتظار الفريق الآخر...';
   }

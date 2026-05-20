@@ -2200,6 +2200,80 @@ const RULES = {
 function renderRules(r, sa) {
   const rules = RULES[r.id] || [];
   const isClosest = r.slides === 'closest';
+  const isCat6 = r.id === 'r5';
+
+  // Cat6 — create Firebase room and show QRs on rules page
+  if (isCat6) {
+    const roomId = `cat6_${Date.now()}`;
+    window._cat6RoomId = roomId;
+    window._cat6RoomPhase = 'waiting';
+
+    const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet; const fbOnValue = window._fbOnValue;
+    if (db && fbSet) {
+      fbSet(fbRef(db, `cat6/${roomId}`), {
+        teamA: G.teamA, teamB: G.teamB,
+        connectedA: false, connectedB: false,
+        question: null, answerA: null, answerB: null,
+        phase: 'waiting', ts: Date.now(),
+        wallpaper: G.waitingScreenUrl || G.hostWallpaperUrl || null
+      });
+      // Listen for connections
+      fbOnValue(fbRef(db, `cat6/${roomId}`), (snap) => {
+        const d = snap.val(); if (!d) return;
+        const dotA = document.getElementById('dot-a-cat6');
+        const dotB = document.getElementById('dot-b-cat6');
+        if (dotA) { dotA.style.background = d.connectedA ? '#39FF14' : 'rgba(255,255,255,0.15)'; dotA.style.boxShadow = d.connectedA ? '0 0 8px #39FF14' : 'none'; }
+        if (dotB) { dotB.style.background = d.connectedB ? '#39FF14' : 'rgba(255,255,255,0.15)'; dotB.style.boxShadow = d.connectedB ? '0 0 8px #39FF14' : 'none'; }
+        window._cat6ConnA = !!d.connectedA;
+        window._cat6ConnB = !!d.connectedB;
+      });
+    }
+
+    const urlA = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=a&m=text&s=${window._gameSession||'main'}`;
+    const urlB = `https://3albalcon.github.io/3al-balcon-game/answer.html?r=${roomId}&t=b&m=text&s=${window._gameSession||'main'}`;
+
+    sa.innerHTML = `
+      <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;width:100%;flex-wrap:wrap;" class="fade-in">
+        <!-- Left QR — Team A -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+            <div id="qr-a-cat6"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center">
+            <div id="dot-a-cat6" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
+          </div>
+        </div>
+        <!-- Rules in middle -->
+        <div class="rules-card" style="flex:1;min-width:200px">
+          <h2>📋 قوانين — ${r.name}</h2>
+          <ul class="rules-list">
+            ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
+          </ul>
+        </div>
+        <!-- Right QR — Team B -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+            <div id="qr-b-cat6"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center">
+            <div id="dot-b-cat6" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="nav-btn primary" onclick="nextQ()">ابدأ اللعبة ←</button>
+      </div>`;
+
+    setTimeout(() => {
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById('qr-a-cat6'), { text: urlA, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+        new QRCode(document.getElementById('qr-b-cat6'), { text: urlB, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+      }
+    }, 100);
+    return;
+  }
 
   // For closest categories, create Firebase room and QRs on rules page
   if (isClosest) {
@@ -2371,6 +2445,10 @@ function startTimer(seconds) {
 }
 
 function showTimerEnd() {
+  // For cat6 — show reveal button when timer ends
+  if (G.currentRound?.id === 'r5') {
+    showCat6AnswerReveal();
+  }
   const el = document.createElement('div');
   el.id = 'timer-end-overlay';
   el.style.cssText = `
@@ -3191,9 +3269,24 @@ function renderTeamVideo(r, qIndex, sa) {
     <!-- QUESTION AREA — hidden until shown -->
     <div id="video-question-area" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
       <div class="question-text-box fade-in" style="font-size:${dynFont(matchedQ)}">${matchedQ || '—'}</div>
+
+      <!-- Submission indicators -->
+      <div style="display:flex;gap:16px;justify-content:center">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
+          <div id="dot-a-cat6q" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+          <span>${G.teamA}</span>
+          <span id="cat6-sub-a" style="display:none;color:#39FF14">✅</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
+          <div id="dot-b-cat6q" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
+          <span>${G.teamB}</span>
+          <span id="cat6-sub-b" style="display:none;color:#39FF14">✅</span>
+        </div>
+      </div>
+
       <div id="vq-timer">${timerHTML(30)}</div>
-      <div id="vq-answer-area" style="min-height:48px;display:flex;align-items:center;justify-content:center">
-        ${matchedA ? `<button class="answer-reveal-btn" id="cat6-reveal-btn" onclick="cat6RevealAnswer()">👁 كشف الجواب</button>` : ''}
+      <div id="vq-answer-area" style="min-height:48px;display:flex;align-items:center;justify-content:center;width:100%">
+        ${matchedA ? `<button class="answer-reveal-btn" id="cat6-reveal-btn" onclick="cat6RevealAnswer()" style="display:none">👁 كشف الجواب</button>` : ''}
       </div>
     </div>
 
@@ -3248,6 +3341,37 @@ function cat6ShowQuestion(qIndex) {
   if (showBtn) showBtn.style.display = 'none';
   if (qArea) qArea.style.display = 'flex';
   startTimer(30);
+
+  // Push question to Firebase so phones show it
+  const roomId = window._cat6RoomId;
+  const q = window._cat6Q;
+  if (roomId && q) {
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+      const db = window._fbDb; const fbRef = window._fbRef;
+      if (db && fbRef) update(fbRef(db, `cat6/${roomId}`), {
+        phase: 'active', question: q,
+        answerA: null, answerB: null
+      });
+    });
+    // Listen for answers
+    window._fbOnValue(window._fbRef(window._fbDb, `cat6/${roomId}`), (snap) => {
+      const d = snap.val(); if (!d) return;
+      const subA = document.getElementById('cat6-sub-a');
+      const subB = document.getElementById('cat6-sub-b');
+      if (subA && d.answerA) subA.style.display = 'block';
+      if (subB && d.answerB) subB.style.display = 'block';
+      // When both answered or timer ends show reveal button
+      if (d.answerA && d.answerB) {
+        stopTimer();
+        showCat6AnswerReveal();
+      }
+    });
+  }
+}
+
+function showCat6AnswerReveal() {
+  const revealBtn = document.getElementById('cat6-reveal-btn');
+  if (revealBtn) revealBtn.style.display = 'flex';
 }
 
 function cat6RevealAnswer() {
@@ -3264,13 +3388,58 @@ function cat6RevealAnswer() {
     if (showBtn) showBtn.style.display = 'none';
     qArea.style.display = 'flex';
   }
-  // Reveal answer
+  stopTimer();
+
+  // Get submitted answers from Firebase
+  const roomId = window._cat6RoomId;
   const area = document.getElementById('vq-answer-area');
   const ans = window._cat6A || '';
-  if (area && ans) {
+
+  // Show correct answer + team answers + manual judging buttons
+  const db = window._fbDb; const fbRef = window._fbRef;
+  if (db && fbRef && roomId) {
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
+      get(fbRef(db, `cat6/${roomId}`)).then(snap => {
+        const d = snap.val() || {};
+        const ansA = d.answerA || '—';
+        const ansB = d.answerB || '—';
+        if (area) area.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+            <div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,22px)">✅ الجواب: ${ans}</div>
+            <div style="display:flex;gap:10px;width:100%">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(229,1,88,0.08);border:1.5px solid rgba(229,1,88,0.3)">
+                <div style="font-size:11px;color:#E50158;font-weight:700">${G.teamA}</div>
+                <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansA}</div>
+                <div style="display:flex;gap:6px">
+                  <button onclick="cat6Judge('a',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">✅ صح</button>
+                  <button onclick="cat6Judge('a',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">❌ غلط</button>
+                </div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(226,218,81,0.08);border:1.5px solid rgba(226,218,81,0.3)">
+                <div style="font-size:11px;color:#E2DA51;font-weight:700">${G.teamB}</div>
+                <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansB}</div>
+                <div style="display:flex;gap:6px">
+                  <button onclick="cat6Judge('b',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">✅ صح</button>
+                  <button onclick="cat6Judge('b',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">❌ غلط</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      });
+    });
+  } else if (area) {
     area.innerHTML = `<div class="answer-box fade-in">✅ ${ans}</div>`;
   }
-  stopTimer();
+}
+
+function cat6Judge(team, correct) {
+  if (correct) {
+    addScore(team, 3);
+    showToast(`+3 نقاط ${team === 'a' ? G.teamA : G.teamB}! 🎉`);
+  }
+  // Disable both buttons for this team
+  const btns = document.querySelectorAll(`button[onclick*="cat6Judge('${team}'"]`);
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
 }
 
 function playDriveVideo(driveId, qIndex) {
@@ -3893,6 +4062,7 @@ function pushHostState() {
     scoreA: G.scoreA,
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
+    cat6RoomId: window._cat6RoomId || null,
     onGameScreen: gameScreenVisible,
     sessionId: window._gameSession || null,
   });
@@ -4008,6 +4178,13 @@ function startHostCmdListener() {
       } else {
         const btn = document.querySelector('.answer-reveal-btn');
         if (btn) btn.click();
+      }
+    } else if (cmd === 'judgeTeam') {
+      const team = d.data?.team;
+      const correct = d.data?.correct;
+      if (team && correct) {
+        addScore(team, 3);
+        showToast(`+3 نقاط ${team === 'a' ? G.teamA : G.teamB}! 🎉`);
       }
     } else if (cmd === 'addScore') {
       const team = d.data?.team;

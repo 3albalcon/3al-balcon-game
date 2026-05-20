@@ -149,6 +149,50 @@ const P = (path) => `sessions/${SESSION}/${path}`;
 // Send command to main screen
 window.c = (cmd, data={}) => set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
 
+let _cat6RoomListener = null;
+function loadCat6Answers() {
+  const area = document.getElementById('cat6-judge-area');
+  if (!area) return;
+  if (!state.cat6RoomId) return;
+  if (_cat6RoomListener) _cat6RoomListener();
+  _cat6RoomListener = onValue(ref(db, `cat6/${state.cat6RoomId}`), snap => {
+    const d = snap.val(); if (!d) return;
+    const area = document.getElementById('cat6-judge-area');
+    if (!area) return;
+    const ansA = d.answerA || null;
+    const ansB = d.answerB || null;
+    if (!ansA && !ansB) { area.innerHTML = ''; return; }
+    area.innerHTML = `
+      <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center;margin-top:4px">— أجوبة الفرق —</div>
+      <div style="display:flex;gap:8px;width:100%;margin-top:4px">
+        ${ansA !== null ? `
+        <div style="flex:1;padding:8px;border-radius:10px;background:rgba(229,1,88,0.07);border:1px solid rgba(229,1,88,0.3);display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:10px;color:#E50158;font-weight:700">${state.teamA||'أ'}</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;text-align:center">${ansA}</div>
+          <div style="display:flex;gap:4px">
+            <button onclick="judgeTeam('a',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
+            <button onclick="judgeTeam('a',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
+          </div>
+        </div>` : '<div style="flex:1;padding:8px;border-radius:10px;background:rgba(229,1,88,0.04);border:1px dashed rgba(229,1,88,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.2)">${state.teamA||"أ"} لم يجب</div>'}
+        ${ansB !== null ? `
+        <div style="flex:1;padding:8px;border-radius:10px;background:rgba(226,218,81,0.07);border:1px solid rgba(226,218,81,0.3);display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:10px;color:#E2DA51;font-weight:700">${state.teamB||'ب'}</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;text-align:center">${ansB}</div>
+          <div style="display:flex;gap:4px">
+            <button onclick="judgeTeam('b',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
+            <button onclick="judgeTeam('b',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
+          </div>
+        </div>` : '<div style="flex:1;padding:8px;border-radius:10px;background:rgba(226,218,81,0.04);border:1px dashed rgba(226,218,81,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.2)">${state.teamB||"ب"} لم يجب</div>'}
+      </div>`;
+  });
+}
+
+window.judgeTeam = (team, correct) => {
+  c('judgeTeam', { team, correct });
+  const btns = document.querySelectorAll(`button[onclick*="judgeTeam('${team}'"]`);
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+};
+
 window.goMenu = () => {
   c('menu');
   state = {...state, currentRound:null, currentQ:-1, onGameScreen:false};
@@ -274,8 +318,10 @@ function render() {
         <button class="btn btn-y btn-sm" onclick="c('videoRepeat')">🔁 إعادة</button>
       </div>
       <button class="btn btn-c btn-sm" onclick="c('videoReveal')" style="width:100%">📋 عرض السؤال</button>
-      ${view.answer?`<div class="card a-card" style="font-size:15px">${view.answer}</div>`:''}
-      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealCat6Answer')" style="width:100%">👁 كشف الجواب للجميع</button>`:''}`;
+      ${view.answer?`<div class="card a-card" style="font-size:14px">${view.answer}</div>`:''}
+      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealCat6Answer')" style="width:100%">👁 كشف الجواب للجميع</button>`:''}
+      <div id="cat6-judge-area" style="width:100%"></div>`;
+    loadCat6Answers();
     return;
   }
 
