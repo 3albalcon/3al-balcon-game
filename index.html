@@ -2201,6 +2201,70 @@ function renderRules(r, sa) {
   const rules = RULES[r.id] || [];
   const isClosest = r.slides === 'closest';
   const isCat6 = r.id === 'r5';
+  const isCat3 = r.id === 'r3';
+
+  // Cat3 — init room and show QRs on rules page
+  if (isCat3) {
+    cat3RoomId = initCat3Room(G.teamA, G.teamB);
+    const roomId = cat3RoomId;
+    const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
+    const urlA = `${baseUrl}?t=a&r=${roomId}`;
+    const urlB = `${baseUrl}?t=b&r=${roomId}`;
+
+    // Listen for connections
+    const db = window._fbDb; const fbRef = window._fbRef; const fbOnValue = window._fbOnValue;
+    if (db && fbOnValue) {
+      fbOnValue(fbRef(db, `rooms/${roomId}/connected`), (snap) => {
+        const conn = snap.val() || {};
+        const dotA = document.getElementById('dot-a-cat3');
+        const dotB = document.getElementById('dot-b-cat3');
+        if (dotA) { dotA.style.background = conn.a ? '#39FF14' : 'rgba(255,255,255,0.15)'; dotA.style.boxShadow = conn.a ? '0 0 8px #39FF14' : 'none'; }
+        if (dotB) { dotB.style.background = conn.b ? '#39FF14' : 'rgba(255,255,255,0.15)'; dotB.style.boxShadow = conn.b ? '0 0 8px #39FF14' : 'none'; }
+      });
+    }
+
+    sa.innerHTML = `
+      <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;width:100%;flex-wrap:wrap;" class="fade-in">
+        <!-- Left QR — Team A -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+            <div id="qr-a-cat3"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center">
+            <div id="dot-a-cat3" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
+          </div>
+        </div>
+        <!-- Rules in middle -->
+        <div class="rules-card" style="flex:1;min-width:200px">
+          <h2>📋 قوانين — ${r.name}</h2>
+          <ul class="rules-list">
+            ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
+          </ul>
+        </div>
+        <!-- Right QR — Team B -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
+          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+            <div id="qr-b-cat3"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center">
+            <div id="dot-b-cat3" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="nav-btn primary" onclick="nextQ()">ابدأ اللعبة ←</button>
+      </div>`;
+
+    setTimeout(() => {
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById('qr-a-cat3'), { text: urlA, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+        new QRCode(document.getElementById('qr-b-cat3'), { text: urlB, width: 110, height: 110, colorDark: '#000', colorLight: '#fff' });
+      }
+    }, 100);
+    return;
+  }
 
   // Cat6 — create Firebase room and show QRs on rules page
   if (isCat6) {
@@ -2634,11 +2698,8 @@ function renderBidding(r, qIndex, sa) {
   window._cat3QuestionPlayed = false; // reset for new question
   window._mainTimerStarted = false; // reset timer flag
 
-  // First question — init room. Subsequent questions — reset room for next question
-  if (qIndex === 0) {
-    cat3RoomId = initCat3Room(G.teamA, G.teamB);
-  } else {
-    // Reset room for next question keeping teams connected
+  // Room already initialized in renderRules — just reset for subsequent questions
+  if (qIndex > 0) {
     setTimeout(() => {
       import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
         const db = window._fbDb; const fbRef = window._fbRef;
@@ -2652,39 +2713,19 @@ function renderBidding(r, qIndex, sa) {
           question: q, questionIndex: qIndex
         });
         setTimeout(() => {
-          if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'waiting' });
+          if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'ready' });
         }, 1500);
       });
     }, 300);
   }
 
   const roomId = cat3RoomId;
-  const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
-  const qrUrlA = `${baseUrl}?t=a&r=${roomId}`;
-  const qrUrlB = `${baseUrl}?t=b&r=${roomId}`;
 
   sa.innerHTML = `
     <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
 
-    <!-- QR WAITING PHASE — only for first question -->
-    <div id="cat3-qr-phase" style="display:${qIndex === 0 ? 'flex' : 'none'};flex-direction:column;align-items:center;gap:16px;width:100%">
-      <div style="font-size:16px;font-weight:700;color:var(--neon-cyan);text-shadow:var(--glow-cyan)">📱 الفريقين يسكنون الكود</div>
-      <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="font-size:14px;font-weight:700;color:#E50158">${G.teamA}</div>
-          <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)"><div id="qr-a"></div></div>
-          <div id="conn-a" style="font-size:12px;color:rgba(255,255,255,0.3)">⏳ انتظر</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="font-size:14px;font-weight:700;color:#E2DA51">${G.teamB}</div>
-          <div style="background:#fff;border-radius:12px;padding:8px;border:3px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)"><div id="qr-b"></div></div>
-          <div id="conn-b" style="font-size:12px;color:rgba(255,255,255,0.3)">⏳ انتظر</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- READY PHASE -->
-    <div id="cat3-ready-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
+    <!-- READY PHASE — shown while waiting for host to start -->
+    <div id="cat3-ready-phase" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
       <div style="font-size:18px;font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green)">✅ كلا الفريقين متصلين!</div>
       <div id="ready-indicators" style="display:flex;gap:20px;justify-content:center">
         <div id="ready-a" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamA}</div>
@@ -2727,10 +2768,7 @@ function renderBidding(r, qIndex, sa) {
     <div id="cat3-winner-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
       <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
       <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center"></div>
-      <div id="validation-wrap" style="display:none;flex-direction:column;gap:6px;width:100%;max-width:700px;margin:0 auto">
-        <div style="font-size:13px;color:var(--text2);text-align:center">🤖 AI validated — override if needed</div>
-        <div id="val-answers-list" style="display:flex;flex-direction:column;gap:8px;width:100%"></div>
-      </div>
+      <div id="validation-wrap" style="display:none"></div>
       <div id="score-result" style="font-size:18px;font-weight:700;text-align:center;display:none"></div>
     </div>
 
@@ -2746,21 +2784,24 @@ function renderBidding(r, qIndex, sa) {
       }
     </div>`;
 
-  // Generate QR codes
-  setTimeout(() => {
-    if (typeof QRCode !== 'undefined') {
-      new QRCode(document.getElementById('qr-a'), { text: qrUrlA, width: 120, height: 120, colorDark:'#000', colorLight:'#fff' });
-      new QRCode(document.getElementById('qr-b'), { text: qrUrlB, width: 120, height: 120, colorDark:'#000', colorLight:'#fff' });
-    }
-  }, 100);
-
   startCat3Listener(roomId, q, qIndex, isLast);
 }
 
 function startCat3Bidding(roomId) {
-  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update, get }) => {
     const db = window._fbDb; const fbRef = window._fbRef;
-    if (db && fbRef) update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
+    if (!db || !fbRef) return;
+    // Check current phase — if already ready, go straight to countdown
+    get(fbRef(db, `rooms/${roomId}/phase`)).then(snap => {
+      const currentPhase = snap.val();
+      if (currentPhase === 'ready') {
+        // Phones already on جاهز screen — start countdown directly
+        update(fbRef(db, `rooms/${roomId}`), { phase: 'countdown' });
+      } else {
+        // Move phones to ready first
+        update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
+      }
+    });
   });
 }
 
@@ -2798,22 +2839,15 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
     const bidA = bids.a?.value;
     const bidB = bids.b?.value;
 
-    // Phase: waiting — show connection status
-    if (!conn.a || !conn.b) {
-      document.getElementById('conn-a').textContent = conn.a ? '✅ متصل' : '⏳ انتظر';
-      document.getElementById('conn-a').style.color = conn.a ? '#39FF14' : 'rgba(255,255,255,0.3)';
-      document.getElementById('conn-b').textContent = conn.b ? '✅ متصل' : '⏳ انتظر';
-      document.getElementById('conn-b').style.color = conn.b ? '#39FF14' : 'rgba(255,255,255,0.3)';
-      return;
-    }
+    // Both connected — show start button
+    if (!conn.a || !conn.b) return;
 
-    // Both connected — show ready phase with start button
-    if (data.phase === 'waiting') {
-      document.getElementById('cat3-qr-phase').style.display = 'none';
-      document.getElementById('cat3-ready-phase').style.display = 'flex';
-      // Show start button immediately if both connected
+    // Show ready phase with start button when waiting or ready
+    if (data.phase === 'waiting' || data.phase === 'ready') {
+      const readyPhase = document.getElementById('cat3-ready-phase');
+      if (readyPhase) readyPhase.style.display = 'flex';
       const startBtn = document.getElementById('cat3-start-btn');
-      if (startBtn && conn.a && conn.b) startBtn.style.display = 'flex';
+      if (startBtn) startBtn.style.display = 'flex';
     }
 
     // Ready indicators
@@ -2870,7 +2904,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
         // Flash on main screen
         showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
-        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 15 ثانية للرد!`;
+        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 10 ثواني للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
         const labelEl = document.getElementById('bid-countdown-label');
@@ -3167,7 +3201,7 @@ function nextCat3Question() {
       // Then reset for next question — stay in waiting so host must press start
       setTimeout(() => {
         update(fbRef(db, `rooms/${cat3RoomId}`), {
-          phase: 'waiting',
+          phase: 'ready',
           readyA: false, readyB: false,
           bids: { a: { value: 0, time: 0 }, b: { value: 0, time: 0 } },
           lastBidder: null, bidCountdownEnd: null,
