@@ -150,47 +150,75 @@ const P = (path) => `sessions/${SESSION}/${path}`;
 window.c = (cmd, data={}) => set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
 
 let _cat6RoomListener = null;
+let _cat6RoomWatching = null;
+let _cat6Judged = { a: null, b: null };
+
 function loadCat6Answers() {
-  const area = document.getElementById('cat6-judge-area');
-  if (!area) return;
-  if (!state.cat6RoomId) return;
-  if (_cat6RoomListener) _cat6RoomListener();
-  _cat6RoomListener = onValue(ref(db, `cat6/${state.cat6RoomId}`), snap => {
+  const roomId = state.cat6RoomId;
+  if (!roomId || roomId === _cat6RoomWatching) return;
+  _cat6RoomWatching = roomId;
+  _cat6Judged = { a: null, b: null };
+  if (_cat6RoomListener) { _cat6RoomListener(); _cat6RoomListener = null; }
+  _cat6RoomListener = onValue(ref(db, `cat6/${roomId}`), snap => {
     const d = snap.val(); if (!d) return;
     const area = document.getElementById('cat6-judge-area');
     if (!area) return;
     const ansA = d.answerA || null;
     const ansB = d.answerB || null;
     if (!ansA && !ansB) { area.innerHTML = ''; return; }
-    area.innerHTML = `
-      <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center;margin-top:4px">— أجوبة الفرق —</div>
-      <div style="display:flex;gap:8px;width:100%;margin-top:4px">
-        ${ansA !== null ? `
-        <div style="flex:1;padding:8px;border-radius:10px;background:rgba(229,1,88,0.07);border:1px solid rgba(229,1,88,0.3);display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="font-size:10px;color:#E50158;font-weight:700">${state.teamA||'أ'}</div>
-          <div style="font-size:13px;font-weight:700;color:#fff;text-align:center">${ansA}</div>
-          <div style="display:flex;gap:4px">
-            <button onclick="judgeTeam('a',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
-            <button onclick="judgeTeam('a',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
-          </div>
-        </div>` : '<div style="flex:1;padding:8px;border-radius:10px;background:rgba(229,1,88,0.04);border:1px dashed rgba(229,1,88,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.2)">${state.teamA||"أ"} لم يجب</div>'}
-        ${ansB !== null ? `
-        <div style="flex:1;padding:8px;border-radius:10px;background:rgba(226,218,81,0.07);border:1px solid rgba(226,218,81,0.3);display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="font-size:10px;color:#E2DA51;font-weight:700">${state.teamB||'ب'}</div>
-          <div style="font-size:13px;font-weight:700;color:#fff;text-align:center">${ansB}</div>
-          <div style="display:flex;gap:4px">
-            <button onclick="judgeTeam('b',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
-            <button onclick="judgeTeam('b',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
-          </div>
-        </div>` : '<div style="flex:1;padding:8px;border-radius:10px;background:rgba(226,218,81,0.04);border:1px dashed rgba(226,218,81,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.2)">${state.teamB||"ب"} لم يجب</div>'}
-      </div>`;
+    renderJudgeArea(area, ansA, ansB, d.answeredAtA, d.answeredAtB);
   });
 }
 
-window.judgeTeam = (team, correct) => {
+function renderJudgeArea(area, ansA, ansB, tsA, tsB) {
+  const bothJudged = _cat6Judged.a !== null && _cat6Judged.b !== null;
+  // Show who was faster only after both judged
+  let speedLabel = '';
+  if (bothJudged && tsA && tsB) {
+    speedLabel = tsA < tsB
+      ? `<div style="font-size:10px;color:#FFE600;text-align:center;margin-top:4px">⚡ ${state.teamA||'أ'} أسرع</div>`
+      : `<div style="font-size:10px;color:#FFE600;text-align:center;margin-top:4px">⚡ ${state.teamB||'ب'} أسرع</div>`;
+  }
+
+  area.innerHTML = `
+    <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center;margin-top:6px">— أجوبة الفرق —</div>
+    ${speedLabel}
+    <div style="display:flex;gap:8px;width:100%;margin-top:4px">
+      ${buildTeamCard('a', ansA, state.teamA||'أ', '#E50158', 'rgba(229,1,88,')}
+      ${buildTeamCard('b', ansB, state.teamB||'ب', '#E2DA51', 'rgba(226,218,81,')}
+    </div>`;
+}
+
+function buildTeamCard(team, ans, name, color, rgba) {
+  const judged = _cat6Judged[team];
+  let statusBadge = '';
+  if (judged === true) statusBadge = `<div style="font-size:12px;color:#39FF14;font-weight:700">✅ صح</div>`;
+  else if (judged === false) statusBadge = `<div style="font-size:12px;color:#FF2D2D;font-weight:700">❌ غلط</div>`;
+
+  return `<div style="flex:1;padding:8px;border-radius:10px;background:${rgba}0.07);border:1px solid ${rgba}0.3);display:flex;flex-direction:column;align-items:center;gap:5px">
+    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
+    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
+    ${!ans ? '' : judged !== null ? statusBadge : `
+      <div style="display:flex;gap:4px">
+        <button onclick="hostJudge('${team}',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
+        <button onclick="hostJudge('${team}',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
+      </div>`}
+  </div>`;
+}
+
+window.hostJudge = (team, correct) => {
+  _cat6Judged[team] = correct;
   c('judgeTeam', { team, correct });
-  const btns = document.querySelectorAll(`button[onclick*="judgeTeam('${team}'"]`);
-  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+  // Re-render judge area with latest data
+  const roomId = state.cat6RoomId;
+  if (!roomId) return;
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
+    get(ref(db, `cat6/${roomId}`)).then(snap => {
+      const d = snap.val() || {};
+      const area = document.getElementById('cat6-judge-area');
+      if (area) renderJudgeArea(area, d.answerA, d.answerB, d.answeredAtA, d.answeredAtB);
+    });
+  });
 };
 
 window.goMenu = () => {

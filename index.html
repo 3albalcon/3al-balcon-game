@@ -3241,7 +3241,10 @@ function renderTeamVideo(r, qIndex, sa) {
   window._cat6A = matchedA;
   window._cat6QIndex = qIndex;
   window._cat6DriveId = item?.driveId || null;
-  window._cat6Phase = 'video'; // video → question → answer
+  window._cat6Phase = 'video';
+  window._cat6Judgement = {};
+  window._cat6TimestampA = 0;
+  window._cat6TimestampB = 0; // video → question → answer
 
   updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || '', matchedA || '');
 
@@ -3356,6 +3359,9 @@ function cat6ShowQuestion(qIndex) {
     // Listen for answers
     window._fbOnValue(window._fbRef(window._fbDb, `cat6/${roomId}`), (snap) => {
       const d = snap.val(); if (!d) return;
+      // Store timestamps for first-submit scoring
+      if (d.answeredAtA) window._cat6TimestampA = d.answeredAtA;
+      if (d.answeredAtB) window._cat6TimestampB = d.answeredAtB;
       const subA = document.getElementById('cat6-sub-a');
       const subB = document.getElementById('cat6-sub-b');
       if (subA && d.answerA) subA.style.display = 'block';
@@ -4182,9 +4188,28 @@ function startHostCmdListener() {
     } else if (cmd === 'judgeTeam') {
       const team = d.data?.team;
       const correct = d.data?.correct;
-      if (team && correct) {
-        addScore(team, 3);
-        showToast(`+3 نقاط ${team === 'a' ? G.teamA : G.teamB}! 🎉`);
+      const pts = 3;
+      // Store judgement
+      if (!window._cat6Judgement) window._cat6Judgement = {};
+      window._cat6Judgement[team] = correct;
+      const ja = window._cat6Judgement['a'];
+      const jb = window._cat6Judgement['b'];
+      // Both judged — apply scoring
+      if (ja !== undefined && jb !== undefined) {
+        if (ja && jb) {
+          // Both correct — first submitted wins
+          const tsA = window._cat6TimestampA || 0;
+          const tsB = window._cat6TimestampB || 0;
+          if (tsA && tsB) {
+            addScore(tsA < tsB ? 'a' : 'b', pts);
+          } else if (tsA) { addScore('a', pts); }
+          else { addScore('b', pts); }
+        } else if (ja && !jb) {
+          addScore('a', pts);
+        } else if (!ja && jb) {
+          addScore('b', pts);
+        }
+        window._cat6Judgement = {};
       }
     } else if (cmd === 'addScore') {
       const team = d.data?.team;
