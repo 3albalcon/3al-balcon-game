@@ -2684,11 +2684,16 @@ function renderBidding(r, qIndex, sa) {
     <!-- READY PHASE -->
     <div id="cat3-ready-phase" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
       <div style="font-size:18px;font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green)">✅ كلا الفريقين متصلين!</div>
-      <div style="font-size:14px;color:var(--text2)">انتظر حتى يضغط كلا الفريقين جاهز...</div>
       <div id="ready-indicators" style="display:flex;gap:20px;justify-content:center">
         <div id="ready-a" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamA}</div>
         <div id="ready-b" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamB}</div>
       </div>
+      <button id="cat3-start-btn" onclick="startCat3Bidding('${roomId}')"
+        style="display:none;padding:14px 40px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;
+        border:2px solid var(--neon-green);color:var(--neon-green);background:rgba(57,255,20,0.08);
+        box-shadow:var(--glow-green);cursor:pointer;margin-top:8px">
+        🎯 ابدأ المزاد
+      </button>
     </div>
 
     <!-- COUNTDOWN PHASE -->
@@ -2748,6 +2753,13 @@ function renderBidding(r, qIndex, sa) {
   }, 100);
 
   startCat3Listener(roomId, q, qIndex, isLast);
+}
+
+function startCat3Bidding(roomId) {
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+    const db = window._fbDb; const fbRef = window._fbRef;
+    if (db && fbRef) update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
+  });
 }
 
 function showBidFlash(msg, color) {
@@ -2950,68 +2962,59 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       }
 
 
-      // Show answers and validation
+      // Show answers with inline override buttons
       const answers = data.answers || [];
       const display = document.getElementById('answers-display');
       const answersConfirmed = data.answersConfirmed || false;
       const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= Date.now();
       const showResults = answersConfirmed || (data.writingStarted && ansTimeUp);
       display.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;align-items:center';
-      display.innerHTML = answers.map((a,i) => `
-        <div style="padding:12px 20px;border-radius:12px;font-size:17px;font-weight:700;
-          display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:600px;
-          background:${showResults&&a.status==='correct'?'rgba(57,255,20,0.1)':showResults&&a.status==='wrong'?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
-          border:2px solid ${showResults&&a.status==='correct'?'var(--neon-green)':showResults&&a.status==='wrong'?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
-          <span style="flex:1;text-align:center">${i+1}. ${a.text}</span>
-          <span style="font-size:22px">${showResults?(a.status==='correct'?'✅':a.status==='wrong'?'❌':'🤖⏳'):'⏳'}</span>
-        </div>`).join('');
 
-      // Auto-validate pending answers via Cloudflare Worker + Claude AI
+      if (showResults && answers.length > 0) {
+        display.innerHTML = answers.map((a,i) => {
+          const isCorrect = a.status === 'correct';
+          const isWrong = a.status === 'wrong';
+          const isPending = !a.status || a.status === 'pending';
+          return `
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;width:100%;max-width:700px;
+              background:${isCorrect?'rgba(57,255,20,0.08)':isWrong?'rgba(255,45,45,0.08)':'rgba(255,255,255,0.04)'};
+              border:2px solid ${isCorrect?'var(--neon-green)':isWrong?'var(--neon-red)':'rgba(255,255,255,0.15)'}">
+              <span style="font-size:20px">${isPending?'🤖⏳':isCorrect?'✅':'❌'}</span>
+              <span style="flex:1;font-size:16px;font-weight:700;color:#fff;direction:rtl">${i+1}. ${a.text}</span>
+              <button data-i="${i}" data-s="correct" onclick="overrideVal(this)"
+                style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-green);
+                background:${isCorrect?'rgba(57,255,20,0.3)':'rgba(57,255,20,0.05)'};
+                color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">✅</button>
+              <button data-i="${i}" data-s="wrong" onclick="overrideVal(this)"
+                style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-red);
+                background:${isWrong?'rgba(255,45,45,0.3)':'rgba(255,45,45,0.05)'};
+                color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">❌</button>
+            </div>`;
+        }).join('');
+      } else {
+        display.innerHTML = answers.map((a,i) => `
+          <div style="padding:12px 20px;border-radius:12px;font-size:17px;font-weight:700;
+            display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;max-width:600px;
+            background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.12)">
+            <span style="flex:1;text-align:center">${i+1}. ${a.text}</span>
+            <span>⏳</span>
+          </div>`).join('');
+      }
+
+      // Auto-validate pending answers via AI
       const pendingAnswers = answers.filter(a => !a.status || a.status === 'pending');
       if (pendingAnswers.length > 0) {
         autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
       }
 
-      // Manual validation — one by one, auto-advance after each
+      // Hide the old separate validation section
       const valWrap = document.getElementById('validation-wrap');
-      const timedOut = data.answersConfirmed || (data.writingStarted && data.answerTimerEnd && data.answerTimerEnd <= Date.now());
+      if (valWrap) valWrap.style.display = 'none';
 
       window._currentCat3Room = roomId;
 
+      // Show score preview
       if (showResults && answers.length > 0) {
-        valWrap.style.display = 'flex';
-        const valList = document.getElementById('val-answers-list');
-        if (valList) {
-          valList.innerHTML = answers.map((a, i) => {
-            const isCorrect = a.status === 'correct';
-            const isWrong = a.status === 'wrong';
-            const isPending = !a.status || a.status === 'pending';
-            return `
-              <div style="
-                display:flex;align-items:center;gap:10px;padding:12px 16px;
-                border-radius:12px;
-                background:${isCorrect?'rgba(57,255,20,0.1)':isWrong?'rgba(255,45,45,0.1)':'rgba(255,255,255,0.05)'};
-                border:2px solid ${isCorrect?'var(--neon-green)':isWrong?'var(--neon-red)':'rgba(255,255,255,0.2)'};
-              ">
-                <span style="font-size:16px;font-weight:700;flex:1;color:#fff;direction:rtl">${i+1}. ${a.text}</span>
-                <span style="font-size:18px">${isPending?'🤖⏳':isCorrect?'✅':'❌'}</span>
-                <button data-i="${i}" data-s="correct" onclick="overrideVal(this)"
-                  style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-green);
-                  background:${isCorrect?'rgba(57,255,20,0.3)':'rgba(57,255,20,0.05)'};
-                  color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
-                  ✅
-                </button>
-                <button data-i="${i}" data-s="wrong" onclick="overrideVal(this)"
-                  style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--neon-red);
-                  background:${isWrong?'rgba(255,45,45,0.3)':'rgba(255,45,45,0.05)'};
-                  color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
-                  ❌
-                </button>
-              </div>`;
-          }).join('');
-        }
-
-        // Show score preview (no points yet — applied on next question click)
         const allDone = answers.every(a => a.status === 'correct' || a.status === 'wrong');
         const scoreEl = document.getElementById('score-result');
         if (allDone && scoreEl) {
@@ -3019,24 +3022,18 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
           scoreEl.textContent = correct >= winnerBid
-            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط (عند الانتقال للسؤال التالي)`
-            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط (عند الانتقال للسؤال التالي)`;
-          // Store pending score in window for nextCat3Question to apply
+            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط`
+            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
           window._pendingCat3Score = { winner, correct, winnerBid };
-        } else if (scoreEl) {
-          scoreEl.style.display = 'none';
         }
-      } else if (timedOut && answers.length < winnerBid) {
-        valWrap.style.display = 'none';
+      } else if ((answersConfirmed || (data.writingStarted && ansTimeUp)) && answers.length < winnerBid) {
         const scoreEl = document.getElementById('score-result');
         if (scoreEl) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = 'var(--neon-red)';
-          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط (عند الانتقال للسؤال التالي)`;
+          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
           window._pendingCat3Score = { winner, correct: 0, winnerBid };
         }
-      } else {
-        valWrap.style.display = 'none';
       }
     }
 
@@ -3047,13 +3044,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
     }
   });
 
-  // Update phase to 'ready' when both connected
+  // Show start button when both connected — don't auto-start
   window._fbOnValue(fbRef(db, `rooms/${roomId}/connected`), (snap) => {
     const conn = snap.val() || {};
     if (conn.a && conn.b) {
-      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
-        update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
-      });
+      // Show "ابدأ المزاد" button instead of auto-transitioning
+      const startBtn = document.getElementById('cat3-start-btn');
+      if (startBtn) startBtn.style.display = 'flex';
     }
   });
 }
@@ -4218,6 +4215,9 @@ function startHostCmdListener() {
         const btn = document.querySelector('.answer-reveal-btn');
         if (btn) btn.click();
       }
+    } else if (cmd === 'startCat3') {
+      const roomId = cat3RoomId;
+      if (roomId) startCat3Bidding(roomId);
     } else if (cmd === 'judgeTeam') {
       const team = d.data?.team;
       const correct = d.data?.correct;

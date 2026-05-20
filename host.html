@@ -330,17 +330,30 @@ function render() {
     if (!cat3) { dyn.innerHTML = '<div class="waiting">انتظر بدء المزاد...</div>'; return; }
     const bids = cat3.bids||{};
     const answers = cat3.answers||[];
+    const phase = cat3.phase || 'waiting';
+    const connA = cat3.connected?.a;
+    const connB = cat3.connected?.b;
+    const bothConnected = connA && connB;
     dyn.innerHTML = `
       ${cat3.question?`<div class="card q-card">${cat3.question}</div>`:''}
-      <div class="bid-row">
-        <div class="bid-card bid-a"><div class="bid-n" style="color:#E50158">${cat3.teamA||'أ'}</div><div class="bid-v" style="color:#E50158">${bids.a?.value||'—'}</div></div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.2);align-self:center">VS</div>
-        <div class="bid-card bid-b"><div class="bid-n" style="color:#E2DA51">${cat3.teamB||'ب'}</div><div class="bid-v" style="color:#E2DA51">${bids.b?.value||'—'}</div></div>
-      </div>
-      ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB} — ${cat3.winningBid} أجوبة</div>`:''}
-      <div style="display:flex;flex-direction:column;gap:5px">
-        ${answers.length?answers.map((a,i)=>`<div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}"><span>${i+1}.</span><span style="flex:1">${a.text}</span><span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span></div>`).join(''):'<div class="info-card">لا أجوبة بعد</div>'}
-      </div>`;
+      ${(phase === 'waiting' || phase === 'ready') && !cat3.auctionWinner ? `
+        <div style="display:flex;gap:8px;justify-content:center;font-size:12px">
+          <span style="color:${connA?'#39FF14':'rgba(255,255,255,0.3)'}">● ${cat3.teamA||'أ'}</span>
+          <span style="color:${connB?'#39FF14':'rgba(255,255,255,0.3)'}">● ${cat3.teamB||'ب'}</span>
+        </div>
+        ${bothConnected ? `<button class="btn btn-g btn-sm" onclick="c('startCat3')" style="width:100%;font-size:15px">🎯 ابدأ المزاد</button>` : '<div class="waiting" style="font-size:12px">انتظر اتصال الفريقين...</div>'}
+      ` : ''}
+      ${phase === 'bidding' || phase === 'answering' || cat3.auctionWinner ? `
+        <div class="bid-row">
+          <div class="bid-card bid-a"><div class="bid-n" style="color:#E50158">${cat3.teamA||'أ'}</div><div class="bid-v" style="color:#E50158">${bids.a?.value||'—'}</div></div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.2);align-self:center">VS</div>
+          <div class="bid-card bid-b"><div class="bid-n" style="color:#E2DA51">${cat3.teamB||'ب'}</div><div class="bid-v" style="color:#E2DA51">${bids.b?.value||'—'}</div></div>
+        </div>
+        ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB} — ${cat3.winningBid} أجوبة</div>`:''}
+        <div style="display:flex;flex-direction:column;gap:5px">
+          ${answers.length?answers.map((a,i)=>`<div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}"><span>${i+1}.</span><span style="flex:1">${a.text}</span><span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span></div>`).join(''):'<div class="info-card">لا أجوبة بعد</div>'}
+        </div>
+      ` : ''}`;
     return;
   }
 
