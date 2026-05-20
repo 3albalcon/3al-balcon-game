@@ -3242,13 +3242,35 @@ function cat6ShowQuestion(qIndex) {
   const container = document.getElementById('video-container-' + qIndex);
   const showBtn = document.getElementById('cat6-show-q-btn');
   const qArea = document.getElementById('video-question-area');
-  // Pause video if playing
   const vid = document.getElementById('video-el-' + qIndex);
   if (vid) vid.pause();
   if (container) container.style.display = 'none';
   if (showBtn) showBtn.style.display = 'none';
   if (qArea) qArea.style.display = 'flex';
   startTimer(30);
+}
+
+function cat6RevealAnswer() {
+  window._cat6Phase = 'answer';
+  const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
+  // Force show question area if not visible yet
+  const qArea = document.getElementById('video-question-area');
+  const container = document.getElementById('video-container-' + qIdx);
+  const showBtn = document.getElementById('cat6-show-q-btn');
+  if (qArea && qArea.style.display === 'none') {
+    const vid = document.getElementById('video-el-' + qIdx);
+    if (vid) vid.pause();
+    if (container) container.style.display = 'none';
+    if (showBtn) showBtn.style.display = 'none';
+    qArea.style.display = 'flex';
+  }
+  // Reveal answer
+  const area = document.getElementById('vq-answer-area');
+  const ans = window._cat6A || '';
+  if (area && ans) {
+    area.innerHTML = `<div class="answer-box fade-in">✅ ${ans}</div>`;
+  }
+  stopTimer();
 }
 
 function playDriveVideo(driveId, qIndex) {
