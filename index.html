@@ -2631,6 +2631,8 @@ function renderBidding(r, qIndex, sa) {
   const raw = qs[qIndex] || null;
   const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
+  window._cat3QuestionPlayed = false; // reset for new question
+  window._mainTimerStarted = false; // reset timer flag
 
   // First question — init room. Subsequent questions — reset room for next question
   if (qIndex === 0) {
@@ -2650,7 +2652,7 @@ function renderBidding(r, qIndex, sa) {
           question: q, questionIndex: qIndex
         });
         setTimeout(() => {
-          if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'ready' });
+          if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'waiting' });
         }, 1500);
       });
     }, 300);
@@ -2703,7 +2705,7 @@ function renderBidding(r, qIndex, sa) {
 
     <!-- BIDDING PHASE -->
     <div id="cat3-bidding-phase" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
-      <div class="question-text-box slide-in" id="q-text" style="font-size:${dynFont(q)}">${q}</div>
+      <div class="question-text-box slide-in" id="q-text" style="font-size:${dynFont(q)};display:none">${q}</div>
       <div style="display:flex;gap:32px;align-items:center;justify-content:center;width:100%">
         <div style="text-align:center">
           <div style="font-size:12px;color:rgba(255,255,255,0.4)">${G.teamA}</div>
@@ -2805,12 +2807,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       return;
     }
 
-    // Both connected — show ready phase
+    // Both connected — show ready phase with start button
     if (data.phase === 'waiting') {
       document.getElementById('cat3-qr-phase').style.display = 'none';
       document.getElementById('cat3-ready-phase').style.display = 'flex';
-      document.getElementById('conn-a').textContent = '✅ متصل';
-      document.getElementById('conn-b').textContent = '✅ متصل';
+      // Show start button immediately if both connected
+      const startBtn = document.getElementById('cat3-start-btn');
+      if (startBtn && conn.a && conn.b) startBtn.style.display = 'flex';
     }
 
     // Ready indicators
@@ -2844,6 +2847,10 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       document.getElementById('cat3-qr-phase').style.display = 'none';
       document.getElementById('cat3-ready-phase').style.display = 'none';
       document.getElementById('cat3-bidding-phase').style.display = 'flex';
+      // Show question now that bidding starts
+      const qTextEl = document.getElementById('q-text');
+      if (qTextEl) qTextEl.style.display = 'block';
+      window._cat3QuestionPlayed = true; // mark as played
 
       // Always update bid displays
       const bidAEl = document.getElementById('bid-a');
@@ -3137,6 +3144,12 @@ async function validateCat3(idx, status, roomId) {
 }
 
 function nextCat3Question() {
+  // Guard: cannot move before question was played (bidding must have started)
+  if (!window._cat3QuestionPlayed) {
+    showToast('ابدأ السؤال أولاً! 🎯');
+    return;
+  }
+  window._cat3QuestionPlayed = false; // reset for next question
   // Apply pending score before moving to next question
   if (window._pendingCat3Score) {
     const { winner, correct, winnerBid } = window._pendingCat3Score;
@@ -3151,10 +3164,10 @@ function nextCat3Question() {
     import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
       // First signal nextquestion so phones show logo
       update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'nextquestion' });
-      // Then after a moment reset for next question
+      // Then reset for next question — stay in waiting so host must press start
       setTimeout(() => {
         update(fbRef(db, `rooms/${cat3RoomId}`), {
-          phase: 'ready',
+          phase: 'waiting',
           readyA: false, readyB: false,
           bids: { a: { value: 0, time: 0 }, b: { value: 0, time: 0 } },
           lastBidder: null, bidCountdownEnd: null,
@@ -3874,7 +3887,16 @@ function showResult() {
     window._pendingCat3Score = null;
   }
   // Mark current round as done
-  if (G.currentRound) { G.done.add(G.currentRound.id); }
+  if (G.currentRound) {
+    G.done.add(G.currentRound.id);
+    // If cat3, signal players to close screen
+    if (G.currentRound.id === 'r3' && cat3RoomId) {
+      import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
+        const db = window._fbDb; const fbRef = window._fbRef;
+        if (db && fbRef) update(fbRef(db, `rooms/${cat3RoomId}`), { phase: 'done' });
+      });
+    }
+  }
   stopTimer();
   const sa = document.getElementById('slide-area');
   const winner = G.scoreA > G.scoreB ? G.teamA : G.scoreB > G.scoreA ? G.teamB : null;

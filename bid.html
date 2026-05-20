@@ -188,7 +188,7 @@ function startBidTimer(endTime) {
   if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval=null;
   const fill = document.getElementById('bid-fill');
   const num = document.getElementById('bid-timer-num');
-  const total = 15000;
+  const total = 10000;
   function tick() {
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
@@ -241,11 +241,11 @@ function renderAnswers() {
 window.startWriting = async function() {
   document.getElementById('start-writing-wrap').style.display = 'none';
   document.getElementById('ans-input-wrap').style.display = 'flex';
-  // Signal main screen to start the 60-second timer
+  // Start 60s timer immediately when player taps ابدأ الكتابة
   await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: serverNow() + 60000 });
   setTimeout(() => {
     const inp = document.getElementById('ans-input');
-    if(inp) { inp.disabled=false; inp.focus(); }
+    if(inp) { inp.disabled = false; inp.focus(); }
   }, 100);
 };
 
@@ -269,7 +269,7 @@ window.placeBid = async function(amount) {
     flash(`${myBid} 🔥`,'var(--yellow)');
 
     const now = serverNow();
-    const newEnd = now + 15000;
+    const newEnd = now + 10000;
 
     await update(ref(db,`rooms/${roomId}`),{
       [`bids/${team}`]:{value:myBid,time:now},
@@ -466,7 +466,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='done'){
       showPhase('logo');
-      document.getElementById('logo-msg').textContent='🏁 انتهى المزاد!';
+      document.getElementById('logo-msg').innerHTML = '🏁 انتهى المزاد!<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">يمكنك إغلاق هذه الشاشة</span>';
     }
   }
 
