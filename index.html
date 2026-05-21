@@ -1537,7 +1537,7 @@ async function loadFromDrive(urlOverride) {
       }
     }
 
-    // Step 5: Videos — shuffle and store IDs
+    // Step 5: Videos — use Drive IDs if available, otherwise build from CSV filenames (GitHub-hosted)
     if (videos.length > 0) {
       setLoadProgress(90);
       G.media['r5'] = shuffle([...videos]).map(f => ({
@@ -1548,7 +1548,21 @@ async function loadFromDrive(urlOverride) {
         type: 'video'
       }));
       details.push(`✅ ${videos.length} فيديو جاهز`);
-    } else details.push('⚠️ لم يتم العثور على فيديوهات في مجلد "Videos"');
+    } else {
+      // No Drive videos — build from cat6 CSV filenames (videos hosted on GitHub)
+      setLoadProgress(90);
+      setTimeout(() => {
+        if (G.questions.r5 && G.questions.r5.length > 0) {
+          G.media['r5'] = G.questions.r5.map(row => ({
+            name: row.v,
+            url: `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(row.v)}`,
+            driveId: null,
+            type: 'video'
+          })).filter(x => x.name);
+          details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
+        }
+      }, 500);
+    }
 
     setLoadProgress(100);
 
