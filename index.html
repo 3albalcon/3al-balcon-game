@@ -1558,8 +1558,11 @@ async function loadFromDrive(urlOverride) {
         type: 'video'
       })).filter(x => x.name);
       details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
+      console.log('✅ G.media.r5 built:', G.media['r5'].length, 'videos');
+      console.log('First item:', JSON.stringify(G.media['r5'][0]));
     } else {
       details.push('⚠️ لم يتم العثور على فيديوهات');
+      console.warn('❌ G.questions.r5 empty:', G.questions.r5);
     }
 
     setLoadProgress(100);
@@ -3321,6 +3324,7 @@ function renderTeamVideo(r, qIndex, sa) {
   window._cat6Judgement = {};
   window._cat6TimestampA = 0;
   window._cat6TimestampB = 0;
+  console.log('renderTeamVideo qIndex:', qIndex, 'item:', JSON.stringify(item), 'matchedQ:', matchedQ);
 
   // Reset answers in Firebase for new question
   const roomId = window._cat6RoomId;
