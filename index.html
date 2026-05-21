@@ -3793,6 +3793,15 @@ function renderCharades(r, qIndex, sa) {
   const item = items[qIndex] || `اسم ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
+  // Determine whose turn: highest score starts (Team A if tied), then alternates
+  const scoreA = G.scoreA || 0;
+  const scoreB = G.scoreB || 0;
+  const starterIsA = scoreA >= scoreB; // Team A starts if tied or higher
+  // Alternate every question: even qIndex → starter, odd → other
+  const isATurn = qIndex % 2 === 0 ? starterIsA : !starterIsA;
+  const actingTeam = isATurn ? G.teamA : G.teamB;
+  const actingColor = isATurn ? '#E50158' : '#E2DA51';
+
   updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, 'كلمة سرية للممثل', item);
   const encoded = encodeURIComponent(item);
   const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}`;
@@ -3811,6 +3820,13 @@ function renderCharades(r, qIndex, sa) {
       </div>
 
       <div class="question-number">دور ${qIndex+1} من ${r.count}</div>
+
+      <!-- Turn indicator -->
+      <div style="padding:10px 28px;border-radius:100px;border:2px solid ${actingColor};background:${actingColor}18;
+        font-size:clamp(16px,2.5vw,24px);font-weight:900;color:${actingColor};
+        box-shadow:0 0 16px ${actingColor}44;text-align:center">
+        🎭 دور ${actingTeam}
+      </div>
 
       <div id="char-answer" style="
         font-size:clamp(32px,6vw,60px);font-weight:900;
@@ -3881,6 +3897,7 @@ function renderCharades(r, qIndex, sa) {
 function revealChar() {
   const el = document.getElementById('char-answer');
   if (el) el.style.filter = 'none';
+  stopTimer();
 }
 
 
