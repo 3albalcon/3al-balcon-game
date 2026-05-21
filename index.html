@@ -2695,8 +2695,9 @@ function renderBidding(r, qIndex, sa) {
   const raw = qs[qIndex] || null;
   const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
-  window._cat3QuestionPlayed = false; // reset for new question
-  window._mainTimerStarted = false; // reset timer flag
+  window._cat3QuestionPlayed = false;
+  window._mainTimerStarted = false;
+  window._cat3CountdownRunning = false;
 
   // Room already initialized in renderRules — just reset for subsequent questions
   if (qIndex > 0) {
@@ -2788,20 +2789,10 @@ function renderBidding(r, qIndex, sa) {
 }
 
 function startCat3Bidding(roomId) {
-  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update, get }) => {
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ update }) => {
     const db = window._fbDb; const fbRef = window._fbRef;
     if (!db || !fbRef) return;
-    // Check current phase — if already ready, go straight to countdown
-    get(fbRef(db, `rooms/${roomId}/phase`)).then(snap => {
-      const currentPhase = snap.val();
-      if (currentPhase === 'ready') {
-        // Phones already on جاهز screen — start countdown directly
-        update(fbRef(db, `rooms/${roomId}`), { phase: 'countdown' });
-      } else {
-        // Move phones to ready first
-        update(fbRef(db, `rooms/${roomId}`), { phase: 'ready' });
-      }
-    });
+    update(fbRef(db, `rooms/${roomId}`), { phase: 'countdown' });
   });
 }
 
@@ -2859,15 +2850,19 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       fbUpdate(`rooms/${roomId}`, { phase: 'countdown', question: q, questionIndex: qIndex });
     }
 
-    // Countdown
-    if (data.phase === 'countdown') {
-      document.getElementById('cat3-ready-phase').style.display = 'none';
-      document.getElementById('cat3-countdown-phase').style.display = 'flex';
+    // Countdown — only trigger once
+    if (data.phase === 'countdown' && !window._cat3CountdownRunning) {
+      window._cat3CountdownRunning = true;
+      const readyPhase = document.getElementById('cat3-ready-phase');
+      const cdPhase = document.getElementById('cat3-countdown-phase');
+      if (readyPhase) readyPhase.style.display = 'none';
+      if (cdPhase) cdPhase.style.display = 'flex';
       let n = 3;
       const cdEl = document.getElementById('main-countdown');
+      if (cdEl) cdEl.textContent = n;
       const cd = setInterval(() => {
         n--;
-        if (cdEl) cdEl.textContent = n;
+        if (cdEl) cdEl.textContent = n > 0 ? n : '🎯';
         if (n <= 0) {
           clearInterval(cd);
           fbUpdate(`rooms/${roomId}`, { phase: 'bidding' });
@@ -2877,10 +2872,12 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
     // Bidding — always update bid displays regardless of phase change
     if (data.phase === 'bidding') {
-      document.getElementById('cat3-countdown-phase').style.display = 'none';
-      document.getElementById('cat3-qr-phase').style.display = 'none';
-      document.getElementById('cat3-ready-phase').style.display = 'none';
-      document.getElementById('cat3-bidding-phase').style.display = 'flex';
+      const cdPhase = document.getElementById('cat3-countdown-phase');
+      const readyPhase = document.getElementById('cat3-ready-phase');
+      const biddingPhase = document.getElementById('cat3-bidding-phase');
+      if (cdPhase) cdPhase.style.display = 'none';
+      if (readyPhase) readyPhase.style.display = 'none';
+      if (biddingPhase) biddingPhase.style.display = 'flex';
       // Show question now that bidding starts
       const qTextEl = document.getElementById('q-text');
       if (qTextEl) qTextEl.style.display = 'block';
@@ -3084,16 +3081,6 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       document.getElementById('bid-event-msg').textContent = `🏳️ ${gaveUpName} تخلى!`;
     }
   });
-
-  // Show start button when both connected — don't auto-start
-  window._fbOnValue(fbRef(db, `rooms/${roomId}/connected`), (snap) => {
-    const conn = snap.val() || {};
-    if (conn.a && conn.b) {
-      // Show "ابدأ المزاد" button instead of auto-transitioning
-      const startBtn = document.getElementById('cat3-start-btn');
-      if (startBtn) startBtn.style.display = 'flex';
-    }
-  });
 }
 
 // ── AI VALIDATION via Cloudflare Worker ──
@@ -3213,6 +3200,7 @@ function nextCat3Question() {
     });
   }
   cat3LastBidder = null;
+  window._cat3CountdownRunning = false;
   nextQ();
 }
 
@@ -3793,15 +3781,6 @@ function renderCharades(r, qIndex, sa) {
   const item = items[qIndex] || `اسم ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
-  // Determine whose turn: highest score starts (Team A if tied), then alternates
-  const scoreA = G.scoreA || 0;
-  const scoreB = G.scoreB || 0;
-  const starterIsA = scoreA >= scoreB; // Team A starts if tied or higher
-  // Alternate every question: even qIndex → starter, odd → other
-  const isATurn = qIndex % 2 === 0 ? starterIsA : !starterIsA;
-  const actingTeam = isATurn ? G.teamA : G.teamB;
-  const actingColor = isATurn ? '#E50158' : '#E2DA51';
-
   updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, 'كلمة سرية للممثل', item);
   const encoded = encodeURIComponent(item);
   const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}`;
@@ -3820,13 +3799,6 @@ function renderCharades(r, qIndex, sa) {
       </div>
 
       <div class="question-number">دور ${qIndex+1} من ${r.count}</div>
-
-      <!-- Turn indicator -->
-      <div style="padding:10px 28px;border-radius:100px;border:2px solid ${actingColor};background:${actingColor}18;
-        font-size:clamp(16px,2.5vw,24px);font-weight:900;color:${actingColor};
-        box-shadow:0 0 16px ${actingColor}44;text-align:center">
-        🎭 دور ${actingTeam}
-      </div>
 
       <div id="char-answer" style="
         font-size:clamp(32px,6vw,60px);font-weight:900;
@@ -3897,7 +3869,6 @@ function renderCharades(r, qIndex, sa) {
 function revealChar() {
   const el = document.getElementById('char-answer');
   if (el) el.style.filter = 'none';
-  stopTimer();
 }
 
 
