@@ -1177,7 +1177,7 @@ window.addEventListener('load', () => {
 // ══════════════════════════════════════════
 // const QUESTIONS_DATA = null; // Replace this line with converter output
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyU5LCv_3cUTmyyfIV3BbFX2COhWttGpqqvTxMx8-uKj-s6ekZe9HLI6FSzLQQz7MrO/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby6ZP35whc0Bm6jc4G8BtOrY1GnveVvndJDM8Y_lH77BfT6pGNfmHjixAnMaWzFF31SIA/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -2711,6 +2711,7 @@ function renderBidding(r, qIndex, sa) {
           lastBidder: null, bidCountdownEnd: null,
           auctionWinner: null, winningBid: null,
           answers: [], answersConfirmed: false, gaveUp: null,
+          writingStarted: false, answerTimerEnd: null,
           question: q, questionIndex: qIndex
         });
         setTimeout(() => {
@@ -2778,7 +2779,7 @@ function renderBidding(r, qIndex, sa) {
       <div id="bid-flash-text" style="font-size:clamp(60px,20vw,160px);font-weight:900;text-align:center;line-height:1"></div>
     </div>
 
-    <div class="nav-btns">
+    <div class="nav-btns" id="cat3-nav-btns" style="display:none">
       ${isLast
         ? `<button class="nav-btn primary" onclick="showResult()">النتيجة 🏆</button>`
         : `<button class="nav-btn primary" onclick="nextCat3Question()">السؤال التالي ←</button>`
@@ -2995,6 +2996,9 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
               update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
             });
+            // Show next button when time is up
+            const nav = document.getElementById('cat3-nav-btns');
+            if (nav) nav.style.display = 'flex';
           }
         }, 200);
       }
@@ -3051,7 +3055,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
       window._currentCat3Room = roomId;
 
-      // Show score preview
+      // Show score preview and reveal nav button
       if (showResults && answers.length > 0) {
         const allDone = answers.every(a => a.status === 'correct' || a.status === 'wrong');
         const scoreEl = document.getElementById('score-result');
@@ -3063,6 +3067,9 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط`
             : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
           window._pendingCat3Score = { winner, correct, winnerBid };
+          // Show next button now that scoring is done
+          const nav = document.getElementById('cat3-nav-btns');
+          if (nav) nav.style.display = 'flex';
         }
       } else if ((answersConfirmed || (data.writingStarted && ansTimeUp)) && answers.length < winnerBid) {
         const scoreEl = document.getElementById('score-result');
@@ -3071,6 +3078,9 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           scoreEl.style.color = 'var(--neon-red)';
           scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
           window._pendingCat3Score = { winner, correct: 0, winnerBid };
+          // Show next button even with no answers
+          const nav = document.getElementById('cat3-nav-btns');
+          if (nav) nav.style.display = 'flex';
         }
       }
     }
@@ -3195,12 +3205,15 @@ function nextCat3Question() {
           auctionWinner: null, winningBid: null,
           answers: [], gaveUp: null,
           answersConfirmed: false,
+          writingStarted: false,
+          answerTimerEnd: null,
         });
       }, 1500);
     });
   }
   cat3LastBidder = null;
   window._cat3CountdownRunning = false;
+  window._mainTimerStarted = false;
   nextQ();
 }
 
