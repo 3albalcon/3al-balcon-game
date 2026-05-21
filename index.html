@@ -1818,7 +1818,7 @@ async function loadCSVFiles(csvFiles) {
     } else if (key === 'cat5') {
       G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q));
     } else if (key === 'cat6') {
-      G.questions.r5 = rows.map(r => ({ v: r[0], q: r[1], a: r[2] })).filter(x => x.v || x.q);
+      G.questions.r5 = shuffle(rows.map(r => ({ v: r[0], q: r[1], a: r[2] })).filter(x => x.v || x.q));
     } else if (key === 'cat78') {
       const items = rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q);
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
