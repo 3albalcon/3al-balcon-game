@@ -1785,28 +1785,18 @@ async function loadCSVFiles(csvFiles) {
     return arr;
   }
 
-  // Try direct Drive URL first (fast, no Apps Script) — fallback to Apps Script if CORS blocked
+  // Always use Apps Script to serve CSVs — direct Drive fetch blocked by CORS on custom domains
   const fetches = Object.entries(csvFiles).map(async ([key, driveUrl]) => {
     try {
-      // Direct fetch — works if file is publicly shared
-      const res = await fetch(driveUrl + '&t=' + Date.now(), { redirect: 'follow' });
-      if (!res.ok) throw new Error('direct fetch failed');
-      const text = await res.text();
-      if (text.includes('<!DOCTYPE') || text.includes('<html')) throw new Error('got HTML not CSV');
+      const idMatch = driveUrl.match(/id=([^&]+)/);
+      if (!idMatch) return { key, rows: null };
+      const fileId = idMatch[1];
+      const res = await fetch(`${DRIVE_SCRIPT_URL}?action=file&id=${fileId}&t=${Date.now()}`, { redirect: 'follow' });
+      const data = await res.json();
+      if (data.error || !data.data) return { key, rows: null };
+      const text = decodeURIComponent(escape(atob(data.data)));
       return { key, rows: parseCSV(text) };
-    } catch(e) {
-      // Fallback to Apps Script base64
-      try {
-        const idMatch = driveUrl.match(/id=([^&]+)/);
-        if (!idMatch) return { key, rows: null };
-        const fileId = idMatch[1];
-        const res = await fetch(`${DRIVE_SCRIPT_URL}?action=file&id=${fileId}&t=${Date.now()}`, { redirect: 'follow' });
-        const data = await res.json();
-        if (data.error || !data.data) return { key, rows: null };
-        const text = decodeURIComponent(escape(atob(data.data)));
-        return { key, rows: parseCSV(text) };
-      } catch(e2) { return { key, rows: null }; }
-    }
+    } catch(e) { return { key, rows: null }; }
   });
 
   const results = await Promise.all(fetches);
