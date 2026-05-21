@@ -1548,20 +1548,18 @@ async function loadFromDrive(urlOverride) {
         type: 'video'
       }));
       details.push(`✅ ${videos.length} فيديو جاهز`);
-    } else {
+    } else if (G.questions.r5 && G.questions.r5.length > 0) {
       // No Drive videos — build from cat6 CSV filenames (videos hosted on GitHub)
       setLoadProgress(90);
-      setTimeout(() => {
-        if (G.questions.r5 && G.questions.r5.length > 0) {
-          G.media['r5'] = G.questions.r5.map(row => ({
-            name: row.v,
-            url: `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(row.v)}`,
-            driveId: null,
-            type: 'video'
-          })).filter(x => x.name);
-          details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
-        }
-      }, 500);
+      G.media['r5'] = G.questions.r5.map(row => ({
+        name: row.v,
+        url: `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(row.v)}`,
+        driveId: null,
+        type: 'video'
+      })).filter(x => x.name);
+      details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
+    } else {
+      details.push('⚠️ لم يتم العثور على فيديوهات');
     }
 
     setLoadProgress(100);
