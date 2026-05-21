@@ -1549,14 +1549,18 @@ async function loadFromDrive(urlOverride) {
       }));
       details.push(`✅ ${videos.length} فيديو جاهز`);
     } else if (G.questions.r5 && G.questions.r5.length > 0) {
-      // No Drive videos — build from cat6 CSV filenames (videos hosted on GitHub)
       setLoadProgress(90);
-      G.media['r5'] = G.questions.r5.map(row => ({
-        name: row.v,
-        url: `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(row.v)}`,
-        driveId: null,
-        type: 'video'
-      })).filter(x => x.name);
+      G.media['r5'] = G.questions.r5.map(row => {
+        let name = row.v || '';
+        // Add .mp4 if no extension present
+        if (name && !name.includes('.')) name = name + '.mp4';
+        return {
+          name,
+          url: `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(name)}`,
+          driveId: null,
+          type: 'video'
+        };
+      }).filter(x => x.name);
       details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
       console.log('✅ G.media.r5 built:', G.media['r5'].length, 'videos');
       console.log('First item:', JSON.stringify(G.media['r5'][0]));
@@ -3401,7 +3405,8 @@ function cat6PlayVideo(qIndex) {
   if (!item) return;
   const container = document.getElementById('video-container-' + qIndex);
   if (!container) return;
-  const fileName = item.name || '';
+  let fileName = item.name || '';
+  if (fileName && !fileName.includes('.')) fileName = fileName + '.mp4';
   const src = fileName
     ? `https://3albalcon.github.io/3al-balcon-game/videos/${encodeURIComponent(fileName)}`
     : item.url || '';
