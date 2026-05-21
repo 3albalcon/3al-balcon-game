@@ -390,9 +390,11 @@ function render() {
 
   // All other categories
   const isImgCat = ['r1','r2','r8'].includes(state.currentRound);
+  const isCat9 = state.currentRound === 'r8';
   dyn.innerHTML = `
     ${!isImgCat && qText ? `<div class="card q-card">${qText}</div>` : ''}
     ${ans ? `<div class="card a-card">${ans}</div>` : '<div class="waiting">جاري تحميل السؤال...</div>'}
+    ${isCat9 ? `<button class="btn btn-y btn-sm" onclick="c('startTimer',{seconds:60})" style="width:100%">⏱ ابدأ التايمر</button>` : ''}
     ${ans ? `<button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="width:100%;margin-top:2px">👁 كشف الجواب للجميع</button>` : ''}
     ${scoreSection(round)}`;
 }

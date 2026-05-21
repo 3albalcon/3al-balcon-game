@@ -4274,6 +4274,9 @@ function startHostCmdListener() {
     } else if (cmd === 'startCat3') {
       const roomId = cat3RoomId;
       if (roomId) startCat3Bidding(roomId);
+    } else if (cmd === 'startTimer') {
+      const secs = d.data?.seconds || 60;
+      startTimer(secs);
     } else if (cmd === 'judgeTeam') {
       const team = d.data?.team;
       const correct = d.data?.correct;
