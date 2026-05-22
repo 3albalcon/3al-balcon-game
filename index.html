@@ -368,13 +368,17 @@ body {
 /* ── SLIDE AREA ── */
 .slide-area {
   position: absolute;
+  top: 72px; right: 0; bottom: 0; left: 0; /* fallback for old TV browsers that don't support inset */
   inset: 72px 0 0 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: flex-start;
+  display: -webkit-flex; display: flex;
+  -webkit-flex-direction: column; flex-direction: column;
+  -webkit-align-items: center; align-items: center;
+  -webkit-justify-content: flex-start; justify-content: flex-start;
   padding: 40px 20px 40px 20px;
   gap: 20px;
-  overflow-y: auto;
+  overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 /* RULES SLIDE */
@@ -913,6 +917,34 @@ audio, video { display: none; }
   background: rgba(0,239,255,0.12);
   box-shadow: 0 0 30px rgba(0,239,255,0.5);
   border-color: var(--neon-yellow);
+}
+
+/* ── TV SCREENS 1080p (1920px) ── */
+@media(min-width: 1800px) and (max-width: 2559px) {
+  body { font-size: 18px; }
+  .team-score .name { font-size: 42px !important; }
+  .team-score .score { font-size: clamp(50px, 5vw, 80px) !important; }
+  .vs { font-size: 30px !important; }
+  .round-btn .rnum { font-size: 15px !important; }
+  .round-btn .rname { font-size: 22px !important; }
+  .round-btn { padding: 20px 14px !important; }
+  .question-number { font-size: 18px !important; }
+  .question-text-box { font-size: clamp(22px, 2.5vw, 36px) !important; padding: 28px 40px !important; }
+  .answer-box { font-size: 32px !important; }
+  .answer-reveal-btn { font-size: 18px !important; padding: 14px 36px !important; }
+  .timer-number { font-size: 60px !important; }
+  .nav-btn { font-size: 18px !important; padding: 14px 32px !important; }
+  .rules-card h2 { font-size: clamp(24px, 2.5vw, 34px) !important; }
+  .rules-list li { font-size: clamp(16px, 1.5vw, 20px) !important; }
+  .sp-name { font-size: 18px !important; }
+  .sp-score { font-size: 36px !important; }
+  .sp-btn { width: 50px !important; height: 50px !important; font-size: 22px !important; }
+  .section-title-slide h1 { font-size: clamp(50px, 7vw, 140px) !important; }
+  .rs-score { font-size: clamp(60px, 6vw, 100px) !important; }
+  .slide-area { padding: 50px 80px 50px 80px !important; gap: 24px !important; }
+  .start-btn { font-size: 26px !important; padding: 20px 60px !important; }
+  .game-header { padding: 12px 40px !important; }
+  .scoreboard { padding: 20px 60px !important; gap: 40px !important; }
 }
 
 /* ── TV SCREENS (2560px+) — 1.5x scale ── */
@@ -2131,7 +2163,6 @@ const RULES = {
     'بتنعرَض الصورة',
     'أسرع فريق بيكبس على البازر بيصير إلو حق يجاوب',
     'إذا جاوب غلط، الفريق التاني بيصير إلو حق يجاوب',
-    'الإجابة الصح بتعطي الفريق نقطتين',
     'يُفضَّل تدوير المشاركين حتى يشارك الجميع',
   ],
   r2: [
@@ -2139,8 +2170,6 @@ const RULES = {
     'بتنعرَض الصورة',
     'أسرع فريق بيكبس على البازر بيصير إلو حق يجاوب',
     'إذا جاوب غلط، الفريق التاني بيصير إلو حق يجاوب',
-    'الإجابة الصح بتعطي الفريق نقطتين',
-    'والإجابة الغلط بتنقص نقطة واحدة',
     'يُفضَّل تدوير المشاركين حتى يشارك الجميع',
   ],
   r3: [
@@ -2148,14 +2177,10 @@ const RULES = {
     'الفريقين رح يبلّشوا مزايدة على مين فيهن فيو يعطي أجوبة أكثر',
     'أعلى مزايد بياخد حق يجاوب على السؤال',
     'دقيقة واحدة لكتابة الأجوبة',
-    '٤ نقاط للفريق الرابح إذا قدر يجيب عدد الأجوبة اللي مزايدين عليه',
-    'ناقص نقطتين إذا ما قدروا',
   ],
   r10: [
     '10 أسئلة معلومات عامة',
     'أسرع واحد عالبزر بيقدر يجاوب',
-    'نقطتين للإجابة الصحيحة',
-    'نقطة بتنقص إذا كانت الإجابة غلط',
     'ما تجاوب إذا ما كنت متأكد من الجواب',
   ],
   r4: [
@@ -2163,45 +2188,35 @@ const RULES = {
     'رح نعطيك مقطع واحد، وإنت لازم تكمل الأغنية',
     'أسرع واحد عالبزر بيقدر يجاوب',
     'إذا جاوب غلط، اللاعب التاني كمان فيّه يجاوب',
-    'نقطتين للإجابة الصحيحة',
   ],
   r5: [
-    'حتحضروا 4 فيديوهات',
+    'حتحضروا فيديوهات قصيرة',
     'ركزوا على كل التفاصيل بالفيديو',
     'بعد ما يخلص كل فيديو رح يظهر سؤال',
     'كل فريق عنده 30 ثانية للنقاش',
-    'بنهاية الوقت كل فريق بيعطي جواب واحد',
-    '3 نقاط للإجابة الصحيحة',
+    'بنهاية الوقت كل فريق بيعطي جواب واحد عن طريق الجوال',
   ],
   r6: [
     '6 أسئلة وأجوبتها أرقام فقط',
-    'كل فريق عنده 30 ثانية للنقاش',
-    'بنهاية الوقت كل فريق بيعطي جواب واحد',
-    'اكتبوا الجواب وقولو انكن جاهزين (بدون ما تعطو الجواب)',
-    'نقطتين للإجابة الأقرب',
-    'إذا الفريقين عطوا نفس الجواب؟ الفريق الأسرع بيكسب النقاط',
+    'كل فريق عنده 30 ثانية للتفكير',
+    'اكتبوا الجواب على الجوال وارسلوه',
+    'إذا الفريقين عطوا نفس الجواب، الفريق الأسرع بيكسب',
   ],
   r7: [
     '6 أسئلة وأجوبتها أرقام فقط',
-    'كل فريق عنده 30 ثانية للنقاش',
-    'بنهاية الوقت كل فريق بيعطي جواب واحد',
-    'اكتبوا الجواب وقولو انكن جاهزين (بدون ما تعطو الجواب)',
-    'أربع نقط للإجابة الأقرب',
-    'إذا الفريقين عطوا نفس الجواب؟ الفريق الأسرع بيكسب النقاط',
+    'كل فريق عنده 30 ثانية للتفكير',
+    'اكتبوا الجواب على الجوال وارسلوه',
+    'إذا الفريقين عطوا نفس الجواب، الفريق الأسرع بيكسب',
   ],
   r8: [
     '8 أفلام ومسلسلات',
     'بالعربي والإنجليزي',
     'بدون حكي، بس تمثيل',
     'دقيقة واحدة للتمثيل',
-    '3 نقاط للإجابة الصحيحة',
-    'ناقص نقطة إذا ما كنتوا عارفين الجواب',
   ],
   r9: [
     '10 أسئلة معلومات عامة',
     'أسرع واحد عالبزر بيقدر يجاوب',
-    'نقطتين للإجابة الصحيحة',
-    'نقطة بتنقص إذا كانت الإجابة غلط',
     'ما تجاوب إذا ما كنت متأكد من الجواب',
   ],
 };
