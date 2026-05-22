@@ -3353,6 +3353,7 @@ function renderTeamVideo(r, qIndex, sa) {
   window._cat6Judgement = {};
   window._cat6TimestampA = 0;
   window._cat6TimestampB = 0;
+  window._cat6ScoringLocked = false;
   console.log('renderTeamVideo qIndex:', qIndex, 'item:', JSON.stringify(item), 'matchedQ:', matchedQ);
 
   // Reset answers in Firebase for new question
@@ -3563,13 +3564,24 @@ function cat6RevealAnswer() {
 }
 
 function cat6Judge(team, correct) {
+  if (window._cat6ScoringLocked) return;
   if (correct) {
+    window._cat6ScoringLocked = true;
     addScore(team, 3);
-    showToast(`+3 نقاط ${team === 'a' ? G.teamA : G.teamB}! 🎉`);
+    // Show winner message on main screen
+    const area = document.getElementById('vq-answer-area');
+    if (area) {
+      const winnerName = team === 'a' ? G.teamA : G.teamB;
+      const winnerColor = team === 'a' ? '#E50158' : '#E2DA51';
+      const existing = area.innerHTML;
+      area.innerHTML = existing + `<div class="answer-box fade-in" style="color:${winnerColor};font-size:clamp(16px,2.5vw,22px);margin-top:8px">🏆 ${winnerName} +3 نقاط!</div>`;
+    }
+    // Disable all judge buttons
+    document.querySelectorAll('button[onclick*="cat6Judge"]').forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+  } else {
+    // Disable only this team's buttons
+    document.querySelectorAll(`button[onclick*="cat6Judge('${team}'"]`).forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
   }
-  // Disable both buttons for this team
-  const btns = document.querySelectorAll(`button[onclick*="cat6Judge('${team}'"]`);
-  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
 }
 
 function playDriveVideo(driveId, qIndex) {
@@ -4318,6 +4330,10 @@ function startHostCmdListener() {
         const btn = document.querySelector('.answer-reveal-btn');
         if (btn) btn.click();
       }
+    } else if (cmd === 'overrideCat3') {
+      const idx = d.data?.idx;
+      const status = d.data?.status;
+      if (idx !== undefined && status) overrideVal({ dataset: { i: idx, s: status } });
     } else if (cmd === 'startCat3') {
       const roomId = cat3RoomId;
       if (roomId) startCat3Bidding(roomId);

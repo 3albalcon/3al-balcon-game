@@ -128,15 +128,15 @@ const db = getDatabase(app);
 
 const ROUNDS = [
   {id:'r1',num:1,name:'وين شايفو هالوجه؟',plus:2,minus:0},
-  {id:'r2',num:2,name:'ما تذكرتني بعد؟',plus:1,minus:0},
+  {id:'r2',num:2,name:'ما تذكرتني بعد؟',plus:2,minus:1},
   {id:'r3',num:3,name:'مزاد علني',plus:4,minus:-2},
-  {id:'r10',num:4,name:'متفرقات سريعة',plus:2,minus:0},
+  {id:'r10',num:4,name:'متفرقات سريعة',plus:2,minus:1},
   {id:'r4',num:5,name:'سمعني الدندنة',plus:2,minus:0},
   {id:'r5',num:6,name:'سكوت و ركز',plus:3,minus:0},
   {id:'r6',num:7,name:'يا حبيبي قرب ليي',plus:2,minus:-1},
   {id:'r7',num:8,name:'يا قريب يا غريب',plus:4,minus:-2},
   {id:'r8',num:9,name:'سكر تمك',plus:3,minus:-1},
-  {id:'r9',num:10,name:'من كل وادي عصا',plus:2,minus:0},
+  {id:'r9',num:10,name:'من كل وادي عصا',plus:2,minus:1},
 ];
 
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
@@ -216,7 +216,13 @@ function buildTeamCard(team, ans, name, color, rgba) {
 window.hostJudge = (team, correct) => {
   _cat6Judged[team] = correct;
   c('judgeTeam', { team, correct });
-  // Re-render judge area with latest data
+  if (correct) {
+    // Lock all judge buttons once a team gets points
+    document.querySelectorAll('button[onclick*="hostJudge"]').forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+  } else {
+    document.querySelectorAll(`button[onclick*="hostJudge('${team}'"]`).forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+  }
+  // Re-render judge area
   const roomId = state.cat6RoomId;
   if (!roomId) return;
   import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
@@ -226,6 +232,10 @@ window.hostJudge = (team, correct) => {
       if (area) renderJudgeArea(area, d.answerA, d.answerB, d.answeredAtA, d.answeredAtB);
     });
   });
+};
+
+window.overrideCat3 = (idx, status) => {
+  c('overrideCat3', { idx, status });
 };
 
 window.goMenu = () => {
@@ -351,7 +361,14 @@ function render() {
         </div>
         ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB} — ${cat3.winningBid} أجوبة</div>`:''}
         <div style="display:flex;flex-direction:column;gap:5px">
-          ${answers.length?answers.map((a,i)=>`<div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}"><span>${i+1}.</span><span style="flex:1">${a.text}</span><span>${a.status==='correct'?'✅':a.status==='wrong'?'❌':'⏳'}</span></div>`).join(''):'<div class="info-card">لا أجوبة بعد</div>'}
+          ${answers.length?answers.map((a,i)=>`
+            <div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}" style="justify-content:space-between">
+              <span>${i+1}. ${a.text}</span>
+              <span style="display:flex;gap:4px;flex-shrink:0">
+                <button onclick="overrideCat3(${i},'correct')" style="padding:2px 7px;border-radius:5px;border:1.5px solid #39FF14;color:#39FF14;background:${a.status==='correct'?'rgba(57,255,20,0.25)':'rgba(57,255,20,0.05)'};font-size:11px;cursor:pointer">✅</button>
+                <button onclick="overrideCat3(${i},'wrong')" style="padding:2px 7px;border-radius:5px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:${a.status==='wrong'?'rgba(255,45,45,0.25)':'rgba(255,45,45,0.05)'};font-size:11px;cursor:pointer">❌</button>
+              </span>
+            </div>`).join(''):'<div class="info-card">لا أجوبة بعد</div>'}
         </div>
       ` : ''}`;
     return;
@@ -404,16 +421,16 @@ function scoreSection(round) {
   const tA = state.teamA||'أ';
   const tB = state.teamB||'ب';
   const plus = round.plus || 2;
-  const minus = round.minus || 0;
+  const minus = Math.abs(round.minus || 0);
   let html = `<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
     <div class="lbl">— نقاط يدوية —</div>
     <div class="btn-row">
       <button class="btn btn-g btn-sm" onclick="c('addScore',{team:'a',pts:${plus}})">+${plus} ${tA}</button>
-      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'a',pts:${minus}})">${minus} ${tA}</button>`:''}
+      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'a',pts:${-minus}})">-${minus} ${tA}</button>`:''}
     </div>
     <div class="btn-row">
       <button class="btn btn-g btn-sm" onclick="c('addScore',{team:'b',pts:${plus}})">+${plus} ${tB}</button>
-      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'b',pts:${minus}})">${minus} ${tB}</button>`:''}
+      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="c('addScore',{team:'b',pts:${-minus}})">-${minus} ${tB}</button>`:''}
     </div>
   </div>`;
   return html;
