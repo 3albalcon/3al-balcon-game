@@ -387,23 +387,29 @@ body {
   border: 3px solid var(--neon-green);
   box-shadow: var(--glow-green), inset 0 0 30px rgba(57,255,20,0.05);
   border-radius: 20px;
-  padding: 32px 40px;
-  max-width: 600px;
-  text-align: center;
+  padding: 28px 36px;
+  max-width: 700px;
+  width: 100%;
+  text-align: right;
 }
-.rules-card h2 { font-size: clamp(20px, 3vw, 30px); font-weight: 900; color: var(--neon-green); text-shadow: var(--glow-green); margin-bottom: 20px; }
-.rules-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.rules-card h2 { font-size: clamp(18px, 2.5vw, 26px); font-weight: 900; color: var(--neon-green); text-shadow: var(--glow-green); margin-bottom: 16px; text-align: center; }
+.rules-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .rules-list li {
   background: rgba(57,255,20,0.06);
   border: 1px solid rgba(57,255,20,0.2);
   border-radius: 10px;
-  padding: 10px 16px;
-  font-size: clamp(13px, 1.8vw, 16px);
+  padding: 8px 14px;
+  font-size: clamp(12px, 1.4vw, 15px);
   font-weight: 700;
   color: #d0ffb0;
   display: flex; align-items: center; gap: 10px;
+  direction: rtl;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.rules-list .rule-icon { font-size: 18px; }
+.rules-list .rule-icon { font-size: 16px; flex-shrink: 0; }
 
 /* QUESTION SLIDE */
 .question-container {
