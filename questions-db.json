@@ -141,6 +141,46 @@
       "subcat_en": "General Sports"
     },
     {
+      "q_ar": "أي بلد استضاف الأولمبياد 2024؟",
+      "q_en": "Which country hosted the 2024 Olympic Games?",
+      "a_ar": "فرنسا",
+      "a_en": "France",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
+    },
+    {
+      "q_ar": "أي بلد اخترع لعبة الشطرنج؟",
+      "q_en": "Which country invented chess?",
+      "a_ar": "الهند",
+      "a_en": "India",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
+    },
+    {
+      "q_ar": "من هو السائق الأكثر فوزًا ببطولات العالم في الفورمولا 1؟",
+      "q_en": "Which driver has won the most Formula 1 World Championships?",
+      "a_ar": "مايكل شوماخر",
+      "a_en": "Michael Schumacher",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
+    },
+    {
+      "q_ar": "من الأطول: كريستيانو رونالدو أم ليونيل ميسي؟",
+      "q_en": "Who is taller: Cristiano Ronaldo or Lionel Messi?",
+      "a_ar": "رونالدو",
+      "a_en": "Cristiano Ronaldo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
+    },
+    {
       "q_ar": "من يُعتبر مؤسس الديانة البوذية؟",
       "q_en": "How many obligatory daily prayers are there in Islam?",
       "a_ar": "5",
@@ -2381,6 +2421,256 @@
       "subcat_en": "Miscellaneous"
     },
     {
+      "q_ar": "كم دولة عضو في مجلس التعاون الخليجي؟",
+      "q_en": "How many member states are there in the Gulf Cooperation Council (GCC)?",
+      "a_ar": "6",
+      "a_en": "6",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "أي معلم تاريخي في الشوف (لبنان) يستضيف مهرجانات صيفية؟",
+      "q_en": "Which historical landmark in Chouf, Lebanon hosts summer festivals?",
+      "a_ar": "قصر بيت الدين",
+      "a_en": "Beiteddine Palace",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم الميناء الرئيسي في الأردن؟",
+      "q_en": "What is the main port of Jordan?",
+      "a_ar": "العقبة",
+      "a_en": "Aqaba",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم المضيق الذي يفصل بين أوروبا وأفريقيا؟",
+      "q_en": "What is the name of the strait that separates Europe and Africa?",
+      "a_ar": "مضيق جبل طارق",
+      "a_en": "Strait of Gibraltar",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "بأي سنة انسحب الاحتلال الإسرائيلي من الجنوب اللبناني؟",
+      "q_en": "In what year did the Israeli occupation withdraw from South Lebanon?",
+      "a_ar": "2000",
+      "a_en": "2000",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أشهر معلم أثري في الأردن؟",
+      "q_en": "What is the most famous archaeological landmark in Jordan?",
+      "a_ar": "البتراء",
+      "a_en": "Petra",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أكبر جزيرة في العالم؟",
+      "q_en": "What is the largest island in the world?",
+      "a_ar": "غرينلاند",
+      "a_en": "Greenland",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أكبر صحراء باردة في العالم؟",
+      "q_en": "What is the largest cold desert in the world?",
+      "a_ar": "القارة القطبية الجنوبية",
+      "a_en": "Antarctica",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أطول شارع في بيروت؟",
+      "q_en": "What is the longest street in Beirut?",
+      "a_ar": "شارع الحمراء",
+      "a_en": "Hamra Street",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم المعبر الشهير في قطاع غزة؟",
+      "q_en": "What is the name of the famous crossing in the Gaza Strip?",
+      "a_ar": "معبر رفح",
+      "a_en": "Rafah Crossing",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم القلعة الأشهر في القاهرة؟",
+      "q_en": "What is the most famous fortress in Cairo?",
+      "a_ar": "قلعة صلاح الدين",
+      "a_en": "Saladin Citadel",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أكبر صحراء في العالم؟",
+      "q_en": "What is the largest desert in the world?",
+      "a_ar": "الصحراء الأفريقية الكبرى",
+      "a_en": "Sahara Desert",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما أكثر دول العالم من حيث عدد السكان؟",
+      "q_en": "Which country has the largest population in the world?",
+      "a_ar": "الهند",
+      "a_en": "India",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أعلى شلال في العالم؟",
+      "q_en": "What is the highest waterfall in the world?",
+      "a_ar": "شلال أنخيل في فنزويلا Angel Falls",
+      "a_en": "Angel Falls, Venezuela",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم المطار الدولي الرئيسي في سوريا؟",
+      "q_en": "What is the main international airport in Syria?",
+      "a_ar": "مطار دمشق الدولي",
+      "a_en": "Damascus International Airport",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اللغة الرسمية في البرازيل؟",
+      "q_en": "What is the official language of Brazil?",
+      "a_ar": "البرتغالية",
+      "a_en": "Portuguese",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم الصحراء المشهورة في الأردن؟",
+      "q_en": "What is the name of the famous desert in Jordan?",
+      "a_ar": "وادي رم",
+      "a_en": "Wadi Rum",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "العلم الأردني فيه كم لون؟",
+      "q_en": "How many colors are there on the Jordanian flag?",
+      "a_ar": "4",
+      "a_en": "4",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم العملة الرسمية في تركيا؟",
+      "q_en": "What is the official currency of Turkey?",
+      "a_ar": "الليرة التركية",
+      "a_en": "Turkish Lira",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم خط العرض 0°؟",
+      "q_en": "What is the name of the 0° line of latitude?",
+      "a_ar": "خط الاستواء",
+      "a_en": "Equator",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "بأي سنة تم افتتاح برج خليفة في دبي؟",
+      "q_en": "In what year was the Burj Khalifa in Dubai officially opened?",
+      "a_ar": "2010",
+      "a_en": "2010",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أشهر فندق في دبي؟",
+      "q_en": "What is the most famous hotel in Dubai?",
+      "a_ar": "برج العرب",
+      "a_en": "Burj Al Arab",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم أطول طريق في السعودية؟",
+      "q_en": "What is the longest road in Saudi Arabia?",
+      "a_ar": "طريق الملك فهد",
+      "a_en": "King Fahd Road",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "هل تقع أوروبا شمال أم جنوب خط الاستواء؟",
+      "q_en": "Is Europe north or south of the Equator?",
+      "a_ar": "شمال خط الاستواء",
+      "a_en": "North of the Equator",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
+      "q_ar": "ما اسم النشيد الوطني الأردني؟",
+      "q_en": "What is the national anthem of Jordan called?",
+      "a_ar": "السلام الملكي الأردني",
+      "a_en": "The Royal Jordanian Anthem",
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
+    },
+    {
       "q_ar": "ما هي الجبنة الأساسية في بيتزا المارغريتا الأصلية؟",
       "q_en": "What is the main cheese used in the original Margherita pizza?",
       "a_ar": "موزاريلا",
@@ -2395,6 +2685,26 @@
       "q_en": "What is the famous Yemeni dish made with rice and meat?",
       "a_ar": "مندي",
       "a_en": "Mandi",
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
+    },
+    {
+      "q_ar": "ما اسم الخبز المصري التقليدي؟",
+      "q_en": "What is the name of the traditional Egyptian bread?",
+      "a_ar": "عيش بلدي",
+      "a_en": "Baladi Bread",
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
+    },
+    {
+      "q_ar": "أي بلد أصل طبق الشاورما؟",
+      "q_en": "Which country is the origin of Shawarma?",
+      "a_ar": "تركيا",
+      "a_en": "Turkey",
       "cat_ar": "🍽️ الطعام والمأكولات",
       "subcat_ar": "🍽️ الطعام والمأكولات",
       "cat_en": "🍽️ Food & Cuisine",
@@ -2611,6 +2921,26 @@
       "subcat_en": "Entertainment"
     },
     {
+      "q_ar": "من هو بطل سلسلة أفلام Mission Impossible؟",
+      "q_en": "Who is the star of the Mission: Impossible film series?",
+      "a_ar": "توم كروز",
+      "a_en": "Tom Cruise",
+      "cat_ar": "🎬 أفلام ومسلسلات",
+      "subcat_ar": "ترفيه",
+      "cat_en": "🎬 Movies & TV",
+      "subcat_en": "Entertainment"
+    },
+    {
+      "q_ar": "من هو والد شخصية سيمبا في فيلم الأسد الملك؟",
+      "q_en": "Who is Simba's father in the Lion King?",
+      "a_ar": "موفاسا",
+      "a_en": "Mufasa",
+      "cat_ar": "🎬 أفلام ومسلسلات",
+      "subcat_ar": "ترفيه",
+      "cat_en": "🎬 Movies & TV",
+      "subcat_en": "Entertainment"
+    },
+    {
       "q_ar": "أي مغنّي معروف بلقب The King of Rock and Roll؟",
       "q_en": "Which singer is known as \"The King of Rock and Roll\"?",
       "a_ar": "Elvis Presley",
@@ -2681,94 +3011,234 @@
       "subcat_en": "🎤 Singers & Musicians"
     },
     {
+      "q_ar": "من هو زوج بيونسيه؟",
+      "q_en": "Who is Beyoncé's husband?",
+      "a_ar": "جاي زي",
+      "a_en": "Jay-Z",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من الأكبر سنًا: عمرو دياب أم كاظم الساهر؟",
+      "q_en": "Who is older: Amr Diab or Kadim Al Sahir?",
+      "a_ar": "كاظم الساهر",
+      "a_en": "Kadim Al Sahir",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من الأطول: زياد الرحباني أم ملحم زين؟",
+      "q_en": "Who is taller: Ziad Rahbani or Melhem Zein?",
+      "a_ar": "ملحم زين",
+      "a_en": "Melhem Zein",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من هو زوج شيرين رضا السابق؟",
+      "q_en": "Who is Sherine Reda's former husband?",
+      "a_ar": "عمرو دياب",
+      "a_en": "Amr Diab",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من هو زوج نانسي عجرم الأول؟",
+      "q_en": "Who was Nancy Ajram's first husband?",
+      "a_ar": "فادي الهاشم",
+      "a_en": "Fadi El Hachem",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من الأطول: توم كروز أم براد بيت؟",
+      "q_en": "Who is taller: Tom Cruise or Brad Pitt?",
+      "a_ar": "براد بيت",
+      "a_en": "Brad Pitt",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من الأطول: محمد عبده أم عبد المجيد عبد الله؟",
+      "q_en": "Who is taller: Mohammed Abdu or Abdul Majeed Abdullah?",
+      "a_ar": "محمد عبده",
+      "a_en": "Mohammed Abdu",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "من الأطول: عمرو دياب أم تامر حسني؟",
+      "q_en": "Who is taller: Amr Diab or Tamer Hosny?",
+      "a_ar": "تامر حسني",
+      "a_en": "Tamer Hosny",
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
+    },
+    {
+      "q_ar": "أي إمبراطورية كانت الأكبر في التاريخ؟",
+      "q_en": "Which empire was the largest in history?",
+      "a_ar": "الإمبراطورية المغولية",
+      "a_en": "Mongol Empire",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏺 الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "🏺 Ancient Civilizations"
+    },
+    {
+      "q_ar": "من هو قائد ثورة يوليو المصرية؟",
+      "q_en": "Who led the Egyptian July Revolution?",
+      "a_ar": "جمال عبد الناصر",
+      "a_en": "Gamal Abdel Nasser",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
+    },
+    {
+      "q_ar": "من كان أول رئيس لسوريا بعد الاستقلال؟",
+      "q_en": "Who was the first President of Syria after independence?",
+      "a_ar": "شكري القوتلي",
+      "a_en": "Shukri al-Quwatli",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو مؤسس الإمبراطورية المغولية؟",
+      "q_en": "Who founded the Mongol Empire?",
+      "a_ar": "جنكيز خان",
+      "a_en": "Genghis Khan",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
+    },
+    {
+      "q_ar": "لبنان تاريخيًا كان جزءًا من أي حضارة قديمة؟",
+      "q_en": "Historically, Lebanon was part of which ancient civilization?",
+      "a_ar": "الفينيقية",
+      "a_en": "Phoenician Civilization",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "🏛️ History & Civilizations"
+    },
+    {
+      "q_ar": "بأي سنة اندلعت الثورة الفرنسية؟",
+      "q_en": "In what year did the French Revolution begin?",
+      "a_ar": "1789",
+      "a_en": "1789",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
+    },
+    {
       "q_ar": "ما اسم المدينة الفلسطينية المشهورة بالصابون؟",
       "q_en": "Which Palestinian city is famous for soap production?",
       "a_ar": "نابلس",
       "a_en": "Nablus",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "بأي مدينة فلسطينية وُلد السيد المسيح؟",
       "q_en": "In which Palestinian city was Jesus Christ born?",
       "a_ar": "بيت لحم",
       "a_en": "Bethlehem",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "الأردن تاريخيًا كان جزء من أي دولة قديمة؟",
       "q_en": "Historically, Jordan was part of which ancient state?",
       "a_ar": "الدولة الأموية",
       "a_en": "Umayyad State",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "أي مدينة لبنانية معروفة بقلعتها الصليبية؟",
       "q_en": "Which Lebanese city is known for its Crusader castle?",
       "a_ar": "صيدا",
       "a_en": "Sidon",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "أي مدينة لبنانية تُعتبر من أقدم المدن المأهولة بالعالم",
       "q_en": "Which Lebanese city is considered one of the oldest continuously inhabited cities in the world?",
       "a_ar": "جبيل",
       "a_en": "Byblos",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "أي مدينة عراقية قديمة كانت عاصمة العباسيين؟",
       "q_en": "Which ancient Iraqi city was the capital of the Abbasid Caliphate?",
       "a_ar": "بغداد",
       "a_en": "Baghdad",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "أي مدينة لبنانية جنوبية فيها آثار رومانية ومرفأ فينيقي قديم؟",
       "q_en": "Which southern Lebanese city is known for its Roman ruins and ancient Phoenician harbor?",
       "a_ar": "صور",
       "a_en": "Tyre",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "ما اسم أشهر مدينة أثرية في سوريا؟",
       "q_en": "What is the most famous archaeological city in Syria?",
       "a_ar": "تدمر",
       "a_en": "Palmyra",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏛️ التاريخ والحضارات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "🏛️ History & Civilizations"
     },
     {
       "q_ar": "ما اسم الاتفاق الذي أنهى الحرب الأهلية اللبنانية؟",
       "q_en": "What is the name of the agreement that ended the Lebanese Civil War?",
       "a_ar": "اتفاق الطائف",
       "a_en": "Taif Agreement",
-      "cat_ar": "🏛️ تاريخ",
-      "subcat_ar": null,
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "⚔️ الحروب والصراعات",
       "cat_en": "🏛️ History",
-      "subcat_en": null
+      "subcat_en": "⚔️ Wars & Conflicts"
     },
     {
       "q_ar": "ما هو الكوكب الأكثر سخونة في المجموعة الشمسية؟",
@@ -2801,44 +3271,134 @@
       "subcat_en": "🌿 Plants & Animals"
     },
     {
+      "q_ar": "كم عدد كواكب المجموعة الشمسية؟",
+      "q_en": "How many planets are in the Solar System?",
+      "a_ar": "8",
+      "a_en": "8",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌌 الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌌 Astronomy"
+    },
+    {
+      "q_ar": "أي عالم اكتشف الجاذبية؟",
+      "q_en": "Which scientist discovered gravity?",
+      "a_ar": "إسحاق نيوتن",
+      "a_en": "Isaac Newton",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "👨‍🔬 Scientists & Discoveries"
+    },
+    {
+      "q_ar": "ما هو أكبر كوكب في المجموعة الشمسية؟",
+      "q_en": "What is the largest planet in the Solar System?",
+      "a_ar": "المشتري",
+      "a_en": "Jupiter",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌌 الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌌 Astronomy"
+    },
+    {
+      "q_ar": "ما اسم الجزيء الوراثي؟",
+      "q_en": "What is the name of the genetic molecule?",
+      "a_ar": "DNA",
+      "a_en": "DNA",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧬 علم الأحياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧬 Biology"
+    },
+    {
+      "q_ar": "ما الكوكب المعروف بالكوكب الأحمر؟",
+      "q_en": "Which planet is known as the Red Planet?",
+      "a_ar": "المريخ",
+      "a_en": "Mars",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌌 الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌌 Astronomy"
+    },
+    {
+      "q_ar": "كم يومًا في السنة الكبيسة؟",
+      "q_en": "How many days are there in a leap year?",
+      "a_ar": "366",
+      "a_en": "366",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌍 علوم الأرض",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌍 Earth Science"
+    },
+    {
+      "q_ar": "أي عالم اكتشف نظرية التطور؟",
+      "q_en": "Which scientist developed the theory of evolution?",
+      "a_ar": "تشارلز داروين",
+      "a_en": "Charles Darwin",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "👨‍🔬 Scientists & Discoveries"
+    },
+    {
+      "q_ar": "ما اسم الجهاز المسؤول عن ضخ الدم؟",
+      "q_en": "What is the name of the organ responsible for pumping blood?",
+      "a_ar": "القلب",
+      "a_en": "Heart",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
+    },
+    {
+      "q_ar": "كم عدد أسنان الإنسان البالغ؟",
+      "q_en": "How many teeth does an adult human have?",
+      "a_ar": "32",
+      "a_en": "32",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
+    },
+    {
       "q_ar": "أي شركة تملك واتساب؟",
       "q_en": "Which company owns WhatsApp?",
       "a_ar": "ميتا (فيسبوك)",
       "a_en": "Meta (Facebook)",
-      "cat_ar": "🧠 معلومات عامة",
-      "subcat_ar": "متنوع",
-      "cat_en": "🧠 General Knowledge",
-      "subcat_en": "Miscellaneous"
+      "cat_ar": "",
+      "subcat_ar": null,
+      "cat_en": "",
+      "subcat_en": null
     },
     {
       "q_ar": "أي دولة اخترعت الطباعة؟",
       "q_en": "Which country invented printing?",
       "a_ar": "الصين",
       "a_en": "China",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "أي دولة عربية لديها أكبر احتياطي نفط؟",
       "q_en": "Which Arab country has the largest oil reserves?",
       "a_ar": "السعودية",
       "a_en": "Saudi Arabia",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
     },
     {
       "q_ar": "كم دولة عضو في الاتحاد الأوروبي؟",
       "q_en": "How many member states are there in the European Union?",
       "a_ar": "27",
       "a_en": "27",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
     },
     {
       "q_ar": "أي دولة أكبر مصنّع في العالم؟",
@@ -2855,56 +3415,36 @@
       "q_en": "Which Palestinian city is famous for its soap factories?",
       "a_ar": "نابلس",
       "a_en": "Nablus",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏺 الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "🏺 Ancient Civilizations"
     },
     {
       "q_ar": "أي مدينة لبنانية مشهورة بالمهرجانات الصيفية العالمية؟",
       "q_en": "Which Lebanese city is famous for its international summer festivals?",
       "a_ar": "بعلبك",
       "a_en": "Baalbek",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "إلى أي مدينة عربية يُنسب أصل الكنافة؟",
       "q_en": "To which Arab city is the origin of Kunafa attributed?",
       "a_ar": "نابلس / فلسطين",
       "a_en": "Nablus, Palestine",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "كم دولة عضو في مجلس التعاون الخليجي؟",
-      "q_en": "How many member states are there in the Gulf Cooperation Council (GCC)?",
-      "a_ar": "6",
-      "a_en": "6",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "أي عملة تُستخدم في التجارة النفطية الدولية؟",
       "q_en": "Which currency is used in international oil trade?",
       "a_ar": "الدولار الأمريكي",
       "a_en": "US Dollar",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي معلم تاريخي في الشوف (لبنان) يستضيف مهرجانات صيفية؟",
-      "q_en": "Which historical landmark in Chouf, Lebanon hosts summer festivals?",
-      "a_ar": "قصر بيت الدين",
-      "a_en": "Beiteddine Palace",
       "cat_ar": "",
       "subcat_ar": null,
       "cat_en": "",
@@ -2921,16 +3461,6 @@
       "subcat_en": null
     },
     {
-      "q_ar": "كم عدد كواكب المجموعة الشمسية؟",
-      "q_en": "How many planets are in the Solar System?",
-      "a_ar": "8",
-      "a_en": "8",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "أي شركة تملك يوتيوب؟",
       "q_en": "Which company owns YouTube?",
       "a_ar": "غوغل",
@@ -2941,44 +3471,14 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم الميناء الرئيسي في الأردن؟",
-      "q_en": "What is the main port of Jordan?",
-      "a_ar": "العقبة",
-      "a_en": "Aqaba",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "من هو أول رئيس للجمهورية اللبنانية بعد الاستقلال؟",
       "q_en": "Who was the first President of Lebanon after independence?",
       "a_ar": "بشارة الخوري",
       "a_en": "Bechara El Khoury",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم المضيق الذي يفصل بين أوروبا وأفريقيا؟",
-      "q_en": "What is the name of the strait that separates Europe and Africa?",
-      "a_ar": "مضيق جبل طارق",
-      "a_en": "Strait of Gibraltar",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما الاسم العبري للقدس؟",
-      "q_en": "What is the Hebrew name for Jerusalem?",
-      "a_ar": "أورشاليم",
-      "a_en": "Yerushalayim (Jerusalem)",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "ما اسم أقدم جامعة في العالم؟",
@@ -3011,30 +3511,10 @@
       "subcat_en": null
     },
     {
-      "q_ar": "بأي سنة انسحب الاحتلال الإسرائيلي من الجنوب اللبناني؟",
-      "q_en": "In what year did the Israeli occupation withdraw from South Lebanon?",
-      "a_ar": "2000",
-      "a_en": "2000",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "ما اسم الأسلوب الفني الذي اتبعه بيكاسو؟",
       "q_en": "What artistic style is Pablo Picasso known for?",
       "a_ar": "التكعيبية",
       "a_en": "Cubism",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أشهر معلم أثري في الأردن؟",
-      "q_en": "What is the most famous archaeological landmark in Jordan?",
-      "a_ar": "البتراء",
-      "a_en": "Petra",
       "cat_ar": "",
       "subcat_ar": null,
       "cat_en": "",
@@ -3081,16 +3561,6 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم أكبر جزيرة في العالم؟",
-      "q_en": "What is the largest island in the world?",
-      "a_ar": "غرينلاند",
-      "a_en": "Greenland",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "أي بلد عربي مشهور بالكسكسي؟",
       "q_en": "Which Arab country is famous for couscous?",
       "a_ar": "المغرب",
@@ -3131,34 +3601,24 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم أكبر صحراء باردة في العالم؟",
-      "q_en": "What is the largest cold desert in the world?",
-      "a_ar": "القارة القطبية الجنوبية",
-      "a_en": "Antarctica",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "من الأطول: الأمير هاري أم الأمير ويليام؟",
       "q_en": "Who is taller: Prince Harry or Prince William?",
       "a_ar": "برنس ويليام",
       "a_en": "Prince William",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
     },
     {
       "q_ar": "ما اللقب الأشهر لفيروز؟",
       "q_en": "What is Fairuz's most famous title (nickname)?",
       "a_ar": "سفيرة لبنان إلى النجوم",
       "a_en": "Lebanon's Ambassador to the Stars",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "من الأطول: كيفن دورانت أم كوبي براينت؟",
@@ -3175,10 +3635,10 @@
       "q_en": "Who was Sabah's last husband?",
       "a_ar": "فادي لبنان",
       "a_en": "Fadi Lebanon",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "ما اسم النظام الحاكم في الأردن؟",
@@ -3195,70 +3655,70 @@
       "q_en": "Who directed the original Star Wars series?",
       "a_ar": "جورج لوكاس",
       "a_en": "George Lucas",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎬 أفلام ومسلسلات",
+      "subcat_ar": "ترفيه",
+      "cat_en": "🎬 Movies & TV",
+      "subcat_en": "Entertainment"
     },
     {
       "q_ar": "من هو زوج منى زكي؟",
       "q_en": "Who is Mona Zaki's husband?",
       "a_ar": "أحمد حلمي",
       "a_en": "Ahmed Helmy",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "بأي سنة بدأت الحرب العالمية الأولى؟",
       "q_en": "In what year did World War I begin?",
       "a_ar": "1914",
       "a_en": "1914",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "ما هو أثقل عنصر طبيعي؟",
       "q_en": "What is the heaviest naturally occurring element?",
       "a_ar": "الأورانيوم",
       "a_en": "Uranium",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "⚗️ الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "⚗️ Chemistry"
     },
     {
       "q_ar": "من هو مؤسس حركة حماس؟",
       "q_en": "Who founded the Hamas movement?",
       "a_ar": "الشيخ أحمد ياسين",
       "a_en": "Sheikh Ahmed Yassin",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "بأي عام نال لبنان استقلاله؟",
       "q_en": "In what year did Lebanon gain its independence?",
       "a_ar": "1943",
       "a_en": "1943",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "ما المكوّن الأساسي في التبولة؟",
       "q_en": "What is the main ingredient in Tabbouleh?",
       "a_ar": "البقدونس",
       "a_en": "Parsley",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "ما اسم العملة الرسمية في الأردن؟",
@@ -3271,74 +3731,44 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم أطول شارع في بيروت؟",
-      "q_en": "What is the longest street in Beirut?",
-      "a_ar": "شارع الحمراء",
-      "a_en": "Hamra Street",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "من الأطول: رافاييل نادال أم روجر فيدرر؟",
       "q_en": "Who is taller: Rafael Nadal or Roger Federer?",
       "a_ar": "رافاييل نادال",
       "a_en": "Rafael Nadal",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم المعبر الشهير في قطاع غزة؟",
-      "q_en": "What is the name of the famous crossing in the Gaza Strip?",
-      "a_ar": "معبر رفح",
-      "a_en": "Rafah Crossing",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم القلعة الأشهر في القاهرة؟",
-      "q_en": "What is the most famous fortress in Cairo?",
-      "a_ar": "قلعة صلاح الدين",
-      "a_en": "Saladin Citadel",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
     },
     {
       "q_ar": "بأي سنة اغتيل بشير الجميّل؟",
       "q_en": "In what year was Bashir Gemayel assassinated?",
       "a_ar": "1982",
       "a_en": "1982",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "من الأكبر سنًا: الملك سلمان أم الملك تشارلز الثالث؟",
       "q_en": "Who is older: King Salman or King Charles III?",
       "a_ar": "الملك سلمان",
       "a_en": "King Salman",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "في ماذا تستخدم خطوط الطول؟",
       "q_en": "What are lines of longitude used for?",
       "a_ar": "الوقت",
       "a_en": "Time",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "من الأطول: رامي عياش أم وائل كفوري؟",
@@ -3355,50 +3785,40 @@
       "q_en": "Who is taller: Neymar or Kylian Mbappé?",
       "a_ar": "مبابي",
       "a_en": "Kylian Mbappé",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
     },
     {
       "q_ar": "ما أخفض نقطة على سطح اليابسة؟",
       "q_en": "What is the lowest point on Earth's land surface?",
       "a_ar": "البحر الميت (حوالي −430 متر)",
       "a_en": "Dead Sea (approximately -430 meters)",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
     },
     {
       "q_ar": "ما اسم الطبق الذي يحتوي على الحمص واللبن والخبز؟",
       "q_en": "What is the name of the dish that contains chickpeas, yogurt, and bread?",
       "a_ar": "فتة",
       "a_en": "Fatteh",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما الذي تتحداه قناة «ميلودي»؟",
-      "q_en": "What does the Melody TV channel challenge?",
-      "a_ar": "الملل",
-      "a_en": "Boredom",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "ما اسم الحلوى الأردنية المشهورة؟",
       "q_en": "What is the famous Jordanian dessert?",
       "a_ar": "كنافة",
       "a_en": "Kunafa",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "من هو مؤلف رواية «أولاد حارتنا»؟",
@@ -3415,10 +3835,10 @@
       "q_en": "What is the longest bone in the human body?",
       "a_ar": "عظم الفخذ",
       "a_en": "Femur",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
     },
     {
       "q_ar": "من يُلقّب بشاعر الكلمة العربية؟",
@@ -3435,30 +3855,30 @@
       "q_en": "Who assumed power at a younger age: Tamim bin Hamad Al Thani or Bashar al-Assad?",
       "a_ar": "تميم بن حمد",
       "a_en": "Tamim bin Hamad Al Thani",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "من هو زوج كيم كارداشيان السابق؟",
       "q_en": "Who is Kim Kardashian's former husband?",
       "a_ar": "كانييه ويست",
       "a_en": "Kanye West",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "كم عدد رئات الإنسان؟",
       "q_en": "How many lungs does a human have?",
       "a_ar": "2",
       "a_en": "2",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
     },
     {
       "q_ar": "من هو رئيس السلطة الفلسطينية الحالي؟",
@@ -3471,44 +3891,34 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم أكبر صحراء في العالم؟",
-      "q_en": "What is the largest desert in the world?",
-      "a_ar": "الصحراء الأفريقية الكبرى",
-      "a_en": "Sahara Desert",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "من هو زوج ريهانا؟",
       "q_en": "Who is Rihanna's husband?",
       "a_ar": "لم تتزوج",
       "a_en": "She has never been married",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "في من أحياء بيروت كبرت فيروز؟",
       "q_en": "In which Beirut neighborhood did Fairuz grow up?",
       "a_ar": "زقاق البلاط",
       "a_en": "Zuqaq al-Blat",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "أي سنة توفّي عاصي الرحباني؟",
       "q_en": "In what year did Assi Rahbani pass away?",
       "a_ar": "1986",
       "a_en": "1986",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "أي شركة تملك PlayStation؟",
@@ -3535,10 +3945,10 @@
       "q_en": "Who is George Clooney's wife?",
       "a_ar": "أمل علم الدين",
       "a_en": "Amal Clooney",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "أي شركة تملك إنستغرام؟",
@@ -3555,70 +3965,60 @@
       "q_en": "How many layers does human skin have?",
       "a_ar": "ثلاث طبقات رئيسية",
       "a_en": "Three main layers",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
     },
     {
       "q_ar": "من هو الزعيم الألماني في الحرب العالمية الثانية؟",
       "q_en": "Who was the German leader during World War II?",
       "a_ar": "أدولف هتلر",
       "a_en": "Adolf Hitler",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما أكثر دول العالم من حيث عدد السكان؟",
-      "q_en": "Which country has the largest population in the world?",
-      "a_ar": "الهند",
-      "a_en": "India",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "من الأكبر سنًا: محمد صلاح أم نيمار؟",
       "q_en": "Who is older: Mohamed Salah or Neymar?",
       "a_ar": "نيمار",
       "a_en": "Neymar",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "رياضة عامة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "General Sports"
     },
     {
       "q_ar": "أي بلد يُنسب إلها أصل الكرواسون تاريخياً؟",
       "q_en": "Which country is historically credited as the origin of the croissant?",
       "a_ar": "النمسا",
       "a_en": "Austria",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "كم فصيلة دم لدى الإنسان؟",
       "q_en": "How many blood types are there in humans?",
       "a_ar": "4 (A, B, AB, O)",
       "a_en": "4 (A, B, AB, O)",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🧠 جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🧠 Human Body"
     },
     {
       "q_ar": "كم ثانية في الساعة؟",
       "q_en": "How many seconds are there in an hour?",
       "a_ar": "3,600",
       "a_en": "3,600",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌍 علوم الأرض",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌍 Earth Science"
     },
     {
       "q_ar": "بأي سنة تأسست شركة غوغل؟",
@@ -3635,10 +4035,10 @@
       "q_en": "Who was the first President of the United States?",
       "a_ar": "جورج واشنطن",
       "a_en": "George Washington",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "بأي سنة أُطلقت منصة فيسبوك؟",
@@ -3655,30 +4055,30 @@
       "q_en": "What is the lightest gas?",
       "a_ar": "الهيدروجين",
       "a_en": "Hydrogen",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "⚗️ الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "⚗️ Chemistry"
     },
     {
       "q_ar": "ما اسم الخبز الفلسطيني التقليدي؟",
       "q_en": "What is the name of the traditional Palestinian bread?",
       "a_ar": "خبز الطابون",
       "a_en": "Taboon Bread",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "أي عالم اخترع الهاتف؟",
       "q_en": "Which scientist invented the telephone?",
       "a_ar": "ألكسندر غراهام بيل",
       "a_en": "Alexander Graham Bell",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "👨‍🔬 Scientists & Discoveries"
     },
     {
       "q_ar": "ما اسم منظمة الدول المصدرة للنفط؟",
@@ -3695,10 +4095,10 @@
       "q_en": "Who is Blake Lively's husband?",
       "a_ar": "رايان رينولدز",
       "a_en": "Ryan Reynolds",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "من هو مؤسس شركة آبل؟",
@@ -3755,110 +4155,60 @@
       "q_en": "What is the name of the famous Roman archaeological site north of Amman?",
       "a_ar": "جرش",
       "a_en": "Jerash",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "🏺 الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "🏺 Ancient Civilizations"
     },
     {
       "q_ar": "من الأكبر سنًا: ياسر عرفات أم حسني مبارك؟",
       "q_en": "Who is older: Yasser Arafat or Hosni Mubarak?",
       "a_ar": "حسني مبارك",
       "a_en": "Hosni Mubarak",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "من أي بلد يعود أصل طبق الباييلا (Paella)؟",
       "q_en": "From which country does the dish Paella originate?",
       "a_ar": "إسبانيا",
       "a_en": "Spain",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أكبر مسجد في العالم؟",
-      "q_en": "What is the largest mosque in the world?",
-      "a_ar": "المسجد الحرام",
-      "a_en": "Masjid al-Haram (The Grand Mosque)",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "بأي سنة سقط جدار برلين؟",
       "q_en": "In what year did the Berlin Wall fall?",
       "a_ar": "1989",
       "a_en": "1989",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي بلد استضاف الأولمبياد 2024؟",
-      "q_en": "Which country hosted the 2024 Olympic Games?",
-      "a_ar": "فرنسا",
-      "a_en": "France",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو مؤسس حركة أمل؟",
-      "q_en": "Who founded the Amal Movement?",
-      "a_ar": "موسى الصدر",
-      "a_en": "Musa al-Sadr",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي عالم اكتشف الجاذبية؟",
-      "q_en": "Which scientist discovered gravity?",
-      "a_ar": "إسحاق نيوتن",
-      "a_en": "Isaac Newton",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "ما اسم الانتفاضة الفلسطينية الأولى؟",
       "q_en": "What was the name of the First Palestinian Intifada?",
       "a_ar": "انتفاضة الحجارة",
       "a_en": "The Stone Intifada",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم الخبز المصري التقليدي؟",
-      "q_en": "What is the name of the traditional Egyptian bread?",
-      "a_ar": "عيش بلدي",
-      "a_en": "Baladi Bread",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "📜 الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "📜 Historical Events"
     },
     {
       "q_ar": "من هو زوج ميغان ماركل؟",
       "q_en": "Who is Meghan Markle's husband?",
       "a_ar": "الأمير هاري",
       "a_en": "Prince Harry",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "ما اسم أكبر شركة نفطية في العالم؟",
@@ -3871,54 +4221,24 @@
       "subcat_en": null
     },
     {
-      "q_ar": "من هو بطل سلسلة أفلام Mission Impossible؟",
-      "q_en": "Who is the star of the Mission: Impossible film series?",
-      "a_ar": "توم كروز",
-      "a_en": "Tom Cruise",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "بأي سنة اغتيل رفيق الحريري؟",
       "q_en": "In what year was Rafic Hariri assassinated?",
       "a_ar": "2005",
       "a_en": "2005",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "ما اسم أشهر سوق في دمشق؟",
       "q_en": "What is the most famous market (souq) in Damascus?",
       "a_ar": "سوق الحميدية",
       "a_en": "Al-Hamidiyah Souq",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما هو أكبر كوكب في المجموعة الشمسية؟",
-      "q_en": "What is the largest planet in the Solar System?",
-      "a_ar": "المشتري",
-      "a_en": "Jupiter",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو زوج بيونسيه؟",
-      "q_en": "Who is Beyoncé's husband?",
-      "a_ar": "جاي زي",
-      "a_en": "Jay-Z",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
     },
     {
       "q_ar": "ما اسم أكبر بورصة في العالم؟",
@@ -3935,20 +4255,10 @@
       "q_en": "Who is the current Pope of the Vatican?",
       "a_ar": "لاون الرابع عشر",
       "a_en": "Pope Leo XIV",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأكبر سنًا: عمرو دياب أم كاظم الساهر؟",
-      "q_en": "Who is older: Amr Diab or Kadim Al Sahir?",
-      "a_ar": "كاظم الساهر",
-      "a_en": "Kadim Al Sahir",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "بأي سنة أُسّس الاتحاد الأوروبي رسمياً؟",
@@ -3981,16 +4291,6 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم الجزيء الوراثي؟",
-      "q_en": "What is the name of the genetic molecule?",
-      "a_ar": "DNA",
-      "a_en": "DNA",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "ما اسم أكبر عضو في جسم الإنسان؟",
       "q_en": "What is the largest organ in the human body?",
       "a_ar": "الجلد",
@@ -4005,26 +4305,16 @@
       "q_en": "Which planet is closest to the Sun?",
       "a_ar": "عطارد",
       "a_en": "Mercury",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "🌌 الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "🌌 Astronomy"
     },
     {
       "q_ar": "ما اسم العملة الرسمية في السعودية؟",
       "q_en": "What is the official currency of Saudi Arabia?",
       "a_ar": "الريال السعودي",
       "a_en": "Saudi Riyal",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أعلى شلال في العالم؟",
-      "q_en": "What is the highest waterfall in the world?",
-      "a_ar": "شلال أنخيل في فنزويلا Angel Falls",
-      "a_en": "Angel Falls, Venezuela",
       "cat_ar": "",
       "subcat_ar": null,
       "cat_en": "",
@@ -4041,24 +4331,14 @@
       "subcat_en": null
     },
     {
-      "q_ar": "ما اسم المطار الدولي الرئيسي في سوريا؟",
-      "q_en": "What is the main international airport in Syria?",
-      "a_ar": "مطار دمشق الدولي",
-      "a_en": "Damascus International Airport",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "ما الصيغة الكيميائية للماء؟",
       "q_en": "What is the chemical formula for water?",
       "a_ar": "H2O",
       "a_en": "H₂O",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "⚗️ الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "⚗️ Chemistry"
     },
     {
       "q_ar": "ما اسم أقدم حضارة في العالم؟",
@@ -4085,26 +4365,16 @@
       "q_en": "What is the most abundant gas in Earth's atmosphere?",
       "a_ar": "النيتروجين",
       "a_en": "Nitrogen",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "⚗️ الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "⚗️ Chemistry"
     },
     {
       "q_ar": "بأي قضاء لبناني موجودة غابة الأرز؟",
       "q_en": "In which Lebanese district is the Cedar Forest located?",
       "a_ar": "بشري",
       "a_en": "Bsharri",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اللغة الرسمية في البرازيل؟",
-      "q_en": "What is the official language of Brazil?",
-      "a_ar": "البرتغالية",
-      "a_en": "Portuguese",
       "cat_ar": "",
       "subcat_ar": null,
       "cat_en": "",
@@ -4125,30 +4395,30 @@
       "q_en": "Who is taller: Shakira or Jennifer Lopez?",
       "a_ar": "جنيفر لوبيز",
       "a_en": "Jennifer Lopez",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "إلى أي منطقتين إداريتين تُقسم فلسطين؟",
       "q_en": "Into which two administrative regions is Palestine divided?",
       "a_ar": "الضفة الغربية وقطاع غزة",
       "a_en": "The West Bank and the Gaza Strip",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🌍 جغرافيا",
+      "subcat_ar": "دول ومدن",
+      "cat_en": "🌍 Geography",
+      "subcat_en": "Countries & Cities"
     },
     {
       "q_ar": "أي فاكهة مشهورة في مصر صيفاً؟",
       "q_en": "Which fruit is especially popular in Egypt during the summer?",
       "a_ar": "المانغا",
       "a_en": "Mango",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🍽️ الطعام والمأكولات",
+      "subcat_ar": "🍽️ الطعام والمأكولات",
+      "cat_en": "🍽️ Food & Cuisine",
+      "subcat_en": "🍽️ Food & Cuisine"
     },
     {
       "q_ar": "بأي سنة انسحبت سوريا من لبنان؟",
@@ -4195,80 +4465,20 @@
       "q_en": "Who is the current King of Jordan?",
       "a_ar": "الملك عبد الله الثاني",
       "a_en": "King Abdullah II",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "👑 القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "👑 Leaders & Politics"
     },
     {
       "q_ar": "من الأطول: محمد رمضان أم عمرو دياب؟",
       "q_en": "Who is taller: Mohamed Ramadan or Amr Diab?",
       "a_ar": "محمد رمضان",
       "a_en": "Mohamed Ramadan",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أول ألبوم لنانسي عجرم؟",
-      "q_en": "What was Nancy Ajram's first album?",
-      "a_ar": "يا سلام",
-      "a_en": "Ya Salam",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي إمبراطورية كانت الأكبر في التاريخ؟",
-      "q_en": "Which empire was the largest in history?",
-      "a_ar": "الإمبراطورية المغولية",
-      "a_en": "Mongol Empire",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما الكوكب المعروف بالكوكب الأحمر؟",
-      "q_en": "Which planet is known as the Red Planet?",
-      "a_ar": "المريخ",
-      "a_en": "Mars",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم الصحراء المشهورة في الأردن؟",
-      "q_en": "What is the name of the famous desert in Jordan?",
-      "a_ar": "وادي رم",
-      "a_en": "Wadi Rum",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "العلم الأردني فيه كم لون؟",
-      "q_en": "How many colors are there on the Jordanian flag?",
-      "a_ar": "4",
-      "a_en": "4",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأطول: زياد الرحباني أم ملحم زين؟",
-      "q_en": "Who is taller: Ziad Rahbani or Melhem Zein?",
-      "a_ar": "ملحم زين",
-      "a_en": "Melhem Zein",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
+      "cat_ar": "🎭 الفن والمشاهير",
+      "subcat_ar": "🎤 المغنون والموسيقيون",
+      "cat_en": "🎭 Entertainment & Celebrities",
+      "subcat_en": "🎤 Singers & Musicians"
     },
     {
       "q_ar": "من هو مؤسس شركة أمازون؟",
@@ -4281,290 +4491,10 @@
       "subcat_en": null
     },
     {
-      "q_ar": "كم يومًا في السنة الكبيسة؟",
-      "q_en": "How many days are there in a leap year?",
-      "a_ar": "366",
-      "a_en": "366",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي بلد أصل طبق الشاورما؟",
-      "q_en": "Which country is the origin of Shawarma?",
-      "a_ar": "تركيا",
-      "a_en": "Turkey",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو زوج شيرين رضا السابق؟",
-      "q_en": "Who is Sherine Reda's former husband?",
-      "a_ar": "عمرو دياب",
-      "a_en": "Amr Diab",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "كم عدد أعضاء البرلمان اللبناني؟",
-      "q_en": "How many members are there in the Lebanese Parliament?",
-      "a_ar": "128",
-      "a_en": "128",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم العملة الرسمية في تركيا؟",
-      "q_en": "What is the official currency of Turkey?",
-      "a_ar": "الليرة التركية",
-      "a_en": "Turkish Lira",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم خط العرض 0°؟",
-      "q_en": "What is the name of the 0° line of latitude?",
-      "a_ar": "خط الاستواء",
-      "a_en": "Equator",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي عالم اكتشف نظرية التطور؟",
-      "q_en": "Which scientist developed the theory of evolution?",
-      "a_ar": "تشارلز داروين",
-      "a_en": "Charles Darwin",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "أي بلد اخترع لعبة الشطرنج؟",
-      "q_en": "Which country invented chess?",
-      "a_ar": "الهند",
-      "a_en": "India",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو السائق الأكثر فوزًا ببطولات العالم في الفورمولا 1؟",
-      "q_en": "Which driver has won the most Formula 1 World Championships?",
-      "a_ar": "مايكل شوماخر",
-      "a_en": "Michael Schumacher",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو قائد ثورة يوليو المصرية؟",
-      "q_en": "Who led the Egyptian July Revolution?",
-      "a_ar": "جمال عبد الناصر",
-      "a_en": "Gamal Abdel Nasser",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو زوج نانسي عجرم الأول؟",
-      "q_en": "Who was Nancy Ajram's first husband?",
-      "a_ar": "فادي الهاشم",
-      "a_en": "Fadi El Hachem",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من كان أول رئيس لسوريا بعد الاستقلال؟",
-      "q_en": "Who was the first President of Syria after independence?",
-      "a_ar": "شكري القوتلي",
-      "a_en": "Shukri al-Quwatli",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم الجهاز المسؤول عن ضخ الدم؟",
-      "q_en": "What is the name of the organ responsible for pumping blood?",
-      "a_ar": "القلب",
-      "a_en": "Heart",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "بأي سنة تم افتتاح برج خليفة في دبي؟",
-      "q_en": "In what year was the Burj Khalifa in Dubai officially opened?",
-      "a_ar": "2010",
-      "a_en": "2010",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأطول: توم كروز أم براد بيت؟",
-      "q_en": "Who is taller: Tom Cruise or Brad Pitt?",
-      "a_ar": "براد بيت",
-      "a_en": "Brad Pitt",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أشهر فندق في دبي؟",
-      "q_en": "What is the most famous hotel in Dubai?",
-      "a_ar": "برج العرب",
-      "a_en": "Burj Al Arab",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم أطول طريق في السعودية؟",
-      "q_en": "What is the longest road in Saudi Arabia?",
-      "a_ar": "طريق الملك فهد",
-      "a_en": "King Fahd Road",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
       "q_ar": "ما اسم نظام تشغيل آبل للهواتف؟",
       "q_en": "What is Apple's mobile operating system called?",
       "a_ar": "iOS",
       "a_en": "iOS",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو مؤسس الإمبراطورية المغولية؟",
-      "q_en": "Who founded the Mongol Empire?",
-      "a_ar": "جنكيز خان",
-      "a_en": "Genghis Khan",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "هل تقع أوروبا شمال أم جنوب خط الاستواء؟",
-      "q_en": "Is Europe north or south of the Equator?",
-      "a_ar": "شمال خط الاستواء",
-      "a_en": "North of the Equator",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأطول: محمد عبده أم عبد المجيد عبد الله؟",
-      "q_en": "Who is taller: Mohammed Abdu or Abdul Majeed Abdullah?",
-      "a_ar": "محمد عبده",
-      "a_en": "Mohammed Abdu",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "لبنان تاريخيًا كان جزءًا من أي حضارة قديمة؟",
-      "q_en": "Historically, Lebanon was part of which ancient civilization?",
-      "a_ar": "الفينيقية",
-      "a_en": "Phoenician Civilization",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "بأي سنة اندلعت الثورة الفرنسية؟",
-      "q_en": "In what year did the French Revolution begin?",
-      "a_ar": "1789",
-      "a_en": "1789",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من هو والد شخصية سيمبا؟",
-      "q_en": "Who is Simba's father?",
-      "a_ar": "موفاسا",
-      "a_en": "Mufasa",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "اي سنة عملت فيروز اخر حفلة بلبنان؟",
-      "q_en": "In what year did Fairuz perform her last concert in Lebanon?",
-      "a_ar": "2011",
-      "a_en": "2011",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "ما اسم النشيد الوطني الأردني؟",
-      "q_en": "What is the national anthem of Jordan called?",
-      "a_ar": "السلام الملكي الأردني",
-      "a_en": "The Royal Jordanian Anthem",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأطول: عمرو دياب أم تامر حسني؟",
-      "q_en": "Who is taller: Amr Diab or Tamer Hosny?",
-      "a_ar": "تامر حسني",
-      "a_en": "Tamer Hosny",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "من الأطول: كريستيانو رونالدو أم ليونيل ميسي؟",
-      "q_en": "Who is taller: Cristiano Ronaldo or Lionel Messi?",
-      "a_ar": "رونالدو",
-      "a_en": "Cristiano Ronaldo",
-      "cat_ar": "",
-      "subcat_ar": null,
-      "cat_en": "",
-      "subcat_en": null
-    },
-    {
-      "q_ar": "كم عدد أسنان الإنسان البالغ؟",
-      "q_en": "How many teeth does an adult human have?",
-      "a_ar": "32",
-      "a_en": "32",
       "cat_ar": "",
       "subcat_ar": null,
       "cat_en": "",
