@@ -2415,10 +2415,10 @@
       "q_en": "In which Jordanian governorate is Petra located?",
       "a_ar": "معان",
       "a_en": "Ma'an",
-      "cat_ar": "🌍 جغرافيا",
-      "subcat_ar": "متنوع",
+      "cat_ar": "🧠 General Knowledge",
+      "subcat_ar": null,
       "cat_en": "🧠 General Knowledge",
-      "subcat_en": "Miscellaneous"
+      "subcat_en": null
     },
     {
       "q_ar": "كم دولة عضو في مجلس التعاون الخليجي؟",
@@ -3365,9 +3365,9 @@
       "q_en": "Which company owns WhatsApp?",
       "a_ar": "ميتا (فيسبوك)",
       "a_en": "Meta (Facebook)",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3405,9 +3405,9 @@
       "q_en": "Which country is the world's largest manufacturer?",
       "a_ar": "الصين",
       "a_en": "China",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3445,9 +3445,9 @@
       "q_en": "Which currency is used in international oil trade?",
       "a_ar": "الدولار الأمريكي",
       "a_en": "US Dollar",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3455,9 +3455,9 @@
       "q_en": "What is the symbolic tree of Palestine?",
       "a_ar": "الزيتون",
       "a_en": "Olive Tree",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3465,9 +3465,9 @@
       "q_en": "Which company owns YouTube?",
       "a_ar": "غوغل",
       "a_en": "Google",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3485,9 +3485,9 @@
       "q_en": "What is the oldest university in the world?",
       "a_ar": "جامعة القرويين في المغرب",
       "a_en": "University of Al Quaraouiyine (Morocco)",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3495,9 +3495,9 @@
       "q_en": "Which civilization built the Colosseum?",
       "a_ar": "الرومانية",
       "a_en": "Roman Civilization",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3505,9 +3505,9 @@
       "q_en": "What is the highest waterfall in Lebanon?",
       "a_ar": "شلالات جزين",
       "a_en": "Jezzine Waterfalls",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3515,9 +3515,9 @@
       "q_en": "What artistic style is Pablo Picasso known for?",
       "a_ar": "التكعيبية",
       "a_en": "Cubism",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3525,9 +3525,9 @@
       "q_en": "Who is the author of the novel Midaq Alley?",
       "a_ar": "نجيب محفوظ",
       "a_en": "Naguib Mahfouz",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3535,9 +3535,9 @@
       "q_en": "What is the name of the musical group founded by the Rahbani Brothers with Fairuz?",
       "a_ar": "فرقة الأنوار",
       "a_en": "Al Anwar Ensemble",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3545,9 +3545,9 @@
       "q_en": "What is the oldest newspaper in Lebanon?",
       "a_ar": "النهار",
       "a_en": "An-Nahar",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3555,9 +3555,9 @@
       "q_en": "In what year did World War II end?",
       "a_ar": "1945",
       "a_en": "1945",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3565,9 +3565,9 @@
       "q_en": "Which Arab country is famous for couscous?",
       "a_ar": "المغرب",
       "a_en": "Morocco",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3575,9 +3575,9 @@
       "q_en": "Which country is the origin of Mansaf?",
       "a_ar": "الأردن",
       "a_en": "Jordan",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3585,9 +3585,9 @@
       "q_en": "How many letters are there in the English alphabet?",
       "a_ar": "26",
       "a_en": "26",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3595,9 +3595,9 @@
       "q_en": "Which company manufactures the Xbox?",
       "a_ar": "مايكروسوفت",
       "a_en": "Microsoft",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3625,9 +3625,9 @@
       "q_en": "Who is taller: Kevin Durant or Kobe Bryant?",
       "a_ar": "كيفن دورانت",
       "a_en": "Kevin Durant",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3645,9 +3645,9 @@
       "q_en": "What is the system of government in Jordan?",
       "a_ar": "ملكي",
       "a_en": "Monarchy",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3725,9 +3725,9 @@
       "q_en": "What is the official currency of Jordan?",
       "a_ar": "الدينار الأردني",
       "a_en": "Jordanian Dinar",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3775,9 +3775,9 @@
       "q_en": "Who is taller: Rami Ayach or Wael Kfoury?",
       "a_ar": "وائل كفوري",
       "a_en": "Wael Kfoury",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3825,9 +3825,9 @@
       "q_en": "Who is the author of the novel Children of Gebelawi?",
       "a_ar": "نجيب محفوظ",
       "a_en": "Naguib Mahfouz",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3845,9 +3845,9 @@
       "q_en": "Who is known as the \"Poet of the Arabic Word\"?",
       "a_ar": "المتنبي",
       "a_en": "Al-Mutanabbi",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3885,9 +3885,9 @@
       "q_en": "Who is the current President of the Palestinian Authority?",
       "a_ar": "محمود عباس",
       "a_en": "Mahmoud Abbas",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3925,9 +3925,9 @@
       "q_en": "Which company owns PlayStation?",
       "a_ar": "سوني",
       "a_en": "Sony",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3935,9 +3935,9 @@
       "q_en": "What is the strongest currency in the world?",
       "a_ar": "الدينار الكويتي",
       "a_en": "Kuwaiti Dinar",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -3955,9 +3955,9 @@
       "q_en": "Which company owns Instagram?",
       "a_ar": "ميتا (فيسبوك)",
       "a_en": "Meta (Facebook)",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4025,9 +4025,9 @@
       "q_en": "In what year was Google founded?",
       "a_ar": "1998",
       "a_en": "1998",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4045,9 +4045,9 @@
       "q_en": "In what year was Facebook launched?",
       "a_ar": "2004",
       "a_en": "2004",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4085,9 +4085,9 @@
       "q_en": "What is the name of the Organization of the Petroleum Exporting Countries?",
       "a_ar": "أوبك",
       "a_en": "OPEC",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4105,9 +4105,9 @@
       "q_en": "Who founded Apple?",
       "a_ar": "ستيف جوبز",
       "a_en": "Steve Jobs",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4115,9 +4115,9 @@
       "q_en": "Who was the first Arab to win the Nobel Prize in Literature?",
       "a_ar": "نجيب محفوظ",
       "a_en": "Naguib Mahfouz",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4125,9 +4125,9 @@
       "q_en": "Which country has the largest army in the world?",
       "a_ar": "الجيش الصيني",
       "a_en": "Chinese Army",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4135,9 +4135,9 @@
       "q_en": "How many Arab countries are there?",
       "a_ar": "22",
       "a_en": "22",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4145,9 +4145,9 @@
       "q_en": "Who is the Palestinian poet of resistance?",
       "a_ar": "محمود درويش",
       "a_en": "Mahmoud Darwish",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4215,9 +4215,9 @@
       "q_en": "What is the largest oil company in the world?",
       "a_ar": "أرامكو السعودية",
       "a_en": "Saudi Aramco",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4245,9 +4245,9 @@
       "q_en": "What is the largest stock exchange in the world?",
       "a_ar": "بورصة نيويورك",
       "a_en": "New York Stock Exchange (NYSE)",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4265,9 +4265,9 @@
       "q_en": "In what year was the European Union officially established?",
       "a_ar": "1993",
       "a_en": "1993",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4275,9 +4275,9 @@
       "q_en": "In what year did the Soviet Union officially dissolve?",
       "a_ar": "1991",
       "a_en": "1991",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4285,9 +4285,9 @@
       "q_en": "What is the oldest university in Lebanon?",
       "a_ar": "الجامعة الأميركية في بيروت",
       "a_en": "American University of Beirut (AUB)",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4295,9 +4295,9 @@
       "q_en": "What is the largest organ in the human body?",
       "a_ar": "الجلد",
       "a_en": "Skin",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4315,9 +4315,9 @@
       "q_en": "What is the official currency of Saudi Arabia?",
       "a_ar": "الريال السعودي",
       "a_en": "Saudi Riyal",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4325,9 +4325,9 @@
       "q_en": "In what year was the first season of Star Academy aired?",
       "a_ar": "2003",
       "a_en": "2003",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4345,9 +4345,9 @@
       "q_en": "What is the oldest civilization in the world?",
       "a_ar": "السومرية",
       "a_en": "Sumerian Civilization",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4355,9 +4355,9 @@
       "q_en": "Name two countries that emerged from the breakup of Yugoslavia.",
       "a_ar": "سلوفينيا | كرواتيا | البوسنة والهرسك | صربيا | الجبل الأسود | مقدونيا الشمالية",
       "a_en": "Slovenia / Croatia / Bosnia and Herzegovina / Serbia / Montenegro / North Macedonia",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4375,9 +4375,9 @@
       "q_en": "In which Lebanese district is the Cedar Forest located?",
       "a_ar": "بشري",
       "a_en": "Bsharri",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4385,9 +4385,9 @@
       "q_en": "In what year did the Palestinian Nakba occur?",
       "a_ar": "1948",
       "a_en": "1948",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4425,9 +4425,9 @@
       "q_en": "In what year did Syria withdraw from Lebanon?",
       "a_ar": "2005",
       "a_en": "2005",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4435,9 +4435,9 @@
       "q_en": "What is the official currency of Egypt?",
       "a_ar": "الجنيه المصري",
       "a_en": "Egyptian Pound",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4445,9 +4445,9 @@
       "q_en": "What is the official currency of Japan?",
       "a_ar": "الين",
       "a_en": "Japanese Yen",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4455,9 +4455,9 @@
       "q_en": "In what year did the Internet become available to the public?",
       "a_ar": "1991",
       "a_en": "1991",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4485,9 +4485,9 @@
       "q_en": "Who founded Amazon?",
       "a_ar": "جيف بيزوس",
       "a_en": "Jeff Bezos",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     },
     {
@@ -4495,9 +4495,9 @@
       "q_en": "What is Apple's mobile operating system called?",
       "a_ar": "iOS",
       "a_en": "iOS",
-      "cat_ar": "",
+      "cat_ar": "🧠 General Knowledge",
       "subcat_ar": null,
-      "cat_en": "",
+      "cat_en": "🧠 General Knowledge",
       "subcat_en": null
     }
   ]
