@@ -16,7 +16,7 @@
       "a_ar": "الأورانيوم",
       "a_en": "Uranium",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "⚗️ الكيمياء",
+      "subcat_ar": "الكيمياء",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Chemistry"
     },
@@ -26,7 +26,7 @@
       "a_ar": "الهيدروجين",
       "a_en": "Hydrogen",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "⚗️ الكيمياء",
+      "subcat_ar": "الكيمياء",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Chemistry"
     },
@@ -36,7 +36,7 @@
       "a_ar": "H2O",
       "a_en": "H₂O",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "⚗️ الكيمياء",
+      "subcat_ar": "الكيمياء",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Chemistry"
     },
@@ -46,7 +46,7 @@
       "a_ar": "النيتروجين",
       "a_en": "Nitrogen",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "⚗️ الكيمياء",
+      "subcat_ar": "الكيمياء",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Chemistry"
     },
@@ -1276,7 +1276,7 @@
       "a_ar": "الزهرة",
       "a_en": "Venus",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌌 الفلك",
+      "subcat_ar": "الفلك",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Astronomy"
     },
@@ -1286,7 +1286,7 @@
       "a_ar": "8",
       "a_en": "8",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌌 الفلك",
+      "subcat_ar": "الفلك",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Astronomy"
     },
@@ -1296,7 +1296,7 @@
       "a_ar": "المشتري",
       "a_en": "Jupiter",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌌 الفلك",
+      "subcat_ar": "الفلك",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Astronomy"
     },
@@ -1306,7 +1306,7 @@
       "a_ar": "المريخ",
       "a_en": "Mars",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌌 الفلك",
+      "subcat_ar": "الفلك",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Astronomy"
     },
@@ -1316,7 +1316,7 @@
       "a_ar": "عطارد",
       "a_en": "Mercury",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌌 الفلك",
+      "subcat_ar": "الفلك",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Astronomy"
     },
@@ -1326,7 +1326,7 @@
       "a_ar": "366",
       "a_en": "366",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌍 علوم الأرض",
+      "subcat_ar": "علوم الأرض",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Earth Science"
     },
@@ -1336,7 +1336,7 @@
       "a_ar": "3,600",
       "a_en": "3,600",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌍 علوم الأرض",
+      "subcat_ar": "علوم الأرض",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Earth Science"
     },
@@ -1346,7 +1346,7 @@
       "a_ar": "الحوت الأزرق",
       "a_en": "Blue Whale",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🌿 النباتات والحيوانات",
+      "subcat_ar": "النباتات والحيوانات",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Plants & Animals"
     },
@@ -1356,7 +1356,7 @@
       "a_ar": "الفينيقية",
       "a_en": "Phoenician Civilization",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1366,7 +1366,7 @@
       "a_ar": "نابلس",
       "a_en": "Nablus",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1376,7 +1376,7 @@
       "a_ar": "الدولة الأموية",
       "a_en": "Umayyad State",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1386,7 +1386,7 @@
       "a_ar": "صيدا",
       "a_en": "Sidon",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1396,7 +1396,7 @@
       "a_ar": "جبيل",
       "a_en": "Byblos",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1406,7 +1406,7 @@
       "a_ar": "بغداد",
       "a_en": "Baghdad",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1416,7 +1416,7 @@
       "a_ar": "صور",
       "a_en": "Tyre",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1426,7 +1426,7 @@
       "a_ar": "تدمر",
       "a_en": "Palmyra",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏛️ التاريخ والحضارات",
+      "subcat_ar": "التاريخ والحضارات",
       "cat_en": "🏛️ History",
       "subcat_en": "History & Civilizations"
     },
@@ -1436,7 +1436,7 @@
       "a_ar": "الإمبراطورية المغولية",
       "a_en": "Mongol Empire",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏺 الحضارات القديمة",
+      "subcat_ar": "الحضارات القديمة",
       "cat_en": "🏛️ History",
       "subcat_en": "Aِncient Civilizations"
     },
@@ -1446,7 +1446,7 @@
       "a_ar": "نابلس",
       "a_en": "Nablus",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏺 الحضارات القديمة",
+      "subcat_ar": "الحضارات القديمة",
       "cat_en": "🏛️ History",
       "subcat_en": "Aِncient Civilizations"
     },
@@ -1456,7 +1456,7 @@
       "a_ar": "جرش",
       "a_en": "Jerash",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "🏺 الحضارات القديمة",
+      "subcat_ar": "الحضارات القديمة",
       "cat_en": "🏛️ History",
       "subcat_en": "Aِncient Civilizations"
     },
@@ -1466,7 +1466,7 @@
       "a_ar": "جمال عبد الناصر",
       "a_en": "Gamal Abdel Nasser",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1476,7 +1476,7 @@
       "a_ar": "شكري القوتلي",
       "a_en": "Shukri al-Quwatli",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1486,7 +1486,7 @@
       "a_ar": "جنكيز خان",
       "a_en": "Genghis Khan",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1496,7 +1496,7 @@
       "a_ar": "بشارة الخوري",
       "a_en": "Bechara El Khoury",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1506,7 +1506,7 @@
       "a_ar": "الشيخ أحمد ياسين",
       "a_en": "Sheikh Ahmed Yassin",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1516,7 +1516,7 @@
       "a_ar": "1982",
       "a_en": "1982",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1526,7 +1526,7 @@
       "a_ar": "الملك سلمان",
       "a_en": "King Salman",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1536,7 +1536,7 @@
       "a_ar": "تميم بن حمد",
       "a_en": "Tamim bin Hamad Al Thani",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1546,7 +1546,7 @@
       "a_ar": "أدولف هتلر",
       "a_en": "Adolf Hitler",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1556,7 +1556,7 @@
       "a_ar": "جورج واشنطن",
       "a_en": "George Washington",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1566,7 +1566,7 @@
       "a_ar": "حسني مبارك",
       "a_en": "Hosni Mubarak",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1576,7 +1576,7 @@
       "a_ar": "2005",
       "a_en": "2005",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1586,7 +1586,7 @@
       "a_ar": "لاون الرابع عشر",
       "a_en": "Pope Leo XIV",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1596,7 +1596,7 @@
       "a_ar": "الملك عبد الله الثاني",
       "a_en": "King Abdullah II",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "👑 القادة والسياسة",
+      "subcat_ar": "القادة والسياسة",
       "cat_en": "🏛️ History",
       "subcat_en": "Leaders & Politics"
     },
@@ -1606,7 +1606,7 @@
       "a_ar": "إسحاق نيوتن",
       "a_en": "Isaac Newton",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "subcat_ar": "العلماء والاكتشافات",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Scientists & Discoveries"
     },
@@ -1616,7 +1616,7 @@
       "a_ar": "تشارلز داروين",
       "a_en": "Charles Darwin",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "subcat_ar": "العلماء والاكتشافات",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Scientists & Discoveries"
     },
@@ -1626,7 +1626,7 @@
       "a_ar": "ألكسندر غراهام بيل",
       "a_en": "Alexander Graham Bell",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "👨‍🔬 العلماء والاكتشافات",
+      "subcat_ar": "العلماء والاكتشافات",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Scientists & Discoveries"
     },
@@ -1636,7 +1636,7 @@
       "a_ar": "1789",
       "a_en": "1789",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1646,7 +1646,7 @@
       "a_ar": "بيت لحم",
       "a_en": "Bethlehem",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1656,7 +1656,7 @@
       "a_ar": "الصين",
       "a_en": "China",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1666,7 +1666,7 @@
       "a_ar": "1914",
       "a_en": "1914",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1676,7 +1676,7 @@
       "a_ar": "1943",
       "a_en": "1943",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1686,7 +1686,7 @@
       "a_ar": "1989",
       "a_en": "1989",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1696,7 +1696,7 @@
       "a_ar": "انتفاضة الحجارة",
       "a_en": "The Stone Intifada",
       "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "📜 الأحداث التاريخية",
+      "subcat_ar": "الأحداث التاريخية",
       "cat_en": "🏛️ History",
       "subcat_en": "Historical Events"
     },
@@ -1706,7 +1706,7 @@
       "a_ar": "البنكرياس",
       "a_en": "Pancreas",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1716,7 +1716,7 @@
       "a_ar": "القلب",
       "a_en": "Heart",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1726,7 +1726,7 @@
       "a_ar": "32",
       "a_en": "32",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1736,7 +1736,7 @@
       "a_ar": "عظم الفخذ",
       "a_en": "Femur",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1746,7 +1746,7 @@
       "a_ar": "2",
       "a_en": "2",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1756,7 +1756,7 @@
       "a_ar": "ثلاث طبقات رئيسية",
       "a_en": "Three main layers",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1766,7 +1766,7 @@
       "a_ar": "4 (A, B, AB, O)",
       "a_en": "4 (A, B, AB, O)",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧠 جسم الإنسان",
+      "subcat_ar": "جسم الإنسان",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Human Body"
     },
@@ -1776,7 +1776,7 @@
       "a_ar": "DNA",
       "a_en": "DNA",
       "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "🧬 علم الأحياء",
+      "subcat_ar": "علم الأحياء",
       "cat_en": "🔬 Science & Nature",
       "subcat_en": "Biology"
     },
@@ -1802,7 +1802,7 @@
     },
     {
       "q_ar": "أي نادي إيطالي يُلقّب بـ “السيدة العجوز”؟",
-      "q_en": "Which Italian football club is nicknamed \"The Old Lady\"?",
+      "q_en": "Which Italian football club is nicknamed The Old Lady?",
       "a_ar": "Juventus",
       "a_en": "Juventus",
       "cat_ar": "⚽ رياضة",
@@ -1842,7 +1842,7 @@
     },
     {
       "q_ar": "أي نادي إسباني يُلقّب بـ “البلوغرانا”؟",
-      "q_en": "Which Spanish football club is nicknamed \"Blaugrana\"?",
+      "q_en": "Which Spanish football club is nicknamed Blaugrana?",
       "a_ar": "FC Barcelona",
       "a_en": "FC Barcelona",
       "cat_ar": "⚽ رياضة",
@@ -2242,7 +2242,7 @@
     },
     {
       "q_ar": "أي مدينة تُلقّب بـ المدينة التي لا تنام؟",
-      "q_en": "Which city is nicknamed \"The City That Never Sleeps\"?",
+      "q_en": "Which city is nicknamed The City That Never Sleeps?",
       "a_ar": "نيويورك",
       "a_en": "New York City",
       "cat_ar": "🌍 جغرافيا",
@@ -2442,7 +2442,7 @@
     },
     {
       "q_ar": "أي مدينة لبنانية معروفة ب «عروس الشمال»؟",
-      "q_en": "Which Lebanese city is known as the \"Bride of the North\"?",
+      "q_en": "Which Lebanese city is known as the Bride of the North?",
       "a_ar": "طرابلس",
       "a_en": "Tripoli",
       "cat_ar": "🌍 جغرافيا",
@@ -3472,7 +3472,7 @@
     },
     {
       "q_ar": "من هو الفنان الملقب بعبقري الطرب؟",
-      "q_en": "Which artist is known as the \"Genius of Arabic Singing\"?",
+      "q_en": "Which artist is known as the Genius of Arabic Singing?",
       "a_ar": "صباح فخري",
       "a_en": "Sabah Fakhri",
       "cat_ar": "🎬 أفلام ومسلسلات",
@@ -3582,7 +3582,7 @@
     },
     {
       "q_ar": "من هو المغني المصري الملقب بالهضبة؟",
-      "q_en": "Which Egyptian singer is known as \"El Hadaba\" (The Plateau)?",
+      "q_en": "Which Egyptian singer is known as El Hadaba (The Plateau)?",
       "a_ar": "عمرو دياب",
       "a_en": "Amr Diab",
       "cat_ar": "🎬 أفلام ومسلسلات",
@@ -3672,7 +3672,7 @@
     },
     {
       "q_ar": "أي مغنّي معروف بلقب The King of Rock and Roll؟",
-      "q_en": "Which singer is known as \"The King of Rock and Roll\"?",
+      "q_en": "Which singer is known as The King of Rock and Roll?",
       "a_ar": "Elvis Presley",
       "a_en": "Elvis Presley",
       "cat_ar": "🎭 الفن والمشاهير",
@@ -4192,7 +4192,7 @@
     },
     {
       "q_ar": "من يُلقّب بشاعر الكلمة العربية؟",
-      "q_en": "Who is known as the \"Poet of the Arabic Word\"?",
+      "q_en": "Who is known as the Poet of the Arabic Word?",
       "a_ar": "المتنبي",
       "a_en": "Al-Mutanabbi",
       "cat_ar": "🧠 معلومات عامة",
