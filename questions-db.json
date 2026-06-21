@@ -4529,6 +4529,966 @@
       "subcat_ar": "الإسلام",
       "cat_en": "☪️ Religion",
       "subcat_en": "Islam"
+    },
+    {
+      "q_ar": "أي دولة فازت بكأس العالم 2022؟",
+      "q_en": "Which country won the 2022 FIFA World Cup?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة فازت بأكبر عدد من كؤوس العالم؟",
+      "q_en": "Which country has won the most FIFA World Cups?",
+      "a_ar": "البرازيل",
+      "a_en": "Brazil",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالكرة الذهبية في كأس العالم 2022؟",
+      "q_en": "Who won the Golden Ball at the 2022 World Cup?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة استضافت كأس العالم 2022؟",
+      "q_en": "Which country hosted the 2022 World Cup?",
+      "a_ar": "قطر",
+      "a_en": "Qatar",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من سجل هاتريك في نهائي كأس العالم 2022؟",
+      "q_en": "Who scored a hat-trick in the 2022 World Cup final?",
+      "a_ar": "كيليان مبابي",
+      "a_en": "Kylian Mbappé",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بأول كأس عالم؟",
+      "q_en": "Which nation won the first FIFA World Cup?",
+      "a_ar": "الأوروغواي",
+      "a_en": "Uruguay",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما اسم الكأس التي تُمنح للفائز بكأس العالم؟",
+      "q_en": "What trophy is awarded to the World Cup winner?",
+      "a_ar": "كأس العالم",
+      "a_en": "FIFA World Cup Trophy",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة فازت بيورو 2016؟",
+      "q_en": "Which country won Euro 2016?",
+      "a_ar": "البرتغال",
+      "a_en": "Portugal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة فازت بيورو 2020؟",
+      "q_en": "Which country won Euro 2020?",
+      "a_ar": "إيطاليا",
+      "a_en": "Italy",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة فازت بيورو 2024؟",
+      "q_en": "Which country won Euro 2024?",
+      "a_ar": "إسبانيا",
+      "a_en": "Spain",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ فاز بأكبر عدد من ألقاب دوري الأبطال؟",
+      "q_en": "Which club has won the most UEFA Champions League titles?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بدوري الأبطال 2023؟",
+      "q_en": "Which club won the Champions League in 2023?",
+      "a_ar": "مانشستر سيتي",
+      "a_en": "Manchester City",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بدوري الأبطال 2024؟",
+      "q_en": "Which club won the Champions League in 2024?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب ريال مدريد؟",
+      "q_en": "What is the nickname of Real Madrid?",
+      "a_ar": "الميرينغي",
+      "a_en": "Los Blancos",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب برشلونة؟",
+      "q_en": "What is the nickname of FC Barcelona?",
+      "a_ar": "البلوغرانا",
+      "a_en": "Blaugrana",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "في أي مدينة يقع نادي ليفربول؟",
+      "q_en": "In which city is Liverpool FC based?",
+      "a_ar": "ليفربول",
+      "a_en": "Liverpool",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "في أي مدينة يقع نادي ميلان؟",
+      "q_en": "In which city is AC Milan based?",
+      "a_ar": "ميلانو",
+      "a_en": "Milan",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي ملعب يُعرف بمسرح الأحلام؟",
+      "q_en": "What stadium is known as the Theatre of Dreams?",
+      "a_ar": "أولد ترافورد",
+      "a_en": "Old Trafford",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما ملعب برشلونة؟",
+      "q_en": "What is Barcelona's home stadium?",
+      "a_ar": "كامب نو",
+      "a_en": "Camp Nou",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما ملعب ريال مدريد؟",
+      "q_en": "What is Real Madrid's home stadium?",
+      "a_ar": "سانتياغو برنابيو",
+      "a_en": "Santiago Bernabéu",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي لاعب فاز بأكبر عدد من الكرات الذهبية؟",
+      "q_en": "Which player has won the most Ballon d'Or awards?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي لاعب يُعرف بـ CR7؟",
+      "q_en": "Which player is known as CR7?",
+      "a_ar": "كريستيانو رونالدو",
+      "a_en": "Cristiano Ronaldo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي منتخب يلعب كريستيانو رونالدو؟",
+      "q_en": "Which country does Cristiano Ronaldo represent?",
+      "a_ar": "البرتغال",
+      "a_en": "Portugal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي منتخب يلعب ليونيل ميسي؟",
+      "q_en": "Which country does Lionel Messi represent?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُلقب بالملك المصري؟",
+      "q_en": "Which player is nicknamed The Egyptian King?",
+      "a_ar": "محمد صلاح",
+      "a_en": "Mohamed Salah",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُلقب بالبرغوث؟",
+      "q_en": "Which player is nicknamed The Flea?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالكرة الذهبية 2024؟",
+      "q_en": "Who won the Ballon d'Or in 2024?",
+      "a_ar": "رودري",
+      "a_en": "Rodri",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي أسطورة برازيلية كانت تُعرف بـ الملك؟",
+      "q_en": "Which Brazilian legend was known as O Rei?",
+      "a_ar": "بيليه",
+      "a_en": "Pelé",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي أسطورة أرجنتينية سجلت هدف يد الله؟",
+      "q_en": "Which Argentine legend scored the Hand of God goal?",
+      "a_ar": "دييغو مارادونا",
+      "a_en": "Diego Maradona",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي أسطورة فرنسية طُردت في نهائي 2006؟",
+      "q_en": "Which French legend was sent off in the 2006 World Cup final?",
+      "a_ar": "زين الدين زيدان",
+      "a_en": "Zinedine Zidane",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي نادٍ يلعب محمد صلاح؟",
+      "q_en": "Which club does Mohamed Salah play for?",
+      "a_ar": "ليفربول",
+      "a_en": "Liverpool",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي نادٍ يلعب إرلينغ هالاند؟",
+      "q_en": "Which club does Erling Haaland play for?",
+      "a_ar": "مانشستر سيتي",
+      "a_en": "Manchester City",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي نادٍ يلعب جود بيلينغهام؟",
+      "q_en": "Which club does Jude Bellingham play for?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "لأي نادٍ يلعب هاري كين؟",
+      "q_en": "Which club does Harry Kane play for?",
+      "a_ar": "بايرن ميونخ",
+      "a_en": "Bayern Munich",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لون قميص البرازيل الأساسي؟",
+      "q_en": "What color is the traditional home kit of Brazil?",
+      "a_ar": "الأصفر",
+      "a_en": "Yellow",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "كم عدد لاعبي الفريق داخل الملعب؟",
+      "q_en": "How many players are on the field for one team?",
+      "a_ar": "11",
+      "a_en": "11",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "كم مدة مباراة كرة القدم؟",
+      "q_en": "How long is a football match?",
+      "a_ar": "90 دقيقة",
+      "a_en": "90 minutes",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "كم شوطاً في المباراة؟",
+      "q_en": "How many halves are there in a match?",
+      "a_ar": "2",
+      "a_en": "2",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي بطاقة تؤدي للطرد المباشر؟",
+      "q_en": "What color card results in immediate dismissal?",
+      "a_ar": "البطاقة الحمراء",
+      "a_en": "Red Card",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ماذا يُحتسب عند ارتكاب خطأ داخل منطقة الجزاء؟",
+      "q_en": "What is awarded for a foul inside the penalty area?",
+      "a_ar": "ركلة جزاء",
+      "a_en": "Penalty Kick",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي منتخب يُعرف بالأسود الثلاثة؟",
+      "q_en": "Which country is known as the Three Lions?",
+      "a_ar": "إنجلترا",
+      "a_en": "England",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي منتخب يُلقب بالألبيسيليستي؟",
+      "q_en": "Which country is nicknamed La Albiceleste?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي منتخب يُلقب بالسيليساو؟",
+      "q_en": "Which country is nicknamed Seleção?",
+      "a_ar": "البرازيل",
+      "a_en": "Brazil",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يُلقب بالحمر؟",
+      "q_en": "Which club is nicknamed The Reds?",
+      "a_ar": "ليفربول",
+      "a_en": "Liverpool",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يُلقب بالبلوز؟",
+      "q_en": "Which club is nicknamed The Blues?",
+      "a_ar": "تشيلسي",
+      "a_en": "Chelsea",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يُلقب بالمدفعجية؟",
+      "q_en": "Which club is nicknamed The Gunners?",
+      "a_ar": "أرسنال",
+      "a_en": "Arsenal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يُلقب بالشياطين الحمر؟",
+      "q_en": "Which club is nicknamed The Red Devils?",
+      "a_ar": "مانشستر يونايتد",
+      "a_en": "Manchester United",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يُلقب بالمواطنين؟",
+      "q_en": "Which club is nicknamed The Citizens?",
+      "a_ar": "مانشستر سيتي",
+      "a_en": "Manchester City",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما هو الدوري الأعلى في إنجلترا؟",
+      "q_en": "Which league is considered the top division in England?",
+      "a_ar": "الدوري الإنجليزي الممتاز",
+      "a_en": "Premier League",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما هو الدوري الأعلى في إسبانيا؟",
+      "q_en": "Which league is Spain's top division?",
+      "a_ar": "الدوري الإسباني",
+      "a_en": "La Liga",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما هو الدوري الأعلى في إيطاليا؟",
+      "q_en": "Which league is Italy's top division?",
+      "a_ar": "الدوري الإيطالي",
+      "a_en": "Serie A",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما هو الدوري الأعلى في ألمانيا؟",
+      "q_en": "Which league is Germany's top division?",
+      "a_ar": "الدوري الألماني",
+      "a_en": "Bundesliga",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ فاز بأكبر عدد من ألقاب الدوري الإنجليزي؟",
+      "q_en": "Which club has won the most Premier League titles?",
+      "a_ar": "مانشستر يونايتد",
+      "a_en": "Manchester United",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من الهداف التاريخي لدوري الأبطال؟",
+      "q_en": "Who is the all-time top scorer in the Champions League?",
+      "a_ar": "كريستيانو رونالدو",
+      "a_en": "Cristiano Ronaldo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من الهداف التاريخي للأرجنتين؟",
+      "q_en": "Who is Argentina's all-time top scorer?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من الهداف التاريخي للبرتغال؟",
+      "q_en": "Who is Portugal's all-time top scorer?",
+      "a_ar": "كريستيانو رونالدو",
+      "a_en": "Cristiano Ronaldo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالقفاز الذهبي في كأس العالم 2022؟",
+      "q_en": "Which goalkeeper won the 2022 World Cup Golden Glove?",
+      "a_ar": "إيميليانو مارتينيز",
+      "a_en": "Emiliano Martínez",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالحذاء الذهبي في كأس العالم 2022؟",
+      "q_en": "Which player won the 2022 World Cup Golden Boot?",
+      "a_ar": "كيليان مبابي",
+      "a_en": "Kylian Mbappé",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب بايرن ميونخ؟",
+      "q_en": "What is the nickname of Bayern Munich?",
+      "a_ar": "الحمر",
+      "a_en": "Die Roten",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكوبا أمريكا 2021؟",
+      "q_en": "Which country won Copa América 2021?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكوبا أمريكا 2024؟",
+      "q_en": "Which country won Copa América 2024?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُعرف بالفتى الذهبي؟",
+      "q_en": "Which player is known as El Pibe de Oro?",
+      "a_ar": "دييغو مارادونا",
+      "a_en": "Diego Maradona",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ حقق الثلاثية عام 2023؟",
+      "q_en": "Which club won the treble in 2023?",
+      "a_ar": "مانشستر سيتي",
+      "a_en": "Manchester City",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكأس العالم 2018؟",
+      "q_en": "Which country won the 2018 World Cup?",
+      "a_ar": "فرنسا",
+      "a_en": "France",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكأس العالم 2014؟",
+      "q_en": "Which country won the 2014 World Cup?",
+      "a_ar": "ألمانيا",
+      "a_en": "Germany",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكأس العالم 2010؟",
+      "q_en": "Which country won the 2010 World Cup?",
+      "a_ar": "إسبانيا",
+      "a_en": "Spain",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من سجل هدف الفوز في نهائي 2010؟",
+      "q_en": "Which player scored the winning goal in the 2010 World Cup final?",
+      "a_ar": "أندريس إنييستا",
+      "a_en": "Andrés Iniesta",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ماذا تعني FIFA؟",
+      "q_en": "What is FIFA short for?",
+      "a_ar": "الاتحاد الدولي لكرة القدم",
+      "a_en": "Fédération Internationale de Football Association",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ماذا تعني UEFA؟",
+      "q_en": "What is UEFA short for?",
+      "a_ar": "الاتحاد الأوروبي لكرة القدم",
+      "a_en": "Union of European Football Associations",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة استضافت يورو 2024؟",
+      "q_en": "Which country hosted Euro 2024?",
+      "a_ar": "ألمانيا",
+      "a_en": "Germany",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي دولة استضافت يورو 2016؟",
+      "q_en": "Which country hosted Euro 2016?",
+      "a_ar": "فرنسا",
+      "a_en": "France",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من صاحب أكبر عدد أهداف دولية؟",
+      "q_en": "Which player has scored the most international goals?",
+      "a_ar": "كريستيانو رونالدو",
+      "a_en": "Cristiano Ronaldo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ فاز بأكبر عدد من كؤوس الاتحاد الإنجليزي؟",
+      "q_en": "Which club has won the most FA Cups?",
+      "a_ar": "أرسنال",
+      "a_en": "Arsenal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بكأس أمم أفريقيا 2023؟",
+      "q_en": "Which country won AFCON 2023?",
+      "a_ar": "ساحل العاج",
+      "a_en": "Ivory Coast",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالدوري الإنجليزي 2024؟",
+      "q_en": "Which club won the Premier League in 2024?",
+      "a_ar": "مانشستر سيتي",
+      "a_en": "Manchester City",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالدوري الإسباني 2024؟",
+      "q_en": "Which club won La Liga in 2024?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالدوري الإيطالي 2024؟",
+      "q_en": "Which club won Serie A in 2024?",
+      "a_ar": "إنتر ميلان",
+      "a_en": "Inter Milan",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالدوري الألماني 2024؟",
+      "q_en": "Which club won the Bundesliga in 2024?",
+      "a_ar": "باير ليفركوزن",
+      "a_en": "Bayer Leverkusen",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من قاد مانشستر سيتي للثلاثية في 2023؟",
+      "q_en": "Which manager led Manchester City to the 2023 treble?",
+      "a_ar": "بيب غوارديولا",
+      "a_en": "Pep Guardiola",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُعرف بـ السبيشال وان؟",
+      "q_en": "Which manager is known as The Special One?",
+      "a_ar": "جوزيه مورينيو",
+      "a_en": "José Mourinho",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ كرة قدم مشهور يقع في مدينة تورينو؟",
+      "q_en": "Which famous club is based in Turin?",
+      "a_ar": "يوفنتوس",
+      "a_en": "Juventus",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي نادٍ يقع في مدينة ميونخ؟",
+      "q_en": "Which club is based in Munich?",
+      "a_ar": "بايرن ميونخ",
+      "a_en": "Bayern Munich",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُعرف بالملك ليو؟",
+      "q_en": "Which player is known as King Leo?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالكرة الذهبية 2018؟",
+      "q_en": "Which player won the 2018 Ballon d'Or?",
+      "a_ar": "لوكا مودريتش",
+      "a_en": "Luka Modrić",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالكرة الذهبية 2023؟",
+      "q_en": "Which player won the 2023 Ballon d'Or?",
+      "a_ar": "ليونيل ميسي",
+      "a_en": "Lionel Messi",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بالكرة الذهبية 2022؟",
+      "q_en": "Which player won the 2022 Ballon d'Or?",
+      "a_ar": "كريم بنزيما",
+      "a_en": "Karim Benzema",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "أي منتخب يُعرف بالأورانج؟",
+      "q_en": "Which country is known as Oranje?",
+      "a_ar": "هولندا",
+      "a_en": "Netherlands",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "جماهير أي دولة تُعرف بالتيفوسي؟",
+      "q_en": "Which country's fans are known as Tifosi?",
+      "a_ar": "إيطاليا",
+      "a_en": "Italy",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب المنتخب الإيطالي؟",
+      "q_en": "What is the nickname of the Italian national team?",
+      "a_ar": "الأزوري",
+      "a_en": "Azzurri",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب المنتخب الفرنسي؟",
+      "q_en": "What is the nickname of the French national team?",
+      "a_ar": "الديوك الزرق",
+      "a_en": "Les Bleus",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "ما لقب المنتخب الألماني؟",
+      "q_en": "What is the nickname of the German national team?",
+      "a_ar": "المانشافت",
+      "a_en": "Die Mannschaft",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من يُعرف بالظاهرة؟",
+      "q_en": "Which player is known as The Phenomenon?",
+      "a_ar": "رونالدو نازاريو",
+      "a_en": "Ronaldo Nazário",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بأول بطولة أمم أوروبا؟",
+      "q_en": "Which country won the first UEFA European Championship?",
+      "a_ar": "الاتحاد السوفيتي",
+      "a_en": "Soviet Union",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من الهداف التاريخي لكأس العالم؟",
+      "q_en": "Who is the all-time World Cup top scorer?",
+      "a_ar": "ميروسلاف كلوزه",
+      "a_en": "Miroslav Klose",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بأول نسخة من دوري أبطال أوروبا؟",
+      "q_en": "Which club won the first Champions League?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
+    },
+    {
+      "q_ar": "من فاز بأول نسخة من الدوري الإنجليزي الممتاز؟",
+      "q_en": "Which club won the first Premier League season?",
+      "a_ar": "مانشستر يونايتد",
+      "a_en": "Manchester United",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": null,
+      "cat_en": "⚽ Sports",
+      "subcat_en": null
     }
   ]
 }
