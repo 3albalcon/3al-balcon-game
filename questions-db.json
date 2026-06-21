@@ -1,1786 +1,6 @@
 {
   "questions": [
     {
-      "q_ar": "ما اسم الاتفاق الذي أنهى الحرب الأهلية اللبنانية؟",
-      "q_en": "What is the name of the agreement that ended the Lebanese Civil War?",
-      "a_ar": "اتفاق الطائف",
-      "a_en": "Taif Agreement",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الحروب والصراعات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Wars & Conflicts"
-    },
-    {
-      "q_ar": "ما هو أثقل عنصر طبيعي؟",
-      "q_en": "What is the heaviest naturally occurring element?",
-      "a_ar": "الأورانيوم",
-      "a_en": "Uranium",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الكيمياء",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Chemistry"
-    },
-    {
-      "q_ar": "ما هو أخف غاز؟",
-      "q_en": "What is the lightest gas?",
-      "a_ar": "الهيدروجين",
-      "a_en": "Hydrogen",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الكيمياء",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Chemistry"
-    },
-    {
-      "q_ar": "ما الصيغة الكيميائية للماء؟",
-      "q_en": "What is the chemical formula for water?",
-      "a_ar": "H2O",
-      "a_en": "H₂O",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الكيمياء",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Chemistry"
-    },
-    {
-      "q_ar": "ما هو أكثر الغازات وفرة في الغلاف الجوي؟",
-      "q_en": "What is the most abundant gas in Earth's atmosphere?",
-      "a_ar": "النيتروجين",
-      "a_en": "Nitrogen",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الكيمياء",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Chemistry"
-    },
-    {
-      "q_ar": "أي ديانة تستخدم رمز عجلة الدارما؟",
-      "q_en": "How many disciples did Jesus have?",
-      "a_ar": "12",
-      "a_en": "12",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما اسم النصوص المقدسة البوذية؟",
-      "q_en": "How many books are in the Protestant Bible?",
-      "a_ar": "66",
-      "a_en": "66",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما العيد المسيحي الذي يحتفل بميلاد السيد المسيح؟",
-      "q_en": "What is the holiest day of the week for Christians?",
-      "a_ar": "الأحد",
-      "a_en": "Sunday",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما الاسم الأصلي للرسول بولس؟",
-      "q_en": "What Christian season precedes Easter?",
-      "a_ar": "الصوم الكبير",
-      "a_en": "Lent",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما النهر المقدس المرتبط بالهندوسية؟",
-      "q_en": "Which saint brought Christianity to Ireland?",
-      "a_ar": "القديس باتريك",
-      "a_en": "Saint Patrick",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما الحيوان المقدس لدى العديد من الهندوس؟",
-      "q_en": "What is the largest branch of Christianity?",
-      "a_ar": "الكاثوليكية الرومانية",
-      "a_en": "Roman Catholicism",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما المهرجان الهندوسي المعروف بعيد الأنوار؟",
-      "q_en": "What is the holy book of Christianity?",
-      "a_ar": "الكتاب المقدس",
-      "a_en": "Bible",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي إله هندوسي له رأس فيل؟",
-      "q_en": "What is the largest Christian denomination?",
-      "a_ar": "الكنيسة الكاثوليكية الرومانية",
-      "a_en": "Roman Catholic Church",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي خليفة أشرف على توحيد المصحف؟",
-      "q_en": "Which apostle is associated with Rome?",
-      "a_ar": "بطرس",
-      "a_en": "Peter",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي ركن من أركان الإسلام يتعلق بالصدقة؟",
-      "q_en": "In which city was Jesus born?",
-      "a_ar": "بيت لحم",
-      "a_en": "Bethlehem",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي بنى الكعبة مع إسماعيل؟",
-      "q_en": "Which apostle was known as the doubter?",
-      "a_ar": "توما",
-      "a_en": "Thomas",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما اسم الشريعة الشفوية اليهودية؟",
-      "q_en": "What is the first book of the Bible?",
-      "a_ar": "سفر التكوين",
-      "a_en": "Genesis",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما أقدس مدينة في اليهودية؟",
-      "q_en": "What is the final book of the New Testament?",
-      "a_ar": "سفر الرؤيا",
-      "a_en": "Revelation",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "كم عدد الغورو المعترف بهم في السيخية؟",
-      "q_en": "What was the Apostle Paul's original name?",
-      "a_ar": "شاول",
-      "a_en": "Saul",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي جاءت على يده الضربات العشر على مصر؟",
-      "q_en": "What feast celebrates Jesus' resurrection?",
-      "a_ar": "عيد الفصح",
-      "a_en": "Easter",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي كان يشفي المرضى ويحيي الموتى بإذن الله؟",
-      "q_en": "What Christian holiday celebrates the birth of Jesus?",
-      "a_ar": "عيد الميلاد",
-      "a_en": "Christmas",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي شق القمر؟",
-      "q_en": "Which emperor legalized Christianity?",
-      "a_ar": "قسطنطين الكبير",
-      "a_en": "Constantine the Great",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي انتقل من مكة إلى القدس في ليلة واحدة؟",
-      "q_en": "What does Easter celebrate?",
-      "a_ar": "قيامة المسيح",
-      "a_en": "The resurrection of Jesus",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي سخر الله له الرياح؟",
-      "q_en": "What city is the spiritual center of Catholicism?",
-      "a_ar": "مدينة الفاتيكان",
-      "a_en": "Vatican City",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "أي نبي شُفي بعد مرض طويل؟",
-      "q_en": "Who built the ark according to the Bible?",
-      "a_ar": "نوح (عليه السلام)",
-      "a_en": "Noah (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "ما اسم المسجد الموجود في الخليل؟",
-      "q_en": "Who betrayed Jesus?",
-      "a_ar": "يهوذا الإسخريوطي",
-      "a_en": "Judas Iscariot",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "المسيحية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
-    },
-    {
-      "q_ar": "كم كان عدد تلاميذ السيد المسيح؟",
-      "q_en": "What are the first five books of the Bible called?",
-      "a_ar": "الأسفار الخمسة",
-      "a_en": "Pentateuch",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما المدينة التي تُعتبر المركز الروحي للكاثوليكية؟",
-      "q_en": "Which sea did Moses part?",
-      "a_ar": "البحر الأحمر",
-      "a_en": "Red Sea",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما الحدث الذي يمثل بداية التقويم الهجري؟",
-      "q_en": "Which prophet was thrown into fire but did not burn?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ماذا يحيي شهر رمضان؟",
-      "q_en": "Which prophet broke idols in his people’s temple?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "كم عدد الصلوات المفروضة يومياً في الإسلام؟",
-      "q_en": "Which prophet was saved from King Nimrod’s fire?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "بأي لغة نزل القرآن الكريم؟",
-      "q_en": "Which prophet’s wife gave birth miraculously at old age?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "إلى أي مدينة هاجر النبي محمد ﷺ؟",
-      "q_en": "Which prophet was known for patience during extreme suffering?",
-      "a_ar": "أيوب",
-      "a_en": "Ayyub (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "كم عدد سور القرآن الكريم؟",
-      "q_en": "Which prophet was healed after a long illness?",
-      "a_ar": "أيوب",
-      "a_en": "Ayyub (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم يوم الراحة في اليهودية؟",
-      "q_en": "On which mountain did Noah's Ark rest according to tradition?",
-      "a_ar": "جبل أرارات",
-      "a_en": "Mount Ararat",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "مم تتكون التوراة بشكل أساسي؟",
-      "q_en": "What was the name of the garden of Adam and Eve?",
-      "a_ar": "جنة عدن",
-      "a_en": "Garden of Eden",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم صلاة الحداد اليهودية؟",
-      "q_en": "Which prophet was given a son at old age after prayer?",
-      "a_ar": "زكريا",
-      "a_en": "Zachariah (Zakariya)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "من قاد بني إسرائيل للخروج من مصر؟",
-      "q_en": "Which king built the First Temple in Jerusalem?",
-      "a_ar": "سليمان (عليه السلام)",
-      "a_en": "Sulaiman (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي نجا داخل حوت عظيم؟",
-      "q_en": "Which prophet could understand animals?",
-      "a_ar": "سليمان (عليه السلام)",
-      "a_en": "Sulaiman (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم الجنة التي عاش فيها آدم وحواء؟",
-      "q_en": "Which prophet controlled the wind by God's permission?",
-      "a_ar": "سليمان (عليه السلام)",
-      "a_en": "Sulaiman (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي بحر شقه موسى؟",
-      "q_en": "Which prophet spoke to birds?",
-      "a_ar": "سليمان (عليه السلام)",
-      "a_en": "Sulaiman (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم أول خمسة أسفار من الكتاب المقدس؟",
-      "q_en": "Which prophet had an army of jinn and humans?",
-      "a_ar": "سليمان (عليه السلام)",
-      "a_en": "Sulaiman (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي شق البحر؟",
-      "q_en": "Which prophet’s camel came out of a rock?",
-      "a_ar": "صالح",
-      "a_en": "Saleh",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي وُلد بدون أب؟",
-      "q_en": "Which prophet healed the sick and raised the dead by God’s permission?",
-      "a_ar": "عيسى (عليه السلام)",
-      "a_en": "Jesus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي تكلم وهو رضيع؟",
-      "q_en": "Which prophet was born without a father?",
-      "a_ar": "عيسى (عليه السلام)",
-      "a_en": "Jesus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي صنع طيراً من الطين بإذن الله؟",
-      "q_en": "Which prophet spoke as a baby according to tradition?",
-      "a_ar": "عيسى (عليه السلام)",
-      "a_en": "Jesus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي أُلقي في النار ولم يحترق؟",
-      "q_en": "Which prophet created a bird from clay (by God's permission)?",
-      "a_ar": "عيسى (عليه السلام)",
-      "a_en": "Jesus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي حطم الأصنام؟",
-      "q_en": "Which prophet cured blindness by God’s permission?",
-      "a_ar": "عيسى (عليه السلام)",
-      "a_en": "Jesus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي وُضع في سلة على النهر؟",
-      "q_en": "Which prophet split the moon?",
-      "a_ar": "محمد ﷺ",
-      "a_en": "Muhammad (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي فسّر الأحلام في السجن وأصبح حاكماً؟",
-      "q_en": "Which prophet traveled from Mecca to Jerusalem in one night?",
-      "a_ar": "محمد ﷺ",
-      "a_en": "Muhammad (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي كان يفهم لغة الحيوانات؟",
-      "q_en": "Which prophet split the moon according to Islamic tradition?",
-      "a_ar": "محمد ﷺ",
-      "a_en": "Muhammad (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي كان له جيش من الجن والإنس؟",
-      "q_en": "Who led the Israelites out of Egypt?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "عصا أي نبي تحولت إلى ثعبان أمام فرعون؟",
-      "q_en": "Which prophet split the sea?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي أخرج الماء من الصخر؟",
-      "q_en": "Which prophet spoke to God from a burning bush?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي أُعطي التوراة؟",
-      "q_en": "Which prophet's staff turned into a snake?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي صام ونجا في بطن الحوت؟",
-      "q_en": "Which prophet brought ten plagues upon Egypt?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي أُرسل إلى نينوى؟",
-      "q_en": "Which prophet was protected in a basket on a river?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي شفى العمى؟",
-      "q_en": "Which prophet’s staff turned into a serpent in front of Pharaoh?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي قومه أهلكوا بالطوفان؟",
-      "q_en": "Which prophet caused water to gush from a rock?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي بنى الفلك؟",
-      "q_en": "Which prophet received the Torah?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي نجا من الطوفان؟",
-      "q_en": "Which prophet spoke to God directly on Mount Sinai?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي كلمه الله مباشرة في جبل سيناء؟",
-      "q_en": "Which prophet had a rod that swallowed magic serpents?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "عصا أي نبي ابتلعت سحر السحرة؟",
-      "q_en": "Which prophet’s people were saved from Pharaoh?",
-      "a_ar": "موسى (عليه السلام)",
-      "a_en": "Moses (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي خرجت له ناقة من الصخر؟",
-      "q_en": "Which prophet’s people were destroyed by a flood?",
-      "a_ar": "نوح (عليه السلام)",
-      "a_en": "Noah (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "أي نبي شق القمر؟",
-      "q_en": "Which prophet built the Ark?",
-      "a_ar": "نوح (عليه السلام)",
-      "a_en": "Noah (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "كم عدد سور القرآن الكريم؟",
-      "q_en": "Which prophet survived a global flood?",
-      "a_ar": "نوح (عليه السلام)",
-      "a_en": "Noah (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم العيد الاسلامي الذي يأتي بعد موسم الحج؟",
-      "q_en": "Which prophet interpreted dreams in Egypt?",
-      "a_ar": "يوسف (عليه السلام)",
-      "a_en": "Joseph/Yusuf (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "كم عدد أركان الإسلام؟",
-      "q_en": "Which prophet interpreted dreams in prison and became ruler?",
-      "a_ar": "يوسف (عليه السلام)",
-      "a_en": "Joseph/Yusuf (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "في أي شهر يُؤدى الحج؟",
-      "q_en": "Which prophet survived inside a great fish?",
-      "a_ar": "يونس (عليه السلام)",
-      "a_en": "Jonah/Yunus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم أول سورة في القرآن الكريم؟",
-      "q_en": "Which prophet fasted and survived in the belly of a fish?",
-      "a_ar": "يونس (عليه السلام)",
-      "a_en": "Jonah/Yunus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "ما اسم شهر الصوم في الإسلام؟",
-      "q_en": "Which prophet was sent to Nineveh?",
-      "a_ar": "يونس (عليه السلام)",
-      "a_en": "Jonah/Yunus (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "General"
-    },
-    {
-      "q_ar": "من يُعتبر مؤسس الديانة البوذية؟",
-      "q_en": "How many obligatory daily prayers are there in Islam?",
-      "a_ar": "5",
-      "a_en": "5",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ماذا يحتفل به عيد الفصح؟",
-      "q_en": "What pillar of Islam is charitable giving?",
-      "a_ar": "الزكاة",
-      "a_en": "Zakat",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي رسول ارتبط بمدينة روما؟",
-      "q_en": "What is the Islamic declaration of faith called?",
-      "a_ar": "الشهادتان",
-      "a_en": "Shahada",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما أكبر طائفة مسيحية؟",
-      "q_en": "In what language was the Quran revealed?",
-      "a_ar": "العربية",
-      "a_en": "Arabic",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي ديانة تشتهر بالإيمان بالكارما وتناسخ الأرواح؟",
-      "q_en": "What is the holy book of Islam?",
-      "a_ar": "القرآن الكريم",
-      "a_en": "Quran",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما أعلى طبقة تقليدية في الهندوسية؟",
-      "q_en": "To which city did Prophet Muhammad (S.A.W.) migrate?",
-      "a_ar": "المدينة المنورة",
-      "a_en": "Medina",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما هو الكتاب المقدس في الإسلام؟",
-      "q_en": "What is the largest mosque in the world?",
-      "a_ar": "المسجد الحرام",
-      "a_en": "Masjid al-Haram",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما اسم الشهادة في الإسلام؟",
-      "q_en": "What event marks the start of the Islamic calendar?",
-      "a_ar": "الهجرة النبوية",
-      "a_en": "The Hijra",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي ملاك نقل الوحي إلى النبي محمد ﷺ؟",
-      "q_en": "What migration began the Islamic calendar?",
-      "a_ar": "الهجرة إلى المدينة المنورة",
-      "a_en": "Hijra to Medina",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "من كان أول خليفة بعد النبي محمدﷺ ؟",
-      "q_en": "Which prophet is called Friend of God in Islam?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما أكبر مسجد في العالم؟",
-      "q_en": "Which prophet built the Kaaba with Ishmael?",
-      "a_ar": "إبراهيم (عليه السلام)",
-      "a_en": "Ibrahim (PBUH)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي هجرة بدأت التقويم الإسلامي؟",
-      "q_en": "Who was the first caliph after Prophet Muhammad (S.A.W.)?",
-      "a_ar": "أبو بكر الصديق",
-      "a_en": "Abu Bakr",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما هو الكتاب المقدس في اليهودية؟",
-      "q_en": "Which angel delivered revelation to Prophet Muhammad (S.A.W.)?",
-      "a_ar": "جبريل",
-      "a_en": "Gabriel (Jibril)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما أقدس يوم في اليهودية؟",
-      "q_en": "What is the Islamic month of fasting called?",
-      "a_ar": "رمضان",
-      "a_en": "Ramadan",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي نبي اشتهر بتفسير الأحلام في مصر؟",
-      "q_en": "What is the longest chapter in the Quran?",
-      "a_ar": "سورة البقرة",
-      "a_en": "Surah Al-Baqarah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي ملك بنى الهيكل الأول في القدس؟",
-      "q_en": "What is the shortest surah in the Quran?",
-      "a_ar": "سورة الكوثر",
-      "a_en": "Surah Al-Kawthar",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي نبي كلمه الله من شجرة مشتعلة؟",
-      "q_en": "Which caliph standardized the Quran?",
-      "a_ar": "عثمان بن عفان",
-      "a_en": "Uthman ibn Affan",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي نبي تكلم مع الطيور؟",
-      "q_en": "In which city is the Kaaba located?",
-      "a_ar": "مكة المكرمة",
-      "a_en": "Mecca",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي نبي نجا قومه من فرعون؟",
-      "q_en": "What does Ramadan commemorate?",
-      "a_ar": "نزول القرآن الكريم",
-      "a_en": "The revelation of the Quran",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما اسم بوذا قبل التنوير؟",
-      "q_en": "How many pillars are there in Islam?",
-      "a_ar": "5",
-      "a_en": "5",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما هو الكتاب المقدس في المسيحية؟",
-      "q_en": "How many chapters (Surahs) are there in the Quran?",
-      "a_ar": "114",
-      "a_en": "114",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي إمبراطور شرّع المسيحية؟",
-      "q_en": "What is the first Surah in the Holy Quran?",
-      "a_ar": "الفاتحة",
-      "a_en": "Al-Fatiha",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "أي إله هندوسي يُعرف بالحافظ؟",
-      "q_en": "What is the holiest site in Islam?",
-      "a_ar": "الكعبة المشرّفة",
-      "a_en": "The Holy Kaaba",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما اللغة المقدسة للنصوص الهندوسية؟",
-      "q_en": "What is the name of the mosque located in Hebron?",
-      "a_ar": "المسجد الإبراهيمي",
-      "a_en": "Ibrahimi Mosque",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما المقابل الأنثوي لبار ميتزفا؟",
-      "q_en": "In which month is the Hajj pilgrimage performed?",
-      "a_ar": "ذو الحجة",
-      "a_en": "Dhu al-Hijjah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما اسم رأس السنة اليهودية؟",
-      "q_en": "What is the month of fasting in Islam called?",
-      "a_ar": "رمضان",
-      "a_en": "Ramadan",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "عصا أي نبي تحولت إلى ثعبان؟",
-      "q_en": "What is the Islamic holiday that comes after the Hajj season?",
-      "a_ar": "عيد الأضحى",
-      "a_en": "Eid al-Adha",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "الإسلام",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Islam"
-    },
-    {
-      "q_ar": "ما أكبر فرع في المسيحية؟",
-      "q_en": "What does the Torah primarily consist of?",
-      "a_ar": "الأسفار الخمسة الأولى لموسى",
-      "a_en": "The first five books of Moses",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "ما أقدس يوم في الأسبوع لدى المسيحيين؟",
-      "q_en": "What is the holy book of Judaism?",
-      "a_ar": "التوراة",
-      "a_en": "Torah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "من خان السيد المسيح؟",
-      "q_en": "What is the Jewish day of rest called?",
-      "a_ar": "السبت (شبات)",
-      "a_en": "Sabbath (Shabbat)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "من بنى الفلك بحسب الكتاب المقدس؟",
-      "q_en": "What is the holiest city in Judaism?",
-      "a_ar": "القدس",
-      "a_en": "Jerusalem",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "في أي مدينة تقع الكعبة المشرفة؟",
-      "q_en": "What is the Jewish oral law called?",
-      "a_ar": "المشناه",
-      "a_en": "Mishnah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "ما أقصر سورة في القرآن الكريم؟",
-      "q_en": "What is the female equivalent of a Bar Mitzvah?",
-      "a_ar": "بات ميتزفا",
-      "a_en": "Bat Mitzvah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "أي نبي يُلقب بخليل الله؟",
-      "q_en": "What is a Jewish boy's coming-of-age ceremony called?",
-      "a_ar": "بار ميتزفا",
-      "a_en": "Bar Mitzvah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "ما اسم عيد الأنوار اليهودي؟",
-      "q_en": "On which mountain did Moses receive the Ten Commandments?",
-      "a_ar": "جبل سيناء",
-      "a_en": "Mount Sinai",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "على أي جبل تلقى موسى الوصايا العشر؟",
-      "q_en": "What is the Jewish Festival of Lights called?",
-      "a_ar": "حانوكا",
-      "a_en": "Hanukkah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "ما اسم شال الصلاة اليهودي؟",
-      "q_en": "What is the Jewish New Year called?",
-      "a_ar": "روش هاشناه",
-      "a_en": "Rosh Hashanah",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "أي بحر شق موسى؟",
-      "q_en": "What is the Jewish prayer shawl called?",
-      "a_ar": "طاليت",
-      "a_en": "Tallit",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "أي نبي زوجته أنجبت في سن متأخرة؟",
-      "q_en": "What is the Jewish mourning prayer called?",
-      "a_ar": "قاديش",
-      "a_en": "Kaddish",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "ما اسم أقدس موقع في الإسلام؟",
-      "q_en": "What is the holiest day in Judaism?",
-      "a_ar": "يوم كيبور",
-      "a_en": "Yom Kippur",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "اليهودية",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Judaism"
-    },
-    {
-      "q_ar": "كم عدد أسفار الكتاب المقدس البروتستانتي؟",
-      "q_en": "Which religion uses the Dharma Wheel symbol?",
-      "a_ar": "البوذية",
-      "a_en": "Buddhism",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "في أي مدينة وُلد السيد المسيح؟",
-      "q_en": "What are the Buddhist scriptures called?",
-      "a_ar": "التريبيتاكا",
-      "a_en": "Tripitaka",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي قديس ارتبط بنشر المسيحية في أيرلندا؟",
-      "q_en": "What is the Buddhist monastic code called?",
-      "a_ar": "الفينايا",
-      "a_en": "Vinaya",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما اسم شهر الصيام في الإسلام؟",
-      "q_en": "What is liberation from rebirth called in Buddhism?",
-      "a_ar": "النيرفانا",
-      "a_en": "Nirvana",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "على أي جبل استقر فلك نوح وفقاً للتقاليد؟",
-      "q_en": "What was Buddha's name before enlightenment?",
-      "a_ar": "سيدهارتا غوتاما",
-      "a_en": "Siddhartha Gautama",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي ديانة تتبع تعاليم غورو ناناك؟",
-      "q_en": "Who is considered the founder of Buddhism?",
-      "a_ar": "سيدهارتا غوتاما (بوذا)",
-      "a_en": "Siddhartha Gautama (Buddha)",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما الفترة المسيحية التي تسبق عيد الفصح؟",
-      "q_en": "What is the highest traditional Hindu caste?",
-      "a_ar": "البراهمة",
-      "a_en": "Brahmin",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما آخر كتاب في العهد الجديد؟",
-      "q_en": "What animal is sacred to many Hindus?",
-      "a_ar": "البقرة",
-      "a_en": "Cow",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما العيد الذي يحتفل بقيامة المسيح؟",
-      "q_en": "What is the sacred language of Hindu scriptures?",
-      "a_ar": "السنسكريتية",
-      "a_en": "Sanskrit",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما أطول سورة في القرآن الكريم؟",
-      "q_en": "Which religion emphasizes karma and reincarnation?",
-      "a_ar": "الهندوسية",
-      "a_en": "Hinduism",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما اسم حفل بلوغ الفتى في اليهودية؟",
-      "q_en": "What Hindu festival is known as the Festival of Lights?",
-      "a_ar": "ديوالي",
-      "a_en": "Diwali",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي نبي نجا من نار النمرود؟",
-      "q_en": "Which Hindu deity has an elephant head?",
-      "a_ar": "غانيشا",
-      "a_en": "Ganesha",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي نبي رُزق بابن في سن متأخرة؟",
-      "q_en": "Which Hindu god is known as the Preserver?",
-      "a_ar": "فيشنو",
-      "a_en": "Vishnu",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي نبي اشتهر بالصبر الشديد؟",
-      "q_en": "What sacred river is associated with Hinduism?",
-      "a_ar": "نهر الغانج",
-      "a_en": "Ganges River",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما اسم التحرر من دورة الولادة والموت في البوذية؟",
-      "q_en": "How many Sikh Gurus are recognized?",
-      "a_ar": "10",
-      "a_en": "10",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "أي رسول عُرف بالشك؟",
-      "q_en": "Which religion follows the teachings of Guru Nanak?",
-      "a_ar": "السيخية",
-      "a_en": "Sikhism",
-      "cat_ar": "☪️ دين",
-      "subcat_ar": "ديانات أخرى",
-      "cat_en": "☪️ Religion",
-      "subcat_en": "Other Religions"
-    },
-    {
-      "q_ar": "ما هو الكوكب الأكثر سخونة في المجموعة الشمسية؟",
-      "q_en": "What is the hottest planet in the Solar System?",
-      "a_ar": "الزهرة",
-      "a_en": "Venus",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الفلك",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Astronomy"
-    },
-    {
-      "q_ar": "كم عدد كواكب المجموعة الشمسية؟",
-      "q_en": "How many planets are in the Solar System?",
-      "a_ar": "8",
-      "a_en": "8",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الفلك",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Astronomy"
-    },
-    {
-      "q_ar": "ما هو أكبر كوكب في المجموعة الشمسية؟",
-      "q_en": "What is the largest planet in the Solar System?",
-      "a_ar": "المشتري",
-      "a_en": "Jupiter",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الفلك",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Astronomy"
-    },
-    {
-      "q_ar": "ما الكوكب المعروف بالكوكب الأحمر؟",
-      "q_en": "Which planet is known as the Red Planet?",
-      "a_ar": "المريخ",
-      "a_en": "Mars",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الفلك",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Astronomy"
-    },
-    {
-      "q_ar": "ما هو أقرب كوكب إلى الشمس؟",
-      "q_en": "Which planet is closest to the Sun?",
-      "a_ar": "عطارد",
-      "a_en": "Mercury",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "الفلك",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Astronomy"
-    },
-    {
-      "q_ar": "كم يومًا في السنة الكبيسة؟",
-      "q_en": "How many days are there in a leap year?",
-      "a_ar": "366",
-      "a_en": "366",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "علوم الأرض",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Earth Science"
-    },
-    {
-      "q_ar": "كم ثانية في الساعة؟",
-      "q_en": "How many seconds are there in an hour?",
-      "a_ar": "3,600",
-      "a_en": "3,600",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "علوم الأرض",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Earth Science"
-    },
-    {
-      "q_ar": "ما هو أكبر ثدييات في العالم؟",
-      "q_en": "What is the largest mammal in the world?",
-      "a_ar": "الحوت الأزرق",
-      "a_en": "Blue Whale",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "النباتات والحيوانات",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Plants & Animals"
-    },
-    {
-      "q_ar": "لبنان تاريخيًا كان جزءًا من أي حضارة قديمة؟",
-      "q_en": "Historically, Lebanon was part of which ancient civilization?",
-      "a_ar": "الفينيقية",
-      "a_en": "Phoenician Civilization",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "ما اسم المدينة الفلسطينية المشهورة بالصابون؟",
-      "q_en": "Which Palestinian city is famous for soap production?",
-      "a_ar": "نابلس",
-      "a_en": "Nablus",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "الأردن تاريخيًا كان جزء من أي دولة قديمة؟",
-      "q_en": "Historically, Jordan was part of which ancient state?",
-      "a_ar": "الدولة الأموية",
-      "a_en": "Umayyad State",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "أي مدينة لبنانية معروفة بقلعتها الصليبية؟",
-      "q_en": "Which Lebanese city is known for its Crusader castle?",
-      "a_ar": "صيدا",
-      "a_en": "Sidon",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "أي مدينة لبنانية تُعتبر من أقدم المدن المأهولة بالعالم",
-      "q_en": "Which Lebanese city is considered one of the oldest continuously inhabited cities in the world?",
-      "a_ar": "جبيل",
-      "a_en": "Byblos",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "أي مدينة عراقية قديمة كانت عاصمة العباسيين؟",
-      "q_en": "Which ancient Iraqi city was the capital of the Abbasid Caliphate?",
-      "a_ar": "بغداد",
-      "a_en": "Baghdad",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "أي مدينة لبنانية جنوبية فيها آثار رومانية ومرفأ فينيقي قديم؟",
-      "q_en": "Which southern Lebanese city is known for its Roman ruins and ancient Phoenician harbor?",
-      "a_ar": "صور",
-      "a_en": "Tyre",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "ما اسم أشهر مدينة أثرية في سوريا؟",
-      "q_en": "What is the most famous archaeological city in Syria?",
-      "a_ar": "تدمر",
-      "a_en": "Palmyra",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "التاريخ والحضارات",
-      "cat_en": "🏛️ History",
-      "subcat_en": "History & Civilizations"
-    },
-    {
-      "q_ar": "أي إمبراطورية كانت الأكبر في التاريخ؟",
-      "q_en": "Which empire was the largest in history?",
-      "a_ar": "الإمبراطورية المغولية",
-      "a_en": "Mongol Empire",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الحضارات القديمة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Ancient Civilizations"
-    },
-    {
-      "q_ar": "أي مدينة فلسطينية مشهورة بمصانع الصابون؟",
-      "q_en": "Which Palestinian city is famous for its soap factories?",
-      "a_ar": "نابلس",
-      "a_en": "Nablus",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الحضارات القديمة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Ancient Civilizations"
-    },
-    {
-      "q_ar": "ما اسم الموقع الأثري الروماني الشهير شمال عمّان؟",
-      "q_en": "What is the name of the famous Roman archaeological site north of Amman?",
-      "a_ar": "جرش",
-      "a_en": "Jerash",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الحضارات القديمة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Ancient Civilizations"
-    },
-    {
-      "q_ar": "من هو قائد ثورة يوليو المصرية؟",
-      "q_en": "Who led the Egyptian July Revolution?",
-      "a_ar": "جمال عبد الناصر",
-      "a_en": "Gamal Abdel Nasser",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من كان أول رئيس لسوريا بعد الاستقلال؟",
-      "q_en": "Who was the first President of Syria after independence?",
-      "a_ar": "شكري القوتلي",
-      "a_en": "Shukri al-Quwatli",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو مؤسس الإمبراطورية المغولية؟",
-      "q_en": "Who founded the Mongol Empire?",
-      "a_ar": "جنكيز خان",
-      "a_en": "Genghis Khan",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو أول رئيس للجمهورية اللبنانية بعد الاستقلال؟",
-      "q_en": "Who was the first President of Lebanon after independence?",
-      "a_ar": "بشارة الخوري",
-      "a_en": "Bechara El Khoury",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو مؤسس حركة حماس؟",
-      "q_en": "Who founded the Hamas movement?",
-      "a_ar": "الشيخ أحمد ياسين",
-      "a_en": "Sheikh Ahmed Yassin",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "بأي سنة اغتيل بشير الجميّل؟",
-      "q_en": "In what year was Bashir Gemayel assassinated?",
-      "a_ar": "1982",
-      "a_en": "1982",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من الأكبر سنًا: الملك سلمان أم الملك تشارلز الثالث؟",
-      "q_en": "Who is older: King Salman or King Charles III?",
-      "a_ar": "الملك سلمان",
-      "a_en": "King Salman",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من استلم الحكم في عمر أصغر: تميم بن حمد آل ثاني أم بشار الأسد؟",
-      "q_en": "Who assumed power at a younger age: Tamim bin Hamad Al Thani or Bashar al-Assad?",
-      "a_ar": "تميم بن حمد",
-      "a_en": "Tamim bin Hamad Al Thani",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو الزعيم الألماني في الحرب العالمية الثانية؟",
-      "q_en": "Who was the German leader during World War II?",
-      "a_ar": "أدولف هتلر",
-      "a_en": "Adolf Hitler",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من كان أول رئيس للولايات المتحدة؟",
-      "q_en": "Who was the first President of the United States?",
-      "a_ar": "جورج واشنطن",
-      "a_en": "George Washington",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من الأكبر سنًا: ياسر عرفات أم حسني مبارك؟",
-      "q_en": "Who is older: Yasser Arafat or Hosni Mubarak?",
-      "a_ar": "حسني مبارك",
-      "a_en": "Hosni Mubarak",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "بأي سنة اغتيل رفيق الحريري؟",
-      "q_en": "In what year was Rafic Hariri assassinated?",
-      "a_ar": "2005",
-      "a_en": "2005",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو بابا الفاتيكان الحالي؟",
-      "q_en": "Who is the current Pope of the Vatican?",
-      "a_ar": "لاون الرابع عشر",
-      "a_en": "Pope Leo XIV",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "من هو الملك الأردني الحالي؟",
-      "q_en": "Who is the current King of Jordan?",
-      "a_ar": "الملك عبد الله الثاني",
-      "a_en": "King Abdullah II",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "القادة والسياسة",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Leaders & Politics"
-    },
-    {
-      "q_ar": "أي عالم اكتشف الجاذبية؟",
-      "q_en": "Which scientist discovered gravity?",
-      "a_ar": "إسحاق نيوتن",
-      "a_en": "Isaac Newton",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "العلماء والاكتشافات",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Scientists & Discoveries"
-    },
-    {
-      "q_ar": "أي عالم اكتشف نظرية التطور؟",
-      "q_en": "Which scientist developed the theory of evolution?",
-      "a_ar": "تشارلز داروين",
-      "a_en": "Charles Darwin",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "العلماء والاكتشافات",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Scientists & Discoveries"
-    },
-    {
-      "q_ar": "أي عالم اخترع الهاتف؟",
-      "q_en": "Which scientist invented the telephone?",
-      "a_ar": "ألكسندر غراهام بيل",
-      "a_en": "Alexander Graham Bell",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "العلماء والاكتشافات",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Scientists & Discoveries"
-    },
-    {
-      "q_ar": "بأي سنة اندلعت الثورة الفرنسية؟",
-      "q_en": "In what year did the French Revolution begin?",
-      "a_ar": "1789",
-      "a_en": "1789",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "بأي مدينة فلسطينية وُلد السيد المسيح؟",
-      "q_en": "In which Palestinian city was Jesus Christ born?",
-      "a_ar": "بيت لحم",
-      "a_en": "Bethlehem",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "أي دولة اخترعت الطباعة؟",
-      "q_en": "Which country invented printing?",
-      "a_ar": "الصين",
-      "a_en": "China",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "بأي سنة بدأت الحرب العالمية الأولى؟",
-      "q_en": "In what year did World War I begin?",
-      "a_ar": "1914",
-      "a_en": "1914",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "بأي عام نال لبنان استقلاله؟",
-      "q_en": "In what year did Lebanon gain its independence?",
-      "a_ar": "1943",
-      "a_en": "1943",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "بأي سنة سقط جدار برلين؟",
-      "q_en": "In what year did the Berlin Wall fall?",
-      "a_ar": "1989",
-      "a_en": "1989",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "ما اسم الانتفاضة الفلسطينية الأولى؟",
-      "q_en": "What was the name of the First Palestinian Intifada?",
-      "a_ar": "انتفاضة الحجارة",
-      "a_en": "The Stone Intifada",
-      "cat_ar": "🏛️ التاريخ",
-      "subcat_ar": "الأحداث التاريخية",
-      "cat_en": "🏛️ History",
-      "subcat_en": "Historical Events"
-    },
-    {
-      "q_ar": "ما اسم الغدة التي تتحكم بنسبة السكر في الدم؟",
-      "q_en": "What is the name of the gland that controls blood sugar levels?",
-      "a_ar": "البنكرياس",
-      "a_en": "Pancreas",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "ما اسم الجهاز المسؤول عن ضخ الدم؟",
-      "q_en": "What is the name of the organ responsible for pumping blood?",
-      "a_ar": "القلب",
-      "a_en": "Heart",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "كم عدد أسنان الإنسان البالغ؟",
-      "q_en": "How many teeth does an adult human have?",
-      "a_ar": "32",
-      "a_en": "32",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "ما اسم أطول عظم في الجسم؟",
-      "q_en": "What is the longest bone in the human body?",
-      "a_ar": "عظم الفخذ",
-      "a_en": "Femur",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "كم عدد رئات الإنسان؟",
-      "q_en": "How many lungs does a human have?",
-      "a_ar": "2",
-      "a_en": "2",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "كم طبقة في جلد الإنسان؟",
-      "q_en": "How many layers does human skin have?",
-      "a_ar": "ثلاث طبقات رئيسية",
-      "a_en": "Three main layers",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "كم فصيلة دم لدى الإنسان؟",
-      "q_en": "How many blood types are there in humans?",
-      "a_ar": "4 (A, B, AB, O)",
-      "a_en": "4 (A, B, AB, O)",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "جسم الإنسان",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Human Body"
-    },
-    {
-      "q_ar": "ما اسم الجزيء الوراثي؟",
-      "q_en": "What is the name of the genetic molecule?",
-      "a_ar": "DNA",
-      "a_en": "DNA",
-      "cat_ar": "🔬 العلوم والطبيعة",
-      "subcat_ar": "علم الأحياء",
-      "cat_en": "🔬 Science & Nature",
-      "subcat_en": "Biology"
-    },
-    {
       "q_ar": "بأي سنة استضافت قطر كأس العالم لكرة القدم؟",
       "q_en": "In what year did Qatar host the FIFA World Cup?",
       "a_ar": "2022",
@@ -3959,6 +2179,566 @@
       "subcat_ar": null,
       "cat_en": "🎭 Entertainment & Celebrities",
       "subcat_en": null
+    },
+    {
+      "q_ar": "ما اسم الاتفاق الذي أنهى الحرب الأهلية اللبنانية؟",
+      "q_en": "What is the name of the agreement that ended the Lebanese Civil War?",
+      "a_ar": "اتفاق الطائف",
+      "a_en": "Taif Agreement",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الحروب والصراعات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Wars & Conflicts"
+    },
+    {
+      "q_ar": "لبنان تاريخيًا كان جزءًا من أي حضارة قديمة؟",
+      "q_en": "Historically, Lebanon was part of which ancient civilization?",
+      "a_ar": "الفينيقية",
+      "a_en": "Phoenician Civilization",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "ما اسم المدينة الفلسطينية المشهورة بالصابون؟",
+      "q_en": "Which Palestinian city is famous for soap production?",
+      "a_ar": "نابلس",
+      "a_en": "Nablus",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "الأردن تاريخيًا كان جزء من أي دولة قديمة؟",
+      "q_en": "Historically, Jordan was part of which ancient state?",
+      "a_ar": "الدولة الأموية",
+      "a_en": "Umayyad State",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "أي مدينة لبنانية معروفة بقلعتها الصليبية؟",
+      "q_en": "Which Lebanese city is known for its Crusader castle?",
+      "a_ar": "صيدا",
+      "a_en": "Sidon",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "أي مدينة لبنانية تُعتبر من أقدم المدن المأهولة بالعالم",
+      "q_en": "Which Lebanese city is considered one of the oldest continuously inhabited cities in the world?",
+      "a_ar": "جبيل",
+      "a_en": "Byblos",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "أي مدينة عراقية قديمة كانت عاصمة العباسيين؟",
+      "q_en": "Which ancient Iraqi city was the capital of the Abbasid Caliphate?",
+      "a_ar": "بغداد",
+      "a_en": "Baghdad",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "أي مدينة لبنانية جنوبية فيها آثار رومانية ومرفأ فينيقي قديم؟",
+      "q_en": "Which southern Lebanese city is known for its Roman ruins and ancient Phoenician harbor?",
+      "a_ar": "صور",
+      "a_en": "Tyre",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "ما اسم أشهر مدينة أثرية في سوريا؟",
+      "q_en": "What is the most famous archaeological city in Syria?",
+      "a_ar": "تدمر",
+      "a_en": "Palmyra",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "التاريخ والحضارات",
+      "cat_en": "🏛️ History",
+      "subcat_en": "History & Civilizations"
+    },
+    {
+      "q_ar": "أي إمبراطورية كانت الأكبر في التاريخ؟",
+      "q_en": "Which empire was the largest in history?",
+      "a_ar": "الإمبراطورية المغولية",
+      "a_en": "Mongol Empire",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Ancient Civilizations"
+    },
+    {
+      "q_ar": "أي مدينة فلسطينية مشهورة بمصانع الصابون؟",
+      "q_en": "Which Palestinian city is famous for its soap factories?",
+      "a_ar": "نابلس",
+      "a_en": "Nablus",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Ancient Civilizations"
+    },
+    {
+      "q_ar": "ما اسم الموقع الأثري الروماني الشهير شمال عمّان؟",
+      "q_en": "What is the name of the famous Roman archaeological site north of Amman?",
+      "a_ar": "جرش",
+      "a_en": "Jerash",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الحضارات القديمة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Ancient Civilizations"
+    },
+    {
+      "q_ar": "من هو قائد ثورة يوليو المصرية؟",
+      "q_en": "Who led the Egyptian July Revolution?",
+      "a_ar": "جمال عبد الناصر",
+      "a_en": "Gamal Abdel Nasser",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من كان أول رئيس لسوريا بعد الاستقلال؟",
+      "q_en": "Who was the first President of Syria after independence?",
+      "a_ar": "شكري القوتلي",
+      "a_en": "Shukri al-Quwatli",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو مؤسس الإمبراطورية المغولية؟",
+      "q_en": "Who founded the Mongol Empire?",
+      "a_ar": "جنكيز خان",
+      "a_en": "Genghis Khan",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو أول رئيس للجمهورية اللبنانية بعد الاستقلال؟",
+      "q_en": "Who was the first President of Lebanon after independence?",
+      "a_ar": "بشارة الخوري",
+      "a_en": "Bechara El Khoury",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو مؤسس حركة حماس؟",
+      "q_en": "Who founded the Hamas movement?",
+      "a_ar": "الشيخ أحمد ياسين",
+      "a_en": "Sheikh Ahmed Yassin",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "بأي سنة اغتيل بشير الجميّل؟",
+      "q_en": "In what year was Bashir Gemayel assassinated?",
+      "a_ar": "1982",
+      "a_en": "1982",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من الأكبر سنًا: الملك سلمان أم الملك تشارلز الثالث؟",
+      "q_en": "Who is older: King Salman or King Charles III?",
+      "a_ar": "الملك سلمان",
+      "a_en": "King Salman",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من استلم الحكم في عمر أصغر: تميم بن حمد آل ثاني أم بشار الأسد؟",
+      "q_en": "Who assumed power at a younger age: Tamim bin Hamad Al Thani or Bashar al-Assad?",
+      "a_ar": "تميم بن حمد",
+      "a_en": "Tamim bin Hamad Al Thani",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو الزعيم الألماني في الحرب العالمية الثانية؟",
+      "q_en": "Who was the German leader during World War II?",
+      "a_ar": "أدولف هتلر",
+      "a_en": "Adolf Hitler",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من كان أول رئيس للولايات المتحدة؟",
+      "q_en": "Who was the first President of the United States?",
+      "a_ar": "جورج واشنطن",
+      "a_en": "George Washington",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من الأكبر سنًا: ياسر عرفات أم حسني مبارك؟",
+      "q_en": "Who is older: Yasser Arafat or Hosni Mubarak?",
+      "a_ar": "حسني مبارك",
+      "a_en": "Hosni Mubarak",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "بأي سنة اغتيل رفيق الحريري؟",
+      "q_en": "In what year was Rafic Hariri assassinated?",
+      "a_ar": "2005",
+      "a_en": "2005",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو بابا الفاتيكان الحالي؟",
+      "q_en": "Who is the current Pope of the Vatican?",
+      "a_ar": "لاون الرابع عشر",
+      "a_en": "Pope Leo XIV",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "من هو الملك الأردني الحالي؟",
+      "q_en": "Who is the current King of Jordan?",
+      "a_ar": "الملك عبد الله الثاني",
+      "a_en": "King Abdullah II",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "القادة والسياسة",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Leaders & Politics"
+    },
+    {
+      "q_ar": "بأي سنة اندلعت الثورة الفرنسية؟",
+      "q_en": "In what year did the French Revolution begin?",
+      "a_ar": "1789",
+      "a_en": "1789",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "بأي مدينة فلسطينية وُلد السيد المسيح؟",
+      "q_en": "In which Palestinian city was Jesus Christ born?",
+      "a_ar": "بيت لحم",
+      "a_en": "Bethlehem",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "أي دولة اخترعت الطباعة؟",
+      "q_en": "Which country invented printing?",
+      "a_ar": "الصين",
+      "a_en": "China",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "بأي سنة بدأت الحرب العالمية الأولى؟",
+      "q_en": "In what year did World War I begin?",
+      "a_ar": "1914",
+      "a_en": "1914",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "بأي عام نال لبنان استقلاله؟",
+      "q_en": "In what year did Lebanon gain its independence?",
+      "a_ar": "1943",
+      "a_en": "1943",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "بأي سنة سقط جدار برلين؟",
+      "q_en": "In what year did the Berlin Wall fall?",
+      "a_ar": "1989",
+      "a_en": "1989",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "ما اسم الانتفاضة الفلسطينية الأولى؟",
+      "q_en": "What was the name of the First Palestinian Intifada?",
+      "a_ar": "انتفاضة الحجارة",
+      "a_en": "The Stone Intifada",
+      "cat_ar": "🏛️ التاريخ",
+      "subcat_ar": "الأحداث التاريخية",
+      "cat_en": "🏛️ History",
+      "subcat_en": "Historical Events"
+    },
+    {
+      "q_ar": "ما هو أثقل عنصر طبيعي؟",
+      "q_en": "What is the heaviest naturally occurring element?",
+      "a_ar": "الأورانيوم",
+      "a_en": "Uranium",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Chemistry"
+    },
+    {
+      "q_ar": "ما هو أخف غاز؟",
+      "q_en": "What is the lightest gas?",
+      "a_ar": "الهيدروجين",
+      "a_en": "Hydrogen",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Chemistry"
+    },
+    {
+      "q_ar": "ما الصيغة الكيميائية للماء؟",
+      "q_en": "What is the chemical formula for water?",
+      "a_ar": "H2O",
+      "a_en": "H₂O",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Chemistry"
+    },
+    {
+      "q_ar": "ما هو أكثر الغازات وفرة في الغلاف الجوي؟",
+      "q_en": "What is the most abundant gas in Earth's atmosphere?",
+      "a_ar": "النيتروجين",
+      "a_en": "Nitrogen",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الكيمياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Chemistry"
+    },
+    {
+      "q_ar": "ما هو الكوكب الأكثر سخونة في المجموعة الشمسية؟",
+      "q_en": "What is the hottest planet in the Solar System?",
+      "a_ar": "الزهرة",
+      "a_en": "Venus",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Astronomy"
+    },
+    {
+      "q_ar": "كم عدد كواكب المجموعة الشمسية؟",
+      "q_en": "How many planets are in the Solar System?",
+      "a_ar": "8",
+      "a_en": "8",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Astronomy"
+    },
+    {
+      "q_ar": "ما هو أكبر كوكب في المجموعة الشمسية؟",
+      "q_en": "What is the largest planet in the Solar System?",
+      "a_ar": "المشتري",
+      "a_en": "Jupiter",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Astronomy"
+    },
+    {
+      "q_ar": "ما الكوكب المعروف بالكوكب الأحمر؟",
+      "q_en": "Which planet is known as the Red Planet?",
+      "a_ar": "المريخ",
+      "a_en": "Mars",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Astronomy"
+    },
+    {
+      "q_ar": "ما هو أقرب كوكب إلى الشمس؟",
+      "q_en": "Which planet is closest to the Sun?",
+      "a_ar": "عطارد",
+      "a_en": "Mercury",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "الفلك",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Astronomy"
+    },
+    {
+      "q_ar": "كم يومًا في السنة الكبيسة؟",
+      "q_en": "How many days are there in a leap year?",
+      "a_ar": "366",
+      "a_en": "366",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "علوم الأرض",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Earth Science"
+    },
+    {
+      "q_ar": "كم ثانية في الساعة؟",
+      "q_en": "How many seconds are there in an hour?",
+      "a_ar": "3,600",
+      "a_en": "3,600",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "علوم الأرض",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Earth Science"
+    },
+    {
+      "q_ar": "ما هو أكبر ثدييات في العالم؟",
+      "q_en": "What is the largest mammal in the world?",
+      "a_ar": "الحوت الأزرق",
+      "a_en": "Blue Whale",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "النباتات والحيوانات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Plants & Animals"
+    },
+    {
+      "q_ar": "أي عالم اكتشف الجاذبية؟",
+      "q_en": "Which scientist discovered gravity?",
+      "a_ar": "إسحاق نيوتن",
+      "a_en": "Isaac Newton",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Scientists & Discoveries"
+    },
+    {
+      "q_ar": "أي عالم اكتشف نظرية التطور؟",
+      "q_en": "Which scientist developed the theory of evolution?",
+      "a_ar": "تشارلز داروين",
+      "a_en": "Charles Darwin",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Scientists & Discoveries"
+    },
+    {
+      "q_ar": "أي عالم اخترع الهاتف؟",
+      "q_en": "Which scientist invented the telephone?",
+      "a_ar": "ألكسندر غراهام بيل",
+      "a_en": "Alexander Graham Bell",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "العلماء والاكتشافات",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Scientists & Discoveries"
+    },
+    {
+      "q_ar": "ما اسم الغدة التي تتحكم بنسبة السكر في الدم؟",
+      "q_en": "What is the name of the gland that controls blood sugar levels?",
+      "a_ar": "البنكرياس",
+      "a_en": "Pancreas",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "ما اسم الجهاز المسؤول عن ضخ الدم؟",
+      "q_en": "What is the name of the organ responsible for pumping blood?",
+      "a_ar": "القلب",
+      "a_en": "Heart",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "كم عدد أسنان الإنسان البالغ؟",
+      "q_en": "How many teeth does an adult human have?",
+      "a_ar": "32",
+      "a_en": "32",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "ما اسم أطول عظم في الجسم؟",
+      "q_en": "What is the longest bone in the human body?",
+      "a_ar": "عظم الفخذ",
+      "a_en": "Femur",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "كم عدد رئات الإنسان؟",
+      "q_en": "How many lungs does a human have?",
+      "a_ar": "2",
+      "a_en": "2",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "كم طبقة في جلد الإنسان؟",
+      "q_en": "How many layers does human skin have?",
+      "a_ar": "ثلاث طبقات رئيسية",
+      "a_en": "Three main layers",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "كم فصيلة دم لدى الإنسان؟",
+      "q_en": "How many blood types are there in humans?",
+      "a_ar": "4 (A, B, AB, O)",
+      "a_en": "4 (A, B, AB, O)",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "جسم الإنسان",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Human Body"
+    },
+    {
+      "q_ar": "ما اسم الجزيء الوراثي؟",
+      "q_en": "What is the name of the genetic molecule?",
+      "a_ar": "DNA",
+      "a_en": "DNA",
+      "cat_ar": "🔬 العلوم والطبيعة",
+      "subcat_ar": "علم الأحياء",
+      "cat_en": "🔬 Science & Nature",
+      "subcat_en": "Biology"
     },
     {
       "q_ar": "بأي محافظة اردنية تقع البتراء؟",
