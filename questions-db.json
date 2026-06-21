@@ -643,8 +643,8 @@
     {
       "q_ar": "كم ثانية في الساعة؟",
       "q_en": "How many seconds are there in an hour?",
-      "a_ar": "3,600",
-      "a_en": "3,600",
+      "a_ar": "3600",
+      "a_en": "3600",
       "cat_ar": "🔬 العلوم والطبيعة",
       "subcat_ar": "علوم الأرض",
       "cat_en": "🔬 Science & Nature",
@@ -3076,9 +3076,9 @@
       "a_ar": "إبراهيم",
       "a_en": "Abraham",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": null
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي أعاد بناء الكعبة؟",
@@ -3126,9 +3126,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "Christianity"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "إلى أي مدينة هاجر النبي محمد؟",
@@ -3146,9 +3146,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي بحر شق موسى؟",
@@ -3156,9 +3156,9 @@
       "a_ar": "البحر الأحمر",
       "a_en": "Red Sea",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "ما معجزة النبي صالح عليه السلام؟",
@@ -3166,9 +3166,9 @@
       "a_ar": "الناقة",
       "a_en": "The she-camel",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي نجا داخل حوت؟",
@@ -3176,9 +3176,9 @@
       "a_ar": "يونس عليه السلام",
       "a_en": "Yunus",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي ديانة تعبد أهورا مزدا؟",
@@ -3206,9 +3206,9 @@
       "a_ar": "إبراهيم عليه السلام",
       "a_en": "Abraham (Ibrahim)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي زوجته أنجبت في سن متأخرة؟",
@@ -3216,9 +3216,9 @@
       "a_ar": "إبراهيم عليه السلام",
       "a_en": "Abraham (Ibrahim)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي حطم الأصنام؟",
@@ -3226,9 +3226,9 @@
       "a_ar": "إبراهيم عليه السلام",
       "a_en": "Abraham (Ibrahim)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي أُلقي في النار ولم يحترق؟",
@@ -3236,9 +3236,9 @@
       "a_ar": "إبراهيم عليه السلام",
       "a_en": "Abraham (Ibrahim)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "ما اسم الجنة التي عاش فيها آدم وحواء؟",
@@ -3246,9 +3246,9 @@
       "a_ar": "جنة عدن",
       "a_en": "Garden of Eden",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي وُلد بدون أب؟",
@@ -3256,9 +3256,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي كان يشفي المرضى ويحيي الموتى بإذن الله؟",
@@ -3266,9 +3266,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي صنع طيراً من الطين بإذن الله؟",
@@ -3276,9 +3276,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي شفى العمى؟",
@@ -3286,9 +3286,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي تكلم وهو رضيع؟",
@@ -3296,9 +3296,9 @@
       "a_ar": "عيسى عليه السلام",
       "a_en": "Jesus (Isa)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي شُفي بعد مرض طويل؟",
@@ -3306,9 +3306,9 @@
       "a_ar": "أيوب عليه السلام",
       "a_en": "Ayyub",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي اشتهر بالصبر الشديد؟",
@@ -3316,9 +3316,9 @@
       "a_ar": "أيوب عليه السلام",
       "a_en": "Ayyub",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي نجا داخل حوت عظيم؟",
@@ -3326,9 +3326,9 @@
       "a_ar": "يونس عليه السلام",
       "a_en": "Yunus",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي صام ونجا في بطن الحوت؟",
@@ -3336,9 +3336,9 @@
       "a_ar": "يونس عليه السلام",
       "a_en": "Yunus",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي أُرسل إلى نينوى؟",
@@ -3346,9 +3346,9 @@
       "a_ar": "يونس عليه السلام",
       "a_en": "Yunus",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي فسّر الأحلام في السجن وأصبح حاكماً؟",
@@ -3356,9 +3356,9 @@
       "a_ar": "يوسف عليه السلام",
       "a_en": "Joseph (Yusuf)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي اشتهر بتفسير الأحلام في مصر؟",
@@ -3366,9 +3366,9 @@
       "a_ar": "يوسف عليه السلام",
       "a_en": "Joseph (Yusuf)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "من قاد بني إسرائيل للخروج من مصر؟",
@@ -3376,9 +3376,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "عصا أي نبي تحولت إلى ثعبان؟",
@@ -3386,9 +3386,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "عصا أي نبي تحولت إلى ثعبان أمام فرعون؟",
@@ -3396,9 +3396,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "عصا أي نبي ابتلعت سحر السحرة؟",
@@ -3406,9 +3406,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي وُضع في سلة على النهر؟",
@@ -3416,9 +3416,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي نجا قومه من فرعون؟",
@@ -3426,9 +3426,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي كلمه الله من شجرة مشتعلة؟",
@@ -3436,9 +3436,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي كلمه الله مباشرة في جبل سيناء؟",
@@ -3446,9 +3446,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي شق البحر؟",
@@ -3456,9 +3456,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي جاءت على يده الضربات العشر على مصر؟",
@@ -3466,9 +3466,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي أخرج الماء من الصخر؟",
@@ -3476,9 +3476,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي أُعطي التوراة؟",
@@ -3486,9 +3486,9 @@
       "a_ar": "موسى عليه السلام",
       "a_en": "Moses",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "على أي جبل استقر فلك نوح وفقاً للتقاليد؟",
@@ -3496,9 +3496,9 @@
       "a_ar": "جبل أرارات",
       "a_en": "Mount Ararat",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي شق القمر؟",
@@ -3506,9 +3506,9 @@
       "a_ar": "محمد ﷺ",
       "a_en": "Muhammad",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي شق القمر؟",
@@ -3516,9 +3516,9 @@
       "a_ar": "محمد ﷺ",
       "a_en": "Muhammad",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي انتقل من مكة إلى القدس في ليلة واحدة؟",
@@ -3526,9 +3526,9 @@
       "a_ar": "محمد ﷺ",
       "a_en": "Muhammad",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي نجا من الطوفان؟",
@@ -3536,9 +3536,9 @@
       "a_ar": "نوح",
       "a_en": "Noah",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي قومه أهلكوا بالطوفان؟",
@@ -3546,9 +3546,9 @@
       "a_ar": "نوح",
       "a_en": "Noah",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي بنى الفلك؟",
@@ -3556,9 +3556,9 @@
       "a_ar": "نوح",
       "a_en": "Noah",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "ما اسم أول خمسة أسفار من الكتاب المقدس؟",
@@ -3566,9 +3566,9 @@
       "a_ar": "الأسفار الخمسة",
       "a_en": "Pentateuch",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي بحر شقه موسى؟",
@@ -3576,9 +3576,9 @@
       "a_ar": "البحر الأحمر",
       "a_en": "Red Sea",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي خرجت له ناقة من الصخر؟",
@@ -3586,9 +3586,9 @@
       "a_ar": "صالح عليه السلام",
       "a_en": "Saleh",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي ملك بنى الهيكل الأول في القدس؟",
@@ -3596,9 +3596,9 @@
       "a_ar": "سليمان عليه السلام",
       "a_en": "Solomon",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي كان يفهم لغة الحيوانات؟",
@@ -3606,9 +3606,9 @@
       "a_ar": "سليمان عليه السلام",
       "a_en": "Solomon (Sulaiman)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي كان له جيش من الجن والإنس؟",
@@ -3616,9 +3616,9 @@
       "a_ar": "سليمان عليه السلام",
       "a_en": "Solomon (Sulaiman)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي سخر الله له الرياح؟",
@@ -3626,9 +3626,9 @@
       "a_ar": "سليمان عليه السلام",
       "a_en": "Solomon (Sulaiman)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي تكلم مع الطيور؟",
@@ -3636,9 +3636,9 @@
       "a_ar": "سليمان عليه السلام",
       "a_en": "Solomon (Sulaiman)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "أي نبي رُزق بابن في سن متأخرة؟",
@@ -3646,9 +3646,9 @@
       "a_ar": "زكريا عليه السلام",
       "a_en": "Zachariah (Zakariya)",
       "cat_ar": "☪️ دين",
-      "subcat_ar": "عامة",
+      "subcat_ar": "إسلامية / مسيحية / يهودية",
       "cat_en": "☪️ Religion",
-      "subcat_en": "General"
+      "subcat_en": "Islam / Christianity / Judaism"
     },
     {
       "q_ar": "كم عدد الغورو المعترف بهم في السيخية؟",
@@ -4316,7 +4316,7 @@
       "a_ar": "2",
       "a_en": "2",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4326,7 +4326,7 @@
       "a_ar": "2",
       "a_en": "2",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4336,7 +4336,7 @@
       "a_ar": "3",
       "a_en": "3",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4346,7 +4346,7 @@
       "a_ar": "5",
       "a_en": "5",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4356,7 +4356,7 @@
       "a_ar": "7",
       "a_en": "7",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4366,7 +4366,7 @@
       "a_ar": "10",
       "a_en": "10",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4376,7 +4376,7 @@
       "a_ar": "10",
       "a_en": "10",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4386,7 +4386,7 @@
       "a_ar": "10",
       "a_en": "10",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4396,7 +4396,7 @@
       "a_ar": "10",
       "a_en": "10",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4406,7 +4406,7 @@
       "a_ar": "11",
       "a_en": "11",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4416,7 +4416,7 @@
       "a_ar": "22",
       "a_en": "22",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4426,7 +4426,7 @@
       "a_ar": "12 ياردة",
       "a_en": "12 yards",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4436,7 +4436,7 @@
       "a_ar": "كأس العالم 2018",
       "a_en": "2018 World Cup",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4446,7 +4446,7 @@
       "a_ar": "30 دقيقة",
       "a_en": "30 minutes",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4456,7 +4456,7 @@
       "a_ar": "90 دقيقة",
       "a_en": "90 minutes",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4466,7 +4466,7 @@
       "a_ar": "ميلان",
       "a_en": "AC Milan",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4476,7 +4476,7 @@
       "a_ar": "ميلان",
       "a_en": "AC Milan",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4486,7 +4486,7 @@
       "a_ar": "أياكس",
       "a_en": "Ajax",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4496,7 +4496,7 @@
       "a_ar": "أليكس فيرغسون",
       "a_en": "Alex Ferguson",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4506,7 +4506,7 @@
       "a_ar": "أليكس فيرغسون",
       "a_en": "Alex Ferguson",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4516,7 +4516,7 @@
       "a_ar": "الجزائر",
       "a_en": "Algeria",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4526,7 +4526,7 @@
       "a_ar": "أليانز أرينا",
       "a_en": "Allianz Arena",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4536,7 +4536,7 @@
       "a_ar": "أليانز ستاديوم",
       "a_en": "Allianz Stadium",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4546,7 +4546,7 @@
       "a_ar": "أندريس إنييستا",
       "a_en": "Andrés Iniesta",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4556,7 +4556,7 @@
       "a_ar": "أندريس إنييستا",
       "a_en": "Andrés Iniesta",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4566,7 +4566,7 @@
       "a_ar": "أندريس إنييستا",
       "a_en": "Andrés Iniesta",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4576,7 +4576,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4586,7 +4586,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4596,7 +4596,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4606,7 +4606,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4616,7 +4616,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4626,7 +4626,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4636,7 +4636,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4646,7 +4646,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4656,7 +4656,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4666,7 +4666,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4676,7 +4676,7 @@
       "a_ar": "الأرجنتين",
       "a_en": "Argentina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4686,7 +4686,7 @@
       "a_ar": "أرسنال",
       "a_en": "Arsenal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4696,7 +4696,7 @@
       "a_ar": "أرسنال",
       "a_en": "Arsenal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4706,7 +4706,7 @@
       "a_ar": "أرسنال",
       "a_en": "Arsenal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4716,7 +4716,7 @@
       "a_ar": "أرسنال",
       "a_en": "Arsenal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4726,7 +4726,7 @@
       "a_ar": "أرسين فينغر",
       "a_en": "Arsène Wenger",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4736,7 +4736,7 @@
       "a_ar": "أستون فيلا",
       "a_en": "Aston Villa",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4746,7 +4746,7 @@
       "a_ar": "أتلتيكو مدريد",
       "a_en": "Atlético Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4756,7 +4756,7 @@
       "a_ar": "أتلتيكو مدريد",
       "a_en": "Atlético Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4766,7 +4766,7 @@
       "a_ar": "الأزوري",
       "a_en": "Azzurri",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4776,7 +4776,7 @@
       "a_ar": "برشلونة",
       "a_en": "Barcelona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4786,7 +4786,7 @@
       "a_ar": "برشلونة",
       "a_en": "Barcelona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4796,7 +4796,7 @@
       "a_ar": "باير ليفركوزن",
       "a_en": "Bayer Leverkusen",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4806,7 +4806,7 @@
       "a_ar": "بايرن ميونخ",
       "a_en": "Bayern Munich",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4816,7 +4816,7 @@
       "a_ar": "بايرن ميونخ",
       "a_en": "Bayern Munich",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4826,7 +4826,7 @@
       "a_ar": "بايرن ميونخ",
       "a_en": "Bayern Munich",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4836,7 +4836,7 @@
       "a_ar": "بايرن ميونخ",
       "a_en": "Bayern Munich",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4846,7 +4846,7 @@
       "a_ar": "بلجيكا",
       "a_en": "Belgium",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4856,7 +4856,7 @@
       "a_ar": "بلجيكا",
       "a_en": "Belgium",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4866,7 +4866,7 @@
       "a_ar": "البلوغرانا",
       "a_en": "Blaugrana",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4876,7 +4876,7 @@
       "a_ar": "بوروسيا دورتموند",
       "a_en": "Borussia Dortmund",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4886,7 +4886,7 @@
       "a_ar": "بوروسيا دورتموند",
       "a_en": "Borussia Dortmund",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4896,7 +4896,7 @@
       "a_ar": "بورنموث",
       "a_en": "Bournemouth",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4906,7 +4906,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4916,7 +4916,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4926,7 +4926,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4936,7 +4936,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4946,7 +4946,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4956,7 +4956,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4966,7 +4966,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4976,7 +4976,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4986,7 +4986,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -4996,7 +4996,7 @@
       "a_ar": "البرازيل",
       "a_en": "Brazil",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5006,7 +5006,7 @@
       "a_ar": "برينتفورد",
       "a_en": "Brentford",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5016,7 +5016,7 @@
       "a_ar": "الكاميرون",
       "a_en": "Cameroon",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5026,7 +5026,7 @@
       "a_ar": "كامب نو",
       "a_en": "Camp Nou",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5036,7 +5036,7 @@
       "a_ar": "تشيلسي",
       "a_en": "Chelsea",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5046,7 +5046,7 @@
       "a_ar": "تشيلسي",
       "a_en": "Chelsea",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5056,7 +5056,7 @@
       "a_ar": "تشيلسي",
       "a_en": "Chelsea",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5066,7 +5066,7 @@
       "a_ar": "تشيلسي",
       "a_en": "Chelsea",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5076,7 +5076,7 @@
       "a_ar": "تشيلي",
       "a_en": "Chile",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5086,7 +5086,7 @@
       "a_ar": "كلاوديو رانييري",
       "a_en": "Claudio Ranieri",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5096,7 +5096,7 @@
       "a_ar": "كورينثيانز",
       "a_en": "Corinthians",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5106,7 +5106,7 @@
       "a_ar": "كريستيانو رونالدو",
       "a_en": "Cristiano Ronaldo",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5116,7 +5116,7 @@
       "a_ar": "كريستيانو رونالدو",
       "a_en": "Cristiano Ronaldo",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5126,7 +5126,7 @@
       "a_ar": "كريستيانو رونالدو",
       "a_en": "Cristiano Ronaldo",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5136,7 +5136,7 @@
       "a_ar": "كريستيانو رونالدو",
       "a_en": "Cristiano Ronaldo",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5146,7 +5146,7 @@
       "a_ar": "كرواتيا",
       "a_en": "Croatia",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5156,7 +5156,7 @@
       "a_ar": "كريستال بالاس",
       "a_en": "Crystal Palace",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5166,7 +5166,7 @@
       "a_ar": "دافيد تريزيغيه",
       "a_en": "David Trezeguet",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5176,7 +5176,7 @@
       "a_ar": "الدنمارك",
       "a_en": "Denmark",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5186,7 +5186,7 @@
       "a_ar": "دينيس بيركامب",
       "a_en": "Dennis Bergkamp",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5196,7 +5196,7 @@
       "a_ar": "ديربي الغضب",
       "a_en": "Derby della Madonnina",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5206,7 +5206,7 @@
       "a_ar": "المانشافت",
       "a_en": "Die Mannschaft",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5216,7 +5216,7 @@
       "a_ar": "الحمر",
       "a_en": "Die Roten",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5226,7 +5226,7 @@
       "a_ar": "دييغو مارادونا",
       "a_en": "Diego Maradona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5236,7 +5236,7 @@
       "a_ar": "دييغو مارادونا",
       "a_en": "Diego Maradona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5246,7 +5246,7 @@
       "a_ar": "دييغو مارادونا",
       "a_en": "Diego Maradona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5256,7 +5256,7 @@
       "a_ar": "إيدر",
       "a_en": "Éder",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5266,7 +5266,7 @@
       "a_ar": "مصر",
       "a_en": "Egypt",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5276,7 +5276,7 @@
       "a_ar": "إل تري",
       "a_en": "El Tri",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5286,7 +5286,7 @@
       "a_ar": "إيميليانو مارتينيز",
       "a_en": "Emiliano Martínez",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5296,7 +5296,7 @@
       "a_ar": "إنجلترا",
       "a_en": "England",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5306,7 +5306,7 @@
       "a_ar": "إنجلترا",
       "a_en": "England",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5316,7 +5316,7 @@
       "a_ar": "إريك كانتونا",
       "a_en": "Eric Cantona",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5326,7 +5326,7 @@
       "a_ar": "إيفرتون",
       "a_en": "Everton",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5336,7 +5336,7 @@
       "a_ar": "فيرناندو توريس",
       "a_en": "Fernando Torres",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5346,7 +5346,7 @@
       "a_ar": "فينورد",
       "a_en": "Feyenoord",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5356,7 +5356,7 @@
       "a_ar": "فلورنتينو بيريز",
       "a_en": "Florentino Pérez",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5366,7 +5366,7 @@
       "a_ar": "فلومينينسي",
       "a_en": "Fluminense",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5376,7 +5376,7 @@
       "a_ar": "فرنسا",
       "a_en": "France",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5386,7 +5386,7 @@
       "a_ar": "فرنسا",
       "a_en": "France",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5396,7 +5396,7 @@
       "a_ar": "فرنسا",
       "a_en": "France",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5406,7 +5406,7 @@
       "a_ar": "فرنسا",
       "a_en": "France",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5416,7 +5416,7 @@
       "a_ar": "فرنسا",
       "a_en": "France",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5426,7 +5426,7 @@
       "a_ar": "فولهام",
       "a_en": "Fulham",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5436,7 +5436,7 @@
       "a_ar": "جورج وياه",
       "a_en": "George Weah",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5446,7 +5446,7 @@
       "a_ar": "ألمانيا",
       "a_en": "Germany",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5456,7 +5456,7 @@
       "a_ar": "ألمانيا",
       "a_en": "Germany",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5466,7 +5466,7 @@
       "a_ar": "ألمانيا",
       "a_en": "Germany",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5476,7 +5476,7 @@
       "a_ar": "اليونان",
       "a_en": "Greece",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5486,7 +5486,7 @@
       "a_ar": "إيكر كاسياس",
       "a_en": "Iker Casillas",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5496,7 +5496,7 @@
       "a_ar": "إيكر كاسياس",
       "a_en": "Iker Casillas",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5506,7 +5506,7 @@
       "a_ar": "إنتر ميلان",
       "a_en": "Inter Milan",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5516,7 +5516,7 @@
       "a_ar": "إنتر ميلان",
       "a_en": "Inter Milan",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5526,7 +5526,7 @@
       "a_ar": "إيطاليا",
       "a_en": "Italy",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5536,7 +5536,7 @@
       "a_ar": "إيطاليا",
       "a_en": "Italy",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5546,7 +5546,7 @@
       "a_ar": "إيطاليا",
       "a_en": "Italy",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5556,7 +5556,7 @@
       "a_ar": "ساحل العاج",
       "a_en": "Ivory Coast",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5566,7 +5566,7 @@
       "a_ar": "ساحل العاج",
       "a_en": "Ivory Coast",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5576,7 +5576,7 @@
       "a_ar": "جيمي فاردي",
       "a_en": "Jamie Vardy",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5586,7 +5586,7 @@
       "a_ar": "يوهان كرويف",
       "a_en": "Johan Cruyff",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5596,7 +5596,7 @@
       "a_ar": "جوزيه مورينيو",
       "a_en": "José Mourinho",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5606,7 +5606,7 @@
       "a_ar": "جوزيه مورينيو",
       "a_en": "José Mourinho",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5616,7 +5616,7 @@
       "a_ar": "جوزيه مورينيو",
       "a_en": "José Mourinho",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5626,7 +5626,7 @@
       "a_ar": "يوفنتوس",
       "a_en": "Juventus",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5636,7 +5636,7 @@
       "a_ar": "يوفنتوس",
       "a_en": "Juventus",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5646,7 +5646,7 @@
       "a_ar": "يوفنتوس",
       "a_en": "Juventus",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5656,7 +5656,7 @@
       "a_ar": "كاكا",
       "a_en": "Kaká",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5666,7 +5666,7 @@
       "a_ar": "كريم بنزيما",
       "a_en": "Karim Benzema",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5676,7 +5676,7 @@
       "a_ar": "كيليان مبابي",
       "a_en": "Kylian Mbappé",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5686,7 +5686,7 @@
       "a_ar": "كيليان مبابي",
       "a_en": "Kylian Mbappé",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5696,7 +5696,7 @@
       "a_ar": "لا سيليستي",
       "a_en": "La Celeste",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5706,7 +5706,7 @@
       "a_ar": "لا ماسيا",
       "a_en": "La Masia",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5716,7 +5716,7 @@
       "a_ar": "ليستر سيتي",
       "a_en": "Leicester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5726,7 +5726,7 @@
       "a_ar": "ليستر سيتي",
       "a_en": "Leicester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5736,7 +5736,7 @@
       "a_ar": "الديوك الزرق",
       "a_en": "Les Bleus",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5746,7 +5746,7 @@
       "a_ar": "ليبيريا",
       "a_en": "Liberia",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5756,7 +5756,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5766,7 +5766,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5776,7 +5776,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5786,7 +5786,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5796,7 +5796,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5806,7 +5806,7 @@
       "a_ar": "ليونيل ميسي",
       "a_en": "Lionel Messi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5816,7 +5816,7 @@
       "a_ar": "ليفربول",
       "a_en": "Liverpool",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5826,7 +5826,7 @@
       "a_ar": "ليفربول",
       "a_en": "Liverpool",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5836,7 +5836,7 @@
       "a_ar": "ليفربول",
       "a_en": "Liverpool",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5846,7 +5846,7 @@
       "a_ar": "ليفربول",
       "a_en": "Liverpool",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5856,7 +5856,7 @@
       "a_ar": "ليفربول",
       "a_en": "Liverpool",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5866,7 +5866,7 @@
       "a_ar": "الميرينغي",
       "a_en": "Los Blancos",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5876,7 +5876,7 @@
       "a_ar": "لوكا مودريتش",
       "a_en": "Luka Modrić",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5886,7 +5886,7 @@
       "a_ar": "لوكا مودريتش",
       "a_en": "Luka Modrić",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5896,7 +5896,7 @@
       "a_ar": "ملعب لوسيل",
       "a_en": "Lusail Stadium",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5906,7 +5906,7 @@
       "a_ar": "ديربي مدريد",
       "a_en": "Madrid Derby",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5916,7 +5916,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5926,7 +5926,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5936,7 +5936,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5946,7 +5946,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5956,7 +5956,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5966,7 +5966,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5976,7 +5976,7 @@
       "a_ar": "مانشستر سيتي",
       "a_en": "Manchester City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5986,7 +5986,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -5996,7 +5996,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6006,7 +6006,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6016,7 +6016,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6026,7 +6026,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6036,7 +6036,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6046,7 +6046,7 @@
       "a_ar": "مانشستر يونايتد",
       "a_en": "Manchester United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6056,7 +6056,7 @@
       "a_ar": "ماركو فان باستن",
       "a_en": "Marco van Basten",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6066,7 +6066,7 @@
       "a_ar": "ماركو فان باستن",
       "a_en": "Marco van Basten",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6076,7 +6076,7 @@
       "a_ar": "ماريو غوتزه",
       "a_en": "Mario Götze",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6086,7 +6086,7 @@
       "a_ar": "ديربي ميرسيسايد",
       "a_en": "Merseyside Derby",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6096,7 +6096,7 @@
       "a_ar": "ميروسلاف كلوزه",
       "a_en": "Miroslav Klose",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6106,7 +6106,7 @@
       "a_ar": "محمد صلاح",
       "a_en": "Mohamed Salah",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6116,7 +6116,7 @@
       "a_ar": "هولندا",
       "a_en": "Netherlands",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6126,7 +6126,7 @@
       "a_ar": "هولندا",
       "a_en": "Netherlands",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6136,7 +6136,7 @@
       "a_ar": "هولندا",
       "a_en": "Netherlands",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6146,7 +6146,7 @@
       "a_ar": "نيويورك كوزموس",
       "a_en": "New York Cosmos",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6156,7 +6156,7 @@
       "a_ar": "النرويج",
       "a_en": "Norway",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6166,7 +6166,7 @@
       "a_ar": "النرويج",
       "a_en": "Norway",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6176,7 +6176,7 @@
       "a_ar": "نوريتش سيتي",
       "a_en": "Norwich City",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6186,7 +6186,7 @@
       "a_ar": "أولد فيرم",
       "a_en": "Old Firm",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6196,7 +6196,7 @@
       "a_ar": "أولد ترافورد",
       "a_en": "Old Trafford",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6206,7 +6206,7 @@
       "a_ar": "بارك دي برانس",
       "a_en": "Parc des Princes",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6216,7 +6216,7 @@
       "a_ar": "باريس سان جيرمان",
       "a_en": "Paris Saint-Germain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6226,7 +6226,7 @@
       "a_ar": "بيليه",
       "a_en": "Pelé",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6236,7 +6236,7 @@
       "a_ar": "ركلة جزاء",
       "a_en": "Penalty Kick",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6246,7 +6246,7 @@
       "a_ar": "بيب غوارديولا",
       "a_en": "Pep Guardiola",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6256,7 +6256,7 @@
       "a_ar": "البرتغال",
       "a_en": "Portugal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6266,7 +6266,7 @@
       "a_ar": "البرتغال",
       "a_en": "Portugal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6276,7 +6276,7 @@
       "a_ar": "البرتغال",
       "a_en": "Portugal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6286,7 +6286,7 @@
       "a_ar": "قطر",
       "a_en": "Qatar",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6296,7 +6296,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6306,7 +6306,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6316,7 +6316,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6326,7 +6326,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6336,7 +6336,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6346,7 +6346,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6356,7 +6356,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6366,7 +6366,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6376,7 +6376,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6386,7 +6386,7 @@
       "a_ar": "ريال مدريد",
       "a_en": "Real Madrid",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6396,7 +6396,7 @@
       "a_ar": "رودري",
       "a_en": "Rodri",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6406,7 +6406,7 @@
       "a_ar": "روما",
       "a_en": "Roma",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6416,7 +6416,7 @@
       "a_ar": "رونالدينيو",
       "a_en": "Ronaldinho",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6426,7 +6426,7 @@
       "a_ar": "رونالدينيو",
       "a_en": "Ronaldinho",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6436,7 +6436,7 @@
       "a_ar": "رونالدو نازاريو",
       "a_en": "Ronaldo Nazário",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6446,7 +6446,7 @@
       "a_ar": "رونالدو نازاريو",
       "a_en": "Ronaldo Nazário",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6456,7 +6456,7 @@
       "a_ar": "روسيا",
       "a_en": "Russia",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6466,7 +6466,7 @@
       "a_ar": "ساديو ماني",
       "a_en": "Sadio Mané",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6476,7 +6476,7 @@
       "a_ar": "ساديو ماني",
       "a_en": "Sadio Mané",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6486,7 +6486,7 @@
       "a_ar": "الساموراي الأزرق",
       "a_en": "Samurai Blue",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6496,7 +6496,7 @@
       "a_ar": "سان سيرو",
       "a_en": "San Siro",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6506,7 +6506,7 @@
       "a_ar": "سانتياغو برنابيو",
       "a_en": "Santiago Bernabéu",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6516,7 +6516,7 @@
       "a_ar": "سانتوس",
       "a_en": "Santos",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6526,7 +6526,7 @@
       "a_ar": "السنغال",
       "a_en": "Senegal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6536,7 +6536,7 @@
       "a_ar": "السنغال",
       "a_en": "Senegal",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6546,7 +6546,7 @@
       "a_ar": "سيغنال إيدونا بارك",
       "a_en": "Signal Iduna Park",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6556,7 +6556,7 @@
       "a_ar": "سيغنال إيدونا بارك",
       "a_en": "Signal Iduna Park",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6566,7 +6566,7 @@
       "a_ar": "جنوب أفريقيا",
       "a_en": "South Africa",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6576,7 +6576,7 @@
       "a_ar": "جنوب أفريقيا",
       "a_en": "South Africa",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6586,7 +6586,7 @@
       "a_ar": "ساوثهامبتون",
       "a_en": "Southampton",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6596,7 +6596,7 @@
       "a_ar": "الاتحاد السوفيتي",
       "a_en": "Soviet Union",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6606,7 +6606,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6616,7 +6616,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6626,7 +6626,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6636,7 +6636,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6646,7 +6646,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6656,7 +6656,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6666,7 +6666,7 @@
       "a_ar": "إسبانيا",
       "a_en": "Spain",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6676,7 +6676,7 @@
       "a_ar": "سبورتينغ لشبونة",
       "a_en": "Sporting CP",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6686,7 +6686,7 @@
       "a_ar": "السوبر كلاسيكو",
       "a_en": "Superclásico",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6696,7 +6696,7 @@
       "a_ar": "السويد",
       "a_en": "Sweden",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6706,7 +6706,7 @@
       "a_ar": "اللامقهورون",
       "a_en": "The Invincibles",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6716,7 +6716,7 @@
       "a_ar": "الأوروغواي",
       "a_en": "Uruguay",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6726,7 +6726,7 @@
       "a_ar": "الأوروغواي",
       "a_en": "Uruguay",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6736,7 +6736,7 @@
       "a_ar": "الأوروغواي",
       "a_en": "Uruguay",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6746,7 +6746,7 @@
       "a_ar": "الأوروغواي",
       "a_en": "Uruguay",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6756,7 +6756,7 @@
       "a_ar": "الولايات المتحدة",
       "a_en": "USA",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6766,7 +6766,7 @@
       "a_ar": "الولايات المتحدة",
       "a_en": "USA",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6776,7 +6776,7 @@
       "a_ar": "الولايات المتحدة",
       "a_en": "USA",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6786,7 +6786,7 @@
       "a_ar": "الفوفوزيلا",
       "a_en": "Vuvuzela",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6796,7 +6796,7 @@
       "a_ar": "ألمانيا الغربية",
       "a_en": "West Germany",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6806,7 +6806,7 @@
       "a_ar": "وست هام",
       "a_en": "West Ham United",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6816,7 +6816,7 @@
       "a_ar": "تشافي",
       "a_en": "Xavi",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6826,7 +6826,7 @@
       "a_ar": "الأصفر",
       "a_en": "Yellow",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6836,7 +6836,7 @@
       "a_ar": "الأصفر",
       "a_en": "Yellow",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
     },
@@ -6846,9 +6846,1759 @@
       "a_ar": "زين الدين زيدان",
       "a_en": "Zinedine Zidane",
       "cat_ar": "⚽ رياضة",
-      "subcat_ar": "Football",
+      "subcat_ar": "كرة قدم",
       "cat_en": "⚽ Sports",
       "subcat_en": "Football"
+    },
+    {
+      "q_ar": "كم نقطة تساوي الرمية الحرة؟",
+      "q_en": "How many points is a free throw worth?",
+      "a_ar": "1",
+      "a_en": "1",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم نقطة تساوي التسديدة من خارج القوس؟",
+      "q_en": "How many points is a shot made from behind the arc worth?",
+      "a_ar": "3",
+      "a_en": "3",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم لاعباً من الفريق الواحد يكون داخل الملعب في مباراة كرة سلة؟",
+      "q_en": "How many players from one team are on the court at a time in a basketball game?",
+      "a_ar": "5",
+      "a_en": "5",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم بطولة فاز بها روبرت هوري؟",
+      "q_en": "How many NBA championships did Robert Horry win?",
+      "a_ar": "7",
+      "a_en": "7",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما الرقم الشهير لمايكل جوردان؟",
+      "q_en": "What number did Michael Jordan famously wear?",
+      "a_ar": "23",
+      "a_en": "23",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما الرقم المرتبط بليبرون جيمس؟",
+      "q_en": "What number is associated with LeBron James?",
+      "a_ar": "23",
+      "a_en": "23",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي عام اختُرعت كرة السلة؟",
+      "q_en": "In which year was basketball invented?",
+      "a_ar": "1891",
+      "a_en": "1891",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم مدة الربع في فيبا؟",
+      "q_en": "How many minutes is each FIBA quarter?",
+      "a_ar": "10 دقائق",
+      "a_en": "10 minutes",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم مدة مباراة فيبا؟",
+      "q_en": "How long is a FIBA game?",
+      "a_ar": "40 دقيقة",
+      "a_en": "40 minutes",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "كم مدة مباراة NBA الرسمية؟",
+      "q_en": "How long is an NBA game?",
+      "a_ar": "48 دقيقة",
+      "a_en": "48 minutes",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من حل وصيفاً لكأس العالم 2019 في كرة السلة؟",
+      "q_en": "Which country finished runner-up at the basketball 2019 World Cup?",
+      "a_ar": "الأرجنتين",
+      "a_en": "Argentina",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة ينحدر جويل إمبيد؟",
+      "q_en": "Which country is Joel Embiid originally from?",
+      "a_ar": "الكاميرون",
+      "a_en": "Cameroon",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي دولة وُلد ديكيمبي موتومبو؟",
+      "q_en": "Which country was Dikembe Mutombo born in?",
+      "a_ar": "الكونغو الديمقراطية",
+      "a_en": "DR Congo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي مؤتمر يضم السيلتيكس؟",
+      "q_en": "Which conference includes the Celtics?",
+      "a_ar": "المؤتمر الشرقي",
+      "a_en": "Eastern Conference",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي مؤتمر يضم الليكرز؟",
+      "q_en": "Which conference includes the Lakers?",
+      "a_ar": "المؤتمر الغربي",
+      "a_en": "Western Conference",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بذهبية أولمبياد 2024؟",
+      "q_en": "Which country won Olympic gold in men's basketball in 2024?",
+      "a_ar": "الولايات المتحدة",
+      "a_en": "United States",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي دولة فازت بأول ذهبية أولمبية في كرة السلة للرجال؟",
+      "q_en": "Which country won the first Olympic men's basketball gold medal?",
+      "a_ar": "الولايات المتحدة",
+      "a_en": "United States",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بذهبية كرة السلة للسيدات في أولمبياد 2024؟",
+      "q_en": "Which country won the Women's Olympic Basketball Gold in 2024?",
+      "a_ar": "الولايات المتحدة",
+      "a_en": "United States",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما أهم بطولة أندية في أوروبا في كرة السلة؟",
+      "q_en": "What is Europe's top club competition in basketball?",
+      "a_ar": "اليوروليغ",
+      "a_en": "EuroLeague",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة يانيس أنتيتوكونمبو؟",
+      "q_en": "Which country is Giannis Antetokounmpo from?",
+      "a_ar": "اليونان",
+      "a_en": "Greece",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بيوروباسكت 2022؟",
+      "q_en": "Which country won EuroBasket 2022?",
+      "a_ar": "إسبانيا",
+      "a_en": "Spain",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بكأس العالم 2019؟",
+      "q_en": "Which country won the FIBA World Cup in 2019?",
+      "a_ar": "إسبانيا",
+      "a_en": "Spain",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق كرة سلة يقع في إنديانابوليس؟",
+      "q_en": "Which NBA team is based in Indianapolis?",
+      "a_ar": "إنديانا بيسرز",
+      "a_en": "Indiana Pacers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي جامعة لعب لاري بيرد؟",
+      "q_en": "Which college did Larry Bird attend?",
+      "a_ar": "إنديانا ستيت",
+      "a_en": "Indiana State",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق لعب دومينيك ويلكنز؟",
+      "q_en": "Which team did Dominique Wilkins star for?",
+      "a_ar": "أتلانتا هوكس",
+      "a_en": "Atlanta Hawks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة ديرك نوفيتسكي؟",
+      "q_en": "Which country is Dirk Nowitzki from?",
+      "a_ar": "ألمانيا",
+      "a_en": "Germany",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بكأس العالم 2023؟",
+      "q_en": "Which country won the 2023 FIBA World Cup?",
+      "a_ar": "ألمانيا",
+      "a_en": "Germany",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من لاعب كرة السلة الذي يُعرف بالإجابة؟",
+      "q_en": "Which NBA player is known as The Answer?",
+      "a_ar": "ألين آيفرسون",
+      "a_en": "Allen Iverson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2001؟",
+      "q_en": "Which NBA player won the 2001 NBA MVP?",
+      "a_ar": "ألين آيفرسون",
+      "a_en": "Allen Iverson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من ساهم في انتشار أكمام الذراع؟",
+      "q_en": "Which NBA player popularized shooting sleeves?",
+      "a_ar": "ألين آيفرسون",
+      "a_en": "Allen Iverson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالرجل النملة؟",
+      "q_en": "Which NBA player is nicknamed Ant-Man?",
+      "a_ar": "أنتوني إدواردز",
+      "a_en": "Anthony Edwards",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالحاجب؟",
+      "q_en": "Which NBA player is known as The Brow?",
+      "a_ar": "أنتوني ديفيس",
+      "a_en": "Anthony Davis",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من كان الاختيار الأول في درافت 2012؟",
+      "q_en": "Which NBA player was the first overall pick in 2012?",
+      "a_ar": "أنتوني ديفيس",
+      "a_en": "Anthony Davis",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بـ AK-47؟",
+      "q_en": "Which NBA player is nicknamed AK-47?",
+      "a_ar": "أندريه كيريلينكو",
+      "a_en": "Andrei Kirilenko",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق كرة سلة يقع في مدينة أورلاندو؟",
+      "q_en": "Which NBA team is based in Orlando?",
+      "a_ar": "أورلاندو ماجيك",
+      "a_en": "Orlando Magic",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما البطولة المعروفة باسم March Madness؟",
+      "q_en": "What tournament is known as March Madness?",
+      "a_ar": "بطولة NCAA",
+      "a_en": "NCAA Tournament",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بـ Big Ben؟",
+      "q_en": "Which NBA player is nicknamed Big Ben?",
+      "a_ar": "بن والاس",
+      "a_en": "Ben Wallace",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بأربع جوائز أفضل مدافع؟",
+      "q_en": "Which defensive specialist won four Defensive Player awards?",
+      "a_ar": "بن والاس",
+      "a_en": "Ben Wallace",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق كرة سلة يقع في مدينة بورتلاند؟",
+      "q_en": "Which NBA team is based in Portland?",
+      "a_ar": "بورتلاند ترايل بليزرز",
+      "a_en": "Portland Trail Blazers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق فاز بأكبر عدد من بطولات NBA؟",
+      "q_en": "Which NBA team has won the most championships?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2024؟",
+      "q_en": "Which team won the NBA championship in 2024?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق لعب لاري بيرد؟",
+      "q_en": "Which team did Larry Bird play for?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق اختار بول بيرس؟",
+      "q_en": "Which team drafted Paul Pierce?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بلقب NBA عام 2008؟",
+      "q_en": "Which team won the NBA title in 2008?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق يملك شعار النفل الأخضر؟",
+      "q_en": "Which NBA team has a shamrock logo?",
+      "a_ar": "بوسطن سيلتيكس",
+      "a_en": "Boston Celtics",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالحقيقة؟",
+      "q_en": "Which NBA player is known as The Truth?",
+      "a_ar": "بول بيرس",
+      "a_en": "Paul Pierce",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ Finals MVP عام 2008؟",
+      "q_en": "Which NBA player won Finals MVP in 2008?",
+      "a_ar": "بول بيرس",
+      "a_en": "Paul Pierce",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من كان يُعرف بـ Pistol Pete؟",
+      "q_en": "Which NBA player was known as Pistol Pete?",
+      "a_ar": "بيت مارافيتش",
+      "a_en": "Pete Maravich",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق كرة سلة يقع في نيو أورلينز؟",
+      "q_en": "Which NBA team is based in New Orleans?",
+      "a_ar": "بيليكانز",
+      "a_en": "Pelicans",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما الفريق الذي كان يُعرف بالهورنتس في نيو أورلينز؟",
+      "q_en": "Which team was formerly known as the Hornets in New Orleans?",
+      "a_ar": "بيليكانز",
+      "a_en": "Pelicans",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بتلة الارتدادات؟",
+      "q_en": "Which NBA player is nicknamed The Round Mound of Rebound?",
+      "a_ar": "تشارلز باركلي",
+      "a_en": "Charles Barkley",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالسير تشارلز؟",
+      "q_en": "Which NBA player is nicknamed Sir Charles?",
+      "a_ar": "تشارلز باركلي",
+      "a_en": "Charles Barkley",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ Finals MVP عام 2004؟",
+      "q_en": "Which NBA player was Finals MVP in 2004?",
+      "a_ar": "تشاونسي بيلبس",
+      "a_en": "Chauncey Billups",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالسيد التسديدة الكبيرة؟",
+      "q_en": "Which NBA player was nicknamed Mr. Big Shot?",
+      "a_ar": "تشاونسي بيلبس",
+      "a_en": "Chauncey Billups",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما القاعة الرئيسية للواريرز؟",
+      "q_en": "Which arena is home to the Golden State Warriors?",
+      "a_ar": "تشيس سنتر",
+      "a_en": "Chase Center",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة مينيسوتا؟",
+      "q_en": "Which NBA team is based in Minnesota?",
+      "a_ar": "تمبروولفز",
+      "a_en": "Timberwolves",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة تورونتو؟",
+      "q_en": "Which NBA franchise plays in Toronto?",
+      "a_ar": "تورونتو رابتورز",
+      "a_en": "Toronto Raptors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA فاز بأول لقب له عام 2019؟",
+      "q_en": "Which team won its first NBA title in 2019?",
+      "a_ar": "تورونتو رابتورز",
+      "a_en": "Toronto Raptors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما الفريق الكندي في NBA؟",
+      "q_en": "Which Canadian team plays in the NBA?",
+      "a_ar": "تورونتو رابتورز",
+      "a_en": "Toronto Raptors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما القاعة الرئيسية للبوستون سيلتيكس؟",
+      "q_en": "Which arena is home to the Boston Celtics?",
+      "a_ar": "تي دي غاردن",
+      "a_en": "TD Garden",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي لاعب NBA يُلقب بالأساسيات الكبرى؟",
+      "q_en": "Which NBA player is nicknamed The Big Fundamental?",
+      "a_ar": "تيم دنكان",
+      "a_en": "Tim Duncan",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP النهائيات 2024؟",
+      "q_en": "Which NBA player won the 2024 NBA Finals MVP?",
+      "a_ar": "جايلن براون",
+      "a_en": "Jaylen Brown",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فيلم ألهم اسم الرابتورز في ال NBA؟",
+      "q_en": "Which movie inspired the Raptors name?",
+      "a_ar": "جوراسيك بارك",
+      "a_en": "Jurassic Park",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالدكتور جي في ال NBA؟",
+      "q_en": "Which NBA player was nicknamed Dr. J?",
+      "a_ar": "جوليوس إيرفينغ",
+      "a_en": "Julius Erving",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي أسطورة ساهمت في شهرة الدانك؟",
+      "q_en": "Which ABA legend popularized slam dunks?",
+      "a_ar": "جوليوس إيرفينغ",
+      "a_en": "Julius Erving",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يملك الرقم القياسي للتمريرات الحاسمة؟",
+      "q_en": "Which NBA player holds the NBA record for most assists?",
+      "a_ar": "جون ستوكتون",
+      "a_en": "John Stockton",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يملك الرقم القياسي لسرقات الكرة في ال NBA؟",
+      "q_en": "Which NBA player holds the NBA record for most steals?",
+      "a_ar": "جون ستوكتون",
+      "a_en": "John Stockton",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2023 في ال NBA؟",
+      "q_en": "Which NBA player won MVP in 2023?",
+      "a_ar": "جويل إمبيد",
+      "a_en": "Joel Embiid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالعملية في ال NBA؟",
+      "q_en": "Which NBA player is known as The Process?",
+      "a_ar": "جويل إمبيد",
+      "a_en": "Joel Embiid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالشعار في ال NBA؟",
+      "q_en": "Which NBA player is known as The Logo?",
+      "a_ar": "جيري ويست",
+      "a_en": "Jerry West",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "صورة أي لاعب تظهر في شعار NBA؟",
+      "q_en": "Whose silhouette appears on the NBA logo?",
+      "a_ar": "جيري ويست",
+      "a_en": "Jerry West",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من اخترع كرة السلة؟",
+      "q_en": "Who invented basketball?",
+      "a_ar": "جيمس نايسميث",
+      "a_en": "James Naismith",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف باللحية؟",
+      "q_en": "Which NBA player is known as The Beard?",
+      "a_ar": "جيمس هاردن",
+      "a_en": "James Harden",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2018؟",
+      "q_en": "Which NBA player won the 2018 NBA MVP?",
+      "a_ar": "جيمس هاردن",
+      "a_en": "James Harden",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف الحلم في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed The Dream?",
+      "a_ar": "حكيم أولاجوان",
+      "a_en": "Hakeem Olajuwon",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة دالاس؟",
+      "q_en": "Which team is based in Dallas?",
+      "a_ar": "دالاس مافريكس",
+      "a_en": "Dallas Mavericks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق يلعب أنتوني ديفيس؟",
+      "q_en": "Which team does Anthony Davis play for (2025-26 season)?",
+      "a_ar": "دالاس مافريكس",
+      "a_en": "Dallas Mavericks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق يملك شعار الحصان  في ال NBA؟",
+      "q_en": "Which NBA team has a horse logo?",
+      "a_ar": "دالاس مافريكس",
+      "a_en": "Dallas Mavericks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق  في ال NBA يلعب نيكولا يوكيتش؟",
+      "q_en": "Which team does Nikola Jokić play for?",
+      "a_ar": "دنفر ناغتس",
+      "a_en": "Denver Nuggets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق فاز بأول لقب له عام 2023  في ال NBA؟",
+      "q_en": "Which team won its first NBA title in 2023?",
+      "a_ar": "دنفر ناغتس",
+      "a_en": "Denver Nuggets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من قاد أورلاندو لنهائي 2009  في ال NBA؟",
+      "q_en": "Which NBA player led Orlando to the 2009 Finals?",
+      "a_ar": "دوايت هاورد",
+      "a_en": "Dwight Howard",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من لُقب بسوبرمان  في ال NBA؟",
+      "q_en": "Which NBA player was nicknamed Superman?",
+      "a_ar": "دوايت هاورد",
+      "a_en": "Dwight Howard",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بالدانك مرتدياً زي سوبرمان؟",
+      "q_en": "Which NBA player won the 2008 Slam Dunk Contest dressed as Superman?",
+      "a_ar": "دوايت هاورد",
+      "a_en": "Dwight Howard",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي مدينة يلعب فريق البيستونز؟",
+      "q_en": "Which city hosts the Pistons?",
+      "a_ar": "ديترويت",
+      "a_en": "Detroit",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2004؟",
+      "q_en": "Which team won the NBA championship in 2004?",
+      "a_ar": "ديترويت بيستونز",
+      "a_en": "Detroit Pistons",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من قاد دالاس لأول لقب في ال NBA؟",
+      "q_en": "Which NBA player led Dallas to its first NBA title?",
+      "a_ar": "ديرك نوفيتسكي",
+      "a_en": "Dirk Nowitzki",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2007 في ال NBA؟",
+      "q_en": "Which NBA player won the 2007 NBA MVP?",
+      "a_ar": "ديرك نوفيتسكي",
+      "a_en": "Dirk Nowitzki",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2011 في ال NBA؟",
+      "q_en": "Which NBA player won the 2011 NBA MVP?",
+      "a_ar": "ديريك روز",
+      "a_en": "Derrick Rose",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أصغر لاعب فاز بـ MVP في ال NBA؟",
+      "q_en": "Which NBA player became the youngest MVP ever?",
+      "a_ar": "ديريك روز",
+      "a_en": "Derrick Rose",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بـ D-Rose في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed D-Rose?",
+      "a_ar": "ديريك روز",
+      "a_en": "Derrick Rose",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بجائزة أفضل مبتدئ عام 2009 في ال NBA؟",
+      "q_en": "Which NBA player won Rookie of the Year in 2009?",
+      "a_ar": "ديريك روز",
+      "a_en": "Derrick Rose",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالأدميرال في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed The Admiral?",
+      "a_ar": "ديفيد روبنسون",
+      "a_en": "David Robinson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بأفضل مدافع أربع مرات؟",
+      "q_en": "Which NBA player won Defensive Player of the Year four times?",
+      "a_ar": "ديكيمبي موتومبو",
+      "a_en": "Dikembe Mutombo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالدودة؟",
+      "q_en": "Which NBA player is nicknamed The Worm?",
+      "a_ar": "دينيس رودمان",
+      "a_en": "Dennis Rodman",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من تصدر الدوري في المتابعات 7 مواسم متتالية؟",
+      "q_en": "Which NBA player led the league in rebounds seven straight seasons?",
+      "a_ar": "دينيس رودمان",
+      "a_en": "Dennis Rodman",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من قاد ألمانيا في نهائي كأس العالم 2023؟",
+      "q_en": "Which NBA player led Germany in the 2023 World Cup final?",
+      "a_ar": "دينيس شرودر",
+      "a_en": "Dennis Schröder",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2017 في ال NBA؟",
+      "q_en": "Which NBA player won MVP in 2017?",
+      "a_ar": "راسل ويستبروك",
+      "a_en": "Russell Westbrook",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي نادٍ إسباني فاز بأكبر عدد من ألقاب اليوروليغ؟",
+      "q_en": "Which Spanish club has won the most EuroLeague titles?",
+      "a_ar": "ريال مدريد",
+      "a_en": "Real Madrid",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من الهداف التاريخي للبيسرز  في ال NBA؟",
+      "q_en": "Which NBA player is the all-time leading scorer for the Pacers?",
+      "a_ar": "ريجي ميلر",
+      "a_en": "Reggie Miller",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من اشتهر بالثلاثيات الحاسمة ضد النيكس؟",
+      "q_en": "Which NBA player was famous for clutch three-pointers against the Knicks?",
+      "a_ar": "ريجي ميلر",
+      "a_en": "Reggie Miller",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة ساكرامنتو؟",
+      "q_en": "Which team plays in Sacramento?",
+      "a_ar": "ساكرامنتو كينغز",
+      "a_en": "Sacramento Kings",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق اختار ويمبانياما  في ال NBA؟",
+      "q_en": "Which team drafted Victor Wembanyama?",
+      "a_ar": "سان أنطونيو سبيرز",
+      "a_en": "San Antonio Spurs",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق لعب تيم دنكان  في ال NBA؟",
+      "q_en": "Which team did Tim Duncan play for?",
+      "a_ar": "سان أنطونيو سبيرز",
+      "a_en": "San Antonio Spurs",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي مدينة اختُرعت كرة السلة؟",
+      "q_en": "In which city was basketball invented?",
+      "a_ar": "سبرينغفيلد",
+      "a_en": "Springfield",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعتبر أعظم مسدد في تاريخ كرة السلة؟",
+      "q_en": "Which NBA player is widely considered the greatest shooter ever?",
+      "a_ar": "ستيفن كاري",
+      "a_en": "Stephen Curry",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من حطم الرقم القياسي للثلاثيات؟",
+      "q_en": "Which NBA player broke the all-time three-point record?",
+      "a_ar": "ستيفن كاري",
+      "a_en": "Stephen Curry",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما اللاعب الذي يُطلق عليه المشجعون لقب Skyfucker؟",
+      "q_en": "Which NBA player is nicknamed Skyfucker by fans?",
+      "a_ar": "ستيفن كاري",
+      "a_en": "Stephen Curry",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة لوكا دونتشيتش؟",
+      "q_en": "Which country is Luka Dončić from?",
+      "a_ar": "سلوفينيا",
+      "a_en": "Slovenia",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بيوروباسكت 2017؟",
+      "q_en": "Which country won EuroBasket 2017?",
+      "a_ar": "سلوفينيا",
+      "a_en": "Slovenia",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "إلى ماذا يشير اسم 76ers؟",
+      "q_en": "What does 76ers refer to?",
+      "a_ar": "سنة 1776",
+      "a_en": "Year 1776",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة شارلوت؟",
+      "q_en": "Which NBA team is based in Charlotte?",
+      "a_ar": "شارلوت هورنتس",
+      "a_en": "Charlotte Hornets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق امتلكه مايكل جوردان؟",
+      "q_en": "Which team was owned by Michael Jordan?",
+      "a_ar": "شارلوت هورنتس",
+      "a_en": "Charlotte Hornets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالديزل؟",
+      "q_en": "Which NBA player is known as The Diesel?",
+      "a_ar": "شاكيل أونيل",
+      "a_en": "Shaquille O'Neal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من اشتهر بتحطيم السلال؟",
+      "q_en": "Which NBA player famously broke backboards with dunks?",
+      "a_ar": "شاكيل أونيل",
+      "a_en": "Shaquille O'Neal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2000؟",
+      "q_en": "Which NBA player won the 2000 NBA MVP?",
+      "a_ar": "شاكيل أونيل",
+      "a_en": "Shaquille O'Neal",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق اختار مايكل جوردان في الدرافت؟",
+      "q_en": "Which team drafted Michael Jordan?",
+      "a_ar": "شيكاغو بولز",
+      "a_en": "Chicago Bulls",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "مع أي فريق فاز جوردان بست بطولات؟",
+      "q_en": "Which team did Michael Jordan win six championships with?",
+      "a_ar": "شيكاغو بولز",
+      "a_en": "Chicago Bulls",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "مع أي فريق فاز رودمان بالألقاب مع جوردان؟",
+      "q_en": "Which team did Dennis Rodman win titles with alongside Jordan?",
+      "a_ar": "شيكاغو بولز",
+      "a_en": "Chicago Bulls",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة نيكولا يوكيتش؟",
+      "q_en": "Which country is Nikola Jokić from?",
+      "a_ar": "صربيا",
+      "a_en": "Serbia",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالقفاز  في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed The Glove?",
+      "a_ar": "غاري بايتون",
+      "a_en": "Gary Payton",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما المدينة التي يمثلها الووريرز  في ال NBA؟",
+      "q_en": "Which team is nicknamed the Warriors?",
+      "a_ar": "غولدن ستيت",
+      "a_en": "Golden State",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ضد أي فريق عاد كليفلاند من تأخر 3-1؟",
+      "q_en": "Against which team did Cleveland complete a 3-1 comeback?",
+      "a_ar": "غولدن ستيت ووريرز",
+      "a_en": "Golden State Warriors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2015؟",
+      "q_en": "Which team won the NBA title in 2015?",
+      "a_ar": "غولدن ستيت ووريرز",
+      "a_en": "Golden State Warriors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2017؟",
+      "q_en": "Which team won the NBA title in 2017?",
+      "a_ar": "غولدن ستيت ووريرز",
+      "a_en": "Golden State Warriors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2018؟",
+      "q_en": "Which team won the NBA title in 2018?",
+      "a_ar": "غولدن ستيت ووريرز",
+      "a_en": "Golden State Warriors",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أي دولة فيكتور ويمبانياما؟",
+      "q_en": "Which country is Victor Wembanyama from?",
+      "a_ar": "فرنسا",
+      "a_en": "France",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما لقب منتخب أمريكا الأولمبي في كرة السلة 1992؟",
+      "q_en": "What was the nickname of the 1992 USA Basketball Olympic Team?",
+      "a_ar": "فريق الأحلام",
+      "a_en": "Dream Team",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز باليوروليغ 2017؟",
+      "q_en": "Which Turkish club won the EuroLeague in 2017?",
+      "a_ar": "فنربخشة",
+      "a_en": "Fenerbahçe",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما القاعة الرئيسية للفينيكس صنز؟",
+      "q_en": "Which arena is home to the Phoenix Suns?",
+      "a_ar": "فوتبرنت سنتر",
+      "a_en": "Footprint Center",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بجائزة أفضل لاعب مبتدئ 2024؟",
+      "q_en": "Which NBA player won NBA Rookie of the Year in 2024?",
+      "a_ar": "فيكتور ويمبانياما",
+      "a_en": "Victor Wembanyama",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي مدرب قاد البولز لست بطولات؟",
+      "q_en": "Which legendary coach led the Bulls to six titles?",
+      "a_ar": "فيل جاكسون",
+      "a_en": "Phil Jackson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أكثر مدرب فاز ببطولات NBA؟",
+      "q_en": "Which coach won the most NBA championships?",
+      "a_ar": "فيل جاكسون",
+      "a_en": "Phil Jackson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي مدينة يقع فريق 76ers؟",
+      "q_en": "Which city is home to the 76ers?",
+      "a_ar": "فيلادلفيا",
+      "a_en": "Philadelphia",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق اختار جويل إمبيد؟",
+      "q_en": "Which team drafted Joel Embiid?",
+      "a_ar": "فيلادلفيا سفنتي سيكسرز",
+      "a_en": "Philadelphia 76ers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من لُقب نصف إنسان نصف مذهل  في ال NBA؟",
+      "q_en": "Which NBA player was nicknamed Half Man Half Amazing?",
+      "a_ar": "فينس كارتر",
+      "a_en": "Vince Carter",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بمسابقة الدانك 2000 في ال NBA؟",
+      "q_en": "Which NBA player won the famous 2000 Slam Dunk Contest?",
+      "a_ar": "فينس كارتر",
+      "a_en": "Vince Carter",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة فينيكس؟",
+      "q_en": "Which team is based in Phoenix?",
+      "a_ar": "فينيكس صنز",
+      "a_en": "Phoenix Suns",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بساعي البريد في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed The Mailman?",
+      "a_ar": "كارل مالون",
+      "a_en": "Karl Malone",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 1997؟",
+      "q_en": "Which NBA player won the 1997 NBA MVP?",
+      "a_ar": "كارل مالون",
+      "a_en": "Karl Malone",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 1999؟",
+      "q_en": "Which NBA player won the 1999 NBA MVP?",
+      "a_ar": "كارل مالون",
+      "a_en": "Karl Malone",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من سجل الثلاثية الحاسمة في نهائي 2016؟",
+      "q_en": "Which NBA player hit the title-winning three in Game 7 of 2016?",
+      "a_ar": "كايري إيرفينغ",
+      "a_en": "Kyrie Irving",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بـ Uncle Drew؟",
+      "q_en": "Which NBA player is nicknamed Uncle Drew?",
+      "a_ar": "كايري إيرفينغ",
+      "a_en": "Kyrie Irving",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بالفضية خلف فريق الأحلام؟",
+      "q_en": "Which country won silver behind the Dream Team in 1992?",
+      "a_ar": "كرواتيا",
+      "a_en": "Croatia",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من اشتهر بتسديدة Sky Hook؟",
+      "q_en": "Which NBA player is famous for the Sky Hook?",
+      "a_ar": "كريم عبد الجبار",
+      "a_en": "Kareem Abdul-Jabbar",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بست جوائز MVP؟",
+      "q_en": "Which NBA player won six MVP awards?",
+      "a_ar": "كريم عبد الجبار",
+      "a_en": "Kareem Abdul-Jabbar",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة كليفلاند؟",
+      "q_en": "Which team is based in Cleveland?",
+      "a_ar": "كليفلاند كافالييرز",
+      "a_en": "Cleveland Cavaliers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي دولة اختُرعت كرة السلة؟",
+      "q_en": "Which country invented basketball?",
+      "a_ar": "كندا",
+      "a_en": "Canada",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بالـ Black Mamba  في ال NBA؟",
+      "q_en": "Which NBA player is known as The Black Mamba?",
+      "a_ar": "كوبي براينت",
+      "a_en": "Kobe Bryant",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بخمس بطولات NBA مع الليكرز؟",
+      "q_en": "Which NBA player won five NBA titles with the Lakers?",
+      "a_ar": "كوبي براينت",
+      "a_en": "Kobe Bryant",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بـ KD في ال NBA؟",
+      "q_en": "Which NBA player is nicknamed KD?",
+      "a_ar": "كيفن دورانت",
+      "a_en": "Kevin Durant",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بـ MVP عام 2014  في ال NBA؟",
+      "q_en": "Which NBA player won MVP in 2014?",
+      "a_ar": "كيفن دورانت",
+      "a_en": "Kevin Durant",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بـ Larry Legend؟",
+      "q_en": "Which NBA player was known as Larry Legend?",
+      "a_ar": "لاري بيرد",
+      "a_en": "Larry Bird",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "في أي مدينة يقع فريق ليكرز؟",
+      "q_en": "Which city are the Lakers based in?",
+      "a_ar": "لوس أنجلوس",
+      "a_en": "Los Angeles",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "مع أي فريق لعب كوبي براينت طوال مسيرته؟",
+      "q_en": "Which team did Kobe Bryant spend his entire NBA career with?",
+      "a_ar": "لوس أنجلوس ليكرز",
+      "a_en": "Los Angeles Lakers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق يلعب لوكا دونتشيتش؟",
+      "q_en": "Which team does Luka Dončić play for (2025-26 season)?",
+      "a_ar": "لوس أنجلوس ليكرز",
+      "a_en": "Los Angeles Lakers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق لعب ماجيك جونسون؟",
+      "q_en": "Which team did Magic Johnson play for?",
+      "a_ar": "لوس أنجلوس ليكرز",
+      "a_en": "Los Angeles Lakers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من هزم ديترويت في نهائي 2004؟",
+      "q_en": "Which team did Detroit defeat in the 2004 Finals?",
+      "a_ar": "لوس أنجلوس ليكرز",
+      "a_en": "Los Angeles Lakers",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعرف بلقب الملك جيمس؟",
+      "q_en": "Which NBA player is known as King James?",
+      "a_ar": "ليبرون جيمس",
+      "a_en": "LeBron James",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من أكثر لاعب تسجيلاً للنقاط في تاريخ NBA؟",
+      "q_en": "Which NBA player has scored the most points in NBA history?",
+      "a_ar": "ليبرون جيمس",
+      "a_en": "LeBron James",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من قاد كليفلاند لأول لقب في 2016؟",
+      "q_en": "Which NBA player led Cleveland to its first title in 2016?",
+      "a_ar": "ليبرون جيمس",
+      "a_en": "LeBron James",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُعتبر أعظم صانع ألعاب؟",
+      "q_en": "Which NBA player is considered the greatest point guard ever?",
+      "a_ar": "ماجيك جونسون",
+      "a_en": "Magic Johnson",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز بمسابقة الدانك 1988؟",
+      "q_en": "Which NBA player won the famous 1988 Slam Dunk Contest?",
+      "a_ar": "مايكل جوردان",
+      "a_en": "Michael Jordan",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من قفز من خط الرمية الحرة في الدانك؟",
+      "q_en": "Which NBA player jumped from the free-throw line in a dunk contest?",
+      "a_ar": "مايكل جوردان",
+      "a_en": "Michael Jordan",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة ممفيس؟",
+      "q_en": "Which team plays in Memphis?",
+      "a_ar": "ممفيس غريزليز",
+      "a_en": "Memphis Grizzlies",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة ميامي؟",
+      "q_en": "Which team is based in Miami?",
+      "a_ar": "ميامي هيت",
+      "a_en": "Miami Heat",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من فاز ببطولة NBA عام 2021؟",
+      "q_en": "Which team won the NBA title in 2021?",
+      "a_ar": "ميلووكي باكس",
+      "a_en": "Milwaukee Bucks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق يملك شعار الغزال؟",
+      "q_en": "Which NBA team has a deer logo?",
+      "a_ar": "ميلووكي باكس",
+      "a_en": "Milwaukee Bucks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "لأي فريق يلعب أنتوني إدواردز؟",
+      "q_en": "Which team does Anthony Edwards play for?",
+      "a_ar": "مينيسوتا تمبروولفز",
+      "a_en": "Minnesota Timberwolves",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي لاعب صربي يُلقب بالمهرج؟",
+      "q_en": "Which Serbian player is nicknamed Joker?",
+      "a_ar": "نيكولا يوكيتش",
+      "a_en": "Nikola Jokić",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق يلعب في ماديسون سكوير غاردن؟",
+      "q_en": "Which team plays at Madison Square Garden?",
+      "a_ar": "نيويورك نيكس",
+      "a_en": "New York Knicks",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق يملك صاروخاً في شعاره؟",
+      "q_en": "Which NBA team has a rocket in its logo?",
+      "a_ar": "هيوستن روكتس",
+      "a_en": "Houston Rockets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما الاسم السابق لواشنطن ويزاردز؟",
+      "q_en": "What was the former name of the Washington Wizards?",
+      "a_ar": "واشنطن بوليتس",
+      "a_en": "Washington Bullets",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "من يُلقب بالوحش اليوناني؟",
+      "q_en": "Which NBA player is nicknamed The Greek Freak?",
+      "a_ar": "يانيس أنتيتوكونمبو",
+      "a_en": "Giannis Antetokounmpo",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "أي فريق NBA يقع في مدينة يوتا؟",
+      "q_en": "Which team plays in Utah?",
+      "a_ar": "يوتا جاز",
+      "a_en": "Utah Jazz",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
+    },
+    {
+      "q_ar": "ما القاعة الرئيسية للبولز؟",
+      "q_en": "Which arena is home to the Chicago Bulls?",
+      "a_ar": "يونايتد سنتر",
+      "a_en": "United Center",
+      "cat_ar": "⚽ رياضة",
+      "subcat_ar": "كرة سلة",
+      "cat_en": "⚽ Sports",
+      "subcat_en": "Basketball"
     }
   ]
 }
