@@ -1,0 +1,26 @@
+{
+  "name": "3AL BALCON - عالبلكون",
+  "short_name": "3AL BALCON",
+  "description": "3AL BALCON Game Show & Party Games",
+  "start_url": "https://www.3albalcon.com/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1f3c",
+  "theme_color": "#0d1f3c",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "https://3albalcon.github.io/3al-balcon-game/pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://3albalcon.github.io/3al-balcon-game/pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
