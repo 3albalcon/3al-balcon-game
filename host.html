@@ -465,9 +465,9 @@ onValue(ref(db,P('hostState/scoreB')), s => {
   }
 });
 onValue(ref(db,P('rouletteResult')), s => { roulette = s.val(); render(); });
-onValue(ref(db,P('hostWallpaper')), s => {
-  const url = s.val();
-  if (url) document.body.style.backgroundImage = `url('${url}')`;
+onValue(ref(db,P('hostState')), s => {
+  const v = s.val();
+  if (v?.hostWallpaper) document.body.style.backgroundImage = `url('${v.hostWallpaper}')`;
 });
 </script>
 </body>
