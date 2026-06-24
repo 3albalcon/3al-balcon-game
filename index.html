@@ -1026,7 +1026,60 @@ audio, video { display: none; }
   .team-input { font-size: 16px !important; }
 }
 
-/* ── TV SCREENS 1080p (1920px) ── */
+/* ── PHOTO CATEGORY SELECTOR (menu screen) ── */
+.photo-settings-card {
+  background: rgba(0,10,50,0.7);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0,239,255,0.03);
+  border-radius: 16px; padding: 14px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  width: 100%; max-width: 700px;
+}
+.photo-settings-card h3 {
+  font-size: 14px; font-weight: 700;
+  color: var(--neon-yellow); text-shadow: var(--glow-yellow);
+  cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  user-select: none;
+}
+.photo-settings-body { display: none; flex-direction: column; gap: 10px; }
+.photo-settings-body.open { display: flex; }
+
+/* Accordion rows */
+.ph-acc-cat-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: 10px; cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.1); background: rgba(0,8,45,0.5);
+  margin-bottom: 6px; transition: all 0.2s; user-select: none;
+}
+.ph-acc-cat-row.active { border-color: var(--neon-green); background: rgba(57,255,20,0.05); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
+.ph-acc-cat-row:hover { border-color: rgba(255,255,255,0.3); }
+.ph-acc-cat-left { display: flex; align-items: center; gap: 8px; }
+.ph-acc-cat-check {
+  width: 20px; height: 20px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0; transition: all 0.2s;
+}
+.ph-acc-cat-row.active .ph-acc-cat-check { background: var(--neon-green); border-color: var(--neon-green); color: #000; }
+.ph-acc-cat-name { font-size: 13px; font-weight: 700; color: #fff; }
+.ph-acc-cat-count { font-size: 11px; color: rgba(200,224,255,0.5); }
+.ph-acc-arrow { font-size: 12px; color: rgba(200,224,255,0.5); transition: transform 0.2s; }
+.ph-acc-arrow.open { transform: rotate(180deg); }
+.ph-acc-subcat-wrap { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; padding-left: 12px; margin-bottom: 4px; }
+.ph-acc-subcat-wrap.open { max-height: 300px; }
+.ph-acc-subcat-inner {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 6px 0 10px;
+  border-left: 2px solid rgba(57,255,20,0.2);
+  padding-left: 10px;
+}
+.ph-subchip {
+  padding: 4px 12px; border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,0.15); background: rgba(0,8,45,0.5);
+  color: rgba(200,224,255,0.7); font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.ph-subchip.active { border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(0,239,255,0.3); color: var(--neon-cyan); background: rgba(0,239,255,0.07); }
+.ph-count-display { font-size: 12px; color: rgba(200,224,255,0.5); text-align: center; }
 @media(min-width: 1800px) and (max-width: 2559px) {
   body { font-size: 18px; }
   .team-score .name { font-size: 42px !important; }
@@ -1144,6 +1197,21 @@ audio, video { display: none; }
       </div>
     </div>
     <button class="start-btn" id="start-btn" onclick="startGame()">يــــلا نـــلـــعـــب 🎮</button>
+
+    <!-- Photo category selection -->
+    <div class="photo-settings-card" id="photo-settings-card" style="display:none;margin-top:4px">
+      <h3 onclick="togglePhotoSettings()">
+        <span id="photo-settings-label">📸 اختيار الصور — وين شايفو / ما تذكرتني</span>
+        <span id="photo-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
+      </h3>
+      <div class="photo-settings-body" id="photo-settings-body">
+        <div id="ph-loading" style="font-size:13px;font-weight:700;color:var(--neon-yellow);text-align:center;padding:8px">
+          ⏳ جاري تحميل الفئات...
+        </div>
+        <div id="ph-accordion" style="display:none"></div>
+        <div id="ph-count-display" class="ph-count-display"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Hidden status divs needed by other functions -->
@@ -1810,6 +1878,171 @@ function parseLines(id) {
 }
 
 // ══════════════════════════════════════════
+// PHOTO CATEGORY SELECTOR (Cat 1 & 2)
+// ══════════════════════════════════════════
+const WAJHAK_JSON_URL = 'https://raw.githubusercontent.com/3albalcon/3al-balcon-game/main/wajhak-photos.json';
+const WAJHAK_CACHE_KEY = 'wajhak_photos_cache_v2';
+const WAJHAK_CACHE_TTL = 5 * 60 * 1000;
+
+const PH = {
+  allPhotos: [], selectedCats: new Set(), selectedSubcats: new Set(),
+  openAccCat: null, loaded: false,
+};
+
+function togglePhotoSettings() {
+  const body = document.getElementById('photo-settings-body');
+  const arrow = document.getElementById('photo-settings-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+async function loadPhotoCategories() {
+  function applyPhotos(photos) {
+    const lang = _lang;
+    const processed = photos.map(p => ({
+      url:    p.url,
+      answer: p.answer,
+      cat:    lang === 'en' ? (p.cat_en    || p.cat_ar    || 'General') : (p.cat_ar    || 'عام'),
+      subcat: lang === 'en' ? (p.subcat_en || p.subcat_ar || null)      : (p.subcat_ar || null),
+    }));
+    PH.allPhotos       = processed;
+    PH.selectedCats    = new Set(processed.map(p => p.cat));
+    PH.selectedSubcats = new Set();
+    PH.loaded = true;
+    renderPhotoAccordion();
+    document.getElementById('ph-loading').style.display    = 'none';
+    document.getElementById('ph-accordion').style.display  = 'block';
+    document.getElementById('photo-settings-card').style.display = 'block';
+    applyPhotoFilter();
+  }
+
+  try {
+    const cached = localStorage.getItem(WAJHAK_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.ts < WAJHAK_CACHE_TTL && parsed.photos?.length) {
+        applyPhotos(parsed.photos);
+        fetch(WAJHAK_JSON_URL + '?t=' + Date.now()).then(r => r.json())
+          .then(d => { if (d.photos?.length) localStorage.setItem(WAJHAK_CACHE_KEY, JSON.stringify({photos: d.photos, ts: Date.now()})); })
+          .catch(() => {});
+        return;
+      }
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch(WAJHAK_JSON_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('GitHub ' + res.status);
+    const data = await res.json();
+    if (!data.photos?.length) throw new Error('Empty');
+    try { localStorage.setItem(WAJHAK_CACHE_KEY, JSON.stringify({photos: data.photos, ts: Date.now()})); } catch(e) {}
+    applyPhotos(data.photos);
+  } catch(e) {
+    const el = document.getElementById('ph-loading');
+    if (el) el.textContent = '❌ تعذّر تحميل الصور — سيتم استخدام صور Drive';
+  }
+}
+
+function renderPhotoAccordion() {
+  const wrap = document.getElementById('ph-accordion');
+  if (!wrap) return;
+  const cats = [...new Set(PH.allPhotos.map(p => p.cat))].sort();
+  wrap.innerHTML = cats.map(cat => {
+    const count   = PH.allPhotos.filter(p => p.cat === cat).length;
+    const active  = PH.selectedCats.has(cat);
+    const subcats = [...new Set(PH.allPhotos.filter(p => p.cat === cat).map(p => p.subcat).filter(Boolean))].sort();
+    const isOpen  = PH.openAccCat === cat;
+    const enc     = encodeURIComponent(cat);
+    const catSubKeys = [...PH.selectedSubcats].filter(k => k.startsWith(cat + '::'));
+    const allSubsSelected = catSubKeys.length === 0;
+
+    const subHtml = subcats.length ? `
+      <div class="ph-acc-subcat-wrap ${isOpen ? 'open' : ''}" id="ph-sub-${enc}">
+        <div class="ph-acc-subcat-inner">
+          <button class="ph-subchip ${active && allSubsSelected ? 'active' : ''}"
+            onclick="phSetAllSubs('${enc}')">${_lang === 'en' ? 'All' : 'الكل'}</button>
+          ${subcats.map(sc => {
+            const scCount  = PH.allPhotos.filter(p => p.cat === cat && p.subcat === sc).length;
+            const scActive = active && PH.selectedSubcats.has(cat + '::' + sc);
+            return `<button class="ph-subchip ${scActive ? 'active' : ''}"
+              onclick="phToggleSubcat('${enc}','${encodeURIComponent(sc)}')">${sc} (${scCount})</button>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    return `
+      <div class="ph-acc-cat-row ${active ? 'active' : ''}" onclick="phToggleCat('${enc}')">
+        <div class="ph-acc-cat-left">
+          <div class="ph-acc-cat-check">${active ? '✓' : ''}</div>
+          <span class="ph-acc-cat-name">${cat}</span>
+          <span class="ph-acc-cat-count">(${count})</span>
+        </div>
+        ${subcats.length ? `<div class="ph-acc-arrow ${isOpen ? 'open' : ''}"
+          onclick="event.stopPropagation();phToggleAccordion('${enc}')">▼</div>` : ''}
+      </div>
+      ${subHtml}`;
+  }).join('');
+
+  const filtered = getFilteredPhotos();
+  const countEl = document.getElementById('ph-count-display');
+  if (countEl) countEl.textContent = _lang === 'en'
+    ? `${filtered.length} photos — ${Math.min(filtered.length, 10)} for Cat 1, ${Math.min(Math.max(filtered.length - 10, 0), 10)} for Cat 2`
+    : `${filtered.length} صورة — ${Math.min(filtered.length, 10)} للفقرة 1، ${Math.min(Math.max(filtered.length - 10, 0), 10)} للفقرة 2`;
+}
+
+function phToggleAccordion(enc) {
+  PH.openAccCat = PH.openAccCat === decodeURIComponent(enc) ? null : decodeURIComponent(enc);
+  renderPhotoAccordion();
+}
+
+function phToggleCat(enc) {
+  const cat = decodeURIComponent(enc);
+  if (PH.selectedCats.has(cat)) {
+    if (PH.selectedCats.size <= 1) { showToast(_lang === 'en' ? 'Select at least one category!' : 'اختر فئة واحدة على الأقل!'); return; }
+    PH.selectedCats.delete(cat);
+    for (const k of [...PH.selectedSubcats]) { if (k.startsWith(cat + '::')) PH.selectedSubcats.delete(k); }
+  } else { PH.selectedCats.add(cat); }
+  renderPhotoAccordion();
+  applyPhotoFilter();
+}
+
+function phSetAllSubs(enc) {
+  const cat = decodeURIComponent(enc);
+  for (const k of [...PH.selectedSubcats]) { if (k.startsWith(cat + '::')) PH.selectedSubcats.delete(k); }
+  renderPhotoAccordion();
+  applyPhotoFilter();
+}
+
+function phToggleSubcat(enc, encSc) {
+  const cat = decodeURIComponent(enc);
+  const sc  = decodeURIComponent(encSc);
+  const key = cat + '::' + sc;
+  if (PH.selectedSubcats.has(key)) PH.selectedSubcats.delete(key);
+  else { PH.selectedSubcats.add(key); PH.selectedCats.add(cat); }
+  renderPhotoAccordion();
+  applyPhotoFilter();
+}
+
+function getFilteredPhotos() {
+  if (!PH.loaded) return [];
+  return PH.allPhotos.filter(p => {
+    if (!PH.selectedCats.has(p.cat)) return false;
+    if (!p.subcat) return true;
+    const catSubKeys = [...PH.selectedSubcats].filter(k => k.startsWith(p.cat + '::'));
+    if (catSubKeys.length === 0) return true;
+    return PH.selectedSubcats.has(p.cat + '::' + p.subcat);
+  });
+}
+
+function applyPhotoFilter() {
+  if (!PH.loaded) return;
+  const filtered = shuffle([...getFilteredPhotos()]);
+  G.media['r1'] = filtered.slice(0, 10);
+  G.media['r2'] = filtered.slice(10, 20);
+}
+
+// ══════════════════════════════════════════
 // LANGUAGE SYSTEM
 // ══════════════════════════════════════════
 let _lang = 'ar'; // 'ar' | 'en'
@@ -2175,6 +2408,19 @@ function applyLang() {
   // Update static HTML elements
   const backBtn = document.getElementById('back-btn-main');
   if (backBtn) backBtn.textContent = L.menu;
+
+  // Refresh photo settings label
+  const photoLabel = document.getElementById('photo-settings-label');
+  if (photoLabel) photoLabel.textContent = isAr
+    ? '📸 اختيار الصور — وين شايفو / ما تذكرتني'
+    : '📸 Photo Selection — Who\'s That Face / Remember Me';
+
+  // Re-apply photos with new language if loaded
+  if (PH.loaded) {
+    PH.openAccCat = null;
+    // Re-process with new language
+    loadPhotoCategories();
+  }
 
   // Update ROUNDS names
   ROUNDS.forEach(r => {
@@ -5238,6 +5484,7 @@ function setLoadProgress(pct) {
 
 document.addEventListener('DOMContentLoaded', () => {
   autoLoad();
+  loadPhotoCategories();
 });
 
 // ══════════════════════════════════════════
