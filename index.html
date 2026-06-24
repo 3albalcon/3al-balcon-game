@@ -2211,9 +2211,9 @@ function startGame() {
   setTimeout(() => {
     pushHostState();
     // Push wallpaper to dedicated path for host screen
-    if (G.hostWallpaperUrl) {
+    if (G.waitingScreenUrl || G.hostWallpaperUrl) {
       const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
-      if (db && fbSet) fbSet(fbRef(db, _path('hostWallpaper')), G.hostWallpaperUrl);
+      if (db && fbSet) fbSet(fbRef(db, _path('hostWallpaper')), G.waitingScreenUrl || G.hostWallpaperUrl);
     }
   }, 200);
 }
@@ -2615,7 +2615,7 @@ function renderSlide() {
       <div class="section-title-slide fade-in">
         <div class="big-number">${r.num}</div>
         <h1>${r.name}</h1>
-        <button class="nav-btn" onclick="nextQ()" style="margin-top:16px;font-size:16px;padding:12px 28px;">${t('gameRules')}</button>
+        <button class="nav-btn primary" onclick="nextQ()" style="margin-top:16px;">${t('gameRules')}</button>
       </div>`;
     updateHostView(r.name, 'العنوان', r.name, '');
     return;
@@ -2753,8 +2753,8 @@ function renderRules(r, sa) {
       <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;width:100%;flex-wrap:wrap;" class="fade-in rules-qr-layout">
         <!-- Left QR — Team A -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E50158;text-shadow:0 0 8px rgba(229,1,88,0.6)">${G.teamA}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)">
             <div id="qr-a-cat3"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
@@ -2762,7 +2762,7 @@ function renderRules(r, sa) {
           </div>
         </div>
         <!-- Rules in middle -->
-        <div class="rules-card" style="flex:1;min-width:200px">
+        <div class="rules-card" style="flex:1;min-width:240px">
           <h2>${rulesTitle}</h2>
           <ul class="rules-list">
             ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
@@ -2770,8 +2770,8 @@ function renderRules(r, sa) {
         </div>
         <!-- Right QR — Team B -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E2DA51;text-shadow:0 0 8px rgba(226,218,81,0.6)">${G.teamB}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)">
             <div id="qr-b-cat3"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
@@ -2826,8 +2826,8 @@ function renderRules(r, sa) {
       <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;width:100%;flex-wrap:wrap;" class="fade-in rules-qr-layout">
         <!-- Left QR — Team A -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E50158;text-shadow:0 0 8px rgba(229,1,88,0.6)">${G.teamA}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)">
             <div id="qr-a-cat6"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
@@ -2835,7 +2835,7 @@ function renderRules(r, sa) {
           </div>
         </div>
         <!-- Rules in middle -->
-        <div class="rules-card" style="flex:1;min-width:200px">
+        <div class="rules-card" style="flex:1;min-width:240px">
           <h2>${rulesTitle}</h2>
           <ul class="rules-list">
             ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
@@ -2843,8 +2843,8 @@ function renderRules(r, sa) {
         </div>
         <!-- Right QR — Team B -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E2DA51;text-shadow:0 0 8px rgba(226,218,81,0.6)">${G.teamB}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)">
             <div id="qr-b-cat6"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
@@ -2901,17 +2901,17 @@ function renderRules(r, sa) {
 
         <!-- Left QR — Team A -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E50158">${G.teamA}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E50158;box-shadow:0 0 14px rgba(229,1,88,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E50158;text-shadow:0 0 8px rgba(229,1,88,0.6)">${G.teamA}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E50158;box-shadow:0 0 16px rgba(229,1,88,0.4)">
             <div id="qr-a-rules"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
-            <div id="dot-a" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s"></div>
+            <div id="dot-a" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
           </div>
         </div>
 
         <!-- Rules in middle -->
-        <div class="rules-card" style="flex:1;min-width:200px">
+        <div class="rules-card" style="flex:1;min-width:240px">
           <h2>${rulesTitle}</h2>
           <ul class="rules-list">
             ${rules.map(rule => `<li><span class="rule-icon">✦</span>${rule}</li>`).join('')}
@@ -2920,12 +2920,12 @@ function renderRules(r, sa) {
 
         <!-- Right QR — Team B -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
-          <div style="font-size:12px;font-weight:900;color:#E2DA51">${G.teamB}</div>
-          <div style="background:#fff;border-radius:10px;padding:7px;border:2px solid #E2DA51;box-shadow:0 0 14px rgba(226,218,81,0.4)">
+          <div style="font-size:15px;font-weight:900;color:#E2DA51;text-shadow:0 0 8px rgba(226,218,81,0.6)">${G.teamB}</div>
+          <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #E2DA51;box-shadow:0 0 16px rgba(226,218,81,0.4)">
             <div id="qr-b-rules"></div>
           </div>
           <div style="display:flex;align-items:center;justify-content:center">
-            <div id="dot-b" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.3s"></div>
+            <div id="dot-b" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.4s"></div>
           </div>
         </div>
       </div>
@@ -3133,24 +3133,24 @@ function renderBuzzerImage(r, qIndex, sa) {
   sa.style.justifyContent = '';
 
   sa.innerHTML = `
-    <div class="question-number">صورة ${qIndex+1} من ${total}</div>
+    <div class="question-number" style="font-size:14px;color:rgba(200,224,255,0.5);font-weight:700;letter-spacing:2px;text-align:center">صورة ${qIndex+1} من ${total}</div>
 
     ${item ? `
-      <div style="width:459px;height:459px;border:10px solid #c8960c;outline:3px solid #8B6914;box-shadow:0 0 0 4px #c8960c,0 8px 40px rgba(0,0,0,0.7);border-radius:4px;overflow:hidden;flex-shrink:0" class="fade-in">
+      <div style="width:450px;height:450px;background:#1a1a2e;border:10px solid #c8960c;outline:3px solid #8B6914;box-shadow:0 0 0 4px #c8960c,0 8px 40px rgba(0,0,0,0.7);border-radius:4px;overflow:hidden;flex-shrink:0" class="fade-in">
         <img src="${item.url}" alt="صورة ${qIndex+1}" style="width:100%;height:100%;object-fit:cover;display:block">
       </div>
     ` : `
-      <div style="width:459px;height:459px;border:3px dashed var(--neon-cyan);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--neon-cyan);flex-shrink:0">
+      <div style="width:450px;height:450px;border:3px dashed var(--neon-cyan);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--neon-cyan);flex-shrink:0">
         <div style="text-align:center">
           <div style="font-size:48px">📷</div>
-          <div>لم يتم رفع صور</div>
+          <div>${t('noImages')}</div>
         </div>
       </div>
     `}
 
     ${item ? `
       <div id="answer-area" style="min-height:52px;display:flex;align-items:center;justify-content:center">
-        <button class="answer-reveal-btn" onclick="revealImageAnswer('${item.answer.replace(/'/g,"\\'")}')">
+        <button class="answer-reveal-btn" style="background:rgba(0,10,50,0.6);border:2px solid #FFE600;box-shadow:0 0 10px rgba(255,230,0,0.5);border-radius:12px;padding:12px 32px;color:#FFE600;font-size:15px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif" onclick="revealImageAnswer('${item.answer.replace(/'/g,"\\'")}')">
           👁 كشف الجواب
         </button>
       </div>
@@ -3169,7 +3169,7 @@ function renderBuzzerImage(r, qIndex, sa) {
 function revealImageAnswer(answer) {
   const area = document.getElementById('answer-area');
   if(area) {
-    area.innerHTML = `<div class="answer-box fade-in">✅ ${answer}</div>`;
+    area.innerHTML = `<div class="answer-box fade-in" style="background:rgba(0,10,50,0.6);border:2px solid #39FF14;box-shadow:0 0 12px rgba(57,255,20,0.5);border-radius:12px;padding:14px 28px;min-width:200px;text-align:center;font-size:clamp(16px,2.5vw,22px);font-weight:900;color:#39FF14;text-shadow:0 0 8px rgba(57,255,20,0.6)">${answer}</div>`;
   }
 }
 
