@@ -1273,7 +1273,7 @@ audio, video { display: none; }
     "
     onmouseover="this.style.borderColor='var(--neon-cyan)';this.style.color='var(--neon-cyan)';this.style.textShadow='var(--glow-cyan)'"
     onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';this.style.textShadow='none'"
-    >🚪 اغلاق اللعبة</button>
+    >🚪 <span class="tr-close-game">اغلاق اللعبة</span></button>
     <button onclick="toggleHostMode()" id="host-mode-btn" style="
       background:transparent;border:1.5px solid rgba(255,255,255,0.2);
       color:rgba(255,255,255,0.35);font-size:12px;font-weight:700;
@@ -1282,7 +1282,7 @@ audio, video { display: none; }
     "
     onmouseover="this.style.borderColor='var(--neon-yellow)';this.style.color='var(--neon-yellow)'"
     onmouseout="if(!window._hostMode){this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';}"
-    >🎙 مقدّم البرنامج</button>
+    >🎙 <span class="tr-host-mode">مقدّم البرنامج</span></button>
   </div>
 
   <!-- Host QR — top right, hidden by default -->
@@ -1290,7 +1290,7 @@ audio, video { display: none; }
     <div style="background:#fff;border-radius:10px;padding:8px;border:2px solid var(--neon-yellow);box-shadow:0 0 16px rgba(255,230,0,0.4)">
       <div id="host-qr"></div>
     </div>
-    <div style="font-size:10px;color:var(--neon-yellow);font-weight:700">للمقدّم فقط</div>
+    <div style="font-size:10px;color:var(--neon-yellow);font-weight:700" id="tr-host-only">للمقدّم فقط</div>
   </div>
 
   <div class="scoreboard">
@@ -1326,7 +1326,7 @@ audio, video { display: none; }
   <div id="earned-wc-bar" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;max-width:900px"></div>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
-    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 شو بدنا نختار</button>
+    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;" id="roulette-toggle-btn-inner">🎰 شو بدنا نختار</button>
   </div>
 
   <!-- Roulette Inline Panel -->
@@ -1453,14 +1453,14 @@ const G = {
 };
 
 const ROUNDS = [
-  { id:'r1',  num:1,  name:'وين شايفو هالوجه؟',   pts:'+2 لكل جواب صح', slides:'buzzer+image',    count:10 },
+  { id:'r1',  num:1,  name:'وين شايفو هالوجه؟',   pts:_lang==='en'?'+2 per correct answer':'+2 لكل جواب صح', slides:'buzzer+image',    count:10 },
   { id:'r2',  num:2,  name:'ما تذكرتني بعد؟',      pts:'+2 / -1',         slides:'buzzer+image',    count:10 },
   { id:'r3',  num:3,  name:'مزاد علني',             pts:'+4 / -2',         slides:'bidding',         count:5  },
   { id:'r10', num:4,  name:'متفرقات سريعة',         pts:'+2 / -1',         slides:'buzzer+question', count:10 },
-  { id:'r4',  num:5,  name:'سمعني الدندنة',         pts:'+2 لكل جواب',    slides:'buzzer+audio',    count:10 },
-  { id:'r5',  num:6,  name:'سكوت و ركز عدرسك',     pts:'+3 لكل جواب',    slides:'team+video',      count:4  },
-  { id:'r6',  num:7,  name:'يا حبيبي قرب ليي',     pts:'+2 للأقرب',       slides:'closest',         count:6  },
-  { id:'r7',  num:8,  name:'يا قريب يا غريب',      pts:'+4 للأقرب',       slides:'closest',         count:6  },
+  { id:'r4',  num:5,  name:'سمعني الدندنة',         pts:_lang==='en'?'+2 per answer':'+2 لكل جواب',    slides:'buzzer+audio',    count:10 },
+  { id:'r5',  num:6,  name:'سكوت و ركز عدرسك',     pts:_lang==='en'?'+3 per answer':'+3 لكل جواب',    slides:'team+video',      count:4  },
+  { id:'r6',  num:7,  name:'يا حبيبي قرب ليي',     pts:_lang==='en'?'+2 closest':'+2 للأقرب',       slides:'closest',         count:6  },
+  { id:'r7',  num:8,  name:'يا قريب يا غريب',      pts:_lang==='en'?'+4 closest':'+4 للأقرب',       slides:'closest',         count:6  },
   { id:'r8',  num:9,  name:'سكر تمك',   pts:'+3 / -1',         slides:'charades',        count:8  },
   { id:'r9',  num:10, name:'من كل وادي عصا',        pts:'+2 / -1',         slides:'buzzer+question', count:10 },
 ];
@@ -1563,7 +1563,7 @@ function processAllFiles(all) {
   // Load videos → r5
   if (videos.length > 0) {
     G.media['r5'] = shuffle(videos.map(f => ({ url: URL.createObjectURL(f), name: f.name, type: 'video' })));
-    document.getElementById('status-r5').textContent = `✅ ${videos.length} فيديو جاهز`;
+    document.getElementById('status-r5').textContent = `✅ ${videos.length} ${_lang==="en"?"video":"فيديو"} ${_lang==="en"?"ready":"جاهز"}`;
   } else {
     document.getElementById('status-r5').textContent = `⚠️ لم يتم العثور على فيديوهات في مجلد "Videos"`;
   }
@@ -1623,7 +1623,7 @@ function loadAllMedia(input) {
 
   if (videos.length > 0) {
     G.media['r5'] = shuffle(videos.map(f => ({ url: URL.createObjectURL(f), name: f.name, type: 'video' })));
-    document.getElementById('status-r5').textContent = `✅ ${videos.length} فيديو جاهز`;
+    document.getElementById('status-r5').textContent = `✅ ${videos.length} ${_lang==="en"?"video":"فيديو"} ${_lang==="en"?"ready":"جاهز"}`;
   }
 
   showToast(`✅ ${images.length} صورة • ${videos.length} فيديو`);
@@ -1791,7 +1791,7 @@ async function loadFromDrive(urlOverride) {
         name: f.name,
         type: 'video'
       }));
-      details.push(`✅ ${videos.length} فيديو جاهز`);
+      details.push(`✅ ${videos.length} ${_lang==="en"?"video":"فيديو"} ${_lang==="en"?"ready":"جاهز"}`);
     } else if (G.questions.r5 && G.questions.r5.length > 0) {
       setLoadProgress(90);
       G.media['r5'] = G.questions.r5.map(row => {
@@ -1805,7 +1805,7 @@ async function loadFromDrive(urlOverride) {
           type: 'video'
         };
       }).filter(x => x.name);
-      details.push(`✅ ${G.media['r5'].length} فيديو جاهز (GitHub)`);
+      details.push(`✅ ${G.media["r5"].length} ${_lang==="en"?"videos ready":"فيديو جاهز"}`);
     } else {
       details.push('⚠️ لم يتم العثور على فيديوهات');
     }
@@ -1892,7 +1892,7 @@ function loadImages(key, input) {
     document.getElementById('status-r2').textContent = `✅ مرتبطة بنفس رفع الفقرة 1`;
   } else {
     G.media[key] = shuffled;
-    document.getElementById('status-'+key).textContent = `✅ ${files.length} صورة جاهزة`;
+    document.getElementById('status-'+key).textContent = `✅ ${files.length} ${_lang==="en"?"images ready":"صورة جاهزة"}`;
   }
 }
 
@@ -1900,7 +1900,7 @@ function loadMedia(key, input, type) {
   const files = Array.from(input.files);
   const items = files.map(f => ({ url: URL.createObjectURL(f), name: f.name, type }));
   G.media[key] = shuffle(items);
-  document.getElementById('status-'+key).textContent = `✅ ${files.length} ملف جاهز`;
+  document.getElementById('status-'+key).textContent = `✅ ${files.length} ${_lang==="en"?"files ready":"ملف جاهز"}`;
 }
 
 function parseLines(id) {
@@ -2137,7 +2137,7 @@ const TRIVIA_CACHE_KEY = 'asmila_questions_cache_v1';
 const TRIVIA_CACHE_TTL = 5 * 60 * 1000;
 
 const TR = {
-  allQuestions: [], selectedCats: new Set(), selectedSubcats: new Set(),
+  allQuestions: [], rawQuestions: [], selectedCats: new Set(), selectedSubcats: new Set(),
   openAccCat: null, loaded: false,
 };
 
@@ -2151,8 +2151,13 @@ function toggleTriviaSettings() {
 
 async function loadTriviaCategories() {
   function applyQuestions(questions) {
+    TR.rawQuestions = questions; // store raw for language switching
+    reprocessTrivia();
+  }
+
+  function reprocessTrivia() {
     const lang = _lang;
-    const processed = questions.map(q => ({
+    const processed = TR.rawQuestions.map(q => ({
       q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || q.q || ''),
       a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || q.a || ''),
       cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
@@ -2163,9 +2168,12 @@ async function loadTriviaCategories() {
     TR.selectedSubcats = new Set();
     TR.loaded = true;
     renderTriviaAccordion();
-    document.getElementById('tr-loading').style.display   = 'none';
-    document.getElementById('tr-accordion').style.display = 'block';
-    document.getElementById('trivia-settings-card').style.display = 'block';
+    const loadEl = document.getElementById('tr-loading');
+    if (loadEl) loadEl.style.display = 'none';
+    const accEl = document.getElementById('tr-accordion');
+    if (accEl) accEl.style.display = 'block';
+    const card = document.getElementById('trivia-settings-card');
+    if (card) card.style.display = 'block';
     applyTriviaFilter();
   }
 
@@ -2852,6 +2860,14 @@ function applyLang() {
   const backBtn = document.getElementById('back-btn-main');
   if (backBtn) backBtn.textContent = L.menu;
 
+  // Update static menu buttons
+  document.querySelectorAll('.tr-close-game').forEach(el => el.textContent = isAr ? 'اغلاق اللعبة' : 'Close Game');
+  document.querySelectorAll('.tr-host-mode').forEach(el => el.textContent = isAr ? 'مقدّم البرنامج' : 'Host Mode');
+  const hostOnly = document.getElementById('tr-host-only');
+  if (hostOnly) hostOnly.textContent = isAr ? 'للمقدّم فقط' : 'Host Only';
+  const spinBtn = document.getElementById('tr-spin-btn');
+  if (spinBtn) spinBtn.textContent = isAr ? '🎰 شو بدنا نختار' : '🎰 Spin the Wheel';
+
   // Refresh photo settings label
   const photoLabel = document.getElementById('photo-settings-label');
   if (photoLabel) photoLabel.textContent = isAr
@@ -2877,9 +2893,21 @@ function applyLang() {
     : '🤐 Acting Categories — Zip It!';
 
   // Re-apply trivia with new language if loaded
-  if (TR.loaded) {
+  if (TR.loaded && TR.rawQuestions.length) {
     TR.openAccCat = null;
-    loadTriviaCategories();
+    // Re-process raw questions with new language
+    const lang = _lang;
+    const processed = TR.rawQuestions.map(q => ({
+      q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || q.q || ''),
+      a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || q.a || ''),
+      cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
+      subcat: lang === 'en' ? (q.subcat_en || q.subcat_ar || null)      : (q.subcat_ar || null),
+    })).filter(q => q.q && q.a);
+    TR.allQuestions    = processed;
+    TR.selectedCats    = new Set(processed.map(q => q.cat));
+    TR.selectedSubcats = new Set();
+    renderTriviaAccordion();
+    applyTriviaFilter();
   }
 
   // Re-apply charades with new language if loaded
