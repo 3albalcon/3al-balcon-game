@@ -1193,8 +1193,8 @@ audio, video { display: none; }
     ">
       <h3 id="team-title" style="font-size:18px;font-weight:900;color:var(--neon-cyan);text-shadow:var(--glow-cyan);text-align:center">🏆 أسماء الفرق</h3>
       <div class="team-inputs">
-        <div class="team-input" id="team-a-name" contenteditable="true" data-placeholder-ar="اسم الفريق الأول" data-placeholder-en="Team 1 Name" data-placeholder="اسم الفريق الأول" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-red);box-shadow:var(--glow-red)" onkeydown="event.stopPropagation()"></div>
-        <div class="team-input" id="team-b-name" contenteditable="true" data-placeholder-ar="اسم الفريق الثاني" data-placeholder-en="Team 2 Name" data-placeholder="اسم الفريق الثاني" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-yellow);box-shadow:var(--glow-yellow)" onkeydown="event.stopPropagation()"></div>
+        <div class="team-input" id="team-a-name" contenteditable="true" data-placeholder-ar="الفريق الأول" data-placeholder-en="Team 1 Name" data-placeholder="الفريق الأول" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-red);box-shadow:var(--glow-red)" onkeydown="event.stopPropagation()"></div>
+        <div class="team-input" id="team-b-name" contenteditable="true" data-placeholder-ar="الفريق الثاني" data-placeholder-en="Team 2 Name" data-placeholder="الفريق الثاني" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-yellow);box-shadow:var(--glow-yellow)" onkeydown="event.stopPropagation()"></div>
       </div>
     </div>
     <button class="start-btn" id="start-btn" onclick="startGame()">يــــلا نـــلـــعـــب 🎮</button>
@@ -1326,7 +1326,7 @@ audio, video { display: none; }
   <div id="earned-wc-bar" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;max-width:900px"></div>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
-    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 <span id="tr-spin-opener">شو بدنا نختار</span></button>
+    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 <span id="tr-spin-opener">إختيار الفقرة</span></button>
   </div>
 
   <!-- Roulette Inline Panel -->
@@ -2503,15 +2503,15 @@ const LANG = {
     // Start screen
     teamTitle: '🏆 أسماء الفرق',
     startBtn: 'يــــلا نـــلـــعـــب 🎮',
-    placeholderA: 'اسم الفريق الأول',
-    placeholderB: 'اسم الفريق الثاني',
+    placeholderA: 'الفريق الأول',
+    placeholderB: 'الفريق الثاني',
     // Header
     menu: '← القائمة',
     closeGame: '🚪 اغلاق اللعبة',
     hostMode: '🎙 مقدّم البرنامج',
     hostModeOn: '🎙 مقدّم البرنامج ✓',
     hostOnly: 'للمقدّم فقط',
-    spin: '🎰 شو بدنا نختار',
+    spin: '🎰 إختيار الفقرة',
     // Navigation
     startGame: 'ابدأ اللعبة ←',
     gameRules: '📋 قوانين اللعبة ←',
@@ -2537,9 +2537,9 @@ const LANG = {
     revealFirst: 'كشف الجواب أولاً! 👁',
     almostReady: '⏳ شوي و منكون جاهزين',
     correct: '✅ صح',
-    wrong: '❌ غلط',
+    wrong: '❌ خطأ',
     correctDone: '✅ صح ✓',
-    wrongDone: '❌ غلط ✓',
+    wrongDone: '❌ خطأ ✓',
     // Category names
     r1: 'وين شايفو هالوجه؟',
     r2: 'ما تذكرتني بعد؟',
@@ -2554,22 +2554,22 @@ const LANG = {
     // Status
     allReady: '✅ كل شي جاهز',
     loadingImages: '⏳ الأسئلة جاهزة — عم نحضّر الصور',
-    loadingAll: '⏳ عم نحضّر الأسئلة و الصور',
-    bothConnected: '✅ كلا الفريقين متصلين!',
+    loadingAll: '⏳ يتم تحضير الأسئلة و الصور',
+    bothConnected: '✅ الفريقين متصلين!',
     timesUp: "Time's Up!",
     allDone: 'كل الفقرات انتهت! 🎉',
     tiedSoFar: '${t("tiedSoFar")}',
     tied: '🤝 تعادل!',
     tapShowQ: '⏳ اضغط "عرض السؤال" لبدء الجولة',
-    actorScan: 'الممثل يعمل Scan للكود',
+    actorScan: 'الممثل يقوم ب Scan للكود',
     noImages: '📷 لم يتم رفع صور',
     tapPlay: 'اضغط لتشغيل الفيديو',
     // Result
     roundResult: 'نتيجة فقرة',
     winner: (n) => `🏆 الفائز هو ${n}!`,
     winningTeamWrite: '🏆 الفريق الرابح — اضغط "ابدأ الكتابة" على الجوال لتبدأ!',
-    gaveUp: (n) => `🏳️ ${n} تخلى!`,
-    auctionWon: (n,x) => `🏆 ${n} ربح المزاد بـ ${x} أجوبة!`,
+    gaveUp: (n) => `🏳️ ${n} تخلى عن المزاد!`,
+    auctionWon: (n,x) => `🏆 ${n} فاز بالمزاد بـ ${x} أجوبة!`,
     points3: (n) => `🏆 ${n} +3 نقاط!`,
     leading: (n) => `🏆 ${n} في المقدمة!`,
     // Reset
@@ -2666,8 +2666,8 @@ const LANG = {
     // Start screen
     teamTitle: '🏆 Team Names',
     startBtn: "Let's Play 🎮",
-    placeholderA: 'Team 1 Name',
-    placeholderB: 'Team 2 Name',
+    placeholderA: 'Team 1',
+    placeholderB: 'Team 2',
     // Header
     menu: '← Menu',
     closeGame: '🚪 Close Game',
@@ -2866,7 +2866,7 @@ function applyLang() {
   const hostOnly = document.getElementById('tr-host-only');
   if (hostOnly) hostOnly.textContent = isAr ? 'للمقدّم فقط' : 'Host Only';
   const spinBtn = document.getElementById('tr-spin-opener');
-  if (spinBtn) spinBtn.textContent = isAr ? 'شو بدنا نختار' : 'Spin the Wheel';
+  if (spinBtn) spinBtn.textContent = isAr ? 'إختيار الفقرة' : 'Spin the Wheel';
   const spin1 = document.getElementById('tr-spin1');
   if (spin1) spin1.textContent = isAr ? 'دوّر!' : 'Spin!';
   const startRound = document.getElementById('tr-start-round');
@@ -3903,7 +3903,7 @@ function renderBuzzerImage(r, qIndex, sa) {
     ${item ? `
       <div id="answer-area" style="min-height:52px;display:flex;align-items:center;justify-content:center">
         <button class="answer-reveal-btn" style="background:rgba(0,10,50,0.6);border:2px solid #FFE600;box-shadow:0 0 10px rgba(255,230,0,0.5);border-radius:12px;padding:12px 32px;color:#FFE600;font-size:15px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif" onclick="revealImageAnswer('${item.answer.replace(/'/g,"\\'")}')">
-          👁 كشف الجواب
+          ${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}
         </button>
       </div>
     ` : ''}
@@ -4429,7 +4429,7 @@ function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) 
   const correctBtn = document.getElementById('val-correct-btn');
   const wrongBtn = document.getElementById('val-wrong-btn');
   if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? _lang==="en"?"✅ Correct ✓":"✅ صح ✓" : _lang==="en"?"✅ Correct":"✅ صح";
-  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? _lang==="en"?"❌ Wrong ✓":"❌ غلط ✓" : _lang==="en"?"❌ Wrong":"❌ غلط";
+  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? _lang==="en"?"❌ Wrong ✓":"❌ غلط ✓" : _lang==="en"?"❌ Wrong":"❌ خطأ";
 }
 
 // Override validation result
@@ -5196,7 +5196,7 @@ function renderBuzzerQuestion(r, qIndex, sa) {
   sa.innerHTML = `
     <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
     <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`}</div>
-    ${ans ? `<button class="answer-reveal-btn" onclick="document.getElementById('q-ans').style.display='flex'">${_lang==="en"?"Reveal Answer":"كشف الجواب"}</button>
+    ${ans ? `<button class="answer-reveal-btn" onclick="document.getElementById('q-ans').style.display='flex'">${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}</button>
     <div class="answer-box" id="q-ans" style="display:none;font-size:30px">✅ ${ans}</div>` : ''}
     ${scorePanelHTML(2, 1)}
     <div class="nav-btns">
