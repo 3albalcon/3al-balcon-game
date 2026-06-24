@@ -1666,7 +1666,9 @@ async function loadFromDrive(urlOverride) {
         });
       }
     }
-    if (data.hostWallpaper) G.hostWallpaperUrl = data.hostWallpaper.url;
+    if (data.hostWallpaper) {
+      G.hostWallpaperUrl = data.hostWallpaper.url;
+    }
 
     // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
     if (data.winnerSong) {
@@ -2206,7 +2208,14 @@ function startGame() {
   buildMenu();
   show('menu-screen');
   // Push state immediately so host phone shows teams right away
-  setTimeout(pushHostState, 200);
+  setTimeout(() => {
+    pushHostState();
+    // Push wallpaper to dedicated path for host screen
+    if (G.hostWallpaperUrl) {
+      const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+      if (db && fbSet) fbSet(fbRef(db, _path('hostWallpaper')), G.hostWallpaperUrl);
+    }
+  }, 200);
 }
 
 // ══════════════════════════════════════════
