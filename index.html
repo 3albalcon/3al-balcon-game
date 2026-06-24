@@ -1326,7 +1326,7 @@ audio, video { display: none; }
   <div id="earned-wc-bar" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;max-width:900px"></div>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
-    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;" id="roulette-toggle-btn-inner">🎰 شو بدنا نختار</button>
+    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 <span id="tr-spin-opener">شو بدنا نختار</span></button>
   </div>
 
   <!-- Roulette Inline Panel -->
@@ -1358,8 +1358,8 @@ audio, video { display: none; }
 
     <!-- Buttons -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <button style="background:rgba(0,10,50,0.6);border:2px solid var(--neon-pink);color:var(--neon-pink);text-shadow:var(--glow-pink);box-shadow:var(--glow-pink);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-spin-btn" onclick="spinRoulette()">🎰 دوّر!</button>
-      <button style="display:none;background:rgba(0,10,50,0.6);border:2px solid var(--neon-green);color:var(--neon-green);text-shadow:var(--glow-green);box-shadow:var(--glow-green);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-go-btn" onclick="goToRouletteRound()">← ابدأ الفقرة</button>
+      <button style="background:rgba(0,10,50,0.6);border:2px solid var(--neon-pink);color:var(--neon-pink);text-shadow:var(--glow-pink);box-shadow:var(--glow-pink);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-spin-btn" onclick="spinRoulette()">🎰 <span id="tr-spin1">دوّر!</span></button>
+      <button style="display:none;background:rgba(0,10,50,0.6);border:2px solid var(--neon-green);color:var(--neon-green);text-shadow:var(--glow-green);box-shadow:var(--glow-green);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-go-btn" onclick="goToRouletteRound()"><span id="tr-start-round">← ابدأ الفقرة</span></button>
     </div>
   </div>
 </div>
@@ -1661,7 +1661,7 @@ function loadBakedQuestions(data) {
     return arr;
   }
   if (data.r3) G.questions.r3 = shuffle([...data.r3]);
-  if (data.r410) {
+  if (data.r410 && !TR.loaded) {
     const sh = shuffle([...data.r410]);
     const half = Math.floor(sh.length/2);
     G.questions.r10 = sh.slice(0, half);
@@ -2865,8 +2865,14 @@ function applyLang() {
   document.querySelectorAll('.tr-host-mode').forEach(el => el.textContent = isAr ? 'مقدّم البرنامج' : 'Host Mode');
   const hostOnly = document.getElementById('tr-host-only');
   if (hostOnly) hostOnly.textContent = isAr ? 'للمقدّم فقط' : 'Host Only';
-  const spinBtn = document.getElementById('tr-spin-btn');
-  if (spinBtn) spinBtn.textContent = isAr ? '🎰 شو بدنا نختار' : '🎰 Spin the Wheel';
+  const spinBtn = document.getElementById('tr-spin-opener');
+  if (spinBtn) spinBtn.textContent = isAr ? 'شو بدنا نختار' : 'Spin the Wheel';
+  const spin1 = document.getElementById('tr-spin1');
+  if (spin1) spin1.textContent = isAr ? 'دوّر!' : 'Spin!';
+  const startRound = document.getElementById('tr-start-round');
+  if (startRound) startRound.textContent = isAr ? '← ابدأ الفقرة' : '← Start Round';
+  // Rebuild menu to refresh category labels
+  if (typeof buildMenu === 'function' && document.getElementById('rounds-grid')) buildMenu();
 
   // Refresh photo settings label
   const photoLabel = document.getElementById('photo-settings-label');
@@ -2980,15 +2986,15 @@ function processExcelWorkbook(wb) {
     return rows.map(r => (r[0]||'').toString().trim()).filter(Boolean);
   }
   const s3 = getRows('Category 3', false);
-  if (s3) { G.questions.r3 = shuffle([...s3]); details.push(`✅ مزاد علني: ${s3.length} سؤال`); }
-  else details.push(`⚠️ Category 3: مش موجود`);
+  if (s3) { G.questions.r3 = shuffle([...s3]); details.push(`✅ ${_lang==="en"?"Auction":"مزاد علني"}: ${s3.length} ${_lang==="en"?"questions":"سؤال"}`); }
+  else details.push(`⚠️ Category 3: ${_lang==="en"?"not found":"مش موجود"}`);
 
   const s410 = getRows('Category 4-10', true);
-  if (s410 && s410.length > 0) {
+  if (s410 && s410.length > 0 && !TR.loaded) {
     const sh = shuffle([...s410]); const half = Math.floor(sh.length/2);
     G.questions.r10 = sh.slice(0, half); G.questions.r9 = sh.slice(half);
-    details.push(`✅ متفرقات + من كل وادي: ${s410.length} سؤال`);
-  } else details.push(`⚠️ Category 4-10: مش موجود`);
+    details.push(`✅ ${_lang==="en"?"Trivia":"متفرقات"}: ${s410.length} ${_lang==="en"?"questions":"سؤال"}`);
+  } else if (!TR.loaded) details.push(`⚠️ Category 4-10: ${_lang==="en"?"not found":"مش موجود"}`);
 
   const sheet6 = wb.Sheets['Category 6'];
   if (sheet6) {
@@ -3073,11 +3079,14 @@ async function loadCSVFiles(csvFiles) {
     } else if (key === 'cat3') {
       G.questions.r3 = shuffle(rows.map(r => r[0]).filter(Boolean));
     } else if (key === 'cat410') {
-      const items = rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q);
-      const sh = shuffle(items); const half = Math.floor(sh.length/2);
-      G.questions.r10 = sh.slice(0, half); G.questions.r9 = sh.slice(half);
+      // Only use Drive CSV if GitHub trivia not loaded
+      if (!TR.loaded) {
+        const items = rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q);
+        const sh = shuffle(items); const half = Math.floor(sh.length/2);
+        G.questions.r10 = sh.slice(0, half); G.questions.r9 = sh.slice(half);
+      }
     } else if (key === 'cat5') {
-      G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q));
+      G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1], lang: (r[2]||'').trim().toLowerCase() })).filter(x => x.q));
     } else if (key === 'cat6') {
       G.questions.r5 = shuffle(rows.map(r => ({ v: r[0], q: r[1], a: r[2] })).filter(x => x.v || x.q));
     } else if (key === 'cat78') {
@@ -3104,7 +3113,7 @@ function updateDataStatus() {
 
   if (questionsReady && imagesReady) {
     icon.textContent = '✅';
-    text.textContent = '✅ كل شي جاهز';
+    text.textContent = t('allReady');
     text.style.color = 'var(--neon-green)';
     text.style.textShadow = 'var(--glow-green)';
     icon.style.color = 'var(--neon-green)';
@@ -3115,11 +3124,11 @@ function updateDataStatus() {
     }, 3000);
   } else if (questionsReady && !imagesReady) {
     icon.textContent = '⏳';
-    text.textContent = '⏳ الأسئلة جاهزة — عم نحضّر الصور';
+    text.textContent = t('loadingImages');
     text.style.color = 'var(--neon-yellow)';
   } else {
     icon.textContent = '⏳';
-    text.textContent = '⏳ عم نحضّر الأسئلة و الصور';
+    text.textContent = t('loadingAll');
     text.style.color = 'var(--neon-yellow)';
   }
 }
@@ -3164,7 +3173,7 @@ function buildMenu() {
     <div class="round-btn ${G.done.has(r.id)?'done':''}" 
       onclick="${G.done.has(r.id)?'':'openRound(\''+r.id+'\')'}"
       style="${G.done.has(r.id)?'cursor:not-allowed;opacity:0.5;':''}">
-      <div class="rnum">فقرة ${r.num}</div>
+      <div class="rnum">${_lang==="en"?"Cat":"فقرة"} ${r.num}</div>
       <div class="rname">${r.name}</div>
 
     </div>
@@ -4494,8 +4503,13 @@ function startBidTimer(winner, targetCount, roomId) {}
 function validateAnswer(idx, status, roomId) {}
 
 function renderBuzzerAudio(r, qIndex, sa) {
-  const qs = G.questions.r4 || [];
-  const raw = qs[qIndex] || null;
+  // Filter songs by language if lang column exists
+  const allQs = G.questions.r4 || [];
+  const filtered = allQs.filter(q => {
+    if (!q.lang) return true; // no lang column — show all
+    return q.lang === _lang || q.lang === '' || q.lang === 'both';
+  });
+  const raw = filtered[qIndex] || allQs[qIndex] || null;
   const songQ = raw ? getQ(raw) : null;
   const songA = raw ? getA(raw) : null;
   const isLast = qIndex >= r.count - 1;
@@ -4516,8 +4530,9 @@ function renderBuzzerAudio(r, qIndex, sa) {
 
     ${songA ? `
       <div id="answer-area" style="min-height:52px;display:flex;align-items:center;justify-content:center">
-        <button class="answer-reveal-btn" onclick="document.getElementById('answer-area').innerHTML='<div class=answer-box fade-in style=font-size:30px>✅ '+decodeURIComponent('${encodeURIComponent(songA)}')+'</div>'">
-          👁 كشف الجواب
+        <button class="answer-reveal-btn" style="background:rgba(0,10,50,0.6);border:2px solid #FFE600;box-shadow:0 0 10px rgba(255,230,0,0.5);border-radius:12px;padding:12px 32px;color:#FFE600;font-size:15px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif"
+          onclick="document.getElementById('answer-area').innerHTML='<div class=answer-box style=font-size:30px>'+decodeURIComponent('${encodeURIComponent(songA)}')+'</div>'">
+          ${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}
         </button>
       </div>
     ` : ''}
@@ -4594,10 +4609,10 @@ function renderTeamVideo(r, qIndex, sa) {
     });
   } // video → question → answer
 
-  updateHostView(r.name, `فيديو ${qIndex+1} من ${r.count}`, matchedQ || '', matchedA || '');
+  updateHostView(r.name, `${_lang==="en"?"Video":"فيديو"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, matchedQ || '', matchedA || '');
 
   sa.innerHTML = `
-    <div class="question-number">فيديو ${qIndex+1} من ${r.count}</div>
+    <div class="question-number">${_lang==="en"?"Video":"فيديو"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
     <!-- VIDEO AREA -->
     <div style="width:100%;max-width:1440px;margin:0 auto;" class="fade-in">
@@ -5384,7 +5399,7 @@ function toggleHostMode() {
     btn.style.borderColor = 'var(--neon-yellow)';
     btn.style.color = 'var(--neon-yellow)';
     btn.style.textShadow = 'var(--glow-yellow)';
-    btn.textContent = '🎙 مقدّم البرنامج ✓';
+    btn.innerHTML = '🎙 <span class="tr-host-mode">' + (_lang === 'en' ? 'Host Mode ✓' : 'مقدّم البرنامج ✓') + '</span>';
     qrWrap.style.display = 'flex';
     const qrEl = document.getElementById('host-qr');
     qrEl.innerHTML = '';
@@ -5397,7 +5412,7 @@ function toggleHostMode() {
     btn.style.borderColor = 'rgba(255,255,255,0.2)';
     btn.style.color = 'rgba(255,255,255,0.35)';
     btn.style.textShadow = 'none';
-    btn.textContent = '🎙 مقدّم البرنامج';
+    btn.innerHTML = '🎙 <span class="tr-host-mode">' + (_lang === 'en' ? 'Host Mode' : 'مقدّم البرنامج') + '</span>';
     qrWrap.style.display = 'none';
     pushHostView({ active: false });
   }
@@ -5753,7 +5768,7 @@ function toggleRoulette() {
   if (!isOpen) {
     document.getElementById('roulette-result').textContent = '';
     document.getElementById('roulette-go-btn').style.display = 'none';
-    document.getElementById('roulette-spin-btn').textContent = '🎰 دوّر!';
+    document.getElementById('roulette-spin-btn').innerHTML = '🎰 <span id="tr-spin1">' + (_lang==="en"?"Spin!":"دوّر!") + '</span>';
     document.getElementById('roulette-spin-btn').disabled = false;
     rouletteTarget = null;
     buildStrip();
@@ -5821,7 +5836,7 @@ function spinRoulette() {
   setTimeout(() => {
     document.getElementById('roulette-result').textContent = `🎯 ${winner.name}`;
     document.getElementById('roulette-go-btn').style.display = 'inline-flex';
-    document.getElementById('roulette-spin-btn').textContent = '🎰 دوّر مجدداً';
+    document.getElementById('roulette-spin-btn').innerHTML = '🎰 <span id="tr-spin1">' + (_lang==='en'?'Spin Again':'دوّر مجدداً') + '</span>';
     document.getElementById('roulette-spin-btn').disabled = false;
     pushHostState();
     const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
