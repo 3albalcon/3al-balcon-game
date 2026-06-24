@@ -1911,12 +1911,50 @@ function parseLines(id) {
 // ══════════════════════════════════════════
 // CHARADES CATEGORY SELECTOR (Cat 9)
 // ══════════════════════════════════════════
+const CH_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNtQQHVfetCyFMxjZIuholI61v1fWGaOg1YoJMRZweKijmSxZJ8Nf9DS_QwsHotIrdhqpUvtrItyNc/pub?gid=0&single=true&output=csv';
+
 const CH = {
   rawRows: [], allCards: [], dbStructure: {},
   selectedCats: new Set(), selectedSubs: new Set(),
   openAccCat: null, loaded: false,
   csvUrl: null,
 };
+
+async function loadCharadesFromSheet() {
+  try {
+    const res = await fetch(CH_SHEET_URL);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      const cols    = parseCharadesCSV(lines[i]);
+      const word_ar = (cols[0] || '').trim();
+      const word_en = (cols[1] || word_ar).trim();
+      const cat_ar  = (cols[2] || '').trim();
+      const sub_ar  = (cols[3] || '').trim();
+      const cat_en  = (cols[4] || cat_ar).trim();
+      const sub_en  = (cols[5] || sub_ar).trim();
+      if (!word_ar || !cat_ar || !sub_ar) continue;
+      if (cat_en.toLowerCase() === 'category') continue;
+      rows.push({ word_ar, word_en, cat_ar, sub_ar, cat_en, sub_en });
+    }
+    CH.rawRows = rows;
+    buildCharadesFromRaw();
+    CH.loaded = true;
+    renderCharadesAccordion();
+    const loadingEl = document.getElementById('ch-loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+    const accEl = document.getElementById('ch-accordion');
+    if (accEl) accEl.style.display = 'block';
+    document.getElementById('charades-settings-card').style.display = 'block';
+    applyCharadesFilter();
+  } catch(e) {
+    const loadingEl = document.getElementById('ch-loading');
+    if (loadingEl) loadingEl.textContent = '❌ تعذّر تحميل الكلمات';
+    document.getElementById('charades-settings-card').style.display = 'block';
+  }
+}
 
 function toggleCharadesSettings() {
   const body  = document.getElementById('charades-settings-body');
@@ -2994,10 +3032,8 @@ async function loadCSVFiles(csvFiles) {
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
       G.questions.r6 = sh.slice(0, half); G.questions.r7 = sh.slice(half);
     } else if (key === 'cat9') {
-      // Pass already-parsed rows to charades selector
-      loadCharadesFromRows(rows);
-      // Also set directly as fallback
-      G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
+      // Words loaded from Google Sheets instead — keep as fallback only
+      if (!CH.loaded) G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
     } else if (key === 'wildcard') {
       G.wildcards = shuffle(rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q));
     }
@@ -5894,6 +5930,7 @@ document.addEventListener('DOMContentLoaded', () => {
   autoLoad();
   loadPhotoCategories();
   loadTriviaCategories();
+  loadCharadesFromSheet();
 });
 
 // ══════════════════════════════════════════
