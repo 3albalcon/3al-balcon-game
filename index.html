@@ -1030,17 +1030,19 @@ audio, video { display: none; }
 .photo-settings-card {
   background: rgba(0,10,50,0.7);
   border: 2px solid var(--neon-cyan);
-  border-radius: 16px; padding: 10px 18px;
+  border-radius: 16px;
   display: flex; flex-direction: column; gap: 0;
   width: 100%; max-width: 700px;
+  overflow: hidden;
 }
 .photo-settings-card h3 {
   font-size: 12px; font-weight: 700;
   color: var(--neon-yellow); text-shadow: var(--glow-yellow);
   cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   user-select: none; line-height: 1;
+  padding: 10px 18px; margin: 0;
 }
-.photo-settings-body { display: none; flex-direction: column; gap: 10px; padding-top: 10px; }
+.photo-settings-body { display: none; flex-direction: column; gap: 10px; padding: 0 18px 14px; }
 .photo-settings-body.open { display: flex; }
 
 /* Accordion rows */
@@ -1959,14 +1961,14 @@ function buildCharadesFromRaw() {
 
 // Called with pre-parsed rows from the CSV pipeline (columns: word_ar, word_en, cat_ar, sub_ar, cat_en, sub_en)
 function loadCharadesFromRows(rows) {
-  // Check if CSV has category columns (6 columns) or is old format (1 column)
   const hasCategories = rows.length > 0 && rows[0].length >= 3;
 
   if (!hasCategories) {
-    // Old format — just words, no categories. Hide card, use words directly.
+    // Old format — just words, show card with message
     G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
-    const card = document.getElementById('charades-settings-card');
-    if (card) card.style.display = 'none';
+    const loadingEl = document.getElementById('ch-loading');
+    if (loadingEl) loadingEl.textContent = '⚠️ ملف الكلمات لا يحتوي على فئات — يرجى تحديث category_9.csv إلى 6 أعمدة';
+    document.getElementById('charades-settings-card').style.display = 'block';
     return;
   }
 
