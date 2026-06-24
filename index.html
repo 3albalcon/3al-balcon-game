@@ -1031,7 +1031,7 @@ audio, video { display: none; }
   background: rgba(0,10,50,0.7);
   border: 2px solid var(--neon-cyan);
   border-radius: 16px; padding: 10px 18px;
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 0;
   width: 100%; max-width: 700px;
 }
 .photo-settings-card h3 {
@@ -1040,7 +1040,7 @@ audio, video { display: none; }
   cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   user-select: none; line-height: 1;
 }
-.photo-settings-body { display: none; flex-direction: column; gap: 10px; padding-top: 8px; }
+.photo-settings-body { display: none; flex-direction: column; gap: 10px; padding-top: 10px; }
 .photo-settings-body.open { display: flex; }
 
 /* Accordion rows */
@@ -1959,6 +1959,17 @@ function buildCharadesFromRaw() {
 
 // Called with pre-parsed rows from the CSV pipeline (columns: word_ar, word_en, cat_ar, sub_ar, cat_en, sub_en)
 function loadCharadesFromRows(rows) {
+  // Check if CSV has category columns (6 columns) or is old format (1 column)
+  const hasCategories = rows.length > 0 && rows[0].length >= 3;
+
+  if (!hasCategories) {
+    // Old format — just words, no categories. Hide card, use words directly.
+    G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
+    const card = document.getElementById('charades-settings-card');
+    if (card) card.style.display = 'none';
+    return;
+  }
+
   CH.rawRows = rows.map(cols => ({
     word_ar: (cols[0] || '').trim(),
     word_en: (cols[1] || cols[0] || '').trim(),
