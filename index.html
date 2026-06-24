@@ -1318,7 +1318,7 @@ audio, video { display: none; }
     display:flex;align-items:center;gap:8px;justify-content:center;
   ">
     <span id="data-status-icon">⏳</span>
-    <span id="data-status-text">⏳ عم نحضّر الأسئلة و الصور</span>
+    <span id="data-status-text">${t("loadingAll")}</span>
   </div>
 
   <div class="rounds-grid" id="rounds-grid"></div>
@@ -1555,7 +1555,7 @@ function processAllFiles(all) {
     G.media['r1'] = items.slice(0, 10);
     G.media['r2'] = items.slice(10, 20);
     document.getElementById('status-r1').textContent =
-      `✅ ${images.length} صورة — ${G.media['r1'].length} للفقرة 1 و ${G.media['r2'].length} للفقرة 2`;
+      `✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`;
   } else {
     document.getElementById('status-r1').textContent = `⚠️ لم يتم العثور على صور في مجلد "image 1"`;
   }
@@ -1618,7 +1618,7 @@ function loadAllMedia(input) {
     G.media['r1'] = items.slice(0, 10);
     G.media['r2'] = items.slice(10, 20);
     document.getElementById('status-r1').textContent =
-      `✅ ${images.length} صورة — ${G.media['r1'].length} للفقرة 1 و ${G.media['r2'].length} للفقرة 2`;
+      `✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`;
   }
 
   if (videos.length > 0) {
@@ -1751,7 +1751,7 @@ async function loadFromDrive(urlOverride) {
       G.media['r2'] = imageItems.slice(10, 20);
       // Preload silently in background
       setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
-      details.push(`✅ ${images.length} صورة — ${G.media['r1'].length} للفقرة 1 و ${G.media['r2'].length} للفقرة 2`);
+      details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`);
     } else details.push('⚠️ لم يتم العثور على صور في مجلد "image 1"');
 
     // Step 4.4: Waiting screen URL
@@ -2550,7 +2550,7 @@ const LANG = {
     bothConnected: '✅ كلا الفريقين متصلين!',
     timesUp: "Time's Up!",
     allDone: 'كل الفقرات انتهت! 🎉',
-    tiedSoFar: '🤝 تعادل حتى الآن!',
+    tiedSoFar: '${t("tiedSoFar")}',
     tied: '🤝 تعادل!',
     tapShowQ: '⏳ اضغط "عرض السؤال" لبدء الجولة',
     actorScan: 'الممثل يعمل Scan للكود',
@@ -3229,7 +3229,7 @@ function useEarnedWildcard(team, index) {
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
       <button class="nav-btn primary" onclick="confirmUseWildcard('${team}', ${index})">✅ تم الاستخدام</button>
-      <button class="nav-btn" onclick="document.getElementById('wc-use-popup').remove()">← رجوع</button>
+      <button class="nav-btn" onclick="document.getElementById('wc-use-popup').remove()">${_lang==='en'?'← Back':'← رجوع'}</button>
     </div>
   `;
   document.body.appendChild(overlay);
@@ -3842,13 +3842,13 @@ function renderBuzzerImage(r, qIndex, sa) {
   // Mark as image category for big next button
   sa.dataset.catType = 'image';
 
-  updateHostView(r.name, `صورة ${qIndex+1} من ${total}`, `صورة ${qIndex+1}`, item?.answer || '');
+  updateHostView(r.name, `${_lang==="en"?"Image":"صورة"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${total}`, `صورة ${qIndex+1}`, item?.answer || '');
   // Move content up 5cm for image rounds
   sa.style.paddingTop = '';
   sa.style.justifyContent = '';
 
   sa.innerHTML = `
-    <div class="question-number" style="font-size:14px;color:rgba(200,224,255,0.5);font-weight:700;letter-spacing:2px;text-align:center">صورة ${qIndex+1} من ${total}</div>
+    <div class="question-number" style="font-size:14px;color:rgba(200,224,255,0.5);font-weight:700;letter-spacing:2px;text-align:center">${_lang==="en"?"Image":"صورة"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${total}</div>
 
     ${item ? `
       <div style="width:450px;height:450px;background:#1a1a2e;border:10px solid #c8960c;outline:3px solid #8B6914;box-shadow:0 0 0 4px #c8960c,0 8px 40px rgba(0,0,0,0.7);border-radius:4px;overflow:hidden;flex-shrink:0" class="fade-in">
@@ -3934,7 +3934,7 @@ function initCat3Room(teamA, teamB) {
 function renderBidding(r, qIndex, sa) {
   const qs = G.questions.r3;
   const raw = qs[qIndex] || null;
-  const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
+  const q = raw ? getQ(raw) : `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
   window._cat3QuestionPlayed = false;
   window._mainTimerStarted = false;
@@ -3965,7 +3965,7 @@ function renderBidding(r, qIndex, sa) {
   const roomId = cat3RoomId;
 
   sa.innerHTML = `
-    <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
+    <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
     <!-- READY PHASE — shown while waiting for host to start -->
     <div id="cat3-ready-phase" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
@@ -4305,8 +4305,8 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
           scoreEl.textContent = correct >= winnerBid
-            ? `✅ ${winnerName} أجاب ${correct}/${winnerBid} صح — +4 نقاط`
-            : `❌ ${winnerName} أجاب ${correct}/${winnerBid} فقط — -2 نقاط`;
+            ? `✅ ${winnerName} ${_lang==="en"?"answered":"أجاب"} ${correct}/${winnerBid} ${_lang==="en"?"correct — +4 pts":"صح — +4 نقاط"}`
+            : `❌ ${winnerName} ${_lang==="en"?"answered only":"أجاب"} ${correct}/${winnerBid} ${_lang==="en"?"— -2 pts":"فقط — -2 نقاط"}`;
           window._pendingCat3Score = { winner, correct, winnerBid };
           // Show next button now that scoring is done
           const nav = document.getElementById('cat3-nav-btns');
@@ -4317,7 +4317,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         if (scoreEl) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = 'var(--neon-red)';
-          scoreEl.textContent = `❌ ${winnerName} أجاب ${answers.length}/${winnerBid} فقط — -2 نقاط`;
+          scoreEl.textContent = `❌ ${winnerName} ${_lang==="en"?"answered only":"أجاب"} ${answers.length}/${winnerBid} ${_lang==="en"?"— -2 pts":"فقط — -2 نقاط"}`;
           window._pendingCat3Score = { winner, correct: 0, winnerBid };
           // Show next button even with no answers
           const nav = document.getElementById('cat3-nav-btns');
@@ -4391,8 +4391,8 @@ function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) 
   if (nextBtn) nextBtn.disabled = currentIdx === answers.length - 1;
   const correctBtn = document.getElementById('val-correct-btn');
   const wrongBtn = document.getElementById('val-wrong-btn');
-  if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? '✅ صح ✓' : '✅ صح';
-  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? '❌ غلط ✓' : '❌ غلط';
+  if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? _lang==="en"?"✅ Correct ✓":"✅ صح ✓" : _lang==="en"?"✅ Correct":"✅ صح";
+  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? _lang==="en"?"❌ Wrong ✓":"❌ غلط ✓" : _lang==="en"?"❌ Wrong":"❌ غلط";
 }
 
 // Override validation result
@@ -4472,9 +4472,9 @@ function renderBuzzerAudio(r, qIndex, sa) {
   const songA = raw ? getA(raw) : null;
   const isLast = qIndex >= r.count - 1;
 
-  updateHostView(r.name, `أغنية ${qIndex+1} من ${r.count}`, songQ || '', songA || '');
+  updateHostView(r.name, `${_lang==="en"?"Song":"أغنية"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, songQ || '', songA || '');
   sa.innerHTML = `
-    <div class="question-number">أغنية ${qIndex+1} من ${r.count}</div>
+    <div class="question-number">${_lang==="en"?"Song":"أغنية"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
     ${songQ ? `
       <div class="question-text-box slide-in" style="font-size:${dynFont(songQ)}">
@@ -4482,7 +4482,7 @@ function renderBuzzerAudio(r, qIndex, sa) {
       </div>
     ` : `
       <div class="question-text-box" style="color:var(--neon-cyan)">
-        لم يتم تحميل أسئلة الدندنة — ارفع ملف Excel من الإعدادات
+        ${_lang==="en"?"Humming questions not loaded":"لم يتم تحميل أسئلة الدندنة"}
       </div>
     `}
 
@@ -4512,12 +4512,12 @@ function toggleAudio() {
     audio.play();
     btn.textContent = '⏸';
     ind.style.display = 'flex';
-    status.textContent = '▶ يشتغل الآن';
+    status.textContent = t('nowPlaying');
   } else {
     audio.pause();
     btn.textContent = '▶';
     ind.style.display = 'none';
-    status.textContent = 'متوقف';
+    status.textContent = t('paused');
   }
 }
 
@@ -4845,12 +4845,12 @@ function closeVideoFullscreen() {
 function renderClosest(r, qIndex, sa) {
   const qs = r.id === 'r6' ? G.questions.r6 : G.questions.r7;
   const raw = qs[qIndex] || null;
-  const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
+  const q = raw ? getQ(raw) : `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`;
   const ans = raw ? getA(raw) : '?';
   const isLast = qIndex >= r.count - 1;
   const pts = r.id === 'r6' ? 2 : 4;
 
-  updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
+  updateHostView(r.name, `${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, q, ans);
 
   // Reuse existing room from rules page
   const roomId = window._closestRoomId || `closest_${r.id}_${qIndex}_${Date.now()}`;
@@ -4893,7 +4893,7 @@ function renderClosest(r, qIndex, sa) {
   }
 
   sa.innerHTML = `
-    <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
+    <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
     <!-- Hidden question hint -->
     <div id="q-hidden-msg" style="font-size:14px;color:rgba(255,255,255,0.3);text-align:center;font-style:italic;${qIndex > 0 ? 'display:none' : ''}">
@@ -5048,7 +5048,7 @@ function renderCharades(r, qIndex, sa) {
   const item = items[qIndex] || `اسم ${qIndex+1}`;
   const isLast = qIndex >= r.count - 1;
 
-  updateHostView(r.name, `دور ${qIndex+1} من ${r.count}`, 'كلمة سرية للممثل', item);
+  updateHostView(r.name, `${_lang==="en"?"Round":"دور"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, '${_lang==="en"?"Secret word for actor":"كلمة سرية للممثل"}', item);
   const encoded = encodeURIComponent(item);
   const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}`;
 
@@ -5065,7 +5065,7 @@ function renderCharades(r, qIndex, sa) {
         </div>
       </div>
 
-      <div class="question-number">دور ${qIndex+1} من ${r.count}</div>
+      <div class="question-number">${_lang==="en"?"Round":"دور"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
       <div id="char-answer" style="
         font-size:clamp(32px,6vw,60px);font-weight:900;
@@ -5145,15 +5145,15 @@ function revealChar() {
 function renderBuzzerQuestion(r, qIndex, sa) {
   const qs = r.id === 'r9' ? G.questions.r9 : G.questions.r10;
   const raw = qs[qIndex] || null;
-  const q = raw ? getQ(raw) : `السؤال ${qIndex+1}`;
+  const q = raw ? getQ(raw) : `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`;
   const ans = raw ? getA(raw) : '';
   const isLast = qIndex >= r.count - 1;
 
-  updateHostView(r.name, `سؤال ${qIndex+1} من ${r.count}`, q, ans);
+  updateHostView(r.name, `${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, q, ans);
   sa.innerHTML = `
-    <div class="question-number">سؤال ${qIndex+1} من ${r.count}</div>
-    <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `السؤال ${qIndex+1}`}</div>
-    ${ans ? `<button class="answer-reveal-btn" onclick="document.getElementById('q-ans').style.display='flex'">كشف الجواب</button>
+    <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
+    <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`}</div>
+    ${ans ? `<button class="answer-reveal-btn" onclick="document.getElementById('q-ans').style.display='flex'">${_lang==="en"?"Reveal Answer":"كشف الجواب"}</button>
     <div class="answer-box" id="q-ans" style="display:none;font-size:30px">✅ ${ans}</div>` : ''}
     ${scorePanelHTML(2, 1)}
     <div class="nav-btns">
@@ -5198,7 +5198,7 @@ function showResult() {
 
   sa.innerHTML = `
     <div class="result-card fade-in">
-      <h2>نتيجة فقرة — ${G.currentRound.name}</h2>
+      <h2>${_lang==="en"?"Round Result":"نتيجة فقرة"} — ${G.currentRound.name}</h2>
       <div class="result-scores">
         <div class="rs-team">
           <div class="rs-name">${G.teamA}</div>
@@ -5210,7 +5210,7 @@ function showResult() {
           <div class="rs-score">${G.scoreB}</div>
         </div>
       </div>
-      ${winner ? `<div class="rs-winner">🏆 ${winner} في المقدمة!</div>` : `<div class="rs-winner">🤝 تعادل حتى الآن!</div>`}
+      ${winner ? `<div class="rs-winner">${t("leading", winner)}</div>` : `<div class="rs-winner">${t("tiedSoFar")}</div>`}
     </div>
     <div class="nav-btns">
       ${wcEligibleA ? `
