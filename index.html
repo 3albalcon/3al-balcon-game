@@ -1030,18 +1030,17 @@ audio, video { display: none; }
 .photo-settings-card {
   background: rgba(0,10,50,0.7);
   border: 2px solid var(--neon-cyan);
-  box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0,239,255,0.03);
-  border-radius: 16px; padding: 14px 18px;
+  border-radius: 16px; padding: 10px 18px;
   display: flex; flex-direction: column; gap: 10px;
   width: 100%; max-width: 700px;
 }
 .photo-settings-card h3 {
-  font-size: 14px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   color: var(--neon-yellow); text-shadow: var(--glow-yellow);
   cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-  user-select: none;
+  user-select: none; line-height: 1;
 }
-.photo-settings-body { display: none; flex-direction: column; gap: 10px; }
+.photo-settings-body { display: none; flex-direction: column; gap: 10px; padding-top: 8px; }
 .photo-settings-body.open { display: flex; }
 
 /* Accordion rows */
@@ -1051,7 +1050,7 @@ audio, video { display: none; }
   border: 2px solid rgba(255,255,255,0.1); background: rgba(0,8,45,0.5);
   margin-bottom: 6px; transition: all 0.2s; user-select: none;
 }
-.ph-acc-cat-row.active { border-color: var(--neon-green); background: rgba(57,255,20,0.05); box-shadow: 0 0 8px rgba(57,255,20,0.2); }
+.ph-acc-cat-row.active { border-color: var(--neon-green); background: rgba(57,255,20,0.05); }
 .ph-acc-cat-row:hover { border-color: rgba(255,255,255,0.3); }
 .ph-acc-cat-left { display: flex; align-items: center; gap: 8px; }
 .ph-acc-cat-check {
@@ -1060,7 +1059,7 @@ audio, video { display: none; }
   font-size: 12px; flex-shrink: 0; transition: all 0.2s;
 }
 .ph-acc-cat-row.active .ph-acc-cat-check { background: var(--neon-green); border-color: var(--neon-green); color: #000; }
-.ph-acc-cat-name { font-size: 13px; font-weight: 700; color: #fff; }
+.ph-acc-cat-name { font-size: 11px; font-weight: 700; color: #fff; }
 .ph-acc-cat-count { font-size: 11px; color: rgba(200,224,255,0.5); }
 .ph-acc-arrow { font-size: 12px; color: rgba(200,224,255,0.5); transition: transform 0.2s; }
 .ph-acc-arrow.open { transform: rotate(180deg); }
@@ -1078,7 +1077,7 @@ audio, video { display: none; }
   color: rgba(200,224,255,0.7); font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700;
   cursor: pointer; transition: all 0.2s;
 }
-.ph-subchip.active { border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(0,239,255,0.3); color: var(--neon-cyan); background: rgba(0,239,255,0.07); }
+.ph-subchip.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,239,255,0.07); }
 .ph-count-display { font-size: 12px; color: rgba(200,224,255,0.5); text-align: center; }
 @media(min-width: 1800px) and (max-width: 2559px) {
   body { font-size: 18px; }
@@ -1201,7 +1200,7 @@ audio, video { display: none; }
     <!-- Photo category selection -->
     <div class="photo-settings-card" id="photo-settings-card" style="display:none;margin-top:4px">
       <h3 onclick="togglePhotoSettings()">
-        <span id="photo-settings-label">📸 اختيار الصور — وين شايفو / ما تذكرتني</span>
+        <span id="photo-settings-label">📸 اختيار فئات الصور — وين شايفو | ما تذكرتني</span>
         <span id="photo-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
       <div class="photo-settings-body" id="photo-settings-body">
@@ -1210,6 +1209,36 @@ audio, video { display: none; }
         </div>
         <div id="ph-accordion" style="display:none"></div>
         <div id="ph-count-display" class="ph-count-display"></div>
+      </div>
+    </div>
+
+    <!-- Trivia category selection -->
+    <div class="photo-settings-card" id="trivia-settings-card" style="display:none;margin-top:4px">
+      <h3 onclick="toggleTriviaSettings()">
+        <span id="trivia-settings-label">📝 اختيار فئات الأسئلة — متفرقات | من كل وادي</span>
+        <span id="trivia-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
+      </h3>
+      <div class="photo-settings-body" id="trivia-settings-body">
+        <div id="tr-loading" style="font-size:13px;font-weight:700;color:var(--neon-yellow);text-align:center;padding:8px">
+          ⏳ جاري تحميل الفئات...
+        </div>
+        <div id="tr-accordion" style="display:none"></div>
+        <div id="tr-count-display" class="ph-count-display"></div>
+      </div>
+    </div>
+
+    <!-- Charades category selection -->
+    <div class="photo-settings-card" id="charades-settings-card" style="display:none;margin-top:4px">
+      <h3 onclick="toggleCharadesSettings()">
+        <span id="charades-settings-label">🤐 اختيار فئات التمثيل — سكر تمك</span>
+        <span id="charades-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
+      </h3>
+      <div class="photo-settings-body" id="charades-settings-body">
+        <div id="ch-loading" style="font-size:13px;font-weight:700;color:var(--neon-yellow);text-align:center;padding:8px">
+          ⏳ جاري تحميل الفئات...
+        </div>
+        <div id="ch-accordion" style="display:none"></div>
+        <div id="ch-count-display" class="ph-count-display"></div>
       </div>
     </div>
   </div>
@@ -1878,6 +1907,344 @@ function parseLines(id) {
 }
 
 // ══════════════════════════════════════════
+// CHARADES CATEGORY SELECTOR (Cat 9)
+// ══════════════════════════════════════════
+const CH = {
+  rawRows: [], allCards: [], dbStructure: {},
+  selectedCats: new Set(), selectedSubs: new Set(),
+  openAccCat: null, loaded: false,
+  csvUrl: null,
+};
+
+function toggleCharadesSettings() {
+  const body  = document.getElementById('charades-settings-body');
+  const arrow = document.getElementById('charades-settings-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function parseCharadesCSV(line) {
+  const cols = []; let col = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(col.trim()); col = ''; }
+    else { col += ch; }
+  }
+  cols.push(col.trim());
+  return cols;
+}
+
+function buildCharadesFromRaw() {
+  const lang = _lang;
+  CH.dbStructure = {};
+  CH.allCards    = [];
+  CH.selectedSubs = new Set();
+
+  CH.rawRows.forEach(r => {
+    const word = (lang === 'en' ? r.word_en : r.word_ar).trim();
+    const cat  = (lang === 'en' ? r.cat_en  : r.cat_ar).trim();
+    const sub  = (lang === 'en' ? r.sub_en  : r.sub_ar).trim();
+    if (!word || !cat || !sub) return;
+    if (!CH.dbStructure[cat]) CH.dbStructure[cat] = {};
+    if (!CH.dbStructure[cat][sub]) CH.dbStructure[cat][sub] = [];
+    CH.dbStructure[cat][sub].push({ word, category: cat, subcategory: sub });
+    CH.allCards.push({ word, category: cat, subcategory: sub });
+  });
+
+  CH.selectedCats = new Set(Object.keys(CH.dbStructure));
+  CH.selectedSubs = new Set();
+}
+
+// Called with pre-parsed rows from the CSV pipeline (columns: word_ar, word_en, cat_ar, sub_ar, cat_en, sub_en)
+function loadCharadesFromRows(rows) {
+  CH.rawRows = rows.map(cols => ({
+    word_ar: (cols[0] || '').trim(),
+    word_en: (cols[1] || cols[0] || '').trim(),
+    cat_ar:  (cols[2] || '').trim(),
+    sub_ar:  (cols[3] || '').trim(),
+    cat_en:  (cols[4] || cols[2] || '').trim(),
+    sub_en:  (cols[5] || cols[3] || '').trim(),
+  })).filter(r => r.word_ar && r.cat_ar && r.sub_ar);
+
+  buildCharadesFromRaw();
+  CH.loaded = true;
+  renderCharadesAccordion();
+  const loadingEl = document.getElementById('ch-loading');
+  if (loadingEl) loadingEl.style.display = 'none';
+  const accEl = document.getElementById('ch-accordion');
+  if (accEl) accEl.style.display = 'block';
+  const card = document.getElementById('charades-settings-card');
+  if (card) card.style.display = 'block';
+  applyCharadesFilter();
+}
+
+function renderCharadesAccordion() {
+  const wrap = document.getElementById('ch-accordion');
+  if (!wrap) return;
+  const cats = Object.keys(CH.dbStructure).sort();
+
+  wrap.innerHTML = cats.map(cat => {
+    const subs  = Object.keys(CH.dbStructure[cat]);
+    const count = subs.reduce((n, s) => n + CH.dbStructure[cat][s].length, 0);
+    const active = CH.selectedCats.has(cat);
+    const isOpen = CH.openAccCat === cat;
+    const enc    = encodeURIComponent(cat);
+    const catSubKeys = [...CH.selectedSubs].filter(k => k.startsWith(cat + '|||'));
+    const allSubsSelected = catSubKeys.length === 0;
+
+    const subHtml = subs.length > 1 ? `
+      <div class="ph-acc-subcat-wrap ${isOpen ? 'open' : ''}" id="ch-sub-${enc}">
+        <div class="ph-acc-subcat-inner">
+          <button class="ph-subchip ${active && allSubsSelected ? 'active' : ''}"
+            onclick="chSetAllSubs('${enc}')">${_lang === 'en' ? 'All' : 'الكل'}</button>
+          ${subs.map(sub => {
+            const subKey   = cat + '|||' + sub;
+            const subCount = CH.dbStructure[cat][sub].length;
+            const subActive = active && CH.selectedSubs.has(subKey);
+            return `<button class="ph-subchip ${subActive ? 'active' : ''}"
+              onclick="chToggleSubcat('${enc}','${encodeURIComponent(sub)}')">${sub} (${subCount})</button>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    return `
+      <div class="ph-acc-cat-row ${active ? 'active' : ''}" onclick="chToggleCat('${enc}')">
+        <div class="ph-acc-cat-left">
+          <div class="ph-acc-cat-check">${active ? '✓' : ''}</div>
+          <span class="ph-acc-cat-name">${cat}</span>
+          <span class="ph-acc-cat-count">(${count})</span>
+        </div>
+        ${subs.length > 1 ? `<div class="ph-acc-arrow ${isOpen ? 'open' : ''}"
+          onclick="event.stopPropagation();chToggleAccordion('${enc}')">▼</div>` : ''}
+      </div>
+      ${subHtml}`;
+  }).join('');
+
+  const filtered = getFilteredCharades();
+  const countEl  = document.getElementById('ch-count-display');
+  if (countEl) countEl.textContent = _lang === 'en'
+    ? `${filtered.length} words available for Cat 9`
+    : `${filtered.length} كلمة متاحة للفقرة 9`;
+}
+
+function chToggleAccordion(enc) {
+  CH.openAccCat = CH.openAccCat === decodeURIComponent(enc) ? null : decodeURIComponent(enc);
+  renderCharadesAccordion();
+}
+
+function chToggleCat(enc) {
+  const cat = decodeURIComponent(enc);
+  if (CH.selectedCats.has(cat)) {
+    if (CH.selectedCats.size <= 1) { showToast(_lang === 'en' ? 'Select at least one category!' : 'اختر فئة واحدة على الأقل!'); return; }
+    CH.selectedCats.delete(cat);
+    for (const k of [...CH.selectedSubs]) { if (k.startsWith(cat + '|||')) CH.selectedSubs.delete(k); }
+  } else { CH.selectedCats.add(cat); }
+  renderCharadesAccordion();
+  applyCharadesFilter();
+}
+
+function chSetAllSubs(enc) {
+  const cat = decodeURIComponent(enc);
+  for (const k of [...CH.selectedSubs]) { if (k.startsWith(cat + '|||')) CH.selectedSubs.delete(k); }
+  renderCharadesAccordion();
+  applyCharadesFilter();
+}
+
+function chToggleSubcat(enc, encSub) {
+  const cat = decodeURIComponent(enc);
+  const sub = decodeURIComponent(encSub);
+  const key = cat + '|||' + sub;
+  if (CH.selectedSubs.has(key)) CH.selectedSubs.delete(key);
+  else { CH.selectedSubs.add(key); CH.selectedCats.add(cat); }
+  renderCharadesAccordion();
+  applyCharadesFilter();
+}
+
+function getFilteredCharades() {
+  if (!CH.loaded) return [];
+  return CH.allCards.filter(c => {
+    if (!CH.selectedCats.has(c.category)) return false;
+    const catSubKeys = [...CH.selectedSubs].filter(k => k.startsWith(c.category + '|||'));
+    if (catSubKeys.length === 0) return true;
+    return CH.selectedSubs.has(c.category + '|||' + c.subcategory);
+  });
+}
+
+function applyCharadesFilter() {
+  if (!CH.loaded) return;
+  const filtered = shuffle([...getFilteredCharades()].map(c => c.word));
+  G.questions.r8 = filtered;   // Cat 9 — سكر تمك
+}
+
+// ══════════════════════════════════════════
+// TRIVIA CATEGORY SELECTOR (Cat 4 & 10)
+// ══════════════════════════════════════════
+const TRIVIA_JSON_URL = 'https://raw.githubusercontent.com/3albalcon/3al-balcon-game/main/questions-db.json';
+const TRIVIA_CACHE_KEY = 'asmila_questions_cache_v1';
+const TRIVIA_CACHE_TTL = 5 * 60 * 1000;
+
+const TR = {
+  allQuestions: [], selectedCats: new Set(), selectedSubcats: new Set(),
+  openAccCat: null, loaded: false,
+};
+
+function toggleTriviaSettings() {
+  const body  = document.getElementById('trivia-settings-body');
+  const arrow = document.getElementById('trivia-settings-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+async function loadTriviaCategories() {
+  function applyQuestions(questions) {
+    const lang = _lang;
+    const processed = questions.map(q => ({
+      q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || q.q || ''),
+      a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || q.a || ''),
+      cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
+      subcat: lang === 'en' ? (q.subcat_en || q.subcat_ar || null)      : (q.subcat_ar || null),
+    })).filter(q => q.q && q.a);
+    TR.allQuestions    = processed;
+    TR.selectedCats    = new Set(processed.map(q => q.cat));
+    TR.selectedSubcats = new Set();
+    TR.loaded = true;
+    renderTriviaAccordion();
+    document.getElementById('tr-loading').style.display   = 'none';
+    document.getElementById('tr-accordion').style.display = 'block';
+    document.getElementById('trivia-settings-card').style.display = 'block';
+    applyTriviaFilter();
+  }
+
+  try {
+    const cached = localStorage.getItem(TRIVIA_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.ts < TRIVIA_CACHE_TTL && parsed.questions?.length) {
+        applyQuestions(parsed.questions);
+        fetch(TRIVIA_JSON_URL + '?t=' + Date.now()).then(r => r.json())
+          .then(d => { if (d.questions?.length) localStorage.setItem(TRIVIA_CACHE_KEY, JSON.stringify({questions: d.questions, ts: Date.now()})); })
+          .catch(() => {});
+        return;
+      }
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch(TRIVIA_JSON_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('GitHub ' + res.status);
+    const data = await res.json();
+    if (!data.questions?.length) throw new Error('Empty');
+    try { localStorage.setItem(TRIVIA_CACHE_KEY, JSON.stringify({questions: data.questions, ts: Date.now()})); } catch(e) {}
+    applyQuestions(data.questions);
+  } catch(e) {
+    const el = document.getElementById('tr-loading');
+    if (el) el.textContent = '❌ تعذّر تحميل الأسئلة — سيتم استخدام أسئلة Drive';
+  }
+}
+
+function renderTriviaAccordion() {
+  const wrap = document.getElementById('tr-accordion');
+  if (!wrap) return;
+  const cats = [...new Set(TR.allQuestions.map(q => q.cat))].sort();
+  wrap.innerHTML = cats.map(cat => {
+    const count   = TR.allQuestions.filter(q => q.cat === cat).length;
+    const active  = TR.selectedCats.has(cat);
+    const subcats = [...new Set(TR.allQuestions.filter(q => q.cat === cat).map(q => q.subcat).filter(Boolean))].sort();
+    const isOpen  = TR.openAccCat === cat;
+    const enc     = encodeURIComponent(cat);
+    const catSubKeys = [...TR.selectedSubcats].filter(k => k.startsWith(cat + '::'));
+    const allSubsSelected = catSubKeys.length === 0;
+
+    const subHtml = subcats.length ? `
+      <div class="ph-acc-subcat-wrap ${isOpen ? 'open' : ''}" id="tr-sub-${enc}">
+        <div class="ph-acc-subcat-inner">
+          <button class="ph-subchip ${active && allSubsSelected ? 'active' : ''}"
+            onclick="trSetAllSubs('${enc}')">${_lang === 'en' ? 'All' : 'الكل'}</button>
+          ${subcats.map(sc => {
+            const scCount  = TR.allQuestions.filter(q => q.cat === cat && q.subcat === sc).length;
+            const scActive = active && TR.selectedSubcats.has(cat + '::' + sc);
+            return `<button class="ph-subchip ${scActive ? 'active' : ''}"
+              onclick="trToggleSubcat('${enc}','${encodeURIComponent(sc)}')">${sc} (${scCount})</button>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    return `
+      <div class="ph-acc-cat-row ${active ? 'active' : ''}" onclick="trToggleCat('${enc}')">
+        <div class="ph-acc-cat-left">
+          <div class="ph-acc-cat-check">${active ? '✓' : ''}</div>
+          <span class="ph-acc-cat-name">${cat}</span>
+          <span class="ph-acc-cat-count">(${count})</span>
+        </div>
+        ${subcats.length ? `<div class="ph-acc-arrow ${isOpen ? 'open' : ''}"
+          onclick="event.stopPropagation();trToggleAccordion('${enc}')">▼</div>` : ''}
+      </div>
+      ${subHtml}`;
+  }).join('');
+
+  const filtered = getFilteredQuestions();
+  const countEl = document.getElementById('tr-count-display');
+  if (countEl) countEl.textContent = _lang === 'en'
+    ? `${filtered.length} questions — ${Math.min(filtered.length, 10)} for Cat 4, ${Math.min(Math.max(filtered.length - 10, 0), 10)} for Cat 10`
+    : `${filtered.length} سؤال — ${Math.min(filtered.length, 10)} للفقرة 4، ${Math.min(Math.max(filtered.length - 10, 0), 10)} للفقرة 10`;
+}
+
+function trToggleAccordion(enc) {
+  TR.openAccCat = TR.openAccCat === decodeURIComponent(enc) ? null : decodeURIComponent(enc);
+  renderTriviaAccordion();
+}
+
+function trToggleCat(enc) {
+  const cat = decodeURIComponent(enc);
+  if (TR.selectedCats.has(cat)) {
+    if (TR.selectedCats.size <= 1) { showToast(_lang === 'en' ? 'Select at least one category!' : 'اختر فئة واحدة على الأقل!'); return; }
+    TR.selectedCats.delete(cat);
+    for (const k of [...TR.selectedSubcats]) { if (k.startsWith(cat + '::')) TR.selectedSubcats.delete(k); }
+  } else { TR.selectedCats.add(cat); }
+  renderTriviaAccordion();
+  applyTriviaFilter();
+}
+
+function trSetAllSubs(enc) {
+  const cat = decodeURIComponent(enc);
+  for (const k of [...TR.selectedSubcats]) { if (k.startsWith(cat + '::')) TR.selectedSubcats.delete(k); }
+  renderTriviaAccordion();
+  applyTriviaFilter();
+}
+
+function trToggleSubcat(enc, encSc) {
+  const cat = decodeURIComponent(enc);
+  const sc  = decodeURIComponent(encSc);
+  const key = cat + '::' + sc;
+  if (TR.selectedSubcats.has(key)) TR.selectedSubcats.delete(key);
+  else { TR.selectedSubcats.add(key); TR.selectedCats.add(cat); }
+  renderTriviaAccordion();
+  applyTriviaFilter();
+}
+
+function getFilteredQuestions() {
+  if (!TR.loaded) return [];
+  return TR.allQuestions.filter(q => {
+    if (!TR.selectedCats.has(q.cat)) return false;
+    if (!q.subcat) return true;
+    const catSubKeys = [...TR.selectedSubcats].filter(k => k.startsWith(q.cat + '::'));
+    if (catSubKeys.length === 0) return true;
+    return TR.selectedSubcats.has(q.cat + '::' + q.subcat);
+  });
+}
+
+function applyTriviaFilter() {
+  if (!TR.loaded) return;
+  const filtered = shuffle([...getFilteredQuestions()]);
+  const half = Math.floor(filtered.length / 2);
+  G.questions.r10 = filtered.slice(0, half);   // Cat 4 — متفرقات سريعة
+  G.questions.r9  = filtered.slice(half);       // Cat 10 — من كل وادي عصا
+}
+
+// ══════════════════════════════════════════
 // PHOTO CATEGORY SELECTOR (Cat 1 & 2)
 // ══════════════════════════════════════════
 const WAJHAK_JSON_URL = 'https://raw.githubusercontent.com/3albalcon/3al-balcon-game/main/wajhak-photos.json';
@@ -2412,14 +2779,39 @@ function applyLang() {
   // Refresh photo settings label
   const photoLabel = document.getElementById('photo-settings-label');
   if (photoLabel) photoLabel.textContent = isAr
-    ? '📸 اختيار الصور — وين شايفو / ما تذكرتني'
-    : '📸 Photo Selection — Who\'s That Face / Remember Me';
+    ? '📸 اختيار فئات الصور — وين شايفو | ما تذكرتني'
+    : "📸 Photo Categories — Who's That Face | Remember Me";
+
+  // Refresh trivia settings label
+  const triviaLabel = document.getElementById('trivia-settings-label');
+  if (triviaLabel) triviaLabel.textContent = isAr
+    ? '📝 اختيار فئات الأسئلة — متفرقات | من كل وادي'
+    : '📝 Question Categories — Quick Trivia | General Knowledge';
 
   // Re-apply photos with new language if loaded
   if (PH.loaded) {
     PH.openAccCat = null;
-    // Re-process with new language
     loadPhotoCategories();
+  }
+
+  // Refresh charades settings label
+  const charadesLabel = document.getElementById('charades-settings-label');
+  if (charadesLabel) charadesLabel.textContent = isAr
+    ? '🤐 اختيار فئات التمثيل — سكر تمك'
+    : '🤐 Acting Categories — Zip It!';
+
+  // Re-apply trivia with new language if loaded
+  if (TR.loaded) {
+    TR.openAccCat = null;
+    loadTriviaCategories();
+  }
+
+  // Re-apply charades with new language if loaded
+  if (CH.loaded) {
+    CH.openAccCat = null;
+    buildCharadesFromRaw();
+    renderCharadesAccordion();
+    applyCharadesFilter();
   }
 
   // Update ROUNDS names
@@ -2589,6 +2981,9 @@ async function loadCSVFiles(csvFiles) {
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
       G.questions.r6 = sh.slice(0, half); G.questions.r7 = sh.slice(half);
     } else if (key === 'cat9') {
+      // Pass already-parsed rows to charades selector
+      loadCharadesFromRows(rows);
+      // Also set directly as fallback
       G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
     } else if (key === 'wildcard') {
       G.wildcards = shuffle(rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q));
@@ -5485,6 +5880,7 @@ function setLoadProgress(pct) {
 document.addEventListener('DOMContentLoaded', () => {
   autoLoad();
   loadPhotoCategories();
+  loadTriviaCategories();
 });
 
 // ══════════════════════════════════════════
