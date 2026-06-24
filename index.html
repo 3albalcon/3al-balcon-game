@@ -1200,8 +1200,8 @@ audio, video { display: none; }
     <button class="start-btn" id="start-btn" onclick="startGame()">يــــلا نـــلـــعـــب 🎮</button>
 
     <!-- Photo category selection -->
-    <div class="photo-settings-card" id="photo-settings-card" style="display:none;margin-top:4px">
-      <h3 onclick="togglePhotoSettings()">
+    <div class="photo-settings-card" id="photo-settings-card" style="display:none;margin-top:8px">
+      <h3 onclick="toggleCatPanel('photo')">
         <span id="photo-settings-label">📸 اختيار فئات الصور — وين شايفو | ما تذكرتني</span>
         <span id="photo-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
@@ -1216,7 +1216,7 @@ audio, video { display: none; }
 
     <!-- Trivia category selection -->
     <div class="photo-settings-card" id="trivia-settings-card" style="display:none;margin-top:4px">
-      <h3 onclick="toggleTriviaSettings()">
+      <h3 onclick="toggleCatPanel('trivia')">
         <span id="trivia-settings-label">📝 اختيار فئات الأسئلة — متفرقات | من كل وادي</span>
         <span id="trivia-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
@@ -1231,7 +1231,7 @@ audio, video { display: none; }
 
     <!-- Charades category selection -->
     <div class="photo-settings-card" id="charades-settings-card" style="display:none;margin-top:4px">
-      <h3 onclick="toggleCharadesSettings()">
+      <h3 onclick="toggleCatPanel('charades')">
         <span id="charades-settings-label">🤐 اختيار فئات التمثيل — سكر تمك</span>
         <span id="charades-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
@@ -2314,6 +2314,31 @@ function togglePhotoSettings() {
   body.classList.toggle('open', !isOpen);
   arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
+
+// Unified panel toggle — closes others when opening one
+function toggleCatPanel(panel) {
+  const panels = {
+    photo:    { body: 'photo-settings-body',    arrow: 'photo-settings-arrow' },
+    trivia:   { body: 'trivia-settings-body',   arrow: 'trivia-settings-arrow' },
+    charades: { body: 'charades-settings-body', arrow: 'charades-settings-arrow' },
+  };
+  const target   = panels[panel];
+  const isOpen   = document.getElementById(target.body).classList.contains('open');
+  // Close all
+  Object.values(panels).forEach(p => {
+    document.getElementById(p.body).classList.remove('open');
+    document.getElementById(p.arrow).style.transform = '';
+  });
+  // Open target if it was closed
+  if (!isOpen) {
+    document.getElementById(target.body).classList.add('open');
+    document.getElementById(target.arrow).style.transform = 'rotate(180deg)';
+  }
+}
+
+function togglePhotoSettings()    { toggleCatPanel('photo'); }
+function toggleTriviaSettings()   { toggleCatPanel('trivia'); }
+function toggleCharadesSettings() { toggleCatPanel('charades'); }
 
 async function loadPhotoCategories() {
   function applyPhotos(photos) {
