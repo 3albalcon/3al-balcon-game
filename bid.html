@@ -141,16 +141,8 @@ const params = new URLSearchParams(window.location.search);
 const team = params.get('t');
 const roomId = params.get('r') || 'room1';
 const sessionId = params.get('s') || 'main';
-const wallUrl = params.get('w') ? decodeURIComponent(params.get('w')) : '';
 const other = team === 'a' ? 'b' : 'a';
 if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">Invalid link</div>'; throw new Error(); }
-
-// Apply wallpaper immediately from URL param
-if (wallUrl) {
-  document.body.style.backgroundImage = `url('${wallUrl}')`;
-  document.body.style.backgroundSize = 'cover';
-  document.body.style.backgroundPosition = 'center';
-}
 
 // ── Language system ──
 let _lang = params.get('l') || 'ar'; // read from URL immediately
@@ -542,6 +534,10 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
 
   // Set waiting screen image if available
   if(d.waitingScreenUrl) {
+    // Apply to body background
+    document.body.style.backgroundImage = `url('${d.waitingScreenUrl}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
     const img = document.getElementById('waiting-img');
     const fallback = document.getElementById('waiting-fallback');
     if(img && img.src !== d.waitingScreenUrl) {
