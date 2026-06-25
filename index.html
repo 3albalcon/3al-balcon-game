@@ -4800,8 +4800,9 @@ function showCat6AnswerReveal() {
 
 function cat6RevealAnswer() {
   window._cat6Phase = 'answer';
+  window._cat6Judgement = {}; // reset judgements
+  window._cat6ScoringLocked = false;
   const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-  // Force show question area if not visible yet
   const qArea = document.getElementById('video-question-area');
   const container = document.getElementById('video-container-' + qIdx);
   const showBtn = document.getElementById('cat6-show-q-btn');
@@ -4814,12 +4815,10 @@ function cat6RevealAnswer() {
   }
   stopTimer();
 
-  // Get submitted answers from Firebase
   const roomId = window._cat6RoomId;
   const area = document.getElementById('vq-answer-area');
   const ans = window._cat6A || '';
 
-  // Show correct answer + team answers + manual judging buttons
   const db = window._fbDb; const fbRef = window._fbRef;
   if (db && fbRef && roomId) {
     import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
@@ -4827,27 +4826,46 @@ function cat6RevealAnswer() {
         const d = snap.val() || {};
         const ansA = d.answerA || '—';
         const ansB = d.answerB || '—';
+        const tsA  = d.answeredAtA || null;
+        const tsB  = d.answeredAtB || null;
+        window._cat6TsA = tsA;
+        window._cat6TsB = tsB;
+
         if (area) area.innerHTML = `
           <div style="display:flex;flex-direction:column;gap:10px;width:100%">
-            <div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,22px)">✅ الجواب: ${ans}</div>
-            <div style="display:flex;gap:10px;width:100%">
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(229,1,88,0.08);border:1.5px solid rgba(229,1,88,0.3)">
+
+            <div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,22px)">
+              ${_lang==='en'?'✅ Answer':'✅ الجواب'}: ${ans}
+            </div>
+
+            <div style="display:flex;gap:10px;width:100%;align-items:flex-start">
+              <!-- TEAM A -->
+              <div id="cat6-box-a" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(229,1,88,0.08);border:1.5px solid rgba(229,1,88,0.3);transition:all 0.3s">
                 <div style="font-size:11px;color:#E50158;font-weight:700">${G.teamA}</div>
                 <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansA}</div>
                 <div style="display:flex;gap:6px">
-                  <button onclick="cat6Judge('a',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
-                  <button onclick="cat6Judge('a',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
+                  <button id="cat6-a-correct" onclick="cat6Judge('a',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
+                  <button id="cat6-a-wrong"   onclick="cat6Judge('a',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
                 </div>
               </div>
-              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(226,218,81,0.08);border:1.5px solid rgba(226,218,81,0.3)">
+
+              <!-- RESULT — center, appears after both judged -->
+              <div id="cat6-result-center" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;min-width:80px;text-align:center">
+                <div id="cat6-result-emoji" style="font-size:28px;line-height:1"></div>
+                <div id="cat6-result-text" style="font-size:12px;font-weight:900;text-align:center"></div>
+              </div>
+
+              <!-- TEAM B -->
+              <div id="cat6-box-b" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(226,218,81,0.08);border:1.5px solid rgba(226,218,81,0.3);transition:all 0.3s">
                 <div style="font-size:11px;color:#E2DA51;font-weight:700">${G.teamB}</div>
                 <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansB}</div>
                 <div style="display:flex;gap:6px">
-                  <button onclick="cat6Judge('b',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
-                  <button onclick="cat6Judge('b',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
+                  <button id="cat6-b-correct" onclick="cat6Judge('b',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
+                  <button id="cat6-b-wrong"   onclick="cat6Judge('b',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
                 </div>
               </div>
             </div>
+
           </div>`;
       });
     });
@@ -4856,25 +4874,82 @@ function cat6RevealAnswer() {
   }
 }
 
-function cat6Judge(team, correct) {
+function cat6Judge(team, isCorrect) {
   if (window._cat6ScoringLocked) return;
-  if (correct) {
-    window._cat6ScoringLocked = true;
-    addScore(team, 3);
-    // Show winner message on main screen
-    const area = document.getElementById('vq-answer-area');
-    if (area) {
-      const winnerName = team === 'a' ? G.teamA : G.teamB;
-      const winnerColor = team === 'a' ? '#E50158' : '#E2DA51';
-      const existing = area.innerHTML;
-      area.innerHTML = existing + `<div class="answer-box fade-in" style="color:${winnerColor};font-size:clamp(16px,2.5vw,22px);margin-top:8px">🏆 ${winnerName} +3 نقاط!</div>`;
-    }
-    // Disable all judge buttons
-    document.querySelectorAll('button[onclick*="cat6Judge"]').forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+
+  // Store this judgement
+  if (!window._cat6Judgement) window._cat6Judgement = {};
+  window._cat6Judgement[team] = isCorrect;
+
+  // Update button visual for judged team
+  const correctBtn = document.getElementById(`cat6-${team}-correct`);
+  const wrongBtn   = document.getElementById(`cat6-${team}-wrong`);
+  if (correctBtn) { correctBtn.disabled = true; correctBtn.style.opacity = isCorrect ? '1' : '0.2'; correctBtn.style.background = isCorrect ? 'rgba(57,255,20,0.3)' : ''; }
+  if (wrongBtn)   { wrongBtn.disabled = true;   wrongBtn.style.opacity   = isCorrect ? '0.2' : '1'; wrongBtn.style.background   = isCorrect ? '' : 'rgba(255,45,45,0.3)'; }
+
+  // Check if both teams are judged
+  const jA = window._cat6Judgement['a'];
+  const jB = window._cat6Judgement['b'];
+  if (jA === undefined || jB === undefined) return; // still waiting for other team
+
+  // Both judged — apply scoring
+  window._cat6ScoringLocked = true;
+
+  const boxA     = document.getElementById('cat6-box-a');
+  const boxB     = document.getElementById('cat6-box-b');
+  const center   = document.getElementById('cat6-result-center');
+  const emoji    = document.getElementById('cat6-result-emoji');
+  const resText  = document.getElementById('cat6-result-text');
+  const tsA      = window._cat6TsA;
+  const tsB      = window._cat6TsB;
+
+  let winner = null; // 'a', 'b', 'both-wrong', 'tie'
+
+  if (jA && jB) {
+    // Both correct — fastest wins
+    if (tsA && tsB) {
+      winner = tsA <= tsB ? 'a' : 'b';
+    } else if (tsA) { winner = 'a'; }
+    else if (tsB)   { winner = 'b'; }
+    else             { winner = 'a'; } // fallback
+  } else if (jA && !jB) {
+    winner = 'a';
+  } else if (jB && !jA) {
+    winner = 'b';
   } else {
-    // Disable only this team's buttons
-    document.querySelectorAll(`button[onclick*="cat6Judge('${team}'"]`).forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
+    winner = 'both-wrong';
   }
+
+  if (winner === 'both-wrong') {
+    // No points
+    if (emoji)   emoji.textContent = '🤝';
+    if (resText) { resText.textContent = _lang==='en'?'No points':'لا نقاط'; resText.style.color = 'rgba(255,255,255,0.5)'; }
+  } else {
+    addScore(winner, 3);
+    const winName  = winner === 'a' ? G.teamA : G.teamB;
+    const winColor = winner === 'a' ? '#E50158' : '#E2DA51';
+    const winBox   = winner === 'a' ? boxA : boxB;
+    const loseBox  = winner === 'a' ? boxB : boxA;
+
+    // Glow winning team box green
+    if (winBox) {
+      winBox.style.border    = '2px solid #39FF14';
+      winBox.style.background = 'rgba(57,255,20,0.1)';
+      winBox.style.boxShadow  = '0 0 16px rgba(57,255,20,0.4)';
+    }
+    if (loseBox && !(jA && jB)) {
+      loseBox.style.opacity = '0.5';
+    }
+
+    if (emoji)   emoji.textContent = '🏆';
+    if (resText) {
+      const bothCorrect = jA && jB;
+      resText.innerHTML = `<span style="color:${winColor};font-size:13px;font-weight:900">${winName}</span><br><span style="color:#39FF14">+3 ${_lang==='en'?'pts':'نقاط'}${bothCorrect ? ('<br><span style="font-size:10px;color:rgba(255,255,255,0.5)">'+(_lang==='en'?'⚡ fastest':'⚡ أسرع')+'</span>') : ''}</span>`;
+    }
+  }
+
+  // Show center result
+  if (center) center.style.display = 'flex';
 }
 
 function playDriveVideo(driveId, qIndex) {
