@@ -5612,7 +5612,6 @@ function startHostCmdListener() {
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
-    showToast(`📱 ${cmd}${d.data?.id ? ':'+d.data.id : ''}`);
 
     if (cmd === 'next') {
       if (G.currentRound) {
@@ -5925,7 +5924,7 @@ function buildStrip() {
   for (let i = 0; i < 10; i++) items.push(...remaining);
   strip.innerHTML = items.map(r => `
     <div style="height:32px;display:flex;align-items:center;justify-content:center;
-      font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;color:#fff;
+      font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;color:#fff;
       width:100%;flex-shrink:0;padding:0 12px;text-align:center;white-space:nowrap">
       ${r.name}
     </div>
