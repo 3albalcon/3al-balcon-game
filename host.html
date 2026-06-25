@@ -74,7 +74,7 @@ body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-h
 <div class="overlay" id="bg-overlay"></div>
 <div class="wrap" id="main-wrap">
   <div class="logo">🎙 HOST — 3AL BALCON</div>
-  <div style="font-size:9px;color:rgba(255,255,255,0.15);text-align:center;letter-spacing:1px" id="debug-session">...</div>
+  <div id="debug-session" style="font-size:11px;color:#FFE600;text-align:center;padding:4px;background:rgba(255,230,0,0.1);border-radius:6px;letter-spacing:1px">⏳ connecting...</div>
 
   <div class="status-bar">
     <span class="s-cat" id="s-cat">—</span>
@@ -193,9 +193,10 @@ function ht(key, ...args) {
 
 // Send command to main screen
 window.c = (cmd, data={}) => {
-  set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
+  const path = P('hostCmd');
+  set(ref(db, path), {cmd, data, ts:Date.now()});
   const dbg = document.getElementById('debug-session');
-  if (dbg) dbg.textContent = `✓ ${cmd} → ${SESSION}`;
+  if (dbg) dbg.textContent = `✓ sent: ${cmd} → ${path}`;
 };
 
 let _cat6RoomListener = null;
@@ -307,8 +308,9 @@ function render() {
   const catGrid = document.getElementById('cat-grid');
 
   if (!state.teamA) {
-    dyn.innerHTML = _lang==='en'?'<div class="waiting">⏳ Waiting for game to start...</div>':'<div class="waiting">⏳ انتظر بدء اللعبة...</div>';
-    btnNext.disabled = true; btnPrev.disabled = true;
+    dyn.innerHTML = `<div class="waiting">⏳ ${SESSION === 'main' ? 'No session — scan QR from main game' : 'Waiting for game data...'}</div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-top:4px">path: sessions/${SESSION}/hostState</div>`;
+    btnNext.disabled = false; btnPrev.disabled = false;
     return;
   }
 
@@ -489,6 +491,8 @@ function scoreSection(round) {
 onValue(ref(db,P('hostView')), s => { view = s.val()||{}; render(); });
 onValue(ref(db,P('hostState')), s => {
   state = s.val()||{};
+  const dbg = document.getElementById('debug-session');
+  if (dbg) dbg.textContent = `session: ${SESSION} | teams: ${state.teamA||'?'} vs ${state.teamB||'?'}`;
   if (state.cat3RoomId && state.cat3RoomId !== cat3Room) {
     cat3Room = state.cat3RoomId;
     onValue(ref(db,`rooms/${cat3Room}`), r => { cat3 = r.val(); render(); });
@@ -551,9 +555,9 @@ onValue(ref(db, P('lang')), snap => {
 // Apply initial language
 applyHostLang();
 
-// Show session for debugging
+// Show session for debugging immediately
 const dbg = document.getElementById('debug-session');
-if (dbg) dbg.textContent = `session: ${SESSION}`;
+if (dbg) dbg.textContent = `session: ${SESSION} | waiting for Firebase...`;
 </script>
 </body>
 </html>
