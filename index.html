@@ -2883,6 +2883,10 @@ function t(key, ...args) {
 function toggleLang() {
   _lang = _lang === 'ar' ? 'en' : 'ar';
   applyLang();
+  // Push lang to Firebase so phones follow
+  if (window._fbDb && window._fbRef && window._fbSet && window._gameSession) {
+    window._fbSet(window._fbRef(window._fbDb, `sessions/${window._gameSession}/lang`), _lang);
+  }
 }
 
 function applyLang() {
@@ -3547,8 +3551,8 @@ function renderRules(r, sa) {
     cat3RoomId = initCat3Room(G.teamA, G.teamB);
     const roomId = cat3RoomId;
     const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
-    const urlA = `${baseUrl}?t=a&r=${roomId}`;
-    const urlB = `${baseUrl}?t=b&r=${roomId}`;
+    const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}`;
+    const urlB = `${baseUrl}?t=b&r=${roomId}&s=${window._gameSession||'main'}`;
 
     // Listen for connections
     const db = window._fbDb; const fbRef = window._fbRef; const fbOnValue = window._fbOnValue;
@@ -5528,6 +5532,7 @@ function pushHostState() {
     onGameScreen: gameScreenVisible,
     sessionId: window._gameSession || null,
     hostWallpaper: G.hostWallpaperUrl || null,
+    lang: _lang,
   });
 }
 
