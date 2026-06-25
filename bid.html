@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>3AL BALCON — مزاد علني</title>
+<title>3AL BALCON — ${_lang==="en"?"Public Auction":"مزاد علني"}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -55,21 +55,21 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 </style>
 </head>
 <body>
-<div class="logo-sub">3AL BALCON — مزاد علني</div>
-<div class="team-badge" id="team-badge">جاري الاتصال...</div>
+<div class="logo-sub">3AL BALCON — <span id="bid-logo-sub">مزاد علني</span></div>
+<div class="team-badge" id="team-badge"><span id="bid-connecting">جاري الاتصال...</span></div>
 <div class="q-ind" id="q-ind"></div>
 <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;word-break:break-all" id="debug-room"></div>
 <div class="flash" id="flash"><div class="flash-text" id="flash-text"></div></div>
 
 <!-- WAITING -->
 <div id="ph-waiting" style="width:100%;display:flex;flex-direction:column;gap:10px">
-  <div class="sbox s-cyan" id="wait-msg">⏳ بانتظار الفريق الثاني...</div>
+  <div class="sbox s-cyan" id="wait-msg"><span id="bid-wait-msg">⏳ بانتظار الفريق الثاني...</span></div>
 </div>
 
 <!-- READY -->
 <div id="ph-ready" style="width:100%;display:flex;flex-direction:column;gap:10px;display:none">
-  <div class="sbox s-cyan" id="ready-msg">⏳ انتظر الفريق الثاني...</div>
-  <button class="btn btn-g" id="ready-btn" onclick="setReady()">✅ جاهز للبدء!</button>
+  <div class="sbox s-cyan" id="ready-msg"><span id="bid-ready-msg">⏳ انتظر الفريق الثاني...</span></div>
+  <button class="btn btn-g" id="ready-btn" onclick="setReady()"><span id="bid-ready-btn-lbl">✅ جاهز للبدء!</span></button>
 </div>
 
 <!-- COUNTDOWN -->
@@ -109,16 +109,16 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 <div id="ph-answering" style="width:100%;display:flex;flex-direction:column;gap:8px;flex:1;display:none">
   <div class="q-box" id="q-ans"></div>
 
-  <div class="sbox s-green" id="ans-title">اكتبوا الأجوبة!</div>
+  <div class="sbox s-green" id="ans-title"><span id="bid-ans-title">اكتبوا الأجوبة!</span></div>
   <div id="ans-scroll" class="ans-scroll"></div>
   <!-- Start writing button -->
   <div id="start-writing-wrap" style="width:100%;display:flex;flex-direction:column;gap:8px">
-    <button class="btn btn-g" id="start-writing-btn" onclick="startWriting()">✏️ ابدأ الكتابة</button>
+    <button class="btn btn-g" id="start-writing-btn" onclick="startWriting()"><span id="bid-start-writing">✏️ ابدأ الكتابة</span></button>
   </div>
   <div class="ans-fixed" id="ans-input-wrap" style="display:none">
-    <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
-    <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()">✅ أضف الجواب</button>
-    <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none">🔒 تأكيد الأجوبة النهائية</button>
+    <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." id="ans-input" dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
+    <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()"><span id="bid-add-ans">✅ أضف الجواب</span></button>
+    <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none"><span id="bid-confirm-lbl">🔒 تأكيد الأجوبة</spanلأجوبة النهائية</button>
   </div>
 </div>
 
@@ -140,8 +140,9 @@ const db = getDatabase(app);
 const params = new URLSearchParams(window.location.search);
 const team = params.get('t');
 const roomId = params.get('r') || 'room1';
+const sessionId = params.get('s') || 'main';
 const other = team === 'a' ? 'b' : 'a';
-if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">رابط غلط</div>'; throw new Error(); }
+if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">Invalid link</div>'; throw new Error(); }
 
 let myBid = 0;
 let submitted = [];
@@ -152,6 +153,94 @@ let lastBidCountdownEnd = null;
 let bidInterval = null;
 let ansInterval = null;
 let locked = false;
+// ── Language system ──
+let _lang = 'ar';
+const BID_T = {
+  ar: {
+    writeHere: 'اكتب الجواب هنا...',
+    editAnswer: (i) => `تعديل الجواب ${i+1}...`,
+    yourBid: (n) => `✅ مزايدتك: ${n}`,
+    otherBid: (n) => `🔥 الفريق الثاني زايد ${n}`,
+    otherBidUrgent: (n) => `⚡ الفريق الثاني زايد ${n} — زايد أو خسرت!`,
+    youLead: (n) => `✅ مزايدتك: ${n} — انتظر الفريق الثاني`,
+    questionOf: (i) => `سؤال ${i+1} من 5`,
+    otherWaiting: bt('otherWaiting'),
+    waitingOther: bt('waitingOther'),
+    otherReady: bt('otherReady'),
+    waitForOther: bt('waitForOther'),
+    otherWriting: bt('otherWriting'),
+    waitNext: bt('waitNext'),
+    confirmTitle: '🔒 تأكيد الأجوبة؟',
+    confirmMsg: 'لا يمكن التعديل بعد التأكيد',
+    confirmYes: '✅ تأكيد',
+    confirmBack: '↩ رجوع',
+    answersSent: 'تم إرسال الأجوبة!',
+    waitingHost: 'في انتظار المقدّم...',
+    badLink: 'رابط غلط',
+    ready: bt('ready'),
+  },
+  en: {
+    writeHere: 'Write your answer here...',
+    editAnswer: (i) => `Edit answer ${i+1}...`,
+    yourBid: (n) => `✅ Your bid: ${n}`,
+    otherBid: (n) => `🔥 Other team bid ${n}`,
+    otherBidUrgent: (n) => `⚡ Other team bid ${n} — bid higher or lose!`,
+    youLead: (n) => `✅ Your bid: ${n} — waiting for other team`,
+    questionOf: (i) => `Question ${i+1} of 5`,
+    otherWaiting: '✅ Other team is waiting',
+    waitingOther: '⏳ Waiting for other team...',
+    otherReady: '✅ Other team is ready!',
+    waitForOther: '⏳ Wait for other team...',
+    otherWriting: 'Other team is writing answers...',
+    waitNext: '⏳ Waiting for next question...',
+    confirmTitle: '🔒 Confirm answers?',
+    confirmMsg: 'Cannot edit after confirming',
+    confirmYes: '✅ Confirm',
+    confirmBack: '↩ Back',
+    answersSent: 'Answers sent!',
+    waitingHost: 'Waiting for host...',
+    badLink: 'Invalid link',
+    ready: '✅ Ready!',
+  }
+};
+function bt(key, ...args) {
+  const L = BID_T[_lang] || BID_T.ar;
+  const v = L[key];
+  return typeof v === 'function' ? v(...args) : (v || BID_T.ar[key] || key);
+}
+function applyBidLang() {
+  const isAr = _lang === 'ar';
+  document.documentElement.lang = isAr ? 'ar' : 'en';
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  const inp = document.getElementById('ans-input');
+  if (inp) inp.placeholder = bt('writeHere');
+  const connecting = document.getElementById('bid-connecting');
+  if (connecting) connecting.textContent = isAr ? 'جاري الاتصال...' : 'Connecting...';
+  const logoSub = document.getElementById('bid-logo-sub');
+  if (logoSub) logoSub.textContent = isAr ? 'مزاد علني' : 'Public Auction';
+  const waitMsg = document.getElementById('bid-wait-msg');
+  if (waitMsg) waitMsg.textContent = isAr ? '⏳ بانتظار الفريق الثاني...' : '⏳ Waiting for other team...';
+  const readyMsg = document.getElementById('bid-ready-msg');
+  if (readyMsg) readyMsg.textContent = isAr ? '⏳ انتظر الفريق الثاني...' : '⏳ Wait for other team...';
+  const readyBtnLbl = document.getElementById('bid-ready-btn-lbl');
+  if (readyBtnLbl) readyBtnLbl.textContent = isAr ? '✅ جاهز للبدء!' : '✅ Ready to start!';
+  const ansTitle = document.getElementById('bid-ans-title');
+  if (ansTitle) ansTitle.textContent = isAr ? 'اكتبوا الأجوبة!' : 'Write your answers!';
+  const startWriting = document.getElementById('bid-start-writing');
+  if (startWriting) startWriting.textContent = isAr ? '✏️ ابدأ الكتابة' : '✏️ Start Writing';
+  const addAns = document.getElementById('bid-add-ans');
+  if (addAns) addAns.textContent = isAr ? '✅ أضف الجواب' : '✅ Add Answer';
+  const confirmLbl = document.getElementById('bid-confirm-lbl');
+  if (confirmLbl) confirmLbl.textContent = isAr ? '🔒 تأكيد الأجوبة' : '🔒 Confirm Answers';
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  document.documentElement.lang = isAr ? 'ar' : 'en';
+}
+// Listen to session lang from Firebase
+onValue(ref(db, `sessions/${sessionId}/lang`), snap => {
+  const l = snap.val();
+  if (l && l !== _lang) { _lang = l; applyBidLang(); }
+});
+
 
 // Get server time offset once for accurate timers
 let serverOffset = 0;
@@ -217,6 +306,14 @@ function startAnsTimer(endTime) {
 
 function lockAnswering() {
   locked = true;
+  // Show styled done card
+  const wrap = document.getElementById('ans-input-wrap');
+  if (wrap) wrap.innerHTML = `
+    <div style="width:100%;background:rgba(57,255,20,0.05);border:2px solid var(--green);border-radius:16px;box-shadow:0 0 20px rgba(57,255,20,0.2);padding:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div style="font-size:52px;line-height:1">✅</div>
+      <div style="font-size:20px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(57,255,20,0.5)">${bt('answersSent')}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4)">${bt('waitingHost')}</div>
+    </div>`;
   const iwrap = document.getElementById('ans-input-wrap');
   const swrap = document.getElementById('start-writing-wrap');
   if(iwrap) iwrap.style.display='none';
@@ -228,7 +325,7 @@ function renderAnswers() {
   const title=document.getElementById('ans-title');
   const conf=document.getElementById('confirm-btn');
   if(!scroll) return;
-  if(title) title.textContent=`اكتبوا ${totalAns} أجوبة (${submitted.length}/${totalAns})`;
+  if(title) title.textContent=_lang==="en"?`Write ${totalAns} answers (${submitted.length}/${totalAns})`:`اكتبوا ${totalAns} أجوبة (${submitted.length}/${totalAns})`;
   scroll.innerHTML=submitted.map((a,i)=>`
     <div class="chip chip-p" style="justify-content:space-between;cursor:${locked?'default':'pointer'}" onclick="${locked?'':'editAnswer('+i+')'}">
       <span style="flex:1">${i+1}. ${a.text}</span>
@@ -251,7 +348,7 @@ window.startWriting = async function() {
 
 window.setReady = async function() {
   document.getElementById('ready-btn').disabled=true;
-  document.getElementById('ready-btn').textContent='✅ جاهز!';
+  document.getElementById('ready-btn').textContent=bt('ready');
   await update(ref(db,`rooms/${roomId}`), {[`ready${team.toUpperCase()}`]:true});
 };
 
@@ -264,7 +361,7 @@ window.placeBid = async function(amount) {
     document.getElementById('bid-val').textContent=myBid;
     setBidBtns(false);
     const msg=document.getElementById('bid-msg');
-    if(msg){msg.style.display='flex';msg.textContent=`✅ مزايدتك: ${myBid}`;
+    if(msg){msg.style.display='flex';msg.textContent=bt('yourBid', myBid);
       msg.style.background='rgba(255,230,0,0.08)';msg.style.borderColor='var(--yellow)';msg.style.color='var(--yellow)';}
     flash(`${myBid} 🔥`,'var(--yellow)');
 
@@ -290,7 +387,7 @@ window.editAnswer = function(idx) {
   const input = document.getElementById('ans-input');
   input.value = submitted[idx].text;
   input.focus();
-  input.placeholder = `تعديل الجواب ${idx+1}...`;
+  input.placeholder = bt('editAnswer', idx);
 };
 
 window.submitAnswer = async function() {
@@ -303,7 +400,7 @@ window.submitAnswer = async function() {
     // Editing existing answer
     submitted[editingIdx] = {text:val, status:'pending'};
     editingIdx = null;
-    input.placeholder = 'اكتب الجواب هنا...';
+    input.placeholder = bt('writeHere');
   } else {
     if(submitted.length>=totalAns) return;
     if(submitted.some((a,i)=>norm(a.text)===norm(val))) {
@@ -321,7 +418,27 @@ window.submitAnswer = async function() {
 
 window.confirmAnswers = async function() {
   if(locked) return;
-  if(!confirm('تأكيد: هل الأجوبة نهائية؟')) return;
+  // Show styled in-page confirmation instead of browser popup
+  const wrap = document.getElementById('ans-input-wrap');
+  wrap.innerHTML = `
+    <div style="width:100%;background:rgba(0,239,255,0.06);border:2px solid var(--cyan);border-radius:14px;padding:18px;text-align:center;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:18px;font-weight:900;color:var(--cyan)">${bt('confirmTitle')}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45)">${bt('confirmMsg')}</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" style="flex:1;font-size:15px;padding:12px" onclick="doConfirmAnswers()">${bt('confirmYes')}</button>
+        <button class="btn" style="flex:1;font-size:15px;padding:12px;border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);background:transparent" onclick="cancelConfirm()">${bt('confirmBack')}</button>
+      </div>
+    </div>`;
+};
+
+window.cancelConfirm = function() {
+  const wrap = document.getElementById('ans-input-wrap');
+  const input = document.getElementById('ans-input') ? '' : ''; // trigger re-render
+  renderAnswers(); // re-render to restore original buttons
+};
+
+window.doConfirmAnswers = async function() {
+  if(locked) return;
   lockAnswering();
   await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
 };
@@ -342,7 +459,7 @@ function handleBidUpdate(d) {
   const msg = document.getElementById('bid-msg');
   if (otherV > myV && otherV > 0 && msg) {
     msg.style.display = 'flex';
-    msg.textContent = `🔥 الفريق الثاني زايد ${otherV}`;
+    msg.textContent = bt('otherBid', otherV);
     msg.style.background = 'rgba(255,45,45,0.1)';
     msg.style.borderColor = 'var(--red)';
     msg.style.color = 'var(--red)';
@@ -361,7 +478,7 @@ function handleBidUpdate(d) {
       setBidBtns(true);
       if (msg) {
         msg.style.display = 'flex';
-        msg.textContent = `⚡ الفريق الثاني زايد ${otherV} — زايد أو خسرت!`;
+        msg.textContent = bt('otherBidUrgent', otherV);
         msg.style.background = 'rgba(255,45,45,0.1)';
         msg.style.borderColor = 'var(--red)';
         msg.style.color = 'var(--red)';
@@ -383,7 +500,7 @@ function handleBidUpdate(d) {
       setBidBtns(false);
       if (msg) {
         msg.style.display = 'flex';
-        msg.textContent = `✅ مزايدتك: ${myV} — انتظر الفريق الثاني`;
+        msg.textContent = bt('youLead', myV);
         msg.style.background = 'rgba(255,230,0,0.08)';
         msg.style.borderColor = 'var(--yellow)';
         msg.style.color = 'var(--yellow)';
@@ -400,7 +517,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   if(!d) return;
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
-  if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=`سؤال ${d.questionIndex+1} من 5`;
+  if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=bt('questionOf', d.questionIndex);
 
   // Set waiting screen image if available
   if(d.waitingScreenUrl) {
@@ -424,13 +541,13 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(p==='waiting'){
       showPhase('waiting');
       const conn=d.connected||{};
-      document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني ناطر':'⏳ بانتظار الفريق الثاني...';
+      document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitingOther');
     }
     else if(p==='ready'){
       showPhase('ready');
       const myR=team==='a'?d.readyA:d.readyB;
-      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent='✅ جاهز!';}
-      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?'✅ الفريق الثاني جاهز!':'⏳ انتظر الفريق الثاني...';
+      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent=bt('ready');}
+      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?bt('otherReady'):bt('waitForOther');
     }
     else if(p==='countdown'){
       showPhase('countdown');
@@ -454,30 +571,30 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
 
       } else {
         showPhase('logo');
-        document.getElementById('logo-msg').textContent='الفريق الثاني يكتب الأجوبة...';
+        document.getElementById('logo-msg').textContent=bt('otherWriting');
       }
     }
     else if(p==='nextquestion'){
       // Show logo — wait for next question without refreshing
       if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
       showPhase('logo');
-      document.getElementById('logo-msg').textContent='⏳ انتظر السؤال التالي...';
+      document.getElementById('logo-msg').textContent=bt('waitNext');
       myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
     }
     else if(p==='done'){
       showPhase('logo');
-      document.getElementById('logo-msg').innerHTML = '🏁 انتهى المزاد!<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">يمكنك إغلاق هذه الشاشة</span>';
+      document.getElementById('logo-msg').innerHTML = _lang==="en"?'🏁 Auction ended!<br>':'🏁 انتهى المزاد!<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">يمكنك إغلاق هذه الشاشة</span>';
     }
   }
 
   // Same phase updates
   if(p==='waiting'){
     const conn=d.connected||{};
-    document.getElementById('wait-msg').textContent=conn[other]?'✅ الفريق الثاني ناطر':'⏳ بانتظار الفريق الثاني...';
+    document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitingOther');
   }
   if(p==='ready'){
     const otherR=team==='a'?d.readyB:d.readyA;
-    if(otherR) document.getElementById('ready-msg').textContent='✅ الفريق الثاني جاهز!';
+    if(otherR) document.getElementById('ready-msg').textContent=bt('otherReady');
   }
   if(p==='bidding') handleBidUpdate(d);
   if(p==='answering'&&d.auctionWinner===team&&d.answers){
