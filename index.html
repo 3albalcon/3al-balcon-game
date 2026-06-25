@@ -2924,6 +2924,10 @@ function applyLang() {
   const cat3StartLbl = document.getElementById('cat3-start-btn-lbl');
   if (cat3StartLbl) cat3StartLbl.textContent = isAr ? 'ابدأ المزاد' : 'Start Auction';
 
+  const statusText = document.getElementById('data-status-text');
+  if (statusText && statusText.textContent.includes('يتم تحضير') || statusText?.textContent.includes('Loading'))
+    statusText.textContent = t('loadingAll');
+
   // Rebuild menu to refresh category labels
   if (typeof buildMenu === 'function' && document.getElementById('rounds-grid')) buildMenu();
 
@@ -3014,6 +3018,12 @@ function startGame() {
   G.teamB = rawB.length > 0 ? rawB : (LANG[_lang].placeholderB || 'الفريق الثاني');
   // Generate unique session ID for this game
   window._gameSession = 's' + Date.now().toString(36) + Math.random().toString(36).substr(2,4);
+  // Push current lang immediately after session created
+  setTimeout(() => {
+    if (window._fbDb && window._fbRef && window._fbSet) {
+      window._fbSet(window._fbRef(window._fbDb, `sessions/${window._gameSession}/lang`), _lang);
+    }
+  }, 300);
   // Restart host cmd listener on new session path
   _lastHostCmdTs = Date.now();
   startHostCmdListener();
@@ -4028,6 +4038,8 @@ function initCat3Room(teamA, teamB) {
   const fbSet = window._fbSet;
   if (!db) return;
   setTimeout(pushHostState, 300);
+  // Push current lang so bid phones get it immediately
+  if (fbSet && window._gameSession) fbSet(fbRef(db, `sessions/${window._gameSession}/lang`), _lang);
   fbSet(fbRef(db, `rooms/${cat3RoomId}`), {
     teamA, teamB,
     phase: 'waiting',
@@ -6081,6 +6093,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPhotoCategories();
   loadTriviaCategories();
   loadCharadesFromSheet();
+  applyLang(); // apply current language on load
 });
 
 // ══════════════════════════════════════════
