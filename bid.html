@@ -8,7 +8,9 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --pink:#FF2D78;--cyan:#00EFFF;--yellow:#FFE600;--green:#39FF14;--red:#FF2D2D;--dark:#060d1f;--a:#E50158;--b:#E2DA51; }
-body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:12px 14px 24px;gap:10px;overflow-x:hidden; }
+body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:12px 14px 24px;gap:10px;overflow-x:hidden;background-size:cover;background-position:center; }
+body::before { content:'';position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:0;pointer-events:none; }
+body > * { position:relative;z-index:1; }
 .logo-text { font-size:28px;font-weight:900;color:var(--yellow);text-shadow:0 0 20px rgba(255,230,0,0.6);letter-spacing:4px;text-align:center; }
 .logo-sub { font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:3px; }
 .team-badge { font-size:22px;font-weight:900;padding:8px 24px;border-radius:100px;border:2px solid;text-align:center;width:100%; }
@@ -97,7 +99,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
 </div>
 
 <!-- LOGO WAITING (lost bidding or time over) -->
-<div id="ph-logo" style="position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--dark);z-index:50">
+<div id="ph-logo" style="position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);z-index:50">
   <img id="waiting-img" src="" style="width:100%;height:100%;object-fit:cover;display:none">
   <div id="waiting-fallback" style="display:flex;flex-direction:column;align-items:center;gap:16px">
     <div style="font-size:clamp(36px,12vw,72px);font-weight:900;color:var(--yellow);text-shadow:0 0 30px rgba(255,230,0,0.7);letter-spacing:4px;text-align:center;animation:pulse 2s infinite">3AL BALCON</div>
@@ -583,9 +585,13 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     else if(p==='answering'){
       if(d.auctionWinner===team){
         totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
+        // Reset writing state so start writing button always shows
+        const swWrap = document.getElementById('start-writing-wrap');
+        const inWrap = document.getElementById('ans-input-wrap');
+        if(swWrap && !d.writingStarted) swWrap.style.display='flex';
+        if(inWrap && !d.writingStarted) inWrap.style.display='none';
         showPhase('answering');
         renderAnswers();
-
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent=bt('otherWriting');
