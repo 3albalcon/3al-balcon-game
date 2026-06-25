@@ -5612,7 +5612,7 @@ function startHostCmdListener() {
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
-    showToast(`📱 ${cmd}`);
+    showToast(`📱 ${cmd}${d.data?.id ? ':'+d.data.id : ''}`);
 
     if (cmd === 'next') {
       if (G.currentRound) {
@@ -5644,8 +5644,7 @@ function startHostCmdListener() {
       pushHostState();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      // Only allow if not currently in a category AND not already done
-      if (roundId && !G.done.has(roundId) && !G.currentRound) {
+      if (roundId && !G.done.has(roundId)) {
         const round = ROUNDS.find(r => r.id === roundId);
         if (round) {
           G.currentRound = round;
@@ -5655,7 +5654,6 @@ function startHostCmdListener() {
           show('game-screen');
           renderSlide();
           pushHostState();
-          // Clear roulette highlight
           const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
           if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), null);
         }
