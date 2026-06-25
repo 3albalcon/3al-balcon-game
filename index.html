@@ -399,8 +399,8 @@ body {
   font-weight: 700;
   color: #d0ffb0;
   display: flex; align-items: center; gap: 10px;
-  direction: rtl;
-  text-align: right;
+  direction: inherit;
+  text-align: start;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3004,6 +3004,8 @@ function applyLang() {
 
   // Update direction
   document.body.style.direction = isAr ? 'rtl' : 'ltr';
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+  document.documentElement.lang = isAr ? 'ar' : 'en';
 }
 
 function show(id) {
@@ -4368,10 +4370,12 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           </div>`).join('');
       }
 
-      // Auto-validate pending answers via AI
-      const pendingAnswers = answers.filter(a => !a.status || a.status === 'pending');
-      if (pendingAnswers.length > 0) {
-        autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
+      // Auto-validate only AFTER answers are confirmed (cannot be changed)
+      if (answersConfirmed) {
+        const pendingAnswers = answers.filter(a => !a.status || a.status === 'pending');
+        if (pendingAnswers.length > 0) {
+          autoValidateAnswers(answers, roomId, q, winnerBid, winner, winnerName);
+        }
       }
 
       // Hide the old separate validation section
