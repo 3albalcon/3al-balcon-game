@@ -141,11 +141,19 @@ const params = new URLSearchParams(window.location.search);
 const team = params.get('t');
 const roomId = params.get('r') || 'room1';
 const sessionId = params.get('s') || 'main';
+const wallUrl = params.get('w') ? decodeURIComponent(params.get('w')) : '';
 const other = team === 'a' ? 'b' : 'a';
 if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">Invalid link</div>'; throw new Error(); }
 
+// Apply wallpaper immediately from URL param
+if (wallUrl) {
+  document.body.style.backgroundImage = `url('${wallUrl}')`;
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center';
+}
+
 // ── Language system ──
-let _lang = 'ar';
+let _lang = params.get('l') || 'ar'; // read from URL immediately
 const BT = {
   ar: {
     connecting: 'جاري الاتصال...',
@@ -244,6 +252,8 @@ function applyBidLang() {
     inp.dir = isAr ? 'rtl' : 'ltr';
   }
 }
+// Apply language immediately on load
+applyBidLang();
 
 let myBid = 0;
 let submitted = [];
@@ -617,7 +627,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
 // Listen for lang from main game
 onValue(ref(db, `sessions/${sessionId}/lang`), snap => {
   const l = snap.val();
-  if (l && l !== _lang) { _lang = l; applyBidLang(); }
+  if (l) { _lang = l; applyBidLang(); }
 });
 
 </script>
