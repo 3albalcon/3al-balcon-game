@@ -2,39 +2,98 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سكر تمك — 3AL BALCON</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>3AL BALCON</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'Cairo', sans-serif;
-  background: #060d1f;
-  color: #fff;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 24px; text-align: center;
+  font-family:'Cairo',sans-serif;
+  background:#060d1f; background-size:cover; background-position:center;
+  color:#fff; min-height:100dvh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:32px 24px; text-align:center;
 }
-.label { font-size: 14px; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 20px; }
+.overlay { position:fixed; inset:0; background:rgba(6,13,31,0.8); z-index:0; }
+.content { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.logo { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:3px; margin-bottom:8px; }
+.label {
+  font-size:14px; color:rgba(255,255,255,0.5);
+  letter-spacing:2px; padding:6px 20px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:100px;
+}
 .name {
-  font-size: clamp(40px, 12vw, 90px);
-  font-weight: 900;
-  color: #FFE600;
-  text-shadow: 0 0 20px rgba(255,230,0,0.8), 0 0 50px rgba(255,230,0,0.4);
-  line-height: 1.2;
+  font-size:clamp(44px,14vw,96px); font-weight:900;
+  color:#FFE600;
+  text-shadow:0 0 20px rgba(255,230,0,0.8), 0 0 50px rgba(255,230,0,0.4);
+  line-height:1.2;
 }
-.hint { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 32px; }
+.hint {
+  font-size:13px; color:rgba(255,255,255,0.3);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:100px; padding:6px 18px;
+}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="label">🎭 سكر تمك — الاسم السري</div>
-<div class="name" id="name">...</div>
-<div class="hint">بس انت شوف الجواب</div>
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const name = params.get('n');
-  document.getElementById('name').textContent = name ? decodeURIComponent(name) : '—';
+<div class="overlay"></div>
+<div class="content">
+  <div class="logo">3AL BALCON</div>
+  <div class="label" id="act-label">🎭 سكر تمك — الاسم السري</div>
+  <div class="name" id="name">...</div>
+  <div class="hint" id="act-hint">بس انت شوف الجواب</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const cfg = {
+  apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
+  authDomain:"al-balcon.firebaseapp.com",
+  databaseURL:"https://al-balcon-default-rtdb.firebaseio.com",
+  projectId:"al-balcon",
+  storageBucket:"al-balcon.firebasestorage.app",
+  messagingSenderId:"556294454945",
+  appId:"1:556294454945:web:770c330e71a4e484277ae0"
+};
+const app = initializeApp(cfg);
+const db  = getDatabase(app);
+
+const params  = new URLSearchParams(window.location.search);
+const name    = params.get('n') ? decodeURIComponent(params.get('n')) : '—';
+const session = params.get('s') || 'main';
+let _lang     = params.get('l') || 'ar';
+
+document.getElementById('name').textContent = name;
+
+const T = {
+  ar: { label:'🎭 سكر تمك — الاسم السري', hint:'بس انت شوف الجواب' },
+  en: { label:'🎭 Zip It! — Secret Word',  hint:'Only you can see this!' }
+};
+
+function applyLang() {
+  const L = T[_lang] || T.ar;
+  document.getElementById('act-label').textContent = L.label;
+  document.getElementById('act-hint').textContent  = L.hint;
+  document.documentElement.dir  = _lang==='ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = _lang==='ar' ? 'ar'  : 'en';
+}
+applyLang();
+
+// Load wallpaper from Firebase hostState
+onValue(ref(db, `sessions/${session}/hostWallpaper`), snap => {
+  const url = snap.val();
+  if (url) document.body.style.backgroundImage = `url('${url}')`;
+});
+
+// Listen for lang changes
+onValue(ref(db, `sessions/${session}/lang`), snap => {
+  const l = snap.val();
+  if (l && l !== _lang) { _lang = l; applyLang(); }
+});
 </script>
 </body>
 </html>
