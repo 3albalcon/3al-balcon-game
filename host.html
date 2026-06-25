@@ -127,27 +127,42 @@ const cfg = {
 const app = initializeApp(cfg);
 const db = getDatabase(app);
 
-const ROUNDS = [
-  {id:'r1',num:1,name:(_lang==='en'?'Who\'s That Face?':'وين شايفو هالوجه؟'),plus:2,minus:0},
-  {id:'r2',num:2,name:(_lang==='en'?'Still Don\'t Remember Me?':'ما تذكرتني بعد؟'),plus:2,minus:1},
-  {id:'r3',num:3,name:'مزاد علني',plus:4,minus:-2},
-  {id:'r10',num:4,name:'متفرقات سريعة',plus:2,minus:1},
-  {id:'r4',num:5,name:'سمعني الدندنة',plus:2,minus:0},
-  {id:'r5',num:6,name:'سكوت و ركز',plus:3,minus:0},
-  {id:'r6',num:7,name:'يا حبيبي قرب ليي',plus:2,minus:-1},
-  {id:'r7',num:8,name:'يا قريب يا غريب',plus:4,minus:-2},
-  {id:'r8',num:9,name:'سكر تمك',plus:3,minus:-1},
-  {id:'r9',num:10,name:'من كل وادي عصا',plus:2,minus:1},
-];
-
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
 
-// Session ID from URL - same session as main screen
+// Session ID from URL
 const params = new URLSearchParams(window.location.search);
 const SESSION = params.get('s') || 'main';
 const P = (path) => `sessions/${SESSION}/${path}`;
-// ── Language — read from URL immediately, then Firebase listener updates it ──
+
+// Language — read from URL immediately
 let _lang = params.get('l') || 'ar';
+
+// ROUNDS — defined after _lang so name() can use it
+const ROUNDS_AR = ['وين شايفو هالوجه؟','ما تذكرتني بعد؟','مزاد علني','متفرقات سريعة','سمعني الدندنة','سكوت و ركز','يا حبيبي قرب ليي','يا قريب يا غريب','سكر تمك','من كل وادي عصا'];
+const ROUNDS_EN = ["Who's That Face?","Still Don't Remember Me?",'Public Auction','Quick Trivia','Hum It!','Watch & Focus','Get Closer!','Close or Far?','Zip It!','General Knowledge'];
+const ROUNDS_IDS  = ['r1','r2','r3','r10','r4','r5','r6','r7','r8','r9'];
+const ROUNDS_PLUS = [2,2,4,2,2,3,2,4,3,2];
+const ROUNDS_MINUS= [0,1,-2,1,0,0,-1,-2,-1,1];
+function getRounds() {
+  return ROUNDS_IDS.map((id,i) => ({
+    id, num:i+1,
+    name: _lang==='en' ? ROUNDS_EN[i] : ROUNDS_AR[i],
+    plus: ROUNDS_PLUS[i],
+    minus: ROUNDS_MINUS[i]
+  }));
+}
+// Use getter so ROUNDS always reflects current language
+const ROUNDS = new Proxy([], {
+  get(_, prop) {
+    const arr = getRounds();
+    if (prop === 'find') return arr.find.bind(arr);
+    if (prop === 'map')  return arr.map.bind(arr);
+    if (prop === 'filter') return arr.filter.bind(arr);
+    if (prop === 'length') return arr.length;
+    if (!isNaN(prop)) return arr[+prop];
+    return arr[prop];
+  }
+});
 const HOST_T = {
   ar: {
     catLabel: (num, name) => `فقرة ${num}: ${name}`,
