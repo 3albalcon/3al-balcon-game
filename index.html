@@ -2604,7 +2604,7 @@ const LANG = {
     bothConnected: '✅ الفريقين متصلين!',
     timesUp: "Time's Up!",
     allDone: 'كل الفقرات انتهت! 🎉',
-    tiedSoFar: '${t("tiedSoFar")}',
+    tiedSoFar: '🤝 تعادل حتى الآن!',
     tied: '🤝 تعادل!',
     tapShowQ: '⏳ اضغط "عرض السؤال" لبدء الجولة',
     actorScan: 'الممثل يقوم ب Scan للكود',
@@ -5111,16 +5111,16 @@ function revealClosestNow() {
   const bValid = b !== null && b !== undefined;
 
   if (!aValid && !bValid) {
-    msg = `الجواب الصحيح: ${window._closestCorrect}`;
+    msg = `${_lang==="en"?"Correct Answer":"الجواب الصحيح"}: ${window._closestCorrect}`;
   } else if (aValid && !bValid) {
     // Only team A answered
     addScore('a', pts);
-    msg = `🏆 ${G.teamA} أجاب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+    msg = `🏆 ${G.teamA} ${_lang==="en"?"answered! (+"+pts+" pts)":"أجاب! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
     if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
   } else if (bValid && !aValid) {
     // Only team B answered
     addScore('b', pts);
-    msg = `🏆 ${G.teamB} أجاب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+    msg = `🏆 ${G.teamB} ${_lang==="en"?"answered! (+"+pts+" pts)":"أجاب! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
     if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
   } else {
     // Both answered
@@ -5128,24 +5128,24 @@ function revealClosestNow() {
     const diffB = Math.abs(parseFloat(b) - correct);
     if (diffA < diffB) {
       addScore('a', pts);
-      msg = `🏆 ${G.teamA} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      msg = `🏆 ${G.teamA} ${_lang==="en"?"closest! (+"+pts+" pts)":"أقرب! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
       if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
     } else if (diffB < diffA) {
       addScore('b', pts);
-      msg = `🏆 ${G.teamB} أقرب! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+      msg = `🏆 ${G.teamB} ${_lang==="en"?"closest! (+"+pts+" pts)":"أقرب! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
       if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
     } else {
       // Same distance — first submitted wins
       if (tsA && tsB && tsA < tsB) {
         addScore('a', pts);
-        msg = `🏆 ${G.teamA} أسرع! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+        msg = `🏆 ${G.teamA} ${_lang==="en"?"fastest! (+"+pts+" pts)":"أسرع! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
         if (boxA) boxA.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
       } else if (tsB && tsA && tsB < tsA) {
         addScore('b', pts);
-        msg = `🏆 ${G.teamB} أسرع! (+${pts} نقاط) — الجواب: ${window._closestCorrect}`;
+        msg = `🏆 ${G.teamB} ${_lang==="en"?"fastest! (+"+pts+" pts)":"أسرع! (+"+pts+" نقاط)"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
         if (boxB) boxB.style.cssText += ';border:3px solid #FFE600;border-radius:8px;padding:4px 8px;background:rgba(255,230,0,0.1)';
       } else {
-        msg = `تعادل! — الجواب: ${window._closestCorrect}`;
+        msg = `${_lang==="en"?"Tied!":"تعادل!"} — ${_lang==="en"?"Answer":"الجواب"}: ${window._closestCorrect}`;
       }
     }
   }
@@ -5325,7 +5325,7 @@ function showResult() {
           <div class="rs-score">${G.scoreB}</div>
         </div>
       </div>
-      ${winner ? `<div class="rs-winner">${t("leading", winner)}</div>` : `<div class="rs-winner">${t("tiedSoFar")}</div>`}
+      ${winner ? `<div class="rs-winner">${t('leading', winner)}</div>` : `<div class="rs-winner">${t('tiedSoFar')}</div>`}
     </div>
     <div class="nav-btns">
       ${wcEligibleA ? `
