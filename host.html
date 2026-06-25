@@ -137,32 +137,15 @@ const P = (path) => `sessions/${SESSION}/${path}`;
 // Language — read from URL immediately
 let _lang = params.get('l') || 'ar';
 
-// ROUNDS — defined after _lang so name() can use it
-const ROUNDS_AR = ['وين شايفو هالوجه؟','ما تذكرتني بعد؟','مزاد علني','متفرقات سريعة','سمعني الدندنة','سكوت و ركز','يا حبيبي قرب ليي','يا قريب يا غريب','سكر تمك','من كل وادي عصا'];
-const ROUNDS_EN = ["Who's That Face?","Still Don't Remember Me?",'Public Auction','Quick Trivia','Hum It!','Watch & Focus','Get Closer!','Close or Far?','Zip It!','General Knowledge'];
-const ROUNDS_IDS  = ['r1','r2','r3','r10','r4','r5','r6','r7','r8','r9'];
-const ROUNDS_PLUS = [2,2,4,2,2,3,2,4,3,2];
-const ROUNDS_MINUS= [0,1,-2,1,0,0,-1,-2,-1,1];
+// ROUNDS — function so it always uses current _lang
 function getRounds() {
-  return ROUNDS_IDS.map((id,i) => ({
-    id, num:i+1,
-    name: _lang==='en' ? ROUNDS_EN[i] : ROUNDS_AR[i],
-    plus: ROUNDS_PLUS[i],
-    minus: ROUNDS_MINUS[i]
-  }));
+  const ar = ['وين شايفو هالوجه؟','ما تذكرتني بعد؟','مزاد علني','متفرقات سريعة','سمعني الدندنة','سكوت و ركز','يا حبيبي قرب ليي','يا قريب يا غريب','سكر تمك','من كل وادي عصا'];
+  const en = ["Who's That Face?","Still Don't Remember Me?",'Public Auction','Quick Trivia','Hum It!','Watch & Focus','Get Closer!','Close or Far?','Zip It!','General Knowledge'];
+  const ids   = ['r1','r2','r3','r10','r4','r5','r6','r7','r8','r9'];
+  const plus  = [2,2,4,2,2,3,2,4,3,2];
+  const minus = [0,1,-2,1,0,0,-1,-2,-1,1];
+  return ids.map((id,i) => ({ id, num:i+1, name:(_lang==='en'?en:ar)[i], plus:plus[i], minus:minus[i] }));
 }
-// Use getter so ROUNDS always reflects current language
-const ROUNDS = new Proxy([], {
-  get(_, prop) {
-    const arr = getRounds();
-    if (prop === 'find') return arr.find.bind(arr);
-    if (prop === 'map')  return arr.map.bind(arr);
-    if (prop === 'filter') return arr.filter.bind(arr);
-    if (prop === 'length') return arr.length;
-    if (!isNaN(prop)) return arr[+prop];
-    return arr[prop];
-  }
-});
 const HOST_T = {
   ar: {
     catLabel: (num, name) => `فقرة ${num}: ${name}`,
@@ -211,7 +194,9 @@ window.c = (cmd, data={}) => {
   const path = P('hostCmd');
   set(ref(db, path), {cmd, data, ts:Date.now()});
   const dbg = document.getElementById('debug-session');
-  if (dbg) dbg.textContent = `✓ sent: ${cmd} → ${path}`;
+  if (dbg) dbg.textContent = SESSION === 'main'
+    ? `⚠️ session=main — rescan QR after Start Game!`
+    : `✓ ${cmd} → ${SESSION}`;
 };
 
 let _cat6RoomListener = null;
@@ -336,7 +321,7 @@ function render() {
   scB.textContent = state.scoreB || 0;
 
   // Status
-  const round = ROUNDS.find(r => r.id === state.currentRound);
+  const round = getRounds().find(r => r.id === state.currentRound);
   const q = state.currentQ;
   sCat.textContent = round ? ht('catLabel', round.num, round.name) : _lang==='en'?'Menu':'القائمة';
   sQ.textContent = q===-1?ht('titleSlide'):q===0?ht('rulesSlide'):q>=1?ht('questionNum',q):'';
@@ -354,7 +339,7 @@ function render() {
   // Category grid
   const done = state.done || [];
   const inCat = !!state.currentRound && state.onGameScreen;
-  catGrid.innerHTML = ROUNDS.map(r => {
+  catGrid.innerHTML = getRounds().map(r => {
     const isDone = done.includes(r.id);
     const isCurrent = state.currentRound === r.id;
     const isRoulette = roulette?.id === r.id && !isCurrent && !isDone;
@@ -572,7 +557,9 @@ applyHostLang();
 
 // Show session for debugging immediately
 const dbg = document.getElementById('debug-session');
-if (dbg) dbg.textContent = `session: ${SESSION} | waiting for Firebase...`;
+if (dbg) dbg.textContent = SESSION === 'main'
+  ? `⚠️ No session — scan QR after pressing Start Game`
+  : `session: ${SESSION} | waiting for Firebase...`;
 </script>
 </body>
 </html>

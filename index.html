@@ -5593,7 +5593,7 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = Date.now();
+let _lastHostCmdTs = 0;
 let _hostCmdUnsubscribe = null;
 function startHostCmdListener() {
   const db = window._fbDb;
@@ -5612,6 +5612,7 @@ function startHostCmdListener() {
     if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
     _lastHostCmdTs = d.ts;
     const cmd = d.cmd;
+    showToast(`📱 ${cmd}`);
 
     if (cmd === 'next') {
       if (G.currentRound) {
