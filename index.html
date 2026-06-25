@@ -1243,6 +1243,22 @@ audio, video { display: none; }
         <div id="ch-count-display" class="ph-count-display"></div>
       </div>
     </div>
+
+    <!-- Cat 5 song language selection -->
+    <div class="photo-settings-card" id="cat5-lang-card" style="margin-top:4px">
+      <h3 onclick="toggleCatPanel('cat5lang')">
+        <span id="cat5-lang-label">🎵 اختيار لغة الأغاني — سمعني الدندنة</span>
+        <span id="cat5-lang-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
+      </h3>
+      <div class="photo-settings-body" id="cat5lang-settings-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0">
+          <button class="ph-subchip active" id="cat5-btn-all" onclick="setCat5Lang('all')"><span id="cat5-lbl-all">الكل</span></button>
+          <button class="ph-subchip" id="cat5-btn-ar" onclick="setCat5Lang('arabic')"><span id="cat5-lbl-ar">عربي فقط</span></button>
+          <button class="ph-subchip" id="cat5-btn-en" onclick="setCat5Lang('english')"><span id="cat5-lbl-en">English Only</span></button>
+        </div>
+        <div id="cat5-count-display" class="ph-count-display"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Hidden status divs needed by other functions -->
@@ -2329,6 +2345,7 @@ function toggleCatPanel(panel) {
     photo:    { body: 'photo-settings-body',    arrow: 'photo-settings-arrow' },
     trivia:   { body: 'trivia-settings-body',   arrow: 'trivia-settings-arrow' },
     charades: { body: 'charades-settings-body', arrow: 'charades-settings-arrow' },
+    cat5lang: { body: 'cat5lang-settings-body', arrow: 'cat5-lang-arrow' },
   };
   const target   = panels[panel];
   const isOpen   = document.getElementById(target.body).classList.contains('open');
@@ -2342,6 +2359,35 @@ function toggleCatPanel(panel) {
     document.getElementById(target.body).classList.add('open');
     document.getElementById(target.arrow).style.transform = 'rotate(180deg)';
   }
+}
+
+let _cat5LangFilter = 'all'; // 'all' | 'arabic' | 'english'
+
+function setCat5Lang(val) {
+  _cat5LangFilter = val;
+  ['all','ar','en'].forEach(k => {
+    const btn = document.getElementById('cat5-btn-' + (k==='all'?'all':k==='ar'?'ar':'en'));
+    if (btn) btn.classList.remove('active');
+  });
+  const activeId = val==='all'?'cat5-btn-all':val==='arabic'?'cat5-btn-ar':'cat5-btn-en';
+  const activeBtn = document.getElementById(activeId);
+  if (activeBtn) activeBtn.classList.add('active');
+  updateCat5Count();
+}
+
+function updateCat5Count() {
+  const all = G.questions.r4 || [];
+  const filtered = all.filter(q => {
+    if (_cat5LangFilter === 'all') return true;
+    const l = (q.lang || '').toLowerCase();
+    if (_cat5LangFilter === 'arabic') return l === 'ar' || l === 'arabic' || l === '';
+    if (_cat5LangFilter === 'english') return l === 'en' || l === 'english';
+    return true;
+  });
+  const countEl = document.getElementById('cat5-count-display');
+  if (countEl) countEl.textContent = _lang === 'en'
+    ? `${filtered.length} songs available for Cat 5`
+    : `${filtered.length} أغنية متاحة للفقرة 5`;
 }
 
 function togglePhotoSettings()    { toggleCatPanel('photo'); }
@@ -2898,6 +2944,17 @@ function applyLang() {
     ? '🤐 اختيار فئات التمثيل — سكر تمك'
     : '🤐 Acting Categories — Zip It!';
 
+  // Refresh cat5 language label
+  const cat5Label = document.getElementById('cat5-lang-label');
+  if (cat5Label) cat5Label.textContent = isAr
+    ? '🎵 اختيار لغة الأغاني — سمعني الدندنة'
+    : '🎵 Song Language — Hum It!';
+  const cat5All = document.getElementById('cat5-lbl-all');
+  if (cat5All) cat5All.textContent = isAr ? 'الكل' : 'All';
+  const cat5Ar = document.getElementById('cat5-lbl-ar');
+  if (cat5Ar) cat5Ar.textContent = isAr ? 'عربي فقط' : 'Arabic Only';
+  updateCat5Count();
+
   // Re-apply trivia with new language if loaded
   if (TR.loaded && TR.rawQuestions.length) {
     TR.openAccCat = null;
@@ -3088,12 +3145,13 @@ async function loadCSVFiles(csvFiles) {
       }
     } else if (key === 'cat5') {
       G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1], lang: (r[2]||'').trim().toLowerCase() })).filter(x => x.q));
+      setTimeout(updateCat5Count, 100);
     } else if (key === 'cat6') {
       // col0=video, col1=Q_AR, col2=A_AR, col3=Q_EN, col4=A_EN
       G.questions.r5 = shuffle(rows.map(r => ({ v: r[0], q: r[1], a: r[2], q_en: r[3]||r[1], a_en: r[4]||r[2] })).filter(x => x.v || x.q));
     } else if (key === 'cat78') {
-      // col0=Q_AR, col1=A (number — same both langs), col2=Q_EN
-      const items = rows.map(r => ({ q: r[0], a: r[1], q_en: r[2]||r[0] })).filter(x => x.q);
+      // col0=Q_AR, col1=Q_EN, col2=A (number — same both langs)
+      const items = rows.map(r => ({ q: r[0], q_en: r[1]||r[0], a: r[2] })).filter(x => x.q);
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
       G.questions.r6 = sh.slice(0, half); G.questions.r7 = sh.slice(half);
     } else if (key === 'cat9') {
@@ -3921,6 +3979,13 @@ function renderBuzzerImage(r, qIndex, sa) {
     </div>`;
 }
 
+function revealSongAnswer() {
+  const area = document.getElementById('answer-area');
+  if (area && window._currentSongA) {
+    area.innerHTML = `<div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,30px)">${window._currentSongA}</div>`;
+  }
+}
+
 function revealImageAnswer(answer) {
   const area = document.getElementById('answer-area');
   if(area) {
@@ -4509,12 +4574,16 @@ function renderBuzzerAudio(r, qIndex, sa) {
   // Filter songs by language if lang column exists
   const allQs = G.questions.r4 || [];
   const filtered = allQs.filter(q => {
-    if (!q.lang) return true; // no lang column — show all
-    return q.lang === _lang || q.lang === '' || q.lang === 'both';
+    if (_cat5LangFilter === 'all' || !q.lang) return true;
+    const l = (q.lang || '').toLowerCase();
+    if (_cat5LangFilter === 'arabic') return l === 'ar' || l === 'arabic' || l === '';
+    if (_cat5LangFilter === 'english') return l === 'en' || l === 'english';
+    return true;
   });
   const raw = filtered[qIndex] || allQs[qIndex] || null;
   const songQ = raw ? getQ(raw) : null;
   const songA = raw ? getA(raw) : null;
+  window._currentSongA = songA; // store for reveal function
   const isLast = qIndex >= r.count - 1;
 
   updateHostView(r.name, `${_lang==="en"?"Song":"أغنية"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, songQ || '', songA || '');
@@ -4534,7 +4603,7 @@ function renderBuzzerAudio(r, qIndex, sa) {
     ${songA ? `
       <div id="answer-area" style="min-height:52px;display:flex;align-items:center;justify-content:center">
         <button class="answer-reveal-btn" style="background:rgba(0,10,50,0.6);border:2px solid #FFE600;box-shadow:0 0 10px rgba(255,230,0,0.5);border-radius:12px;padding:12px 32px;color:#FFE600;font-size:15px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif"
-          onclick="document.getElementById('answer-area').innerHTML='<div class=answer-box style=font-size:30px>'+decodeURIComponent('${encodeURIComponent(songA)}')+'</div>'">
+          onclick="revealSongAnswer()">
           ${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}
         </button>
       </div>
@@ -4584,7 +4653,7 @@ function renderTeamVideo(r, qIndex, sa) {
       const rowName = (row.v || '').trim().toLowerCase();
       return rowName && (videoName.includes(rowName) || rowName.includes(videoName));
     });
-    if (match) { matchedQ = match.q; matchedA = match.a; }
+    if (match) { matchedQ = getQ(match); matchedA = getA(match); }
   }
 
   // Store for host commands
@@ -4625,7 +4694,7 @@ function renderTeamVideo(r, qIndex, sa) {
           <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,230,0,0.15);border:3px solid var(--neon-yellow);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,230,0,0.4)">
             <span style="font-size:40px;margin-right:-6px">▶</span>
           </div>
-          <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);font-family:Cairo,sans-serif">اضغط لتشغيل الفيديو</div>
+          <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);font-family:Cairo,sans-serif">${t('tapPlay')}</div>
         </div>
       </div>
     </div>
