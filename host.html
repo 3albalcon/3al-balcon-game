@@ -74,6 +74,7 @@ body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-h
 <div class="overlay" id="bg-overlay"></div>
 <div class="wrap" id="main-wrap">
   <div class="logo">🎙 HOST — 3AL BALCON</div>
+  <div style="font-size:9px;color:rgba(255,255,255,0.15);text-align:center;letter-spacing:1px" id="debug-session">...</div>
 
   <div class="status-bar">
     <span class="s-cat" id="s-cat">—</span>
@@ -191,7 +192,11 @@ function ht(key, ...args) {
 
 
 // Send command to main screen
-window.c = (cmd, data={}) => set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
+window.c = (cmd, data={}) => {
+  set(ref(db, P('hostCmd')), {cmd, data, ts:Date.now()});
+  const dbg = document.getElementById('debug-session');
+  if (dbg) dbg.textContent = `✓ ${cmd} → ${SESSION}`;
+};
 
 let _cat6RoomListener = null;
 let _cat6RoomWatching = null;
@@ -545,6 +550,10 @@ onValue(ref(db, P('lang')), snap => {
 
 // Apply initial language
 applyHostLang();
+
+// Show session for debugging
+const dbg = document.getElementById('debug-session');
+if (dbg) dbg.textContent = `session: ${SESSION}`;
 </script>
 </body>
 </html>
