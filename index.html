@@ -1374,8 +1374,8 @@ audio, video { display: none; }
 
     <!-- Buttons -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <button style="background:rgba(0,10,50,0.6);border:2px solid var(--neon-pink);color:var(--neon-pink);text-shadow:var(--glow-pink);box-shadow:var(--glow-pink);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-spin-btn" onclick="spinRoulette()">🎰 <span id="tr-spin1">دوّر!</span></button>
-      <button style="display:none;background:rgba(0,10,50,0.6);border:2px solid var(--neon-green);color:var(--neon-green);text-shadow:var(--glow-green);box-shadow:var(--glow-green);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-go-btn" onclick="goToRouletteRound()"><span id="tr-start-round">← ابدأ الفقرة</span></button>
+      <button style="background:rgba(0,10,50,0.6);border:2px solid var(--neon-pink);color:var(--neon-pink);text-shadow:var(--glow-pink);box-shadow:var(--glow-pink);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-spin-btn" onclick="spinRoulette()" style="font-size:17px">🎰 <span id="tr-spin1">دوّر!</span></button>
+      <button style="display:none;background:rgba(0,10,50,0.6);border:2px solid var(--neon-green);color:var(--neon-green);text-shadow:var(--glow-green);box-shadow:var(--glow-green);border-radius:10px;padding:10px 28px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s" id="roulette-go-btn" onclick="goToRouletteRound()" style="font-size:17px"><span id="tr-start-round">← ابدأ الفقرة</span></button>
     </div>
   </div>
 </div>
@@ -5964,7 +5964,7 @@ function spinRoulette() {
   }, 50);
 
   setTimeout(() => {
-    document.getElementById('roulette-result').textContent = `🎯 ${winner.name}`;
+    document.getElementById('roulette-result').textContent = '';
     document.getElementById('roulette-go-btn').style.display = 'inline-flex';
     document.getElementById('roulette-spin-btn').innerHTML = '🎰 <span id="tr-spin1">' + (_lang==='en'?'Spin Again':'دوّر مجدداً') + '</span>';
     document.getElementById('roulette-spin-btn').disabled = false;
