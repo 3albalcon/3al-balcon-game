@@ -4319,62 +4319,22 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       }
       document.getElementById('winner-announce').textContent = t('auctionWon', winnerName, winnerBid);
 
-      // Show answer timer on main screen — only start when team clicks "ابدأ الكتابة"
+      // Replace timer area with simple "Answers" label
       if (!document.getElementById('main-ans-timer')) {
         const timerDiv = document.createElement('div');
         timerDiv.id = 'main-ans-timer';
-        timerDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;width:100%';
-        timerDiv.innerHTML = `
-          <div style="font-size:clamp(80px,15vw,160px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow);line-height:1" id="main-ans-num">⏳</div>
-          <div style="width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden">
-            <div id="main-ans-fill" style="height:100%;width:100%;background:var(--neon-green);border-radius:100px;transition:width 0.5s linear"></div>
-          </div>
-          <div style="font-size:16px;font-weight:700;color:var(--neon-yellow);text-shadow:var(--glow-yellow);text-align:center;animation:pulse 1.5s infinite" id="waiting-write-msg">🏆 ${t('winningTeamWrite')}</div>`;
+        timerDiv.style.cssText = 'font-size:13px;font-weight:700;color:rgba(200,224,255,0.5);letter-spacing:2px;text-align:center;padding:4px 0;text-transform:uppercase';
+        timerDiv.textContent = _lang === 'en' ? 'Answers' : 'الأجوبة';
         document.getElementById('winner-announce').after(timerDiv);
       }
-
-      // Start timer when writingStarted fires
-      if (data.writingStarted && data.answerTimerEnd && !window._mainTimerStarted) {
-        window._mainTimerStarted = true;
-        const waitMsg = document.getElementById('waiting-write-msg');
-        if(waitMsg) waitMsg.style.display='none';
-        const total = 60000;
-        clearInterval(window._mainTimerInterval);
-        window._mainTimerInterval = setInterval(async () => {
-          // Check live Firebase for confirmedAnswers
-          const liveSnap = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js")
-            .then(({get}) => get(window._fbRef(window._fbDb, `rooms/${roomId}/answersConfirmed`)));
-          if (liveSnap && liveSnap.val()) {
-            clearInterval(window._mainTimerInterval);
-            const numEl = document.getElementById('main-ans-num');
-            if(numEl) { numEl.textContent='⏹'; numEl.style.color='var(--neon-green)'; }
-            return;
-          }
-          const rem = Math.max(0, data.answerTimerEnd - Date.now());
-          const pct = (rem/total)*100;
-          const numEl = document.getElementById('main-ans-num');
-          const fillEl = document.getElementById('main-ans-fill');
-          if(numEl){ numEl.textContent=Math.ceil(rem/1000); numEl.style.color=pct<20?'var(--neon-red)':'var(--neon-yellow)'; }
-          if(fillEl){ fillEl.style.width=pct+'%'; fillEl.style.background=pct<20?'var(--neon-red)':'var(--neon-green)'; }
-          if(rem<=0){
-            clearInterval(window._mainTimerInterval);
-            if(db) import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({update})=>{
-              update(fbRef(db,`rooms/${roomId}`),{answersConfirmed:true});
-            });
-            // Show next button when time is up
-            const nav = document.getElementById('cat3-nav-btns');
-            if (nav) nav.style.display = 'flex';
-          }
-        }, 200);
-      }
-
 
       // Show answers with inline override buttons
       const answers = data.answers || [];
       const display = document.getElementById('answers-display');
       const answersConfirmed = data.answersConfirmed || false;
       const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= Date.now();
-      const showResults = answersConfirmed || (data.writingStarted && ansTimeUp);
+      // Show results as soon as answers start coming in
+      const showResults = answersConfirmed || data.writingStarted || answers.length > 0;
       display.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;align-items:center';
 
       if (showResults && answers.length > 0) {
@@ -4420,33 +4380,36 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
       window._currentCat3Room = roomId;
 
-      // Show score preview and reveal nav button
-      if (showResults && answers.length > 0) {
+      // Show score and nav button
+      if (answers.length > 0) {
         const allDone = answers.every(a => a.status === 'correct' || a.status === 'wrong');
+        const correct = answers.filter(a => a.status === 'correct').length;
         const scoreEl = document.getElementById('score-result');
+        const nav = document.getElementById('cat3-nav-btns');
+
         if (allDone && scoreEl) {
-          const correct = answers.filter(a => a.status === 'correct').length;
           scoreEl.style.display = 'block';
           scoreEl.style.color = correct >= winnerBid ? 'var(--neon-green)' : 'var(--neon-red)';
           scoreEl.textContent = correct >= winnerBid
             ? `✅ ${winnerName} ${_lang==="en"?"answered":"أجاب"} ${correct}/${winnerBid} ${_lang==="en"?"correct — +4 pts":"صح — +4 نقاط"}`
             : `❌ ${winnerName} ${_lang==="en"?"answered only":"أجاب"} ${correct}/${winnerBid} ${_lang==="en"?"— -2 pts":"فقط — -2 نقاط"}`;
           window._pendingCat3Score = { winner, correct, winnerBid };
-          // Show next button now that scoring is done
-          const nav = document.getElementById('cat3-nav-btns');
+          if (nav) nav.style.display = 'flex';
+        } else if (answersConfirmed || ansTimeUp) {
+          // Confirmed but still validating — show nav anyway
           if (nav) nav.style.display = 'flex';
         }
-      } else if ((answersConfirmed || (data.writingStarted && ansTimeUp)) && answers.length < winnerBid) {
+      } else if (answersConfirmed || ansTimeUp) {
+        // No answers submitted
         const scoreEl = document.getElementById('score-result');
         if (scoreEl) {
           scoreEl.style.display = 'block';
           scoreEl.style.color = 'var(--neon-red)';
-          scoreEl.textContent = `❌ ${winnerName} ${_lang==="en"?"answered only":"أجاب"} ${answers.length}/${winnerBid} ${_lang==="en"?"— -2 pts":"فقط — -2 نقاط"}`;
+          scoreEl.textContent = `❌ ${winnerName} ${_lang==="en"?"submitted no answers — -2 pts":"لم يجب — -2 نقاط"}`;
           window._pendingCat3Score = { winner, correct: 0, winnerBid };
-          // Show next button even with no answers
-          const nav = document.getElementById('cat3-nav-btns');
-          if (nav) nav.style.display = 'flex';
         }
+        const nav = document.getElementById('cat3-nav-btns');
+        if (nav) nav.style.display = 'flex';
       }
     }
 
