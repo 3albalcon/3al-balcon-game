@@ -1334,7 +1334,7 @@ audio, video { display: none; }
     display:flex;align-items:center;gap:8px;justify-content:center;
   ">
     <span id="data-status-icon">⏳</span>
-    <span id="data-status-text">⏳ يتم تحضير الأسئلة و الصور</span>
+    <span id="data-status-text">يتم تحضير الأسئلة و الصور</span>
   </div>
 
   <div class="rounds-grid" id="rounds-grid"></div>
@@ -2599,8 +2599,8 @@ const LANG = {
     r9: 'من كل وادي عصا',
     // Status
     allReady: '✅ كل شي جاهز',
-    loadingImages: '⏳ الأسئلة جاهزة — عم نحضّر الصور',
-    loadingAll: '⏳ يتم تحضير الأسئلة و الصور',
+    loadingImages: 'الأسئلة جاهزة — عم نحضّر الصور',
+    loadingAll: 'يتم تحضير الأسئلة و الصور',
     bothConnected: '✅ الفريقين متصلين!',
     timesUp: "Time's Up!",
     allDone: 'كل الفقرات انتهت! 🎉',
@@ -2762,8 +2762,8 @@ const LANG = {
     r9: 'General Knowledge',
     // Status
     allReady: '✅ All ready',
-    loadingImages: '⏳ Questions ready — loading images',
-    loadingAll: '⏳ Loading questions and images',
+    loadingImages: 'Questions ready — loading images',
+    loadingAll: 'Loading questions and images',
     bothConnected: '✅ Both teams connected!',
     timesUp: "Time's Up!",
     allDone: 'All rounds done! 🎉',
@@ -3564,9 +3564,8 @@ function renderRules(r, sa) {
     cat3RoomId = initCat3Room(G.teamA, G.teamB);
     const roomId = cat3RoomId;
     const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
-    const wall = encodeURIComponent(G.waitingScreenUrl || '');
-    const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}&w=${wall}&l=${_lang}`;
-    const urlB = `${baseUrl}?t=b&r=${roomId}&s=${window._gameSession||'main'}&w=${wall}&l=${_lang}`;
+    const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}&l=${_lang}`;
+    const urlB = `${baseUrl}?t=b&r=${roomId}&s=${window._gameSession||'main'}&l=${_lang}`;
 
     // Listen for connections
     const db = window._fbDb; const fbRef = window._fbRef; const fbOnValue = window._fbOnValue;
