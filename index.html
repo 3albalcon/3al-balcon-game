@@ -3077,7 +3077,8 @@ async function loadCSVFiles(csvFiles) {
       G.questions.r1csv = shuffled.slice(0, 10);
       G.questions.r2csv = shuffled.slice(10, 20);
     } else if (key === 'cat3') {
-      G.questions.r3 = shuffle(rows.map(r => r[0]).filter(Boolean));
+      // col0=Q_AR, col1=Q_EN
+      G.questions.r3 = shuffle(rows.map(r => ({ q_ar: r[0], q_en: r[1] || r[0] })).filter(x => x.q_ar));
     } else if (key === 'cat410') {
       // Only use Drive CSV if GitHub trivia not loaded
       if (!TR.loaded) {
@@ -3088,9 +3089,11 @@ async function loadCSVFiles(csvFiles) {
     } else if (key === 'cat5') {
       G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1], lang: (r[2]||'').trim().toLowerCase() })).filter(x => x.q));
     } else if (key === 'cat6') {
-      G.questions.r5 = shuffle(rows.map(r => ({ v: r[0], q: r[1], a: r[2] })).filter(x => x.v || x.q));
+      // col0=video, col1=Q_AR, col2=A_AR, col3=Q_EN, col4=A_EN
+      G.questions.r5 = shuffle(rows.map(r => ({ v: r[0], q: r[1], a: r[2], q_en: r[3]||r[1], a_en: r[4]||r[2] })).filter(x => x.v || x.q));
     } else if (key === 'cat78') {
-      const items = rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q);
+      // col0=Q_AR, col1=A (number — same both langs), col2=Q_EN
+      const items = rows.map(r => ({ q: r[0], a: r[1], q_en: r[2]||r[0] })).filter(x => x.q);
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
       G.questions.r6 = sh.slice(0, half); G.questions.r7 = sh.slice(half);
     } else if (key === 'cat9') {
@@ -5955,12 +5958,14 @@ function showToast(msg) {
 function getQ(item) {
   if (!item) return '';
   if (typeof item === 'string') return item.includes('|') ? item.split('|')[0].trim() : item;
-  return item.q || '';
+  if (_lang === 'en' && item.q_en) return item.q_en;
+  return item.q || item.q_ar || '';
 }
 function getA(item) {
   if (!item) return '';
   if (typeof item === 'string') return item.includes('|') ? (item.split('|')[1]||'').trim() : '';
-  return item.a || '';
+  if (_lang === 'en' && item.a_en) return item.a_en;
+  return item.a || item.a_ar || '';
 }
 
 // Dynamic font size — 23px average, scales down for long text, up for short
