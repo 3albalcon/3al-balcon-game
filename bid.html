@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>3AL BALCON — ${_lang==="en"?"Public Auction":"مزاد علني"}</title>
+<title>3AL BALCON</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -101,7 +101,7 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
   <img id="waiting-img" src="" style="width:100%;height:100%;object-fit:cover;display:none">
   <div id="waiting-fallback" style="display:flex;flex-direction:column;align-items:center;gap:16px">
     <div style="font-size:clamp(36px,12vw,72px);font-weight:900;color:var(--yellow);text-shadow:0 0 30px rgba(255,230,0,0.7);letter-spacing:4px;text-align:center;animation:pulse 2s infinite">3AL BALCON</div>
-    <div style="font-size:16px;color:rgba(255,255,255,0.5);text-align:center;font-weight:700" id="logo-msg">انتظر...</div>
+    <div style="font-size:16px;color:rgba(255,255,255,0.5);text-align:center;font-weight:700" id="logo-msg"><span id="bid-wait-logo">انتظر...</span></div>
   </div>
 </div>
 
@@ -116,9 +116,9 @@ body { font-family:'Cairo',sans-serif;background:var(--dark);color:#fff;min-heig
     <button class="btn btn-g" id="start-writing-btn" onclick="startWriting()"><span id="bid-start-writing">✏️ ابدأ الكتابة</span></button>
   </div>
   <div class="ans-fixed" id="ans-input-wrap" style="display:none">
-    <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." id="ans-input" dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
+    <input class="answer-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." dir="rtl" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
     <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()"><span id="bid-add-ans">✅ أضف الجواب</span></button>
-    <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none"><span id="bid-confirm-lbl">🔒 تأكيد الأجوبة</spanلأجوبة النهائية</button>
+    <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none"><span id="bid-confirm-lbl">🔒 تأكيد الأجوبة</span></button>
   </div>
 </div>
 
@@ -144,19 +144,20 @@ const sessionId = params.get('s') || 'main';
 const other = team === 'a' ? 'b' : 'a';
 if (!team) { document.body.innerHTML='<div style="color:red;padding:40px;text-align:center">Invalid link</div>'; throw new Error(); }
 
-let myBid = 0;
-let submitted = [];
-let totalAns = 0;
-let phase = '';
-let lastBidder = null;
-let lastBidCountdownEnd = null;
-let bidInterval = null;
-let ansInterval = null;
-let locked = false;
 // ── Language system ──
 let _lang = 'ar';
-const BID_T = {
+const BT = {
   ar: {
+    connecting: 'جاري الاتصال...',
+    logoSub: 'مزاد علني',
+    waitMsg: '⏳ بانتظار الفريق الثاني...',
+    readyMsg: '⏳ انتظر الفريق الثاني...',
+    readyBtn: '✅ جاهز للبدء!',
+    ansTitle: 'اكتبوا الأجوبة!',
+    startWriting: '✏️ ابدأ الكتابة',
+    addAns: '✅ أضف الجواب',
+    confirmLbl: '🔒 تأكيد الأجوبة',
+    waitLogo: 'انتظر...',
     writeHere: 'اكتب الجواب هنا...',
     editAnswer: (i) => `تعديل الجواب ${i+1}...`,
     yourBid: (n) => `✅ مزايدتك: ${n}`,
@@ -164,22 +165,31 @@ const BID_T = {
     otherBidUrgent: (n) => `⚡ الفريق الثاني زايد ${n} — زايد أو خسرت!`,
     youLead: (n) => `✅ مزايدتك: ${n} — انتظر الفريق الثاني`,
     questionOf: (i) => `سؤال ${i+1} من 5`,
-    otherWaiting: bt('otherWaiting'),
-    waitingOther: bt('waitingOther'),
-    otherReady: bt('otherReady'),
-    waitForOther: bt('waitForOther'),
-    otherWriting: bt('otherWriting'),
-    waitNext: bt('waitNext'),
+    otherWaiting: '✅ الفريق الثاني ناطر',
+    waitingOther: '⏳ بانتظار الفريق الثاني...',
+    otherReady: '✅ الفريق الثاني جاهز!',
+    waitForOther: '⏳ انتظر الفريق الثاني...',
+    otherWriting: 'الفريق الثاني يكتب الأجوبة...',
+    waitNext: '⏳ انتظر السؤال التالي...',
     confirmTitle: '🔒 تأكيد الأجوبة؟',
     confirmMsg: 'لا يمكن التعديل بعد التأكيد',
     confirmYes: '✅ تأكيد',
     confirmBack: '↩ رجوع',
     answersSent: 'تم إرسال الأجوبة!',
     waitingHost: 'في انتظار المقدّم...',
-    badLink: 'رابط غلط',
-    ready: bt('ready'),
+    auctionEnd: '🏁 انتهى المزاد!',
   },
   en: {
+    connecting: 'Connecting...',
+    logoSub: 'Public Auction',
+    waitMsg: '⏳ Waiting for other team...',
+    readyMsg: '⏳ Wait for other team...',
+    readyBtn: '✅ Ready to start!',
+    ansTitle: 'Write your answers!',
+    startWriting: '✏️ Start Writing',
+    addAns: '✅ Add Answer',
+    confirmLbl: '🔒 Confirm Answers',
+    waitLogo: 'Wait...',
     writeHere: 'Write your answer here...',
     editAnswer: (i) => `Edit answer ${i+1}...`,
     yourBid: (n) => `✅ Your bid: ${n}`,
@@ -199,48 +209,49 @@ const BID_T = {
     confirmBack: '↩ Back',
     answersSent: 'Answers sent!',
     waitingHost: 'Waiting for host...',
-    badLink: 'Invalid link',
-    ready: '✅ Ready!',
+    auctionEnd: '🏁 Auction ended!',
   }
 };
 function bt(key, ...args) {
-  const L = BID_T[_lang] || BID_T.ar;
+  const L = BT[_lang] || BT.ar;
   const v = L[key];
-  return typeof v === 'function' ? v(...args) : (v || BID_T.ar[key] || key);
+  return typeof v === 'function' ? v(...args) : (v ?? BT.ar[key] ?? key);
 }
 function applyBidLang() {
   const isAr = _lang === 'ar';
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
   document.documentElement.lang = isAr ? 'ar' : 'en';
-  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  document.title = `3AL BALCON — ${bt('logoSub')}`;
+  const els = {
+    'bid-logo-sub':      bt('logoSub'),
+    'bid-connecting':    bt('connecting'),
+    'bid-wait-msg':      bt('waitMsg'),
+    'bid-ready-msg':     bt('readyMsg'),
+    'bid-ready-btn-lbl': bt('readyBtn'),
+    'bid-ans-title':     bt('ansTitle'),
+    'bid-start-writing': bt('startWriting'),
+    'bid-add-ans':       bt('addAns'),
+    'bid-confirm-lbl':   bt('confirmLbl'),
+    'logo-msg':          bt('waitLogo'),
+  };
+  Object.entries(els).forEach(([id, text]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  });
   const inp = document.getElementById('ans-input');
   if (inp) inp.placeholder = bt('writeHere');
-  const connecting = document.getElementById('bid-connecting');
-  if (connecting) connecting.textContent = isAr ? 'جاري الاتصال...' : 'Connecting...';
-  const logoSub = document.getElementById('bid-logo-sub');
-  if (logoSub) logoSub.textContent = isAr ? 'مزاد علني' : 'Public Auction';
-  const waitMsg = document.getElementById('bid-wait-msg');
-  if (waitMsg) waitMsg.textContent = isAr ? '⏳ بانتظار الفريق الثاني...' : '⏳ Waiting for other team...';
-  const readyMsg = document.getElementById('bid-ready-msg');
-  if (readyMsg) readyMsg.textContent = isAr ? '⏳ انتظر الفريق الثاني...' : '⏳ Wait for other team...';
-  const readyBtnLbl = document.getElementById('bid-ready-btn-lbl');
-  if (readyBtnLbl) readyBtnLbl.textContent = isAr ? '✅ جاهز للبدء!' : '✅ Ready to start!';
-  const ansTitle = document.getElementById('bid-ans-title');
-  if (ansTitle) ansTitle.textContent = isAr ? 'اكتبوا الأجوبة!' : 'Write your answers!';
-  const startWriting = document.getElementById('bid-start-writing');
-  if (startWriting) startWriting.textContent = isAr ? '✏️ ابدأ الكتابة' : '✏️ Start Writing';
-  const addAns = document.getElementById('bid-add-ans');
-  if (addAns) addAns.textContent = isAr ? '✅ أضف الجواب' : '✅ Add Answer';
-  const confirmLbl = document.getElementById('bid-confirm-lbl');
-  if (confirmLbl) confirmLbl.textContent = isAr ? '🔒 تأكيد الأجوبة' : '🔒 Confirm Answers';
-  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  document.documentElement.lang = isAr ? 'ar' : 'en';
+  inp.dir = isAr ? 'rtl' : 'ltr';
 }
-// Listen to session lang from Firebase
-onValue(ref(db, `sessions/${sessionId}/lang`), snap => {
-  const l = snap.val();
-  if (l && l !== _lang) { _lang = l; applyBidLang(); }
-});
 
+let myBid = 0;
+let submitted = [];
+let totalAns = 0;
+let phase = '';
+let lastBidder = null;
+let lastBidCountdownEnd = null;
+let bidInterval = null;
+let ansInterval = null;
+let locked = false;
 
 // Get server time offset once for accurate timers
 let serverOffset = 0;
@@ -325,7 +336,7 @@ function renderAnswers() {
   const title=document.getElementById('ans-title');
   const conf=document.getElementById('confirm-btn');
   if(!scroll) return;
-  if(title) title.textContent=_lang==="en"?`Write ${totalAns} answers (${submitted.length}/${totalAns})`:`اكتبوا ${totalAns} أجوبة (${submitted.length}/${totalAns})`;
+  if(title) title.textContent=_lang==='en'?`Write ${totalAns} answers (${submitted.length}/${totalAns})`:`اكتبوا ${totalAns} أجوبة (${submitted.length}/${totalAns})`;
   scroll.innerHTML=submitted.map((a,i)=>`
     <div class="chip chip-p" style="justify-content:space-between;cursor:${locked?'default':'pointer'}" onclick="${locked?'':'editAnswer('+i+')'}">
       <span style="flex:1">${i+1}. ${a.text}</span>
@@ -348,7 +359,7 @@ window.startWriting = async function() {
 
 window.setReady = async function() {
   document.getElementById('ready-btn').disabled=true;
-  document.getElementById('ready-btn').textContent=bt('ready');
+  document.getElementById('ready-btn').textContent=bt('readyBtn');
   await update(ref(db,`rooms/${roomId}`), {[`ready${team.toUpperCase()}`]:true});
 };
 
@@ -513,7 +524,7 @@ function handleBidUpdate(d) {
 onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   const d=snap.val(); 
   // Debug - show connection status
-  document.title = `${team} | ${d?.phase||'?'} | bidA:${d?.bids?.a?.value||0} bidB:${d?.bids?.b?.value||0}`;
+  // debug title removed
   if(!d) return;
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
@@ -541,13 +552,13 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(p==='waiting'){
       showPhase('waiting');
       const conn=d.connected||{};
-      document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitingOther');
+      document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitMsg');
     }
     else if(p==='ready'){
       showPhase('ready');
       const myR=team==='a'?d.readyA:d.readyB;
-      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent=bt('ready');}
-      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?bt('otherReady'):bt('waitForOther');
+      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent=bt('readyBtn');}
+      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?bt('otherReady'):bt('readyMsg');
     }
     else if(p==='countdown'){
       showPhase('countdown');
@@ -583,14 +594,14 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='done'){
       showPhase('logo');
-      document.getElementById('logo-msg').innerHTML = _lang==="en"?'🏁 Auction ended!<br>':'🏁 انتهى المزاد!<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">يمكنك إغلاق هذه الشاشة</span>';
+      document.getElementById('logo-msg').innerHTML = bt('auctionEnd')+'<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">'+(bt('auctionEnd')===BT.en.auctionEnd?'You can close this screen':'يمكنك إغلاق هذه الشاشة')+'</span>';
     }
   }
 
   // Same phase updates
   if(p==='waiting'){
     const conn=d.connected||{};
-    document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitingOther');
+    document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitMsg');
   }
   if(p==='ready'){
     const otherR=team==='a'?d.readyB:d.readyA;
@@ -602,6 +613,13 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     if(d.answersConfirmed&&!locked) lockAnswering();
   }
 });
+
+// Listen for lang from main game
+onValue(ref(db, `sessions/${sessionId}/lang`), snap => {
+  const l = snap.val();
+  if (l && l !== _lang) { _lang = l; applyBidLang(); }
+});
+
 </script>
 </body>
 </html>
