@@ -239,8 +239,10 @@ function applyBidLang() {
     if (el) el.textContent = text;
   });
   const inp = document.getElementById('ans-input');
-  if (inp) inp.placeholder = bt('writeHere');
-  inp.dir = isAr ? 'rtl' : 'ltr';
+  if (inp) {
+    inp.placeholder = bt('writeHere');
+    inp.dir = isAr ? 'rtl' : 'ltr';
+  }
 }
 
 let myBid = 0;
@@ -255,14 +257,12 @@ let locked = false;
 
 // Get server time offset once for accurate timers
 let serverOffset = 0;
-try {
-  const offsetSnap = await get(ref(db, '.info/serverTimeOffset'));
-  serverOffset = offsetSnap.val() || 0;
-} catch(e) { serverOffset = 0; }
+get(ref(db, '.info/serverTimeOffset')).then(snap => { serverOffset = snap.val() || 0; }).catch(()=>{});
 
 function serverNow() { return Date.now() + serverOffset; }
 
-await update(ref(db,`rooms/${roomId}/connected`), {[team]:true});
+// Mark as connected
+update(ref(db,`rooms/${roomId}/connected`), {[team]:true}).catch(()=>{});
 document.getElementById('debug-room').textContent = `room: ${roomId} | team: ${team}`;
 
 const badge = document.getElementById('team-badge');
