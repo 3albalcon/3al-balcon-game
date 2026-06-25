@@ -5537,7 +5537,7 @@ function toggleHostMode() {
     const qrEl = document.getElementById('host-qr');
     qrEl.innerHTML = '';
     if (typeof QRCode !== 'undefined') {
-      const hostUrl = `https://3albalcon.github.io/3al-balcon-game/host.html?s=${window._gameSession||'main'}`;
+      const hostUrl = `https://3albalcon.github.io/3al-balcon-game/host.html?s=${window._gameSession||'main'}&l=${_lang}`;
       new QRCode(qrEl, { text: hostUrl, width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
     }
     pushHostView({ active: true, question: '', answer: '', categoryName: '', questionNum: '' });
