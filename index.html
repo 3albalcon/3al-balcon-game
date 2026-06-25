@@ -3564,8 +3564,9 @@ function renderRules(r, sa) {
     cat3RoomId = initCat3Room(G.teamA, G.teamB);
     const roomId = cat3RoomId;
     const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
-    const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}`;
-    const urlB = `${baseUrl}?t=b&r=${roomId}&s=${window._gameSession||'main'}`;
+    const wall = encodeURIComponent(G.waitingScreenUrl || '');
+    const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}&w=${wall}&l=${_lang}`;
+    const urlB = `${baseUrl}?t=b&r=${roomId}&s=${window._gameSession||'main'}&w=${wall}&l=${_lang}`;
 
     // Listen for connections
     const db = window._fbDb; const fbRef = window._fbRef; const fbOnValue = window._fbOnValue;
@@ -4102,7 +4103,7 @@ function renderBidding(r, qIndex, sa) {
         style="display:none;padding:14px 40px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;
         border:2px solid var(--neon-green);color:var(--neon-green);background:rgba(57,255,20,0.08);
         box-shadow:var(--glow-green);cursor:pointer;margin-top:8px">
-        🎯 <span id="cat3-start-btn-lbl">ابدأ المزاد</span>
+        🎯 <span id="cat3-start-btn-lbl">${_lang==='en'?'Start Auction':'ابدأ المزاد'}</span>
       </button>
     </div>
 
@@ -4267,13 +4268,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
         // Flash on main screen
         showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
-        document.getElementById('bid-event-msg').textContent = `🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 10 ثواني للرد!`;
+        document.getElementById('bid-event-msg').textContent = _lang==="en"?`🔥 ${winnerName} bid ${bidVal} — ${waitingName} has 10 seconds to respond!`:`🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 10 ثواني للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
         const labelEl = document.getElementById('bid-countdown-label');
         numEl.style.display = 'block';
         labelEl.style.display = 'block';
-        labelEl.textContent = `${waitingName} تحتاج ترد`;
+        labelEl.textContent = _lang==="en"?`${waitingName} needs to respond`:`${waitingName} تحتاج ترد`;
 
         cat3BidCountdownInterval = setInterval(() => {
           const serverOff = 0; // server offset handled on phone side
