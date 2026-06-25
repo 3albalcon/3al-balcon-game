@@ -306,24 +306,6 @@ body {
 .round-btn.done { border-color: var(--neon-green); box-shadow: var(--glow-green); }
 .round-btn.done .rnum { color: var(--neon-green); text-shadow: var(--glow-green); }
 
-.wildcard-btn {
-  background: rgba(0,10,50,0.5);
-  border: 2px solid var(--neon-cyan);
-  box-shadow: var(--glow-cyan);
-  border-radius: 14px;
-  padding: 12px 24px;
-  cursor: pointer;
-  font-family: 'Cairo', sans-serif;
-  color: var(--neon-cyan);
-  text-shadow: var(--glow-cyan);
-  font-size: 15px;
-  font-weight: 700;
-  transition: all 0.2s;
-}
-.wildcard-btn:hover { background: rgba(0,239,255,0.12); transform: translateY(-2px); }
-
-.wildcard-btn { font-size: 18.75px; padding: 15px 30px; }
-
 /* ── GAME SCREEN ── */
 #game-screen { padding: 0; }
 
@@ -727,9 +709,6 @@ audio, video { display: none; }
 }
 
 /* WILDCARDS */
-.wildcard-grid {
-  display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
-}
 .wc-card {
   background: rgba(0,10,50,0.6);
   border: 2px solid var(--neon-cyan);
@@ -1141,7 +1120,6 @@ audio, video { display: none; }
   .rs-winner { font-size: clamp(24px, 2.5vw, 33px) !important; }
   .bid-value { font-size: 54px !important; }
   .bt-name { font-size: 19px !important; }
-  .wildcard-btn { font-size: 28px !important; padding: 22px 45px !important; }
   .wc-card .wc-name { font-size: 24px !important; }
   .wc-card .wc-desc { font-size: 18px !important; }
   .char-view { font-size: clamp(60px, 8vw, 120px) !important; }
@@ -1313,7 +1291,6 @@ audio, video { display: none; }
     <div class="team-score">
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
         <div class="name" id="mn-a-name">الفريق A</div>
-        <div id="wc-badges-a" style="display:flex;gap:4px;flex-wrap:wrap"></div>
       </div>
       <div class="score" id="mn-a-score">0</div>
     </div>
@@ -1321,7 +1298,6 @@ audio, video { display: none; }
     <div class="team-score">
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
         <div class="name" id="mn-b-name">الفريق B</div>
-        <div id="wc-badges-b" style="display:flex;gap:4px;flex-wrap:wrap"></div>
       </div>
       <div class="score" id="mn-b-score">0</div>
     </div>
@@ -1458,14 +1434,8 @@ const G = {
   timerValue: 0,
   timerMax: 60,
   bids: [0, 0],
-  wildcards: [],
   winnerSongUrl: null,
   waitingScreenUrl: null,
-  wcSession: [],
-  wcMilestoneA: 0,  // last milestone rewarded for team A (in multiples of 50)
-  wcMilestoneB: 0,  // last milestone rewarded for team B
-  earnedWCA: [],    // بطاقة حظّك اليومs earned by team A [{q, a, used}]
-  earnedWCB: [],    // بطاقة حظّك اليومs earned by team B
 };
 
 const ROUNDS = [
@@ -1486,120 +1456,10 @@ const ROUNDS = [
 // ══════════════════════════════════════════
 // ══════════════════════════════════════════
 // SINGLE DROP ZONE — sorts files by folder
-// ══════════════════════════════════════════
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('drop-zone').classList.remove('drag-over');
-  const items = e.dataTransfer.items;
-  if (items && items.length > 0 && items[0].webkitGetAsEntry) {
-    const allFiles = [];
-    let pending = 0;
-    function done() { if (pending === 0) processAllFiles(allFiles); }
-    function scanEntry(entry, path) {
-      if (entry.isFile) {
-        pending++;
-        entry.file(f => {
-          // Attach relative path so processAllFiles can sort by folder
-          Object.defineProperty(f, 'webkitRelativePath', { value: path + f.name, writable: false });
-          allFiles.push(f);
-          pending--;
-          done();
-        });
-      } else if (entry.isDirectory) {
-        const reader = entry.createReader();
-        pending++;
-        reader.readEntries(entries => {
-          pending--;
-          entries.forEach(child => scanEntry(child, path + entry.name + '/'));
-          done();
-        });
-      }
-    }
-    Array.from(items).forEach(item => {
-      const entry = item.webkitGetAsEntry();
-      if (entry) scanEntry(entry, '');
-    });
-  } else {
-    handleFiles(e.dataTransfer.files);
-  }
-}
 
-function handleFiles(files) {
-  const all = Array.from(files);
-  // Attach folder path from webkitRelativePath if available
-  all.forEach(f => { if (!f._folderPath) f._folderPath = f.webkitRelativePath || ''; });
-  processAllFiles(all);
-}
-
-function processAllFiles(all) {
-  const imageExts = ['jpg','jpeg','png','gif','webp','bmp'];
-  const videoExts = ['mp4','mov','avi','mkv','webm','m4v'];
-  const excelExts = ['xlsx','xls'];
-
-  const images = all.filter(f => {
-    const ext = f.name.split('.').pop().toLowerCase();
-    const path = (f.webkitRelativePath || f._folderPath || '').toLowerCase();
-    // Must be inside a folder whose name contains "image"
-    const folder = path.split('/').slice(-2, -1)[0] || '';
-    return imageExts.includes(ext) && folder.includes('image');
-  });
-
-  const videos = all.filter(f => {
-    const ext = f.name.split('.').pop().toLowerCase();
-    const path = (f.webkitRelativePath || f._folderPath || '').toLowerCase();
-    const folder = path.split('/').slice(-2, -1)[0] || '';
-    return videoExts.includes(ext) && folder.includes('video');
-  });
-
-  const excels = all.filter(f => {
-    const ext = f.name.split('.').pop().toLowerCase();
-    return excelExts.includes(ext) &&
-           f.name.toLowerCase().replace(/\s+/g,'').includes('questionsandanswers');
-  });
-
-  // Fallback: any excel if name doesn't match
-  const excelFile = excels.length > 0
-    ? excels[0]
-    : all.find(f => excelExts.includes(f.name.split('.').pop().toLowerCase()));
-
-  // Load images → split r1 / r2
-  if (images.length > 0) {
-    const items = shuffle(images.map(f => ({
-      url: URL.createObjectURL(f),
-      answer: f.name.replace(/\.[^/.]+$/, '')
-    })));
-    G.media['r1'] = items.slice(0, 10);
-    G.media['r2'] = items.slice(10, 20);
-    document.getElementById('status-r1').textContent =
-      `✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`;
-  } else {
-    document.getElementById('status-r1').textContent = `⚠️ لم يتم العثور على صور في مجلد "image 1"`;
-  }
-
-  // Load videos → r5
-  if (videos.length > 0) {
-    G.media['r5'] = shuffle(videos.map(f => ({ url: URL.createObjectURL(f), name: f.name, type: 'video' })));
-    document.getElementById('status-r5').textContent = `✅ ${videos.length} ${_lang==="en"?"video":"فيديو"} ${_lang==="en"?"ready":"جاهز"}`;
-  } else {
-    document.getElementById('status-r5').textContent = `⚠️ لم يتم العثور على فيديوهات في مجلد "Videos"`;
-  }
-
-  // Load Excel
-  if (excelFile) {
-    loadExcelFromFile(excelFile);
-  } else {
-    document.getElementById('status-excel').textContent = `⚠️ لم يتم العثور على ملف Excel`;
-  }
-
-  // Summary
-  const parts = [];
-  if (images.length) parts.push(`${images.length} صورة`);
-  if (videos.length) parts.push(`${videos.length} فيديو`);
-  if (excelFile) parts.push(`ملف Excel`);
-  if (parts.length) showToast(`✅ تم تحميل: ${parts.join(' • ')}`);
-  else showToast(`⚠️ تأكد من بنية المجلد الصحيحة`);
-}
-
+// ══════════════════════════════════════
+// FILE LOADING — Excel
+// ══════════════════════════════════════
 function loadExcelFromFile(file) {
   document.getElementById('status-excel').textContent = '⏳ جاري قراءة ملف Excel...';
   const reader = new FileReader();
@@ -1618,38 +1478,14 @@ function loadExcelFromFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-function loadAllMedia(input) {
-  const all = Array.from(input.files);
-  const imageExts = ['jpg','jpeg','png','gif','webp','bmp'];
-  const videoExts = ['mp4','mov','avi','mkv','webm','m4v'];
-
-  const images = all.filter(f => imageExts.includes(f.name.split('.').pop().toLowerCase()));
-  const videos = all.filter(f => videoExts.includes(f.name.split('.').pop().toLowerCase()));
-
-  if (images.length > 0) {
-    const items = shuffle(images.map(f => ({
-      url: URL.createObjectURL(f),
-      answer: f.name.replace(/\.[^/.]+$/, '')
-    })));
-    G.media['r1'] = items.slice(0, 10);
-    G.media['r2'] = items.slice(10, 20);
-    document.getElementById('status-r1').textContent =
-      `✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`;
-  }
-
-  if (videos.length > 0) {
-    G.media['r5'] = shuffle(videos.map(f => ({ url: URL.createObjectURL(f), name: f.name, type: 'video' })));
-    document.getElementById('status-r5').textContent = `✅ ${videos.length} ${_lang==="en"?"video":"فيديو"} ${_lang==="en"?"ready":"جاهز"}`;
-  }
-
-  showToast(`✅ ${images.length} صورة • ${videos.length} فيديو`);
-}
-
 // ══════════════════════════════════════════
 // GOOGLE DRIVE LOADER
 // ══════════════════════════════════════════
 let DRIVE_URL = '';
 
+// ══════════════════════════════════════
+// DATA — Auto Load Entry Point
+// ══════════════════════════════════════
 async function autoLoad() {
   // If questions are baked in, load them instantly
   if (typeof QUESTIONS_DATA !== 'undefined' && QUESTIONS_DATA) {
@@ -1671,6 +1507,9 @@ async function autoLoad() {
   });
 }
 
+// ══════════════════════════════════════
+// DATA — Baked-in Questions Loader
+// ══════════════════════════════════════
 function loadBakedQuestions(data) {
   function shuffle(arr) {
     for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
@@ -1692,7 +1531,6 @@ function loadBakedQuestions(data) {
     G.questions.r7 = sh.slice(half);
   }
   if (data.r8) G.questions.r8 = shuffle([...data.r8]);
-  if (data.wildcards) G.wildcards = shuffle([...data.wildcards]);
 }
 
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 2000) {
@@ -1715,6 +1553,9 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 2000) {
   }
 }
 
+// ══════════════════════════════════════
+// DATA — Google Drive Auto-Loader
+// ══════════════════════════════════════
 async function loadFromDrive(urlOverride) {
   const url = urlOverride || document.getElementById('drive-url')?.value.trim();
   if (!url) { showToast('⚠️ الصق رابط Apps Script أولاً'); return; }
@@ -1876,52 +1717,9 @@ function blobToArrayBuffer(item) {
   });
 }
 
-function loadBackground(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  const layer = document.getElementById('bg-image-layer');
-  layer.style.backgroundImage = `url('${url}')`;
-  layer.classList.add('active');
-  document.getElementById('status-bg').textContent = `✅ ${file.name}`;
-}
-
 function shuffle(arr) {
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
   return arr;
-}
-
-function loadImages(key, input) {
-  const files = Array.from(input.files);
-  const items = files.map(f => ({
-    url: URL.createObjectURL(f),
-    answer: f.name.replace(/\.[^/.]+$/, '')
-  }));
-  const shuffled = shuffle(items);
-
-  // If uploading to r1, split into two halves: r1 gets first 10, r2 gets next 10
-  if (key === 'r1') {
-    G.media['r1'] = shuffled.slice(0, 10);
-    G.media['r2'] = shuffled.slice(10, 20);
-    const total = shuffled.length;
-    document.getElementById('status-r1').textContent = `✅ ${total} صورة — ${G.media['r1'].length} للفقرة 1 و ${G.media['r2'].length} للفقرة 2`;
-    document.getElementById('status-r2').textContent = `✅ مرتبطة بنفس رفع الفقرة 1`;
-  } else {
-    G.media[key] = shuffled;
-    document.getElementById('status-'+key).textContent = `✅ ${files.length} ${_lang==="en"?"images ready":"صورة جاهزة"}`;
-  }
-}
-
-function loadMedia(key, input, type) {
-  const files = Array.from(input.files);
-  const items = files.map(f => ({ url: URL.createObjectURL(f), name: f.name, type }));
-  G.media[key] = shuffle(items);
-  document.getElementById('status-'+key).textContent = `✅ ${files.length} ${_lang==="en"?"files ready":"ملف جاهز"}`;
-}
-
-function parseLines(id) {
-  const txt = document.getElementById(id)?.value || '';
-  return txt.split('\n').map(l => l.trim()).filter(Boolean);
 }
 
 // ══════════════════════════════════════════
@@ -2331,6 +2129,9 @@ const PH = {
   openAccCat: null, loaded: false,
 };
 
+// ══════════════════════════════════════
+// CATEGORY SELECTORS (Start Screen)
+// ══════════════════════════════════════
 function togglePhotoSettings() {
   const body = document.getElementById('photo-settings-body');
   const arrow = document.getElementById('photo-settings-arrow');
@@ -2783,7 +2584,7 @@ const LANG = {
     leading: (n) => `🏆 ${n} is leading!`,
     // Reset
     restartQ: '🔄 Restart Game?',
-    restartMsg: 'Scores, rounds and wildcards will reset. Team names will remain.',
+    restartMsg: 'Scores and rounds will reset. Team names will remain.',
     restartYes: '✅ Yes, Restart',
     restarted: '🔄 Game restarted!',
     // Roulette
@@ -2889,6 +2690,9 @@ function toggleLang() {
   }
 }
 
+// ══════════════════════════════════════
+// LANGUAGE SYSTEM
+// ══════════════════════════════════════
 function applyLang() {
   const L = LANG[_lang];
   const isAr = _lang === 'ar';
@@ -3045,12 +2849,6 @@ function startGame() {
 // ══════════════════════════════════════════
 // ══════════════════════════════════════════
 // EXCEL LOADING (SheetJS)
-// ══════════════════════════════════════════
-function loadExcel(input) {
-  const file = input.files[0];
-  if (!file) return;
-  loadExcelFromFile(file);
-}
 
 function processExcelWorkbook(wb) {
   const details = [];
@@ -3095,17 +2893,15 @@ function processExcelWorkbook(wb) {
   if (s9) { G.questions.r8 = shuffle([...s9]); details.push(`✅ سكر تمك: ${s9.length} اسم`); }
   else details.push(`⚠️ Category 9: مش موجود`);
 
-  const swc = getRows('Wild Card', true);
-  if (swc) { G.wildcards = shuffle([...swc]); details.push(`✅ بطاقة حظّك اليوم: ${swc.length} بطاقة`); }
-  else details.push(`⚠️ Wild Card: مش موجود`);
-
   document.getElementById('status-excel').textContent = `✅ تم تحميل ملف Excel بنجاح`;
   document.getElementById('excel-details').innerHTML = details.join('<br>');
 }
 
 // ══════════════════════════════════════════
 // CSV LOADING (direct from Google Drive)
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// DATA — CSV Loader (Google Drive)
+// ══════════════════════════════════════
 async function loadCSVFiles(csvFiles) {
   function parseCSV(text) {
     const lines = text.split('\n').slice(1);
@@ -3176,13 +2972,14 @@ async function loadCSVFiles(csvFiles) {
     } else if (key === 'cat9') {
       // Words loaded from Google Sheets instead — keep as fallback only
       if (!CH.loaded) G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
-    } else if (key === 'wildcard') {
-      G.wildcards = shuffle(rows.map(r => ({ q: r[0], a: r[1] })).filter(x => x.q));
     }
   });
 }
 
 
+// ══════════════════════════════════════
+// UI — Data Status Indicator
+// ══════════════════════════════════════
 function updateDataStatus() {
   const icon = document.getElementById('data-status-icon');
   const text = document.getElementById('data-status-text');
@@ -3213,6 +3010,9 @@ function updateDataStatus() {
   }
 }
 
+// ══════════════════════════════════════
+// SCREENS — Main Menu
+// ══════════════════════════════════════
 function buildMenu() {
   const mnA = document.getElementById('mn-a-name');
   const mnB = document.getElementById('mn-b-name');
@@ -3227,140 +3027,12 @@ function buildMenu() {
   }
 
   // Wildcard badges next to team names
-  const badgesA = document.getElementById('wc-badges-a');
-  const badgesB = document.getElementById('wc-badges-b');
-  if (badgesA) badgesA.innerHTML = ''; if (false && badgesA) badgesA.innerHTML = G.earnedWCA.map((c, i) => `
-    <span onclick="useEarnedWildcard('a',${i})" title="${c.q}: ${c.a}" style="
-      cursor:${c.used?'default':'pointer'};
-      font-size:22px;
-      opacity:${c.used?'0.3':'1'};
-      filter:${c.used?'grayscale(1)':'none'};
-      transition:all 0.2s;
-    ">🃏</span>
-  `).join('');
-  if (badgesB) badgesB.innerHTML = G.earnedWCB.map((c, i) => `
-    <span onclick="useEarnedWildcard('b',${i})" title="${c.q}: ${c.a}" style="
-      cursor:${c.used?'default':'pointer'};
-      font-size:22px;
-      opacity:${c.used?'0.3':'1'};
-      filter:${c.used?'grayscale(1)':'none'};
-      transition:all 0.2s;
-    ">🃏</span>
-  `).join('');
 
-  const grid = document.getElementById('rounds-grid');
-  grid.innerHTML = ROUNDS.map(r => `
-    <div class="round-btn ${G.done.has(r.id)?'done':''}" 
-      onclick="${G.done.has(r.id)?'':'openRound(\''+r.id+'\')'}"
-      style="${G.done.has(r.id)?'cursor:not-allowed;opacity:0.5;':''}">
-      <div class="rnum">${_lang==="en"?"Cat":"فقرة"} ${r.num}</div>
-      <div class="rname">${r.name}</div>
-
-    </div>
-  `).join('');
-
-  // Render earned بطاقة حظّك اليومs for each team
-  renderEarnedWildcards();
 }
 
-function renderEarnedWildcards() {
-  const bar = document.getElementById('earned-wc-bar');
-  const allA = G.earnedWCA;
-  const allB = G.earnedWCB;
-
-  if (!bar) return;
-
-  if (allA.length === 0 && allB.length === 0) {
-    bar.innerHTML = '';
-    return;
-  }
-
-  const renderTeamCards = (cards, team, name) => {
-    if (cards.length === 0) return '';
-    const color = team === 'a' ? 'var(--neon-red)' : 'var(--neon-yellow)';
-    const glow  = team === 'a' ? 'var(--glow-red)'  : 'var(--glow-yellow)';
-    return `
-      <div style="
-        background:rgba(0,10,50,0.7);
-        border:2px solid ${color};
-        box-shadow:${glow};
-        border-radius:20px;
-        padding:18px 28px;
-        display:flex;flex-direction:column;align-items:center;gap:14px;
-        min-width:200px;
-      ">
-        <div style="font-size:18px;font-weight:900;color:${color};text-shadow:${glow};letter-spacing:1px">
-          ${name}
-        </div>
-        <div style="font-size:13px;font-weight:700;color:var(--neon-yellow);text-shadow:var(--glow-yellow)">
-          🃏 بطاقة حظّك اليوم
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-          ${cards.map((c, i) => c.used ? `
-            <div style="padding:10px 20px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);
-              color:var(--text2);font-size:15px;opacity:0.35;text-decoration:line-through;
-              font-family:'Cairo',sans-serif;font-weight:700">
-              ${c.q}
-            </div>
-          ` : `
-            <button onclick="useEarnedWildcard('${team}', ${i})"
-              style="padding:12px 22px;border-radius:12px;
-                     border:2px solid var(--neon-yellow);box-shadow:var(--glow-yellow);
-                     background:rgba(255,230,0,0.1);color:var(--neon-yellow);text-shadow:var(--glow-yellow);
-                     font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;cursor:pointer;transition:all 0.2s"
-              onmouseover="this.style.background='rgba(255,230,0,0.25)'"
-              onmouseout="this.style.background='rgba(255,230,0,0.1)'">
-              🃏 ${c.q}
-            </button>
-          `).join('')}
-        </div>
-      </div>`;
-  };
-
-  bar.innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%">
-    ${renderTeamCards(allA, 'a', G.teamA)}
-    ${renderTeamCards(allB, 'b', G.teamB)}
-  </div>`;
-}
-
-function useEarnedWildcard(team, index) {
-  const cards = team === 'a' ? G.earnedWCA : G.earnedWCB;
-  const card = cards[index];
-  if (!card || card.used) return;
-
-  // Show what the بطاقة حظّك اليوم does in a popup
-  const overlay = document.createElement('div');
-  overlay.id = 'wc-use-popup';
-  overlay.style.cssText = `
-    position:fixed;inset:0;z-index:999;
-    background:rgba(0,5,30,0.92);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;
-  `;
-  const teamName = team === 'a' ? G.teamA : G.teamB;
-  overlay.innerHTML = `
-    <div style="font-size:clamp(20px,4vw,36px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow);text-align:center">
-      🃏 ${card.q}
-    </div>
-    <div style="font-size:clamp(14px,2vw,20px);color:#fff;font-weight:700;text-align:center;max-width:500px;line-height:1.6">
-      ${card.a}
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-      <button class="nav-btn primary" onclick="confirmUseWildcard('${team}', ${index})">✅ تم الاستخدام</button>
-      <button class="nav-btn" onclick="document.getElementById('wc-use-popup').remove()">${_lang==='en'?'← Back':'← رجوع'}</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-}
-
-function confirmUseWildcard(team, index) {
-  const cards = team === 'a' ? G.earnedWCA : G.earnedWCB;
-  if (cards[index]) cards[index].used = true;
-  const popup = document.getElementById('wc-use-popup');
-  if (popup) popup.remove();
-  renderEarnedWildcards();
-  showToast('✅ بطاقة حظّك اليوم استُخدمت!');
-}
-
+// ══════════════════════════════════════
+// NAVIGATION — Back / Reset
+// ══════════════════════════════════════
 function backToMenu() {
   stopTimer();
   buildMenu();
@@ -3376,7 +3048,9 @@ function updateHeaderScores() {
 
 // ══════════════════════════════════════════
 // OPEN ROUND
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// GAME FLOW — Open Round
+// ══════════════════════════════════════
 function openRound(id) {
   const round = ROUNDS.find(r => r.id === id);
 
@@ -3408,6 +3082,9 @@ function openRound(id) {
   pushHostState();
 }
 
+// ══════════════════════════════════════
+// GAME FLOW — Next Question
+// ══════════════════════════════════════
 function nextQ() {
   const r = G.currentRound;
   if (!r) return;
@@ -3425,6 +3102,9 @@ function nextQ() {
   pushHostState();
 }
 
+// ══════════════════════════════════════
+// RENDERING — Slide Dispatcher
+// ══════════════════════════════════════
 function renderSlide() {
   const r = G.currentRound;
   const sa = document.getElementById('slide-area');
@@ -3554,6 +3234,9 @@ const RULES = {
   ],
 };
 
+// ══════════════════════════════════════
+// RENDERING — Rules Slide
+// ══════════════════════════════════════
 function renderRules(r, sa) {
   const rules = RULES[r.id] || [];
   const isClosest = r.slides === 'closest';
@@ -3789,7 +3472,9 @@ function renderRules(r, sa) {
 
 // ══════════════════════════════════════════
 // SCORE PANEL
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// UI — Score Panel
+// ══════════════════════════════════════
 function scorePanelHTML(plus=2, minus=1) {
   const minusBtn = minus > 0
     ? `<button class="sp-btn minus" onclick="addScore('TEAM', -${minus})">-${minus}</button>`
@@ -3811,6 +3496,9 @@ function scorePanelHTML(plus=2, minus=1) {
     </div>`;
 }
 
+// ══════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════
 function addScore(team, val) {
   if(team==='a') G.scoreA = Math.max(0, G.scoreA + val);
   else G.scoreB = Math.max(0, G.scoreB + val);
@@ -3836,6 +3524,9 @@ let timerVal = 0;
 let timerMax = 60;
 const CIRCUMFERENCE = 2 * Math.PI * 54;
 
+// ══════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════
 function timerHTML(seconds=60) {
   return `
     <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
@@ -3947,7 +3638,9 @@ function updateTimerUI() {
 
 // ══════════════════════════════════════════
 // ROUND: BUZZER + IMAGE (rounds 1 & 2)
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// CATEGORY 1 & 2 — Who's That Face / Remember Me (Buzzer + Image)
+// ══════════════════════════════════════
 function renderBuzzerImage(r, qIndex, sa) {
   const imgs = G.media[r.id] || [];
   const hasImg = imgs.length > qIndex;
@@ -4012,11 +3705,6 @@ function revealImageAnswer(answer) {
   }
 }
 
-function revealImage() {
-  const el = document.getElementById('img-reveal');
-  if(el) el.classList.remove('blurred');
-}
-
 
 
 // ══════════════════════════════════════════
@@ -4032,6 +3720,9 @@ let cat3RoomId = null; // single roomId for whole category session
 let cat3Listener = null;
 let cat3LastBidCountdownEnd = null;
 
+// ══════════════════════════════════════
+// CATEGORY 3 — Public Auction (Bidding)
+// ══════════════════════════════════════
 function initCat3Room(teamA, teamB) {
   // Generate one roomId for the whole session
   cat3RoomId = `cat3_${Date.now()}`;
@@ -4468,24 +4159,6 @@ async function autoValidateAnswers(answers, roomId, question, winnerBid, winner,
   }
 }
 
-function renderValidation(answers, roomId, winnerBid, winner, winnerName, data) {
-  // Re-render validation UI with current index
-  const currentIdx = window._cat3ValIdx || 0;
-  if (!answers || answers.length === 0) return;
-  const ans = answers[Math.min(currentIdx, answers.length-1)];
-  const aiResult = ans.status==='correct'?'— AI: ✅':ans.status==='wrong'?'— AI: ❌':'— 🤖 جاري...';
-  const textEl = document.getElementById('current-answer-text');
-  if (textEl) textEl.textContent = `جواب ${currentIdx+1}/${answers.length}: "${ans.text}" ${aiResult}`;
-  const prevBtn = document.getElementById('val-prev-btn');
-  const nextBtn = document.getElementById('val-next-btn');
-  if (prevBtn) prevBtn.disabled = currentIdx === 0;
-  if (nextBtn) nextBtn.disabled = currentIdx === answers.length - 1;
-  const correctBtn = document.getElementById('val-correct-btn');
-  const wrongBtn = document.getElementById('val-wrong-btn');
-  if (correctBtn) correctBtn.textContent = ans.status === 'correct' ? _lang==="en"?"✅ Correct ✓":"✅ صح ✓" : _lang==="en"?"✅ Correct":"✅ صح";
-  if (wrongBtn) wrongBtn.textContent = ans.status === 'wrong' ? _lang==="en"?"❌ Wrong ✓":"❌ غلط ✓" : _lang==="en"?"❌ Wrong":"❌ خطأ";
-}
-
 // Override validation result
 function overrideVal(btn) {
   const idx = parseInt(btn.dataset.i);
@@ -4549,13 +4222,9 @@ function nextCat3Question() {
   nextQ();
 }
 
-function changeBid(team, delta) {}
-function declareLead(team) {}
-function announceAuctionWinner(team) {}
-function startWritingTimer(winnerName) {}
-function startBidTimer(winner, targetCount, roomId) {}
-function validateAnswer(idx, status, roomId) {}
-
+// ══════════════════════════════════════
+// CATEGORY 5 — Hum It! (Buzzer + Audio)
+// ══════════════════════════════════════
 function renderBuzzerAudio(r, qIndex, sa) {
   // Filter songs by language if lang column exists
   const allQs = G.questions.r4 || [];
@@ -4624,7 +4293,9 @@ function toggleAudio() {
 
 // ══════════════════════════════════════════
 // ROUND: TEAM + VIDEO (cat 6)
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// CATEGORY 6 — Watch & Focus (Team Video)
+// ══════════════════════════════════════
 function renderTeamVideo(r, qIndex, sa) {
   const items = G.media.r5 || [];
   const hasVideo = items.length > qIndex;
@@ -4956,16 +4627,6 @@ function cat6Judge(team, isCorrect) {
   if (center) center.style.display = 'flex';
 }
 
-function playDriveVideo(driveId, qIndex) {
-  // Kept for compatibility — now uses GitHub videos
-  cat6PlayVideo(qIndex);
-}
-
-// Also allow opening in new tab as fallback for very restrictive devices
-function openVideoNewTab(driveId) {
-  window.open(`https://drive.google.com/file/d/${driveId}/view`, '_blank');
-}
-
 function openVideoOverlay(driveId, directUrl, qIndex) {
   const container = document.getElementById('video-container-' + qIndex);
   if (!container) return;
@@ -4989,35 +4650,11 @@ function openVideoOverlay(driveId, directUrl, qIndex) {
   }
 }
 
-function openVideoFullscreen(qIndex) {
-  const item = G.media.r5?.[qIndex];
-  if (item) openVideoOverlay(item.driveId||'', item.directUrl||item.url||'', qIndex);
-}
-
-function onFsChange() {
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    closeVideoFullscreen();
-    document.removeEventListener('fullscreenchange', onFsChange);
-    document.removeEventListener('webkitfullscreenchange', onFsChange);
-  }
-}
-
-function closeVideoFullscreen() {
-  // Exit fullscreen
-  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-
-  const overlay = document.getElementById('video-fs-overlay');
-  if (overlay) overlay.remove();
-
-  // Trigger the done button to show question
-  const doneBtn = document.querySelector('.slide-area .nav-btn[style*="neon-yellow"]');
-  if (doneBtn) doneBtn.click();
-}
-
 // ══════════════════════════════════════════
 // ROUND: CLOSEST NUMBER
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// CATEGORY 7 & 8 — Closest Number
+// ══════════════════════════════════════
 function renderClosest(r, qIndex, sa) {
   const qs = r.id === 'r6' ? G.questions.r6 : G.questions.r7;
   const raw = qs[qIndex] || null;
@@ -5219,6 +4856,9 @@ function revealClosestNow() {
 // ROUND: CHARADES
 // ══════════════════════════════════════════
 let charInterval = null;
+// ══════════════════════════════════════
+// CATEGORY 9 — Zip It! (Charades)
+// ══════════════════════════════════════
 function renderCharades(r, qIndex, sa) {
   const items = G.questions.r8;
   const item = items[qIndex] || `اسم ${qIndex+1}`;
@@ -5317,7 +4957,9 @@ function revealChar() {
 
 // ══════════════════════════════════════════
 // ROUND: BUZZER + QUESTION
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// CATEGORY 4 & 10 — Quick Trivia (Buzzer + Question)
+// ══════════════════════════════════════
 function renderBuzzerQuestion(r, qIndex, sa) {
   const qs = r.id === 'r9' ? G.questions.r9 : G.questions.r10;
   const raw = qs[qIndex] || null;
@@ -5342,7 +4984,9 @@ function renderBuzzerQuestion(r, qIndex, sa) {
 
 // ══════════════════════════════════════════
 // RESULT
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// GAME FLOW — Round Result Screen
+// ══════════════════════════════════════
 function showResult() {
   // Apply pending cat3 score if any
   if (window._pendingCat3Score) {
@@ -5369,8 +5013,6 @@ function showResult() {
   // Check if any team crossed a new 50-point milestone
   const newMilestoneA = Math.floor(G.scoreA / 50);
   const newMilestoneB = Math.floor(G.scoreB / 50);
-  const wcEligibleA = false; // wildcards disabled
-  const wcEligibleB = false; // wildcards disabled
 
   sa.innerHTML = `
     <div class="result-card fade-in">
@@ -5389,141 +5031,20 @@ function showResult() {
       ${winner ? `<div class="rs-winner">${t('leading', winner)}</div>` : `<div class="rs-winner">${t('tiedSoFar')}</div>`}
     </div>
     <div class="nav-btns">
-      ${wcEligibleA ? `
-        <button onclick="showWildcardPopup('a')" style="
-          font-family:'Cairo',sans-serif;
-          font-size:22px;font-weight:900;cursor:pointer;
-          padding:18px 40px;border-radius:16px;
-          border:3px solid var(--neon-yellow);
-          box-shadow:var(--glow-yellow), 0 0 40px rgba(255,230,0,0.3);
-          background:rgba(255,230,0,0.12);
-          color:var(--neon-yellow);text-shadow:var(--glow-yellow);
-          animation:pulse 1s infinite;
-          transition:all 0.2s;
-        ">🃏 ${G.teamA} — اختر بطاقة حظّك اليوم!</button>` : ''}
-      ${wcEligibleB ? `
-        <button onclick="showWildcardPopup('b')" style="
-          font-family:'Cairo',sans-serif;
-          font-size:22px;font-weight:900;cursor:pointer;
-          padding:18px 40px;border-radius:16px;
-          border:3px solid var(--neon-yellow);
-          box-shadow:var(--glow-yellow), 0 0 40px rgba(255,230,0,0.3);
-          background:rgba(255,230,0,0.12);
-          color:var(--neon-yellow);text-shadow:var(--glow-yellow);
-          animation:pulse 1s infinite;
-          transition:all 0.2s;
-        ">🃏 ${G.teamB} — اختر بطاقة حظّك اليوم!</button>` : ''}
-      <button class="nav-btn primary" onclick="backToMenu()">${t('backMenu')}</button>
+              <button class="nav-btn primary" onclick="backToMenu()">${t('backMenu')}</button>
     </div>`;
   // Clear current round and sync host state
   G.currentRound = null;
   setTimeout(pushHostState, 200);
 }
 
-// ── Wildcard popup: team picks 1 from the 3 session cards
-function showWildcardPopup(team) {
-  const teamName = team === 'a' ? G.teamA : G.teamB;
-
-  // Ensure wcSession is populated
-  if (!G.wcSession || G.wcSession.length === 0) {
-    const pool = G.wildcards.length > 0 ? G.wildcards : [
-      { q:'حظي', a:'أجب على سؤال لفريق منافس!' },
-      { q:'بعرفو', a:'سؤال تخصصي — هل تعرفه؟' },
-      { q:'تبادل', a:'الفريقان يتبادلان نقطتين!' },
-    ];
-    G.wcSession = shuffle([...pool]).slice(0, 3).map(c => ({ ...c, flipped: false }));
-  }
-
-  // Show modal overlay
-  const overlay = document.createElement('div');
-  overlay.id = 'wc-popup';
-  overlay.style.cssText = `
-    position:fixed;inset:0;z-index:999;
-    background:rgba(0,5,30,0.92);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
-    padding:24px;
-  `;
-  overlay.innerHTML = `
-    <div style="font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow);text-align:center">
-      🃏 ${teamName} — اختر بطاقة حظّك اليوم!
-    </div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
-      ${G.wcSession.map((c, i) => `
-        <div class="wc-card" onclick="pickWildcard('${team}', ${i})" style="min-width:160px;cursor:pointer">
-          <div class="wc-icon">🃏</div>
-          <div class="wc-name">اضغط للاختيار</div>
-          <div class="wc-desc">بطاقة حظّك اليوم ${i+1}</div>
-        </div>
-      `).join('')}
-    </div>
-    <div style="font-size:12px;color:var(--text2)">اختر بطاقة واحدة — لن تُكشف الآن، ستظهر في القائمة الرئيسية</div>
-  `;
-  document.body.appendChild(overlay);
-}
-
-function pickWildcard(team, cardIndex) {
-  const card = G.wcSession[cardIndex];
-  if (!card) return;
-
-  const earned = { q: card.q, a: card.a, used: false };
-  if (team === 'a') {
-    G.earnedWCA.push(earned);
-    G.wcMilestoneA = Math.floor(G.scoreA / 50);
-  } else {
-    G.earnedWCB.push(earned);
-    G.wcMilestoneB = Math.floor(G.scoreB / 50);
-  }
-
-  // Remove from shared pool
-  G.wcSession.splice(cardIndex, 1);
-
-  // Remove popup
-  const popup = document.getElementById('wc-popup');
-  if (popup) popup.remove();
-
-  // Show reveal screen for 3 seconds then return to menu
-  const teamName = team === 'a' ? G.teamA : G.teamB;
-  const color = team === 'a' ? 'var(--neon-red)' : 'var(--neon-yellow)';
-  const glow  = team === 'a' ? 'var(--glow-red)'  : 'var(--glow-yellow)';
-
-  const reveal = document.createElement('div');
-  reveal.style.cssText = `
-    position:fixed;inset:0;z-index:9999;
-    background:rgba(0,5,30,0.97);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:24px;padding:32px;
-    opacity:0;transition:opacity 0.4s;
-  `;
-  reveal.innerHTML = `
-    <div style="font-size:14px;font-weight:700;color:${color};text-shadow:${glow};letter-spacing:3px;text-align:center">
-      ${teamName} — بطاقة حظّك اليوم
-    </div>
-    <div style="font-size:clamp(36px,8vw,90px);font-weight:900;color:var(--neon-yellow);
-      text-shadow:var(--glow-yellow);text-align:center;line-height:1.2;animation:pulse 0.8s infinite">
-      🃏 ${card.q}
-    </div>
-    <div style="font-size:clamp(16px,2.5vw,26px);font-weight:700;color:#fff;
-      text-align:center;max-width:520px;line-height:1.6">
-      ${card.a}
-    </div>
-    <div style="font-size:13px;color:var(--text2);margin-top:12px">العودة للقائمة تلقائياً...</div>
-  `;
-  document.body.appendChild(reveal);
-  requestAnimationFrame(() => reveal.style.opacity = '1');
-
-  setTimeout(() => {
-    reveal.style.opacity = '0';
-    setTimeout(() => {
-      reveal.remove();
-      buildMenu();
-      show('menu-screen');
-    }, 500);
-  }, 5000);
-}
 
 // ── HOST MODE ──
 window._hostMode = false;
 
+// ══════════════════════════════════════
+// HOST MODE — QR & Firebase Bridge
+// ══════════════════════════════════════
 function toggleHostMode() {
   window._hostMode = !window._hostMode;
   const btn = document.getElementById('host-mode-btn');
@@ -5749,30 +5270,10 @@ function updateHostView(categoryName, questionNum, question, answer) {
   pushHostView({ active: true, categoryName, questionNum, question: question || '', answer: answer || '' });
 }
 
-// ── RESET GAME ──
-function confirmResetGame() {
-  const overlay = document.createElement('div');
-  overlay.id = 'reset-popup';
-  overlay.style.cssText = `
-    position:fixed;inset:0;z-index:999;
-    background:rgba(0,5,30,0.92);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;
-  `;
-  overlay.innerHTML = `
-    <div style="font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--neon-red);text-shadow:var(--glow-red);text-align:center">
-      🔄 إعادة تشغيل اللعبة؟
-    </div>
-    <div style="font-size:16px;color:var(--text2);text-align:center;max-width:400px;line-height:1.6">
-      سيتم إعادة ضبط النقاط والفقرات وبطاقات الحظ.<br>أسماء الفرق ستبقى كما هي.
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-      <button class="nav-btn primary" style="border-color:var(--neon-red);color:var(--neon-red);text-shadow:var(--glow-red);box-shadow:var(--glow-red)" onclick="resetGame()">✅ نعم، إعادة تشغيل</button>
-      <button class="nav-btn" onclick="document.getElementById('reset-popup').remove()">← إلغاء</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-}
 
+// ══════════════════════════════════════
+// RESET GAME
+// ══════════════════════════════════════
 function resetGame() {
   const teamA = G.teamA;
   const teamB = G.teamB;
@@ -5783,9 +5284,6 @@ function resetGame() {
   G.done = new Set();
   G.currentRound = null; G.currentQ = 0;
   G.bids = [0, 0];
-  G.wildcards = []; G.wcSession = [];
-  G.wcMilestoneA = 0; G.wcMilestoneB = 0;
-  G.earnedWCA = []; G.earnedWCB = [];
   G.teamA = teamA; G.teamB = teamB;
   const popup = document.getElementById('reset-popup');
   if (popup) popup.remove();
@@ -5800,7 +5298,9 @@ function resetGame() {
 
 // ══════════════════════════════════════════
 // WINNER ANNOUNCEMENT
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
+// GAME FLOW — Final Winner Announcement
+// ══════════════════════════════════════
 function announceWinner() {
   const winnerName = G.scoreA > G.scoreB ? G.teamA : G.scoreB > G.scoreA ? G.teamB : null;
   const isTie = !winnerName;
@@ -5893,6 +5393,9 @@ function announceWinner() {
 // ══════════════════════════════════════════
 let rouletteTarget = null;
 
+// ══════════════════════════════════════
+// ROULETTE — Category Spinner
+// ══════════════════════════════════════
 function toggleRoulette() {
   const panel = document.getElementById('roulette-panel');
   const isOpen = panel.style.display === 'flex';
@@ -5907,7 +5410,6 @@ function toggleRoulette() {
   }
 }
 
-function openRoulette() { toggleRoulette(); }
 function closeRoulette() {
   document.getElementById('roulette-panel').style.display = 'none';
 }
@@ -5987,92 +5489,17 @@ function goToRouletteRound() {
 
 // ══════════════════════════════════════════
 // WILDCARDS
-// ══════════════════════════════════════════
-function openWildcards() {
-  const sa = document.getElementById('slide-area');
-  document.getElementById('gh-title').textContent = 'حظّك اليوم';
-  updateHeaderScores();
-  show('game-screen');
-
-  // Pick 3 random cards once per game session, then keep them
-  if (!G.wcSession || G.wcSession.length === 0) {
-    const pool = G.wildcards.length > 0 ? G.wildcards : [
-      { q:'حظي', a:'أجب على سؤال لفريق منافس!' },
-      { q:'بعرفو', a:'سؤال تخصصي — هل تعرفه؟' },
-      { q:'تبادل', a:'الفريقان يتبادلان نقطتين!' },
-    ];
-    G.wcSession = shuffle([...pool]).slice(0, 3).map(c => ({ ...c, flipped: false }));
-  }
-
-  renderWildcards(sa);
-}
-
-function renderWildcards(sa) {
-  sa.innerHTML = `
-    <h2 style="color:var(--neon-cyan);text-shadow:var(--glow-cyan);font-size:clamp(20px,4vw,32px);font-weight:900;text-align:center">🃏 بطاقة حظّك اليوم</h2>
-    <div class="بطاقة حظّك اليوم-grid">
-      ${G.wcSession.map((c, i) => c.flipped ? `
-        <div class="wc-card" id="wc-${i}" style="border-color:var(--neon-yellow);box-shadow:var(--glow-yellow);background:rgba(255,230,0,0.12);cursor:default;opacity:0.7">
-          <div class="wc-icon">✨</div>
-          <div class="wc-name" style="color:var(--neon-yellow);text-shadow:var(--glow-yellow)">${c.q}</div>
-          <div class="wc-desc">${c.a}</div>
-        </div>
-      ` : `
-        <div class="wc-card" id="wc-${i}" onclick="wcFlip(${i})">
-          <div class="wc-icon">🃏</div>
-          <div class="wc-name">اضغط للكشف</div>
-          <div class="wc-desc">بطاقة حظّك اليوم ${i+1}</div>
-        </div>
-      `).join('')}
-    </div>
-    ${scorePanelHTML(1, 1)}
-    <button class="nav-btn" onclick="backToMenu()">${t('backMenu')}</button>`;
-}
-
-function wcFlip(i) {
-  if (!G.wcSession[i] || G.wcSession[i].flipped) return;
-  G.wcSession[i].flipped = true;
-  const sa = document.getElementById('slide-area');
-  renderWildcards(sa);
-}
 
 // ══════════════════════════════════════════
 // CREDITS
-// ══════════════════════════════════════════
-function openCredits() {
-  const sa = document.getElementById('slide-area');
-  document.getElementById('gh-title').textContent = '© Harb Production';
-  updateHeaderScores();
-  show('game-screen');
-  const credits = [
-    ['المنتج','رائد حرب'],['المنتج المساعد','رائد حرب'],['مدير الإنتاج','رائد حرب'],
-    ['مساعد الإنتاج','رائد حرب'],['المشرف العام','رائد حرب'],['المخرج','رائد حرب'],
-    ['مساعد المخرج','رائد حرب'],['المضيف / المقدم','رائد حرب'],['مصمم الجرافيك','رائد حرب'],
-    ['المصمم الغرافيكي','رائد حرب'],['الملحن','رائد حرب'],['مشرف الموسيقى','رائد حرب'],
-    ['رئيس الكتّاب','رائد حرب'],['الكتّاب','رائد حرب'],['المستشار القانوني','رائد حرب'],
-    ['شكر خاص','زينة سمرين ❤️'],
-  ];
-  sa.innerHTML = `
-    <div style="text-align:center;margin-bottom:16px">
-      <div style="font-size:clamp(24px,5vw,44px);font-weight:900;color:var(--neon-yellow);text-shadow:var(--glow-yellow)">3AL BALCON</div>
-      <div style="color:var(--text2);font-size:16px">Game Show Night — مع رائد</div>
-      <div style="color:var(--neon-pink);text-shadow:var(--glow-pink);font-size:13px;margin-top:4px">© Harb Production</div>
-    </div>
-    <div class="credits-scroll">
-      ${credits.map(([role,name])=>`
-        <div class="credit-row">
-          <span class="credit-role">${role}</span>
-          <span class="credit-name">${name}</span>
-        </div>
-      `).join('')}
-    </div>
-    <button class="nav-btn" onclick="backToMenu()" style="margin-top:12px">${t('backMenu')}</button>`;
-}
 
 // ══════════════════════════════════════════
 // TOAST
 // ══════════════════════════════════════════
 let toastTimer = null;
+// ══════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════
 function showToast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
