@@ -232,7 +232,7 @@ body {
 .questions-textarea::placeholder { color: rgba(200,224,255,0.4); }
 
 .start-btn {
-  background: transparent;
+  background: rgba(57,255,20,0.08);
   color: var(--neon-green);
   border: 3px solid var(--neon-green);
   box-shadow: var(--glow-green), inset 0 0 20px rgba(57,255,20,0.1);
@@ -1031,6 +1031,7 @@ audio, video { display: none; }
   padding: 8px 12px; border-radius: 10px; cursor: pointer;
   border: 2px solid rgba(255,255,255,0.1); background: rgba(0,8,45,0.5);
   margin-bottom: 6px; transition: all 0.2s; user-select: none;
+  font-size: 12px; min-height: 40px;
 }
 .ph-acc-cat-row.active { border-color: var(--neon-green); background: rgba(57,255,20,0.05); }
 .ph-acc-cat-row:hover { border-color: rgba(255,255,255,0.3); }
@@ -1176,12 +1177,12 @@ audio, video { display: none; }
         <div class="team-input" id="team-b-name" contenteditable="true" data-placeholder-ar="الفريق الثاني" data-placeholder-en="Team 2 Name" data-placeholder="الفريق الثاني" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-yellow);box-shadow:var(--glow-yellow)" onkeydown="event.stopPropagation()"></div>
       </div>
     </div>
-    <button class="start-btn" id="start-btn" onclick="startGame()">يــــلا نـــلـــعـــب 🎮</button>
+    <button class="start-btn" id="start-btn" onclick="startGame()"><span id="start-btn-lbl">يــــلا نـــلـــعـــب 🎮</span></button>
 
     <!-- Photo category selection -->
     <div class="photo-settings-card" id="photo-settings-card" style="display:none;margin-top:8px">
       <h3 onclick="toggleCatPanel('photo')">
-        <span id="photo-settings-label">📸 اختيار فئات الصور — وين شايفو | ما تذكرتني</span>
+        <span id="photo-settings-label">📸 اختيار فئات الصور</span>
         <span id="photo-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
       <div class="photo-settings-body" id="photo-settings-body">
@@ -1196,7 +1197,7 @@ audio, video { display: none; }
     <!-- Trivia category selection -->
     <div class="photo-settings-card" id="trivia-settings-card" style="display:none;margin-top:4px">
       <h3 onclick="toggleCatPanel('trivia')">
-        <span id="trivia-settings-label">📝 اختيار فئات الأسئلة — متفرقات | من كل وادي</span>
+        <span id="trivia-settings-label">📝 اختيار فئات الأسئلة</span>
         <span id="trivia-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
       <div class="photo-settings-body" id="trivia-settings-body">
@@ -1211,7 +1212,7 @@ audio, video { display: none; }
     <!-- Charades category selection -->
     <div class="photo-settings-card" id="charades-settings-card" style="display:none;margin-top:4px">
       <h3 onclick="toggleCatPanel('charades')">
-        <span id="charades-settings-label">🤐 اختيار فئات التمثيل — سكر تمك</span>
+        <span id="charades-settings-label">🤐 اختيار فئات التمثيل</span>
         <span id="charades-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
       <div class="photo-settings-body" id="charades-settings-body">
@@ -1226,14 +1227,14 @@ audio, video { display: none; }
     <!-- Cat 5 song language selection -->
     <div class="photo-settings-card" id="cat5-lang-card" style="margin-top:4px">
       <h3 onclick="toggleCatPanel('cat5lang')">
-        <span id="cat5-lang-label">🎵 اختيار لغة الأغاني — سمعني الدندنة</span>
+        <span id="cat5-lang-label">🎵 اختيار لغة الأغاني</span>
         <span id="cat5-lang-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
       </h3>
       <div class="photo-settings-body" id="cat5lang-settings-body">
         <div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0">
           <button class="ph-subchip active" id="cat5-btn-all" onclick="setCat5Lang('all')"><span id="cat5-lbl-all">الكل</span></button>
-          <button class="ph-subchip" id="cat5-btn-ar" onclick="setCat5Lang('arabic')"><span id="cat5-lbl-ar">عربي فقط</span></button>
-          <button class="ph-subchip" id="cat5-btn-en" onclick="setCat5Lang('english')"><span id="cat5-lbl-en">English Only</span></button>
+          <button class="ph-subchip" id="cat5-btn-ar" onclick="setCat5Lang('arabic')"><span id="cat5-lbl-ar">عربي</span></button>
+          <button class="ph-subchip" id="cat5-btn-en" onclick="setCat5Lang('english')"><span id="cat5-lbl-en">English</span></button>
         </div>
         <div id="cat5-count-display" class="ph-count-display"></div>
       </div>
@@ -1427,7 +1428,7 @@ window.addEventListener('load', () => {
 // BAKED-IN QUESTIONS (paste generated code here)
 // ══════════════════════════════════════════
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHqDlBIskr45hToMnKSqZJ3hgUFBtuEB5ZFS7Vcu9z20w718JeHQfAQt9R-PgCtA/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweHVofaS-eWksxB6SZn8BiRrVAnAB2bSCCbELJPsfv50TAQrmE8V-tS1IDeWvXjizGXg/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -1446,6 +1447,8 @@ const G = {
   bids: [0, 0],
   winnerSongUrl: null,
   jingleUrl: null,
+  jingleDriveId: null,
+  jingleScriptUrl: null,
   waitingScreenUrl: null,
 };
 
@@ -1638,29 +1641,26 @@ async function loadFromDrive(urlOverride) {
     }
 
     // Step 4.5: Winner song + jingle
+    // Use direct Drive streaming URL — avoids Apps Script 6MB base64 limit
     if (data.winnerSong) {
       try {
         const songItem = await fetchDriveFile(url, data.winnerSong);
         if (songItem && songItem.blob) G.winnerSongUrl = URL.createObjectURL(songItem.blob);
       } catch(e) {}
     }
-    // Jingle — from data.jingle if Apps Script returns it,
-    // otherwise search all files in the response for '3albalcon_jingle'
-    const jingleFileInfo = data.jingle || (() => {
-      const allFiles = [
-        ...(data.audios || []),
-        ...(data.otherFiles || []),
-        ...(data.allFiles || []),
-        ...(data.specials || []),
-        ...(data.sounds || []),
-      ].find(f => f.name && f.name.toLowerCase().includes('3albalcon_jingle'));
-      return allFiles || null;
-    })();
-    if (jingleFileInfo) {
+    if (data.jingle) {
+      // Store Drive file ID for direct streaming — more reliable than base64 for audio
+      G.jingleDriveId = data.jingle.id;
+      G.jingleScriptUrl = url; // Apps Script URL to proxy through
+      // Also try to pre-cache as blob for instant playback
       try {
-        const jingleItem = await fetchDriveFile(url, jingleFileInfo);
-        if (jingleItem && jingleItem.blob) G.jingleUrl = URL.createObjectURL(jingleItem.blob);
-      } catch(e) {}
+        const jingleItem = await fetchDriveFile(url, data.jingle);
+        if (jingleItem && jingleItem.blob) {
+          G.jingleUrl = URL.createObjectURL(jingleItem.blob);
+        }
+      } catch(e) {
+        // Fallback: will stream via Apps Script on demand
+      }
     }
 
     // Step 5: Videos — use Drive IDs if available, otherwise build from CSV filenames (GitHub-hosted)
@@ -2746,6 +2746,22 @@ function applyLang() {
   if (hostOnly) hostOnly.textContent = isAr ? 'للمقدّم فقط' : 'Host Only';
   const spinBtn = document.getElementById('tr-spin-opener');
   if (spinBtn) spinBtn.textContent = isAr ? 'إختيار الفقرة' : 'Spin the Wheel';
+  const startBtnLbl = document.getElementById('start-btn-lbl');
+  if (startBtnLbl) startBtnLbl.textContent = isAr ? 'يــــلا نـــلـــعـــب 🎮' : "Let's Play 🎮";
+  const photoLbl = document.getElementById('photo-settings-label');
+  if (photoLbl) photoLbl.textContent = isAr ? '📸 اختيار فئات الصور' : '📸 Select Photo Categories';
+  const triviaLbl = document.getElementById('trivia-settings-label');
+  if (triviaLbl) triviaLbl.textContent = isAr ? '📝 اختيار فئات الأسئلة' : '📝 Select Question Categories';
+  const charadesLbl = document.getElementById('charades-settings-label');
+  if (charadesLbl) charadesLbl.textContent = isAr ? '🤐 اختيار فئات التمثيل' : '🤐 Select Charades Categories';
+  const songsLbl = document.getElementById('cat5-lang-label');
+  if (songsLbl) songsLbl.textContent = isAr ? '🎵 اختيار لغة الأغاني' : '🎵 Song Language';
+  const cat5All = document.getElementById('cat5-lbl-all');
+  if (cat5All) cat5All.textContent = isAr ? 'الكل' : 'All';
+  const cat5Ar = document.getElementById('cat5-lbl-ar');
+  if (cat5Ar) cat5Ar.textContent = isAr ? 'عربي' : 'Arabic';
+  const cat5En = document.getElementById('cat5-lbl-en');
+  if (cat5En) cat5En.textContent = 'English';
   const celebBtn = document.getElementById('tr-celebration');
   if (celebBtn) celebBtn.textContent = isAr ? 'احتفال!' : 'Celebrate!';
   const spin1 = document.getElementById('tr-spin1');
@@ -2763,16 +2779,10 @@ function applyLang() {
   if (typeof buildMenu === 'function' && document.getElementById('rounds-grid')) buildMenu();
 
   // Refresh photo settings label
-  const photoLabel = document.getElementById('photo-settings-label');
-  if (photoLabel) photoLabel.textContent = isAr
-    ? '📸 اختيار فئات الصور — وين شايفو | ما تذكرتني'
-    : "📸 Photo Categories — Who's That Face | Remember Me";
+  if (photoLbl) photoLbl.textContent = isAr ? '📸 اختيار فئات الصور' : '📸 Select Photo Categories';
 
   // Refresh trivia settings label
-  const triviaLabel = document.getElementById('trivia-settings-label');
-  if (triviaLabel) triviaLabel.textContent = isAr
-    ? '📝 اختيار فئات الأسئلة — متفرقات | من كل وادي'
-    : '📝 Question Categories — Quick Trivia | General Knowledge';
+  if (triviaLbl) triviaLbl.textContent = isAr ? '📝 اختيار فئات الأسئلة' : '📝 Select Question Categories';
 
   // Re-apply photos with new language if loaded
   if (PH.loaded) {
@@ -2781,20 +2791,10 @@ function applyLang() {
   }
 
   // Refresh charades settings label
-  const charadesLabel = document.getElementById('charades-settings-label');
-  if (charadesLabel) charadesLabel.textContent = isAr
-    ? '🤐 اختيار فئات التمثيل — سكر تمك'
-    : '🤐 Acting Categories — Zip It!';
+  if (charadesLbl) charadesLbl.textContent = isAr ? '🤐 اختيار فئات التمثيل' : '🤐 Select Charades Categories';
 
   // Refresh cat5 language label
-  const cat5Label = document.getElementById('cat5-lang-label');
-  if (cat5Label) cat5Label.textContent = isAr
-    ? '🎵 اختيار لغة الأغاني — سمعني الدندنة'
-    : '🎵 Song Language — Hum It!';
-  const cat5All = document.getElementById('cat5-lbl-all');
-  if (cat5All) cat5All.textContent = isAr ? 'الكل' : 'All';
-  const cat5Ar = document.getElementById('cat5-lbl-ar');
-  if (cat5Ar) cat5Ar.textContent = isAr ? 'عربي فقط' : 'Arabic Only';
+  if (songsLbl) songsLbl.textContent = isAr ? '🎵 اختيار لغة الأغاني' : '🎵 Song Language';
   updateCat5Count();
 
   // Re-apply trivia with new language if loaded
@@ -5435,17 +5435,25 @@ function playCelebration() {
   }
 
   // Start playing
-  const jingleUrl = G.jingleUrl || G.winnerSongUrl;
+  // Build jingle URL — blob (pre-cached) or Apps Script stream
+  let jingleUrl = G.jingleUrl;
+  if (!jingleUrl && G.jingleDriveId && G.jingleScriptUrl) {
+    jingleUrl = `${G.jingleScriptUrl}?action=file&id=${G.jingleDriveId}&t=${Date.now()}`;
+  }
   if (jingleUrl) {
     _jingleAudio = new Audio(jingleUrl);
     _jingleAudio.volume = 0.85;
-    _jingleAudio.play().catch(() => {});
-    _jingleAudio.onended = () => {
-      _jingleAudio = null;
-      if (_jingleFrame) { cancelAnimationFrame(_jingleFrame); _jingleFrame = null; }
-      if (_jingleCanvas) { _jingleCanvas.remove(); _jingleCanvas = null; }
-      if (btn) { btn.style.borderColor = 'rgba(255,230,0,0.3)'; btn.style.color = 'rgba(255,230,0,0.5)'; }
-    };
+    _jingleAudio.play().catch(() => {
+      // Blob URL may have expired — try streaming directly
+      if (G.jingleDriveId && G.jingleScriptUrl) {
+        const streamUrl = `${G.jingleScriptUrl}?action=file&id=${G.jingleDriveId}&t=${Date.now()}`;
+        _jingleAudio = new Audio(streamUrl);
+        _jingleAudio.volume = 0.85;
+        _jingleAudio.play().catch(() => {});
+        _jingleAudio.onended = cleanup;
+      }
+    });
+    _jingleAudio.onended = cleanup;
   } else {
     // Generated tones fallback
     try {
@@ -5463,6 +5471,13 @@ function playCelebration() {
       });
       setTimeout(() => ctx.close(), 3000);
     } catch(e) {}
+  }
+
+  function cleanup() {
+    _jingleAudio = null;
+    if (_jingleFrame) { cancelAnimationFrame(_jingleFrame); _jingleFrame = null; }
+    if (_jingleCanvas) { _jingleCanvas.remove(); _jingleCanvas = null; }
+    if (btn) { btn.style.borderColor = 'rgba(255,230,0,0.3)'; btn.style.color = 'rgba(255,230,0,0.5)'; }
   }
 
   // Button active state
