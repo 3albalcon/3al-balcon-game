@@ -292,7 +292,7 @@ body {
   border: 2px solid var(--neon-pink);
   box-shadow: var(--glow-pink);
   border-radius: 14px;
-  padding: 17.5px 12.5px;
+  padding: 18px 14px;
   cursor: pointer;
   transition: all 0.25s;
   text-align: center;
@@ -301,7 +301,7 @@ body {
 }
 .round-btn:hover { border-color: var(--neon-cyan); box-shadow: var(--glow-cyan); transform: translateY(-3px); }
 .round-btn .rnum { font-size: 13.75px; color: var(--neon-yellow); text-shadow: var(--glow-yellow); font-weight: 700; margin-bottom: 4px; }
-.round-btn .rname { font-size: 23.4px; font-weight: 700; line-height: 1.3; color: #fff; }
+.round-btn .rname { font-size: 25px; font-weight: 700; line-height: 1.3; color: #fff; }
 .round-btn .rpoints { display: none; }
 .round-btn.done { border-color: var(--neon-green); box-shadow: var(--glow-green); }
 .round-btn.done .rnum { color: var(--neon-green); text-shadow: var(--glow-green); }
@@ -680,6 +680,7 @@ audio, video { display: none; }
   gap: 20px;
   width: 100%;
   min-height: calc(100vh - 120px);
+  overflow: hidden;
 }
 .section-title-slide .big-number {
   font-size: clamp(80px, 15vw, 160px);
@@ -1277,6 +1278,15 @@ audio, video { display: none; }
     onmouseover="this.style.borderColor='var(--neon-yellow)';this.style.color='var(--neon-yellow)'"
     onmouseout="if(!window._hostMode){this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';}"
     >🎙 <span class="tr-host-mode">مقدّم البرنامج</span></button>
+    <button onclick="playCelebration()" id="celebration-btn" style="
+      background:transparent;border:1.5px solid rgba(255,230,0,0.3);
+      color:rgba(255,230,0,0.5);font-size:11px;font-weight:700;
+      padding:5px 14px;border-radius:100px;font-family:'Cairo',sans-serif;
+      cursor:pointer;transition:all 0.2s;letter-spacing:1px;
+    "
+    onmouseover="this.style.borderColor='var(--neon-yellow)';this.style.color='var(--neon-yellow)';this.style.textShadow='var(--glow-yellow)'"
+    onmouseout="this.style.borderColor='rgba(255,230,0,0.3)';this.style.color='rgba(255,230,0,0.5)';this.style.textShadow='none'"
+    >🎉 <span id="tr-celebration">احتفال!</span></button>
   </div>
 
   <!-- Host QR — top right, hidden by default -->
@@ -1318,7 +1328,7 @@ audio, video { display: none; }
   <div id="earned-wc-bar" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;max-width:900px"></div>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
-    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.1);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 <span id="tr-spin-opener">إختيار الفقرة</span></button>
+    <button onclick="toggleRoulette()" id="roulette-toggle-btn" style="background:rgba(255,45,120,0.2);border:2px solid var(--neon-pink);color:#ffffff;text-shadow:none;font-size:22px;font-weight:900;padding:10px 56px;letter-spacing:2px;box-shadow:var(--glow-pink);border-radius:100px;font-family:'Cairo',sans-serif;cursor:pointer;transition:all 0.2s;">🎰 <span id="tr-spin-opener">إختيار الفقرة</span></button>
   </div>
 
   <!-- Roulette Inline Panel -->
@@ -1435,6 +1445,7 @@ const G = {
   timerMax: 60,
   bids: [0, 0],
   winnerSongUrl: null,
+  jingleUrl: null,
   waitingScreenUrl: null,
 };
 
@@ -1626,16 +1637,18 @@ async function loadFromDrive(urlOverride) {
       G.hostWallpaperUrl = data.hostWallpaper.url;
     }
 
-    // Step 4.5: Winner song — fetch via Apps Script to avoid CORS
+    // Step 4.5: Winner song + jingle
     if (data.winnerSong) {
       try {
         const songItem = await fetchDriveFile(url, data.winnerSong);
-        if (songItem && songItem.blob) {
-          G.winnerSongUrl = URL.createObjectURL(songItem.blob);
-        }
-      } catch(e) {
-        // Song failed to load, will play without music
-      }
+        if (songItem && songItem.blob) G.winnerSongUrl = URL.createObjectURL(songItem.blob);
+      } catch(e) {}
+    }
+    if (data.jingle) {
+      try {
+        const jingleItem = await fetchDriveFile(url, data.jingle);
+        if (jingleItem && jingleItem.blob) G.jingleUrl = URL.createObjectURL(jingleItem.blob);
+      } catch(e) {}
     }
 
     // Step 5: Videos — use Drive IDs if available, otherwise build from CSV filenames (GitHub-hosted)
@@ -2721,6 +2734,8 @@ function applyLang() {
   if (hostOnly) hostOnly.textContent = isAr ? 'للمقدّم فقط' : 'Host Only';
   const spinBtn = document.getElementById('tr-spin-opener');
   if (spinBtn) spinBtn.textContent = isAr ? 'إختيار الفقرة' : 'Spin the Wheel';
+  const celebBtn = document.getElementById('tr-celebration');
+  if (celebBtn) celebBtn.textContent = isAr ? 'احتفال!' : 'Celebrate!';
   const spin1 = document.getElementById('tr-spin1');
   if (spin1) spin1.textContent = isAr ? 'دوّر!' : 'Spin!';
   const startRound = document.getElementById('tr-start-round');
@@ -3021,13 +3036,21 @@ function buildMenu() {
   document.getElementById('mn-a-score').textContent = G.scoreA;
   document.getElementById('mn-b-score').textContent = G.scoreB;
 
+  // Render round buttons
+  const grid = document.getElementById('rounds-grid');
+  if (grid) {
+    grid.innerHTML = ROUNDS.map(r => {
+      const isDone = G.done.has(r.id);
+      return `<button class="round-btn${isDone?' done':''}" onclick="openRound('${r.id}')">
+        <div class="rname">${r.name}</div>
+      </button>`;
+    }).join('');
+  }
+
   // Announce winner if all rounds done
   if (G.done.size === ROUNDS.length) {
     setTimeout(() => announceWinner(), 400);
   }
-
-  // Wildcard badges next to team names
-
 }
 
 // ══════════════════════════════════════
@@ -3052,6 +3075,7 @@ function updateHeaderScores() {
 // GAME FLOW — Open Round
 // ══════════════════════════════════════
 function openRound(id) {
+  _resetScoreState();
   const round = ROUNDS.find(r => r.id === id);
 
   // Check if data is ready for this round
@@ -3086,6 +3110,7 @@ function openRound(id) {
 // GAME FLOW — Next Question
 // ══════════════════════════════════════
 function nextQ() {
+  _resetScoreState();
   const r = G.currentRound;
   if (!r) return;
   // For closest categories: block next if answer not revealed yet
@@ -3111,7 +3136,8 @@ function renderSlide() {
   stopTimer();
   setTimeout(pushHostState, 150);
 
-  // Reset slide-area to default for all rounds
+  // Reset slide-area styles for all rounds
+  sa.style.overflow = '';
   sa.style.paddingTop = '';
   sa.style.justifyContent = '';
   sa.style.alignItems = '';
@@ -3122,6 +3148,7 @@ function renderSlide() {
 
   // === TITLE SLIDE (q=-1) ===
   if (G.currentQ === -1) {
+    sa.style.overflow = 'hidden';
     sa.style.justifyContent = 'center';
     sa.innerHTML = `
       <div class="section-title-slide fade-in">
@@ -3475,25 +3502,83 @@ function renderRules(r, sa) {
 // ══════════════════════════════════════
 // UI — Score Panel
 // ══════════════════════════════════════
+// ── Per-question score state: null | {team, val} — one action per question, undoable ──
+let _scoreState = null; // { a: val|null, b: val|null }
+
+function _resetScoreState() { _scoreState = { a: null, b: null }; }
+_resetScoreState();
+
 function scorePanelHTML(plus=2, minus=1) {
-  const minusBtn = minus > 0
-    ? `<button class="sp-btn minus" onclick="addScore('TEAM', -${minus})">-${minus}</button>`
-    : '';
-  const teamHTML = (team) => `
-    <div class="sp-team">
-      ${minusBtn.replace(/TEAM/g, team)}
-      <div>
-        <div class="sp-name">${team === 'a' ? G.teamA : G.teamB}</div>
-        <div class="sp-score" id="sp-${team}">${team === 'a' ? G.scoreA : G.scoreB}</div>
-      </div>
-      <button class="sp-btn plus" onclick="addScore('${team}', ${plus})">+${plus}</button>
-    </div>`;
+  const stA = _scoreState?.a;
+  const stB = _scoreState?.b;
+
+  const teamHTML = (team) => {
+    const st = team === 'a' ? stA : stB;
+    const scored = st !== null;
+    const name = team === 'a' ? G.teamA : G.teamB;
+    const score = team === 'a' ? G.scoreA : G.scoreB;
+
+    if (scored) {
+      // Show undo button
+      const label = st > 0 ? `+${st}` : `${st}`;
+      return `
+        <div class="sp-team">
+          <button class="sp-btn minus" onclick="undoScore('${team}')" title="${t('undo')||'Undo'}" style="font-size:18px">↩</button>
+          <div>
+            <div class="sp-name">${name}</div>
+            <div class="sp-score" id="sp-${team}">${score}</div>
+          </div>
+          <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:${st>0?'var(--neon-green)':'var(--neon-red)'}">
+            ${label} ✓
+          </div>
+        </div>`;
+    }
+
+    // Normal — show +/- buttons
+    const minusBtn = minus > 0
+      ? `<button class="sp-btn minus" onclick="scoreOnce('${team}', ${-minus})">-${minus}</button>`
+      : `<div style="width:44px"></div>`;
+    return `
+      <div class="sp-team">
+        ${minusBtn}
+        <div>
+          <div class="sp-name">${name}</div>
+          <div class="sp-score" id="sp-${team}">${score}</div>
+        </div>
+        <button class="sp-btn plus" onclick="scoreOnce('${team}', ${plus})">+${plus}</button>
+      </div>`;
+  };
+
   return `
-    <div class="score-panel">
+    <div class="score-panel" data-plus="${plus}" data-minus="${minus}">
       ${teamHTML('a')}
       <div class="sp-divider"></div>
       ${teamHTML('b')}
     </div>`;
+}
+
+function scoreOnce(team, val) {
+  if (!_scoreState) _resetScoreState();
+  if (_scoreState[team] !== null) return; // already scored this question
+  _scoreState[team] = val;
+  addScore(team, val);
+  // Re-render score panel in current slide
+  const panel = document.querySelector('.score-panel');
+  if (panel) {
+    const p = parseInt(panel.dataset.plus || 2);
+    const m = parseInt(panel.dataset.minus || 1);
+    panel.outerHTML = scorePanelHTML(p, m);
+  } else {
+    renderSlide();
+  }
+}
+
+function undoScore(team) {
+  if (!_scoreState || _scoreState[team] === null) return;
+  const val = _scoreState[team];
+  _scoreState[team] = null;
+  addScore(team, -val); // reverse
+  renderSlide();
 }
 
 // ══════════════════════════════════════
@@ -3507,8 +3592,7 @@ function addScore(team, val) {
   document.getElementById('sp-b') && (document.getElementById('sp-b').textContent = G.scoreB);
   document.getElementById('mn-a-score') && (document.getElementById('mn-a-score').textContent = G.scoreA);
   document.getElementById('mn-b-score') && (document.getElementById('mn-b-score').textContent = G.scoreB);
-  showToast(val > 0 ? `+${val} نقطة! 🎉` : `${val} نقطة`);
-  // Push scores immediately to Firebase so host sees update instantly
+  showToast(val > 0 ? `+${val} ${_lang==='en'?'pts':'نقطة'}! 🎉` : `${val} ${_lang==='en'?'pts':'نقطة'}`);
   const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
   if (db && fbSet && fbRef) {
     fbSet(fbRef(db, _path('hostState/scoreA')), G.scoreA);
@@ -5257,6 +5341,8 @@ function startHostCmdListener() {
         }
         window._cat6Judgement = {};
       }
+    } else if (cmd === 'celebrate') {
+      playCelebration();
     } else if (cmd === 'addScore') {
       const team = d.data?.team;
       const pts = d.data?.pts || 0;
@@ -5298,6 +5384,105 @@ function resetGame() {
 
 // ══════════════════════════════════════════
 // WINNER ANNOUNCEMENT
+// ══════════════════════════════════════
+// CELEBRATION — Confetti + Song Button
+// ══════════════════════════════════════
+function playCelebration() {
+  const btn = document.getElementById('celebration-btn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
+
+  // Play jingle if loaded, else winner song, else generated tones
+  let audio = null;
+  if (G.jingleUrl) {
+    audio = new Audio(G.jingleUrl);
+    audio.volume = 0.85;
+    audio.play().catch(() => {});
+  } else if (G.winnerSongUrl) {
+    audio = new Audio(G.winnerSongUrl);
+    audio.volume = 0.8;
+    audio.play().catch(() => {});
+  } else {
+    // Generate celebratory tones via Web Audio
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [523, 659, 784, 1047, 784, 1047, 784, 659, 784, 523];
+      let t = ctx.currentTime;
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, t);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.3, t + 0.02);
+        g.gain.linearRampToValueAtTime(0, t + 0.25);
+        o.start(t); o.stop(t + 0.25);
+        t += 0.18;
+      });
+      setTimeout(() => ctx.close(), 3000);
+    } catch(e) {}
+  }
+
+  // Confetti canvas over the full screen
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const c = canvas.getContext('2d');
+
+  const pieces = Array.from({length: 150}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    w: Math.random() * 14 + 5,
+    h: Math.random() * 7 + 4,
+    color: ['#FF2D78','#FFE600','#39FF14','#00EFFF','#FF8C00','#FF2D2D','#A855F7'][Math.floor(Math.random()*7)],
+    speed: Math.random() * 4 + 2,
+    angle: Math.random() * 360,
+    spin: (Math.random() - 0.5) * 6,
+    wobble: Math.random() * 3,
+    wobbleSpeed: Math.random() * 0.05 + 0.02,
+    wobbleAngle: Math.random() * Math.PI * 2,
+  }));
+
+  let frame;
+  const duration = 12000; // 12 seconds
+  const start = Date.now();
+
+  function draw() {
+    const elapsed = Date.now() - start;
+    if (elapsed > duration) {
+      cancelAnimationFrame(frame);
+      canvas.remove();
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      if (audio) { audio.pause(); audio.currentTime = 0; }
+      return;
+    }
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    const fade = elapsed > duration - 2000 ? 1 - (elapsed - (duration - 2000)) / 2000 : 1;
+    c.globalAlpha = fade;
+    pieces.forEach(p => {
+      c.save();
+      p.wobbleAngle += p.wobbleSpeed;
+      p.x += Math.sin(p.wobbleAngle) * p.wobble;
+      p.y += p.speed;
+      p.angle += p.spin;
+      c.translate(p.x, p.y);
+      c.rotate(p.angle * Math.PI / 180);
+      c.fillStyle = p.color;
+      c.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      c.restore();
+      if (p.y > canvas.height) {
+        p.y = -10;
+        p.x = Math.random() * canvas.width;
+      }
+    });
+    c.globalAlpha = 1;
+    frame = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 // ══════════════════════════════════════
 // GAME FLOW — Final Winner Announcement
 // ══════════════════════════════════════
@@ -5426,7 +5611,7 @@ function buildStrip() {
   for (let i = 0; i < 10; i++) items.push(...remaining);
   strip.innerHTML = items.map(r => `
     <div style="height:32px;display:flex;align-items:center;justify-content:center;
-      font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;color:#fff;
+      font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;color:#fff;
       width:100%;flex-shrink:0;padding:0 12px;text-align:center;white-space:nowrap">
       ${r.name}
     </div>
