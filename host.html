@@ -598,6 +598,18 @@ onValue(ref(db, P('lang')), snap => {
 // Apply initial language
 applyHostLang();
 
+// ── Shutdown listener ──
+onValue(ref(db, P('shutdown')), snap => {
+  if (!snap.val()) return;
+  document.getElementById('dyn').innerHTML = '';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#060d1f;flex-direction:column;gap:16px';
+  overlay.innerHTML = `
+    <div style="font-family:Cairo,sans-serif;font-size:clamp(28px,8vw,56px);font-weight:900;color:#FAC70A;text-shadow:0 0 30px rgba(250,199,10,0.6);letter-spacing:4px;animation:pulse 2s infinite">3AL BALCON</div>
+    <div style="font-family:Cairo,sans-serif;font-size:14px;color:rgba(255,255,255,0.3)">Game ended</div>`;
+  document.body.appendChild(overlay);
+});
+
 // Show session for debugging immediately
 const dbg = document.getElementById('debug-session');
 if (dbg) dbg.textContent = SESSION === 'main'

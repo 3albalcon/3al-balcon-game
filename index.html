@@ -1256,7 +1256,7 @@ audio, video { display: none; }
 
   <!-- Close button — top left -->
   <div style="position:absolute;top:16px;left:20px;display:flex;flex-direction:column;gap:6px;z-index:5">
-    <button onclick="window.location.href='https://www.3albalcon.com'" style="
+    <button onclick="closeGame()" style="
       background:transparent;
       border:1.5px solid rgba(255,255,255,0.2);
       color:rgba(255,255,255,0.35);
@@ -1644,9 +1644,21 @@ async function loadFromDrive(urlOverride) {
         if (songItem && songItem.blob) G.winnerSongUrl = URL.createObjectURL(songItem.blob);
       } catch(e) {}
     }
-    if (data.jingle) {
+    // Jingle — from data.jingle if Apps Script returns it,
+    // otherwise search all files in the response for '3albalcon_jingle'
+    const jingleFileInfo = data.jingle || (() => {
+      const allFiles = [
+        ...(data.audios || []),
+        ...(data.otherFiles || []),
+        ...(data.allFiles || []),
+        ...(data.specials || []),
+        ...(data.sounds || []),
+      ].find(f => f.name && f.name.toLowerCase().includes('3albalcon_jingle'));
+      return allFiles || null;
+    })();
+    if (jingleFileInfo) {
       try {
-        const jingleItem = await fetchDriveFile(url, data.jingle);
+        const jingleItem = await fetchDriveFile(url, jingleFileInfo);
         if (jingleItem && jingleItem.blob) G.jingleUrl = URL.createObjectURL(jingleItem.blob);
       } catch(e) {}
     }
@@ -2843,6 +2855,7 @@ function startGame() {
   setTimeout(() => {
     if (window._fbDb && window._fbRef && window._fbSet) {
       window._fbSet(window._fbRef(window._fbDb, `sessions/${window._gameSession}/lang`), _lang);
+      window._fbSet(window._fbRef(window._fbDb, `sessions/${window._gameSession}/shutdown`), false);
     }
   }, 300);
   // Restart host cmd listener on new session path
@@ -5360,7 +5373,23 @@ function updateHostView(categoryName, questionNum, question, answer) {
 // ══════════════════════════════════════
 // RESET GAME
 // ══════════════════════════════════════
+
+// ══════════════════════════════════════
+// SHUTDOWN — Signal all phones to close
+// ══════════════════════════════════════
+function pushShutdown() {
+  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+  if (db && fbSet && fbRef && window._gameSession) {
+    fbSet(fbRef(db, `sessions/${window._gameSession}/shutdown`), true);
+  }
+}
+function closeGame() {
+  pushShutdown();
+  setTimeout(() => { window.location.href = 'https://www.3albalcon.com'; }, 400);
+}
+
 function resetGame() {
+  pushShutdown();
   const teamA = G.teamA;
   const teamB = G.teamB;
   // Reset everything except team names
@@ -5385,51 +5414,68 @@ function resetGame() {
 // ══════════════════════════════════════════
 // WINNER ANNOUNCEMENT
 // ══════════════════════════════════════
-// CELEBRATION — Confetti + Song Button
+// CELEBRATION — Confetti + Jingle Button
 // ══════════════════════════════════════
+let _jingleAudio = null;
+let _jingleFrame = null;
+let _jingleCanvas = null;
+
 function playCelebration() {
   const btn = document.getElementById('celebration-btn');
-  if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
 
-  // Play jingle if loaded, else winner song, else generated tones
-  let audio = null;
-  if (G.jingleUrl) {
-    audio = new Audio(G.jingleUrl);
-    audio.volume = 0.85;
-    audio.play().catch(() => {});
-  } else if (G.winnerSongUrl) {
-    audio = new Audio(G.winnerSongUrl);
-    audio.volume = 0.8;
-    audio.play().catch(() => {});
+  // If already playing — STOP
+  if (_jingleAudio) {
+    _jingleAudio.pause();
+    _jingleAudio.currentTime = 0;
+    _jingleAudio = null;
+    if (_jingleFrame) { cancelAnimationFrame(_jingleFrame); _jingleFrame = null; }
+    if (_jingleCanvas) { _jingleCanvas.remove(); _jingleCanvas = null; }
+    if (btn) { btn.style.borderColor = 'rgba(255,230,0,0.3)'; btn.style.color = 'rgba(255,230,0,0.5)'; }
+    return;
+  }
+
+  // Start playing
+  const jingleUrl = G.jingleUrl || G.winnerSongUrl;
+  if (jingleUrl) {
+    _jingleAudio = new Audio(jingleUrl);
+    _jingleAudio.volume = 0.85;
+    _jingleAudio.play().catch(() => {});
+    _jingleAudio.onended = () => {
+      _jingleAudio = null;
+      if (_jingleFrame) { cancelAnimationFrame(_jingleFrame); _jingleFrame = null; }
+      if (_jingleCanvas) { _jingleCanvas.remove(); _jingleCanvas = null; }
+      if (btn) { btn.style.borderColor = 'rgba(255,230,0,0.3)'; btn.style.color = 'rgba(255,230,0,0.5)'; }
+    };
   } else {
-    // Generate celebratory tones via Web Audio
+    // Generated tones fallback
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const notes = [523, 659, 784, 1047, 784, 1047, 784, 659, 784, 523];
       let t = ctx.currentTime;
-      notes.forEach((freq, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
+      notes.forEach(freq => {
+        const o = ctx.createOscillator(); const g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.type = 'sine';
-        o.frequency.setValueAtTime(freq, t);
+        o.type = 'sine'; o.frequency.setValueAtTime(freq, t);
         g.gain.setValueAtTime(0, t);
         g.gain.linearRampToValueAtTime(0.3, t + 0.02);
         g.gain.linearRampToValueAtTime(0, t + 0.25);
-        o.start(t); o.stop(t + 0.25);
-        t += 0.18;
+        o.start(t); o.stop(t + 0.25); t += 0.18;
       });
       setTimeout(() => ctx.close(), 3000);
     } catch(e) {}
   }
 
-  // Confetti canvas over the full screen
+  // Button active state
+  if (btn) { btn.style.borderColor = 'var(--neon-yellow)'; btn.style.color = 'var(--neon-yellow)'; }
+
+  // Confetti
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   document.body.appendChild(canvas);
-  const c = canvas.getContext('2d');
+  _jingleCanvas = canvas;
+  const ctx2d = canvas.getContext('2d');
 
   const pieces = Array.from({length: 150}, () => ({
     x: Math.random() * canvas.width,
@@ -5445,40 +5491,36 @@ function playCelebration() {
     wobbleAngle: Math.random() * Math.PI * 2,
   }));
 
-  let frame;
-  const duration = 12000; // 12 seconds
+  const duration = 12000;
   const start = Date.now();
 
   function draw() {
     const elapsed = Date.now() - start;
-    if (elapsed > duration) {
-      cancelAnimationFrame(frame);
-      canvas.remove();
-      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
-      if (audio) { audio.pause(); audio.currentTime = 0; }
+    if (elapsed > duration || !_jingleCanvas) {
+      cancelAnimationFrame(_jingleFrame); _jingleFrame = null;
+      if (_jingleCanvas) { _jingleCanvas.remove(); _jingleCanvas = null; }
+      if (_jingleAudio) { _jingleAudio.pause(); _jingleAudio = null; }
+      if (btn) { btn.style.borderColor = 'rgba(255,230,0,0.3)'; btn.style.color = 'rgba(255,230,0,0.5)'; }
       return;
     }
-    c.clearRect(0, 0, canvas.width, canvas.height);
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
     const fade = elapsed > duration - 2000 ? 1 - (elapsed - (duration - 2000)) / 2000 : 1;
-    c.globalAlpha = fade;
+    ctx2d.globalAlpha = fade;
     pieces.forEach(p => {
-      c.save();
+      ctx2d.save();
       p.wobbleAngle += p.wobbleSpeed;
       p.x += Math.sin(p.wobbleAngle) * p.wobble;
       p.y += p.speed;
       p.angle += p.spin;
-      c.translate(p.x, p.y);
-      c.rotate(p.angle * Math.PI / 180);
-      c.fillStyle = p.color;
-      c.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      c.restore();
-      if (p.y > canvas.height) {
-        p.y = -10;
-        p.x = Math.random() * canvas.width;
-      }
+      ctx2d.translate(p.x, p.y);
+      ctx2d.rotate(p.angle * Math.PI / 180);
+      ctx2d.fillStyle = p.color;
+      ctx2d.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx2d.restore();
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
     });
-    c.globalAlpha = 1;
-    frame = requestAnimationFrame(draw);
+    ctx2d.globalAlpha = 1;
+    _jingleFrame = requestAnimationFrame(draw);
   }
   draw();
 }
@@ -5757,6 +5799,9 @@ document.addEventListener('keydown', e => {
     if(!screen.classList.contains('hidden')) nextQ();
   }
   if(e.key === 'Escape') backToMenu();
+
+window.addEventListener('beforeunload', () => { pushShutdown(); });
+
   if(e.key === ' ') {
     e.preventDefault();
     const audio = document.getElementById('audio-el');

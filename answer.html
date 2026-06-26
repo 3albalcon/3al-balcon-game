@@ -177,6 +177,26 @@ onValue(ref(db, `sessions/${session}/lang`), snap => {
   const l = snap.val();
   if (l && l !== _lang) { _lang = l; applyLang(); }
 });
+
+// ── Shutdown: when main game closes, show waiting background ──
+onValue(ref(db, `sessions/${session}/shutdown`), snap => {
+  if (!snap.val()) return;
+  document.body.style.backgroundImage = document.body.style.backgroundImage || '';
+  // Fade out all content
+  document.querySelectorAll('.content, #ph-waiting, #ph-ready, #ph-countdown, #ph-bidding, #ph-answering, #ph-logo').forEach(el => {
+    if (el) el.style.opacity = '0';
+  });
+  // Show full-screen waiting background
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#060d1f;background-size:cover;background-position:center;transition:opacity 0.5s';
+  if (document.body.style.backgroundImage) overlay.style.backgroundImage = document.body.style.backgroundImage;
+  const logo = document.createElement('div');
+  logo.style.cssText = 'font-family:Cairo,sans-serif;font-size:clamp(36px,10vw,72px);font-weight:900;color:#FAC70A;text-shadow:0 0 30px rgba(250,199,10,0.6),0 0 60px rgba(250,199,10,0.3);letter-spacing:4px;animation:pulse 2s infinite;text-align:center';
+  logo.textContent = '3AL BALCON';
+  overlay.appendChild(logo);
+  document.body.appendChild(overlay);
+});
+
 </script>
 </body>
 </html>
