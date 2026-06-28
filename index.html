@@ -199,7 +199,7 @@ body {
   padding: 10px 14px;
   color: #fff;
   font-family: 'Cairo', sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   width: 100%;
   text-align: right;
@@ -232,7 +232,7 @@ body {
 .questions-textarea::placeholder { color: rgba(200,224,255,0.4); }
 
 .start-btn {
-  background: rgba(57,255,20,0.08);
+  background: rgba(57,255,20,0.2);
   color: var(--neon-green);
   border: 3px solid var(--neon-green);
   box-shadow: var(--glow-green), inset 0 0 20px rgba(57,255,20,0.1);
@@ -1016,7 +1016,7 @@ audio, video { display: none; }
   overflow: hidden;
 }
 .photo-settings-card h3 {
-  font-size: 12px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
   color: var(--neon-yellow); text-shadow: var(--glow-yellow);
   cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   user-select: none; line-height: 1;
@@ -1152,15 +1152,51 @@ audio, video { display: none; }
   <!-- Team Names — shown after load completes -->
   <div id="team-entry" style="display:none;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:400px;margin:0 auto;text-align:center">
 
-    <!-- Language toggle -->
-    <button id="lang-btn" onclick="toggleLang()" style="
-      padding:8px 20px;border-radius:100px;
-      border:1.5px solid rgba(255,255,255,0.25);
-      background:rgba(255,255,255,0.05);
-      color:rgba(255,255,255,0.6);
-      font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;
-      cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;
-    ">🌐 English / عربي</button>
+    <!-- Event Code -->
+    <div id="event-code-wrap" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center">
+      <div style="display:flex;gap:8px;width:100%">
+        <input id="event-code-input" type="text" maxlength="20"
+          style="flex:1;padding:10px 14px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.2);
+          background:rgba(255,255,255,0.05);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;
+          font-weight:700;outline:none;letter-spacing:2px;text-align:center;text-transform:uppercase;
+          transition:all 0.2s;"
+          placeholder="كود الحفلة (اختياري)"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')applyEventCode()"
+          onfocus="this.style.borderColor='#00EFFF';this.style.boxShadow='0 0 12px rgba(0,239,255,0.3)'"
+          onblur="this.style.borderColor='rgba(255,255,255,0.2)';this.style.boxShadow='none'"
+        >
+        <button onclick="applyEventCode()" id="event-code-btn" style="
+          padding:10px 18px;border-radius:100px;border:1.5px solid #00EFFF;
+          background:rgba(0,239,255,0.08);color:#00EFFF;font-family:'Cairo',sans-serif;
+          font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+        ">✓</button>
+      </div>
+      <div id="event-code-status" style="font-size:12px;font-weight:700;text-align:center;min-height:18px;color:rgba(255,255,255,0.4)"></div>
+    </div>
+
+    <!-- Language toggle + Close Game -->
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;width:100%">
+      <button id="lang-btn" onclick="toggleLang()" style="
+        padding:8px 20px;border-radius:100px;
+        border:1.5px solid rgba(255,255,255,0.25);
+        background:rgba(255,255,255,0.05);
+        color:rgba(255,255,255,0.8);
+        font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;
+        cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;
+      ">🌐 English / عربي</button>
+      <button onclick="closeGame()" style="
+        padding:8px 20px;border-radius:100px;
+        border:1.5px solid rgba(255,255,255,0.2);
+        background:rgba(255,255,255,0.05);
+        color:rgba(255,255,255,0.5);
+        font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;
+        cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;
+      "
+      onmouseover="this.style.borderColor='#FF2D2D';this.style.color='#FF2D2D'"
+      onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.5)'"
+      >🚪 <span class="tr-close-game">اغلاق اللعبة</span></button>
+    </div>
 
     <div style="
       background:rgba(0,10,50,0.7);
@@ -1171,7 +1207,7 @@ audio, video { display: none; }
       width:100%;
       display:flex;flex-direction:column;gap:16px;
     ">
-      <h3 id="team-title" style="font-size:18px;font-weight:900;color:var(--neon-cyan);text-shadow:var(--glow-cyan);text-align:center">🏆 أسماء الفرق</h3>
+      <h3 id="team-title" style="font-size:20px;font-weight:900;color:var(--neon-cyan);text-shadow:var(--glow-cyan);text-align:center;width:100%">🏆 أسماء الفرق</h3>
       <div class="team-inputs">
         <div class="team-input" id="team-a-name" contenteditable="true" data-placeholder-ar="الفريق الأول" data-placeholder-en="Team 1 Name" data-placeholder="الفريق الأول" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-red);box-shadow:var(--glow-red)" onkeydown="event.stopPropagation()"></div>
         <div class="team-input" id="team-b-name" contenteditable="true" data-placeholder-ar="الفريق الثاني" data-placeholder-en="Team 2 Name" data-placeholder="الفريق الثاني" style="min-height:44px;line-height:1.4;cursor:text;border-color:var(--neon-yellow);box-shadow:var(--glow-yellow)" onkeydown="event.stopPropagation()"></div>
@@ -1195,7 +1231,7 @@ audio, video { display: none; }
     </div>
 
     <!-- Trivia category selection -->
-    <div class="photo-settings-card" id="trivia-settings-card" style="display:none;margin-top:4px">
+    <div class="photo-settings-card" id="trivia-settings-card" style="display:none;margin-top:2px">
       <h3 onclick="toggleCatPanel('trivia')">
         <span id="trivia-settings-label">📝 اختيار فئات الأسئلة</span>
         <span id="trivia-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
@@ -1210,7 +1246,7 @@ audio, video { display: none; }
     </div>
 
     <!-- Charades category selection -->
-    <div class="photo-settings-card" id="charades-settings-card" style="display:none;margin-top:4px">
+    <div class="photo-settings-card" id="charades-settings-card" style="display:none;margin-top:2px">
       <h3 onclick="toggleCatPanel('charades')">
         <span id="charades-settings-label">🤐 اختيار فئات التمثيل</span>
         <span id="charades-settings-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
@@ -1225,7 +1261,7 @@ audio, video { display: none; }
     </div>
 
     <!-- Cat 5 song language selection -->
-    <div class="photo-settings-card" id="cat5-lang-card" style="margin-top:4px">
+    <div class="photo-settings-card" id="cat5-lang-card" style="margin-top:2px">
       <h3 onclick="toggleCatPanel('cat5lang')">
         <span id="cat5-lang-label">🎵 اختيار لغة الأغاني</span>
         <span id="cat5-lang-arrow" style="font-size:12px;opacity:0.5;transition:transform 0.2s">▼</span>
@@ -1257,7 +1293,7 @@ audio, video { display: none; }
 
   <!-- Close button — top left -->
   <div style="position:absolute;top:16px;left:20px;display:flex;flex-direction:column;gap:6px;z-index:5">
-    <button onclick="closeGame()" style="
+    <button onclick="goToStartScreen()" id="main-menu-btn" style="
       background:transparent;
       border:1.5px solid rgba(255,255,255,0.2);
       color:rgba(255,255,255,0.35);
@@ -1269,7 +1305,7 @@ audio, video { display: none; }
     "
     onmouseover="this.style.borderColor='var(--neon-cyan)';this.style.color='var(--neon-cyan)';this.style.textShadow='var(--glow-cyan)'"
     onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.35)';this.style.textShadow='none'"
-    >🚪 <span class="tr-close-game">اغلاق اللعبة</span></button>
+    >🏠 <span id="tr-main-menu">القائمة الرئيسية</span></button>
     <button onclick="toggleHostMode()" id="host-mode-btn" style="
       background:transparent;border:1.5px solid rgba(255,255,255,0.2);
       color:rgba(255,255,255,0.35);font-size:12px;font-weight:700;
@@ -1428,7 +1464,7 @@ window.addEventListener('load', () => {
 // BAKED-IN QUESTIONS (paste generated code here)
 // ══════════════════════════════════════════
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweHVofaS-eWksxB6SZn8BiRrVAnAB2bSCCbELJPsfv50TAQrmE8V-tS1IDeWvXjizGXg/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxnoqVqDXM8eaWNU_CHzZ1Ust05Fffcy00I_XHvBnZPiicPGMRGt3YxbzL_vwmJVrWx2w/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -1500,6 +1536,38 @@ let DRIVE_URL = '';
 // ══════════════════════════════════════
 // DATA — Auto Load Entry Point
 // ══════════════════════════════════════
+async function applyEventCode() {
+  const input  = document.getElementById('event-code-input');
+  const status = document.getElementById('event-code-status');
+  const code   = (input?.value || '').trim().toUpperCase();
+
+  if (!code) {
+    window._eventCode = '';
+    window._eventName = null;
+    if (status) { status.textContent = _lang==='en'?'Loading default content...':'جاري تحميل المحتوى الافتراضي...'; status.style.color='rgba(255,255,255,0.4)'; }
+    loadFromDrive(DRIVE_SCRIPT_URL);
+    return;
+  }
+
+  if (status) { status.textContent = _lang==='en'?'Checking code...':'جاري التحقق من الكود...'; status.style.color='#FFE600'; }
+
+  try {
+    const res  = await fetch(`${DRIVE_SCRIPT_URL}?action=validatecode&code=${encodeURIComponent(code)}&t=${Date.now()}`);
+    const data = await res.json();
+    if (data.valid) {
+      window._eventCode = code;
+      if (status) { status.textContent = `✅ ${data.eventName}`; status.style.color='#39FF14'; }
+      loadFromDrive(DRIVE_SCRIPT_URL);
+    } else if (data.error === 'expired') {
+      if (status) { status.textContent = _lang==='en'?'❌ Code expired':'❌ الكود منتهي الصلاحية'; status.style.color='#FF2D2D'; }
+    } else {
+      if (status) { status.textContent = _lang==='en'?'❌ Invalid code':'❌ كود غير صحيح'; status.style.color='#FF2D2D'; }
+    }
+  } catch(e) {
+    if (status) { status.textContent = _lang==='en'?'⚠️ Connection error':'⚠️ خطأ في الاتصال'; status.style.color='#FF8C00'; }
+  }
+}
+
 async function autoLoad() {
   // If questions are baked in, load them instantly
   if (typeof QUESTIONS_DATA !== 'undefined' && QUESTIONS_DATA) {
@@ -1571,22 +1639,30 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 2000) {
 // DATA — Google Drive Auto-Loader
 // ══════════════════════════════════════
 async function loadFromDrive(urlOverride) {
-  const url = urlOverride || document.getElementById('drive-url')?.value.trim();
-  if (!url) { showToast('⚠️ الصق رابط Apps Script أولاً'); return; }
+  const url = urlOverride || DRIVE_SCRIPT_URL;
+  if (!url) return;
 
-  const statusEl = document.getElementById('auto-load-status');
-  // Loading silently — progress bar handles feedback
-  document.getElementById('drive-details').innerHTML = '';
+  // Include event code if set
+  const code = (window._eventCode || '').trim().toUpperCase();
+  const listUrl = `${url}?action=list&t=${Date.now()}${code ? '&code='+encodeURIComponent(code) : ''}`;
 
   try {
-    // Step 1: Get file list with cache-busting timestamp
-    const listUrl = `${url}?action=list&t=${Date.now()}`;
     const res = await fetchWithRetry(listUrl);
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); }
     catch(e) { throw new Error(`الرد غير صالح — تأكد من إعدادات الـ deployment:\n${text.substring(0,200)}`); }
     if (data.error) throw new Error(data.error);
+
+    // Show event name if loaded via code
+    if (data.eventName) {
+      window._eventName = data.eventName;
+      const statusEl = document.getElementById('event-code-status');
+      if (statusEl) {
+        statusEl.textContent = `✅ ${data.eventName}`;
+        statusEl.style.color = '#39FF14';
+      }
+    }
 
     const details = [];
     const images = shuffle([...data.images]);
@@ -2740,6 +2816,12 @@ function applyLang() {
   if (backBtn) backBtn.textContent = L.menu;
 
   // Update static menu buttons
+  const mainMenuLbl = document.getElementById('tr-main-menu');
+  if (mainMenuLbl) mainMenuLbl.textContent = isAr ? 'القائمة الرئيسية' : 'Main Menu';
+
+  const eventInput = document.getElementById('event-code-input');
+  if (eventInput) eventInput.placeholder = isAr ? 'كود الحفلة (اختياري)' : 'Event Code (optional)';
+
   document.querySelectorAll('.tr-close-game').forEach(el => el.textContent = isAr ? 'اغلاق اللعبة' : 'Close Game');
   document.querySelectorAll('.tr-host-mode').forEach(el => el.textContent = isAr ? 'مقدّم البرنامج' : 'Host Mode');
   const hostOnly = document.getElementById('tr-host-only');
@@ -5377,6 +5459,11 @@ function updateHostView(categoryName, questionNum, question, answer) {
 // ══════════════════════════════════════
 // SHUTDOWN — Signal all phones to close
 // ══════════════════════════════════════
+function goToStartScreen() {
+  show('setup-screen');
+  document.getElementById('team-entry').style.display = 'flex';
+  document.getElementById('auto-load-status').style.display = 'none';
+}
 function pushShutdown() {
   const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
   if (db && fbSet && fbRef && window._gameSession) {
