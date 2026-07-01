@@ -2138,7 +2138,11 @@ async function loadTriviaCategories() {
   if (window._eventCode) return;
 
   function applyQuestions(questions) {
-    TR.rawQuestions = questions; // store raw for language switching
+    if (window._triviaLocked) {
+      console.log('🔒 applyQuestions BLOCKED — event trivia locked');
+      return;
+    }
+    TR.rawQuestions = questions;
     reprocessTrivia();
   }
 
@@ -2374,6 +2378,11 @@ async function loadPhotoCategories() {
   // Skip GitHub fetch if event code is active — Drive images load instead
   if (window._eventCode) return;
   function applyPhotos(photos) {
+    // When event code active — Drive images take priority, skip GitHub photos
+    if (window._eventCode) {
+      console.log('🔒 applyPhotos BLOCKED — event code active');
+      return;
+    }
     const lang = _lang;
     const processed = photos.map(p => ({
       url:    p.url,
