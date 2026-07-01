@@ -2285,7 +2285,6 @@ function getFilteredQuestions() {
 function applyTriviaFilter() {
   if (!TR.loaded) return;
   if (window._triviaLocked) { console.log('🔒 applyTriviaFilter BLOCKED by lock'); return; }
-  if (window._eventTriviaLoaded) return; // Drive event trivia takes priority
   const filtered = shuffle([...getFilteredQuestions()]);
   const half = Math.floor(filtered.length / 2);
   G.questions.r10 = filtered.slice(0, half);
@@ -2513,6 +2512,7 @@ function getFilteredPhotos() {
 
 function applyPhotoFilter() {
   if (!PH.loaded) return;
+  if (window._photoLocked) { console.log('🔒 applyPhotoFilter BLOCKED by lock'); return; }
   const filtered = shuffle([...getFilteredPhotos()]);
   G.media['r1'] = filtered.slice(0, 10);
   G.media['r2'] = filtered.slice(10, 20);
