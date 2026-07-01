@@ -1544,10 +1544,22 @@ async function applyEventCode() {
   const status = document.getElementById('event-code-status');
   const code   = (input?.value || '').trim().toUpperCase();
 
+  // Helper: show/hide category selector cards
+  function setCategoryCards(show) {
+    ['photo-settings-card','trivia-settings-card','charades-settings-card'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? 'block' : 'none';
+    });
+  }
+
   if (!code) {
+    // Code cleared — reset to default
     window._eventCode = '';
     window._eventName = null;
-    if (status) { status.textContent = _lang==='en'?'Loading default content...':'جاري تحميل المحتوى الافتراضي...'; status.style.color='rgba(255,255,255,0.4)'; }
+    window._triviaLocked = false;
+    window._photoLocked = false;
+    setCategoryCards(true); // show selector cards again
+    if (status) { status.textContent = ''; }
     loadFromDrive(DRIVE_SCRIPT_URL);
     return;
   }
@@ -1559,37 +1571,31 @@ async function applyEventCode() {
     const data = await res.json();
     if (data.valid) {
       window._eventCode = code;
+      window._triviaLocked = false;
+      window._photoLocked  = false;
       if (status) { status.textContent = `✅ ${data.eventName}`; status.style.color='#39FF14'; }
-      // Completely wipe trivia, charades and photos before loading event data
-      TR.loaded = false;
-      TR.allQuestions = [];
-      TR.rawQuestions = [];
-      TR.selectedCats = new Set();
-      TR.selectedSubcats = new Set();
-      CH.loaded = false;
-      CH.allWords = [];
-      CH.selectedCats = new Set();
-      PH.loaded = false;
-      PH.allPhotos = [];
-      PH.selectedCats = new Set();
-      PH.selectedSubcats = new Set();
-      G.questions.r10 = [];
-      G.questions.r9  = [];
-      G.questions.r8  = [];
-      G.questions.r1  = [];
-      G.questions.r2  = [];
-      G.media['r1']   = [];
-      G.media['r2']   = [];
-      // Hide GitHub-based selectors — event folder handles content directly
-      const photoCard = document.getElementById('photo-settings-card');
-      if (photoCard) photoCard.style.display = 'none';
-      const triviaCard = document.getElementById('trivia-settings-card');
-      if (triviaCard) triviaCard.style.display = 'none';
-      const charadesCard = document.getElementById('charades-settings-card');
-      if (charadesCard) charadesCard.style.display = 'none';
-      // Clear all caches
+
+      // Wipe all cached data
+      TR.loaded = false; TR.allQuestions = []; TR.rawQuestions = [];
+      TR.selectedCats = new Set(); TR.selectedSubcats = new Set();
+      CH.loaded = false; CH.allWords = []; CH.selectedCats = new Set();
+      PH.loaded = false; PH.allPhotos = []; PH.selectedCats = new Set(); PH.selectedSubcats = new Set();
+      G.questions.r10 = []; G.questions.r9 = []; G.questions.r8 = [];
+      G.media['r1'] = []; G.media['r2'] = [];
       try { localStorage.removeItem('asmila_questions_cache_v1'); } catch(e) {}
       try { localStorage.removeItem('wajhak_photos_cache_v2'); } catch(e) {}
+
+      // Hide category selectors — event folder provides content directly
+      setCategoryCards(false);
+
+      // Show loading indicator briefly
+      const dataStatus = document.getElementById('data-status');
+      const dataText   = document.getElementById('data-status-text');
+      const dataIcon   = document.getElementById('data-status-icon');
+      if (dataStatus) dataStatus.style.display = 'flex';
+      if (dataText)   dataText.textContent  = _lang==='en'?'Loading event content...':'جاري تحميل محتوى الحفلة...';
+      if (dataIcon)   dataIcon.textContent  = '⏳';
+
       loadFromDrive(DRIVE_SCRIPT_URL);
     } else if (data.error === 'expired') {
       if (status) { status.textContent = _lang==='en'?'❌ Code expired':'❌ الكود منتهي الصلاحية'; status.style.color='#FF2D2D'; }
@@ -1702,9 +1708,10 @@ async function loadFromDrive(urlOverride) {
     const videos = shuffle([...data.videos]);
 
     // Step 2: Questions — load CSVs directly (fast!) or fall back to Excel
+    const codeAtLoadTime = code; // snapshot — prevents race condition
     if (data.csvFiles && Object.keys(data.csvFiles).length > 0) {
       setLoadProgress(30);
-      await loadCSVFiles(data.csvFiles);
+      await loadCSVFiles(data.csvFiles, codeAtLoadTime);
     } else if (!(typeof QUESTIONS_DATA !== 'undefined' && QUESTIONS_DATA) && data.excel) {
       setLoadProgress(30);
       try {
@@ -1721,20 +1728,51 @@ async function loadFromDrive(urlOverride) {
     // Step 4: Images — store URLs, preload silently in background
     if (images.length > 0) {
       setLoadProgress(70);
-      const imageItems = images.map(f => ({
-        url: `https://drive.google.com/thumbnail?id=${f.id}&sz=w800`,
-        name: f.name,
-        answer: f.name.replace(/\.[^/.]+$/, ''),
-        type: 'image'
-      }));
-      G.media['r1'] = imageItems.slice(0, 10);
-      G.media['r2'] = imageItems.slice(10, 20);
-      if (window._eventCode) window._photoLocked = true;
-      console.log('🔵 Drive set G.media.r1:', G.media['r1'].length, 'items, code:', window._eventCode);
-      // Preload silently in background
-      setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
-      details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`);
-    } else details.push('⚠️ لم يتم العثور على صور في مجلد "image 1"');
+
+      if (window._eventCode) {
+        // Event images — fetch via Apps Script to get authenticated blob URLs
+        const imageItems = images.map(f => ({
+          id: f.id,
+          url: null, // will be filled after fetch
+          name: f.name,
+          answer: f.name.replace(/\.[^/.]+$/, ''),
+          type: 'image'
+        }));
+        G.media['r1'] = imageItems.slice(0, 10);
+        G.media['r2'] = imageItems.slice(10, 20);
+        PH.loaded = false; PH.allPhotos = []; PH.selectedCats = new Set();
+        window._photoLocked = true;
+
+        // Fetch blob URLs for all images in parallel
+        const allItems = [...G.media['r1'], ...G.media['r2']];
+        Promise.all(allItems.map(async item => {
+          try {
+            const res = await fetch(`${url}?action=file&id=${item.id}&t=${Date.now()}`);
+            const data = await res.json();
+            if (data.data) {
+              const bytes = Uint8Array.from(atob(data.data), c => c.charCodeAt(0));
+              const blob = new Blob([bytes], { type: data.mimeType || 'image/jpeg' });
+              item.url = URL.createObjectURL(blob);
+            }
+          } catch(e) {}
+        })).then(() => {
+          updateDataStatus();
+        });
+
+      } else {
+        // Default folder — use thumbnail URLs (files are publicly shared)
+        const imageItems = images.map(f => ({
+          url: f.url || `https://drive.google.com/thumbnail?id=${f.id}&sz=w800`,
+          name: f.name,
+          answer: f.name.replace(/\.[^/.]+$/, ''),
+          type: 'image'
+        }));
+        G.media['r1'] = imageItems.slice(0, 10);
+        G.media['r2'] = imageItems.slice(10, 20);
+        setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
+        details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`);
+      }
+    }
 
     // Step 4.4: Waiting screen URL
     if (data.waitingScreen) {
@@ -1900,12 +1938,12 @@ async function loadCharadesFromSheet() {
     if (loadingEl) loadingEl.style.display = 'none';
     const accEl = document.getElementById('ch-accordion');
     if (accEl) accEl.style.display = 'block';
-    document.getElementById('charades-settings-card').style.display = 'block';
+    if (!window._eventCode) document.getElementById('charades-settings-card').style.display = 'block';
     applyCharadesFilter();
   } catch(e) {
     const loadingEl = document.getElementById('ch-loading');
     if (loadingEl) loadingEl.textContent = '❌ تعذّر تحميل الكلمات';
-    document.getElementById('charades-settings-card').style.display = 'block';
+    if (!window._eventCode) document.getElementById('charades-settings-card').style.display = 'block';
   }
 }
 
@@ -1959,7 +1997,7 @@ function loadCharadesFromRows(rows) {
     G.questions.r8 = shuffle(rows.map(r => r[0]).filter(Boolean));
     const loadingEl = document.getElementById('ch-loading');
     if (loadingEl) loadingEl.textContent = '⚠️ ملف الكلمات لا يحتوي على فئات — يرجى تحديث category_9.csv إلى 6 أعمدة';
-    document.getElementById('charades-settings-card').style.display = 'block';
+    if (!window._eventCode) document.getElementById('charades-settings-card').style.display = 'block';
     return;
   }
 
@@ -1979,8 +2017,11 @@ function loadCharadesFromRows(rows) {
   if (loadingEl) loadingEl.style.display = 'none';
   const accEl = document.getElementById('ch-accordion');
   if (accEl) accEl.style.display = 'block';
-  const card = document.getElementById('charades-settings-card');
-  if (card) card.style.display = 'block';
+  // Only show card if not an event load
+  if (!window._eventCode) {
+    const card = document.getElementById('charades-settings-card');
+    if (card) card.style.display = 'block';
+  }
   applyCharadesFilter();
 }
 
@@ -2103,7 +2144,7 @@ function toggleTriviaSettings() {
 }
 
 // ── Load trivia categories from pre-parsed data (event CSV override) ──
-function loadTriviaFromData(items) {
+function loadTriviaFromData(items, eventCodeSnapshot) {
   TR.loaded = false;
   const lang = _lang;
   const processed = items.map(q => ({
@@ -2117,19 +2158,24 @@ function loadTriviaFromData(items) {
   TR.selectedCats    = new Set(processed.map(q => q.cat));
   TR.selectedSubcats = new Set();
   TR.loaded = true;
-  // Lock applyTriviaFilter if this was an event load
-  if (window._eventCode) {
+  // Only override G.questions and lock when this was an event load
+  if (eventCodeSnapshot) {
+    const sh = shuffle([...processed]);
+    const half = Math.floor(sh.length / 2);
+    G.questions.r10 = sh.slice(0, half);
+    G.questions.r9  = sh.slice(half);
     window._triviaLocked = true;
-    window._photoLocked = true;
   }
-  console.log('🟢 loadTriviaFromData complete, TR.allQuestions:', TR.allQuestions.length);
   renderTriviaAccordion();
   const loadEl = document.getElementById('tr-loading');
   if (loadEl) loadEl.style.display = 'none';
   const accEl = document.getElementById('tr-accordion');
   if (accEl) accEl.style.display = 'block';
-  const card = document.getElementById('trivia-settings-card');
-  if (card) card.style.display = 'block';
+  // Only show the card if NOT an event load
+  if (!eventCodeSnapshot) {
+    const card = document.getElementById('trivia-settings-card');
+    if (card) card.style.display = 'block';
+  }
   applyTriviaFilter();
 }
 
@@ -2139,7 +2185,6 @@ async function loadTriviaCategories() {
 
   function applyQuestions(questions) {
     if (window._triviaLocked) {
-      console.log('🔒 applyQuestions BLOCKED — event trivia locked');
       return;
     }
     TR.rawQuestions = questions;
@@ -2163,8 +2208,10 @@ async function loadTriviaCategories() {
     if (loadEl) loadEl.style.display = 'none';
     const accEl = document.getElementById('tr-accordion');
     if (accEl) accEl.style.display = 'block';
-    const card = document.getElementById('trivia-settings-card');
-    if (card) card.style.display = 'block';
+    if (!window._eventCode) {
+      const card = document.getElementById('trivia-settings-card');
+      if (card) card.style.display = 'block';
+    }
     applyTriviaFilter();
   }
 
@@ -2293,7 +2340,6 @@ function applyTriviaFilter() {
   const half = Math.floor(filtered.length / 2);
   G.questions.r10 = filtered.slice(0, half);
   G.questions.r9  = filtered.slice(half);
-  console.log('🔴 applyTriviaFilter set G.questions.r10:', G.questions.r10.length, 'r9:', G.questions.r9.length, '_eventCode:', window._eventCode);
 }
 
 // ══════════════════════════════════════════
@@ -2380,7 +2426,6 @@ async function loadPhotoCategories() {
   function applyPhotos(photos) {
     // When event code active — Drive images take priority, skip GitHub photos
     if (window._eventCode) {
-      console.log('🔒 applyPhotos BLOCKED — event code active');
       return;
     }
     const lang = _lang;
@@ -2525,7 +2570,6 @@ function applyPhotoFilter() {
   const filtered = shuffle([...getFilteredPhotos()]);
   G.media['r1'] = filtered.slice(0, 10);
   G.media['r2'] = filtered.slice(10, 20);
-  console.log('🔴 applyPhotoFilter set G.media.r1:', G.media['r1'].length, 'items, _eventCode:', window._eventCode);
 }
 
 // ══════════════════════════════════════════
@@ -3099,7 +3143,7 @@ function processExcelWorkbook(wb) {
 // ══════════════════════════════════════
 // DATA — CSV Loader (Google Drive)
 // ══════════════════════════════════════
-async function loadCSVFiles(csvFiles) {
+async function loadCSVFiles(csvFiles, eventCodeSnapshot) {
   function parseCSV(text) {
     const lines = text.split('\n').slice(1);
     return lines.map(line => {
@@ -3151,7 +3195,7 @@ async function loadCSVFiles(csvFiles) {
       // col0=Q_AR, col1=Q_EN
       G.questions.r3 = shuffle(rows.map(r => ({ q_ar: r[0], q_en: r[1] || r[0] })).filter(x => x.q_ar));
     } else if (key === 'cat410') {
-      if (window._eventCode || !TR.loaded) {
+      if (eventCodeSnapshot || !TR.loaded) {
         // Format: Q_AR | Q_EN | A_AR | A_EN | Cat_AR | Subcat_AR | Cat_EN | Subcat_EN
         const items = rows.map(r => ({
           q_ar:      (r[0] || '').trim(),
@@ -3166,9 +3210,7 @@ async function loadCSVFiles(csvFiles) {
         const sh = shuffle([...items]); const half = Math.floor(sh.length/2);
         G.questions.r10 = sh.slice(0, half);
         G.questions.r9  = sh.slice(half);
-        console.log('🔵 CSV set G.questions.r10:', G.questions.r10.length, 'r9:', G.questions.r9.length, 'code:', window._eventCode);
-        setTimeout(() => loadTriviaFromData(items), 200);
-      }
+        loadTriviaFromData(items, eventCodeSnapshot);      }
     } else if (key === 'cat5') {
       G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1], lang: (r[2]||'').trim().toLowerCase() })).filter(x => x.q));
       setTimeout(updateCat5Count, 100);
@@ -3181,8 +3223,7 @@ async function loadCSVFiles(csvFiles) {
       const sh = shuffle(items); const half = Math.floor(sh.length/2);
       G.questions.r6 = sh.slice(0, half); G.questions.r7 = sh.slice(half);
     } else if (key === 'cat9') {
-      // When event code active — use event folder CSV for charades (overrides Google Sheets)
-      if (window._eventCode || !CH.loaded) {
+      if (eventCodeSnapshot || !CH.loaded) {
         loadCharadesFromRows(rows);
       }
     }
@@ -3198,8 +3239,11 @@ function updateDataStatus() {
   const text = document.getElementById('data-status-text');
   if (!icon || !text) return;
 
-  const questionsReady = G.questions.r3.length > 0 && G.questions.r4.length > 0 && G.questions.r8.length > 0;
-  const imagesReady = G.media.r1.length > 0;
+  const imagesReady    = G.media.r1.length > 0;
+  const triviaReady    = G.questions.r10.length > 0 || G.questions.r9.length > 0;
+  const questionsReady = window._eventCode
+    ? (triviaReady && G.questions.r3.length > 0)   // event: trivia + cat3 enough
+    : (G.questions.r3.length > 0 && G.questions.r4.length > 0 && G.questions.r8.length > 0);
 
   if (questionsReady && imagesReady) {
     icon.textContent = '✅';
@@ -3207,7 +3251,6 @@ function updateDataStatus() {
     text.style.color = 'var(--neon-green)';
     text.style.textShadow = 'var(--glow-green)';
     icon.style.color = 'var(--neon-green)';
-    // Hide after 3 seconds
     setTimeout(() => {
       const el = document.getElementById('data-status');
       if (el) el.style.display = 'none';
@@ -3273,6 +3316,13 @@ function updateHeaderScores() {
 // GAME FLOW — Open Round
 // ══════════════════════════════════════
 function openRound(id) {
+  // When event code active — re-sync G.questions.r10/r9 from TR.allQuestions before starting
+  if (window._eventCode && TR.loaded && TR.allQuestions.length > 0) {
+    const sh = shuffle([...TR.allQuestions]);
+    const half = Math.floor(sh.length / 2);
+    G.questions.r10 = sh.slice(0, half);
+    G.questions.r9  = sh.slice(half);
+  }
   _resetScoreState();
   const round = ROUNDS.find(r => r.id === id);
 
