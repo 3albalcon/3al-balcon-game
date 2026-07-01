@@ -1729,6 +1729,8 @@ async function loadFromDrive(urlOverride) {
       }));
       G.media['r1'] = imageItems.slice(0, 10);
       G.media['r2'] = imageItems.slice(10, 20);
+      if (window._eventCode) window._photoLocked = true;
+      console.log('🔵 Drive set G.media.r1:', G.media['r1'].length, 'items, code:', window._eventCode);
       // Preload silently in background
       setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
       details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`);
@@ -1802,28 +1804,6 @@ async function loadFromDrive(urlOverride) {
     }
 
     setLoadProgress(100);
-
-    // If event code active — reassert event data AFTER all other loaders complete
-    // This runs last and permanently overrides any GitHub/Sheets data
-    if (window._eventCode) {
-      const frozenR1  = [...G.media['r1']];
-      const frozenR2  = [...G.media['r2']];
-      const frozenR9  = [...G.questions.r9];
-      const frozenR10 = [...G.questions.r10];
-      const frozenR8  = [...G.questions.r8];
-
-      // Reassert after 1 second (after all async loaders complete)
-      const reassert = () => {
-        if (frozenR1.length  > 0) G.media['r1']      = [...frozenR1];
-        if (frozenR2.length  > 0) G.media['r2']      = [...frozenR2];
-        if (frozenR9.length  > 0) G.questions.r9     = [...frozenR9];
-        if (frozenR10.length > 0) G.questions.r10    = [...frozenR10];
-        if (frozenR8.length  > 0) G.questions.r8     = [...frozenR8];
-      };
-      setTimeout(reassert, 500);
-      setTimeout(reassert, 1500);
-      setTimeout(reassert, 3000);
-    }
 
     // Update menu status if already on menu screen
     setTimeout(() => updateDataStatus(), 100);
@@ -2137,6 +2117,12 @@ function loadTriviaFromData(items) {
   TR.selectedCats    = new Set(processed.map(q => q.cat));
   TR.selectedSubcats = new Set();
   TR.loaded = true;
+  // Lock applyTriviaFilter if this was an event load
+  if (window._eventCode) {
+    window._triviaLocked = true;
+    window._photoLocked = true;
+  }
+  console.log('🟢 loadTriviaFromData complete, TR.allQuestions:', TR.allQuestions.length);
   renderTriviaAccordion();
   const loadEl = document.getElementById('tr-loading');
   if (loadEl) loadEl.style.display = 'none';
@@ -2298,11 +2284,13 @@ function getFilteredQuestions() {
 
 function applyTriviaFilter() {
   if (!TR.loaded) return;
+  if (window._triviaLocked) { console.log('🔒 applyTriviaFilter BLOCKED by lock'); return; }
   if (window._eventTriviaLoaded) return; // Drive event trivia takes priority
   const filtered = shuffle([...getFilteredQuestions()]);
   const half = Math.floor(filtered.length / 2);
   G.questions.r10 = filtered.slice(0, half);
   G.questions.r9  = filtered.slice(half);
+  console.log('🔴 applyTriviaFilter set G.questions.r10:', G.questions.r10.length, 'r9:', G.questions.r9.length, '_eventCode:', window._eventCode);
 }
 
 // ══════════════════════════════════════════
@@ -2528,6 +2516,7 @@ function applyPhotoFilter() {
   const filtered = shuffle([...getFilteredPhotos()]);
   G.media['r1'] = filtered.slice(0, 10);
   G.media['r2'] = filtered.slice(10, 20);
+  console.log('🔴 applyPhotoFilter set G.media.r1:', G.media['r1'].length, 'items, _eventCode:', window._eventCode);
 }
 
 // ══════════════════════════════════════════
@@ -3168,6 +3157,7 @@ async function loadCSVFiles(csvFiles) {
         const sh = shuffle([...items]); const half = Math.floor(sh.length/2);
         G.questions.r10 = sh.slice(0, half);
         G.questions.r9  = sh.slice(half);
+        console.log('🔵 CSV set G.questions.r10:', G.questions.r10.length, 'r9:', G.questions.r9.length, 'code:', window._eventCode);
         setTimeout(() => loadTriviaFromData(items), 200);
       }
     } else if (key === 'cat5') {
