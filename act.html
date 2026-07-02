@@ -29,7 +29,25 @@ body {
   color:#FFE600;
   text-shadow:0 0 20px rgba(255,230,0,0.8), 0 0 50px rgba(255,230,0,0.4);
   line-height:1.2;
+  filter:blur(18px);
+  transition:filter 0.6s ease;
+  user-select:none;
 }
+.name.revealed { filter:none; }
+.tap-btn {
+  background:rgba(255,230,0,0.12);
+  border:2px solid #FFE600;
+  border-radius:100px;
+  padding:14px 40px;
+  color:#FFE600;
+  font-family:'Cairo',sans-serif;
+  font-size:18px; font-weight:900;
+  cursor:pointer;
+  letter-spacing:1px;
+  box-shadow:0 0 20px rgba(255,230,0,0.3);
+  transition:all 0.2s;
+}
+.tap-btn:active { transform:scale(0.96); }
 .hint {
   font-size:13px; color:rgba(255,255,255,0.3);
   border:1px solid rgba(255,255,255,0.08);
@@ -43,7 +61,8 @@ body {
   <div class="logo">3AL BALCON</div>
   <div class="label" id="act-label">🎭 سكر تمك — الاسم السري</div>
   <div class="name" id="name">...</div>
-  <div class="hint" id="act-hint">بس انت شوف الجواب</div>
+  <button class="tap-btn" id="tap-btn" onclick="revealWord()">👁 <span id="tap-lbl">اضغط لرؤية الكلمة</span></button>
+  <div class="hint" id="act-hint" style="display:none">بس انت شوف الجواب</div>
 </div>
 
 <script type="module">
@@ -70,16 +89,23 @@ let _lang     = params.get('l') || 'ar';
 document.getElementById('name').textContent = name;
 
 const T = {
-  ar: { label:'🎭 سكر تمك — الاسم السري', hint:'بس انت شوف الجواب' },
-  en: { label:'🎭 Zip It! — Secret Word',  hint:'Only you can see this!' }
+  ar: { label:'🎭 سكر تمك — الاسم السري', hint:'بس انت شوف الجواب', tapBtn:'اضغط لرؤية الكلمة' },
+  en: { label:'🎭 Zip It! — Secret Word',  hint:'Only you can see this!', tapBtn:'Tap to reveal' }
 };
 
 function applyLang() {
   const L = T[_lang] || T.ar;
   document.getElementById('act-label').textContent = L.label;
   document.getElementById('act-hint').textContent  = L.hint;
+  document.getElementById('tap-lbl').textContent   = L.tapBtn;
   document.documentElement.dir  = _lang==='ar' ? 'rtl' : 'ltr';
   document.documentElement.lang = _lang==='ar' ? 'ar'  : 'en';
+}
+
+function revealWord() {
+  document.getElementById('name').classList.add('revealed');
+  document.getElementById('tap-btn').style.display = 'none';
+  document.getElementById('act-hint').style.display = 'block';
 }
 applyLang();
 

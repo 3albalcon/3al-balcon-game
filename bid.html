@@ -160,6 +160,7 @@ const BT = {
     addAns: '✅ أضف الجواب',
     confirmLbl: '🔒 تأكيد الأجوبة',
     waitLogo: 'انتظر...',
+    closeScreen: 'يمكنك إغلاق هذه الشاشة',
     writeHere: 'اكتب الجواب هنا...',
     editAnswer: (i) => `تعديل الجواب ${i+1}...`,
     yourBid: (n) => `✅ مزايدتك: ${n}`,
@@ -192,6 +193,7 @@ const BT = {
     addAns: '✅ Add Answer',
     confirmLbl: '🔒 Confirm Answers',
     waitLogo: 'Wait...',
+    closeScreen: 'You can close this screen',
     writeHere: 'Write your answer here...',
     editAnswer: (i) => `Edit answer ${i+1}...`,
     yourBid: (n) => `✅ Your bid: ${n}`,
@@ -240,6 +242,8 @@ function applyBidLang() {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
   });
+  const waitLogo = document.getElementById('bid-wait-logo');
+  if (waitLogo) waitLogo.textContent = isAr ? 'انتظر...' : 'Wait...';
   const inp = document.getElementById('ans-input');
   if (inp) {
     inp.placeholder = bt('writeHere');
@@ -356,7 +360,9 @@ window.startWriting = async function() {
   // Start 60s timer immediately when player taps ابدأ الكتابة
   await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: serverNow() + 60000 });
   setTimeout(() => {
-    const inp = document.getElementById('ans-input');
+    const waitLogo = document.getElementById('bid-wait-logo');
+  if (waitLogo) waitLogo.textContent = isAr ? 'انتظر...' : 'Wait...';
+  const inp = document.getElementById('ans-input');
     if(inp) { inp.disabled = false; inp.focus(); }
   }, 100);
 };
@@ -606,7 +612,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='done'){
       showPhase('logo');
-      document.getElementById('logo-msg').innerHTML = bt('auctionEnd')+'<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">'+(bt('auctionEnd')===BT.en.auctionEnd?'You can close this screen':'يمكنك إغلاق هذه الشاشة')+'</span>';
+      document.getElementById('logo-msg').innerHTML = bt('auctionEnd')+'<br><span style="font-size:16px;color:rgba(255,255,255,0.5);font-weight:400">'+(_lang==='en'?'You can close this screen':'يمكنك إغلاق هذه الشاشة')+'</span>';
     }
   }
 
@@ -630,6 +636,26 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
 onValue(ref(db, `sessions/${sessionId}/lang`), snap => {
   const l = snap.val();
   if (l) { _lang = l; applyBidLang(); }
+});
+
+
+// ── Shutdown: when main game closes, show waiting background ──
+onValue(ref(db, `sessions/${sessionId}/shutdown`), snap => {
+  if (!snap.val()) return;
+  document.body.style.backgroundImage = document.body.style.backgroundImage || '';
+  // Fade out all content
+  document.querySelectorAll('.content, #ph-waiting, #ph-ready, #ph-countdown, #ph-bidding, #ph-answering, #ph-logo').forEach(el => {
+    if (el) el.style.opacity = '0';
+  });
+  // Show full-screen waiting background
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#060d1f;background-size:cover;background-position:center;transition:opacity 0.5s';
+  if (document.body.style.backgroundImage) overlay.style.backgroundImage = document.body.style.backgroundImage;
+  const logo = document.createElement('div');
+  logo.style.cssText = 'font-family:Cairo,sans-serif;font-size:clamp(36px,10vw,72px);font-weight:900;color:#FAC70A;text-shadow:0 0 30px rgba(250,199,10,0.6),0 0 60px rgba(250,199,10,0.3);letter-spacing:4px;animation:pulse 2s infinite;text-align:center';
+  logo.textContent = '3AL BALCON';
+  overlay.appendChild(logo);
+  document.body.appendChild(overlay);
 });
 
 </script>
