@@ -1192,23 +1192,30 @@ audio, video { display: none; }
     </div>
     <!-- Event Code / Promo Code -->
     <div id="event-code-wrap" style="width:100%;display:flex;flex-direction:column;gap:6px;align-items:center">
-      <div style="display:flex;gap:8px;width:100%">
+      <div style="
+        background:rgba(0,10,50,0.7);
+        border:2px solid rgba(0,239,255,0.4);
+        border-radius:16px;
+        padding:14px 18px;
+        width:100%;
+        display:flex;gap:8px;align-items:center;
+      ">
         <input id="event-code-input" type="text" maxlength="20"
-          style="flex:1;padding:10px 16px;border-radius:100px;
-          border:1.5px solid rgba(255,255,255,0.3);
-          background:rgba(255,255,255,0.9);
-          color:#0d1f3c;
+          style="flex:1;padding:8px 12px;border-radius:10px;
+          border:1.5px solid rgba(255,255,255,0.15);
+          background:rgba(255,255,255,0.06);
+          color:#fff;
           font-family:'Cairo',sans-serif;font-size:13px;
           font-weight:700;outline:none;letter-spacing:2px;text-align:center;text-transform:uppercase;
           transition:all 0.2s;"
           placeholder="كود الحفلة (اختياري)"
           oninput="this.value=this.value.toUpperCase()"
           onkeydown="if(event.key==='Enter')applyEventCode()"
-          onfocus="this.style.borderColor='#00EFFF';this.style.boxShadow='0 0 12px rgba(0,239,255,0.4)';this.style.background='#fff'"
-          onblur="this.style.borderColor='rgba(255,255,255,0.3)';this.style.boxShadow='none'"
+          onfocus="this.style.borderColor='#00EFFF';this.style.boxShadow='0 0 8px rgba(0,239,255,0.3)';this.style.background='rgba(0,239,255,0.06)'"
+          onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.boxShadow='none';this.style.background='rgba(255,255,255,0.06)'"
         >
         <button onclick="applyEventCode()" id="event-code-btn" style="
-          padding:10px 18px;border-radius:100px;border:1.5px solid #00EFFF;
+          padding:8px 16px;border-radius:10px;border:1.5px solid #00EFFF;
           background:rgba(0,239,255,0.1);color:#00EFFF;font-family:'Cairo',sans-serif;
           font-size:14px;font-weight:900;cursor:pointer;transition:all 0.2s;white-space:nowrap;
         ">✓</button>
@@ -1476,7 +1483,7 @@ const G = {
   teamA: 'الفريق A', teamB: 'الفريق B',
   scoreA: 0, scoreB: 0,
   media: { r1:[], r2:[], r4:[], r5:[] },
-  questions: { r3:[], r6:[], r7:[], r8:[], r9:[], r10:[] },
+  questions: { r3:[], r4:[], r5:[], r6:[], r7:[], r8:[], r9:[], r10:[] },
   done: new Set(),
   currentRound: null,
   currentQ: 0,
@@ -1546,7 +1553,7 @@ async function applyEventCode() {
 
   // Helper: show/hide category selector cards
   function setCategoryCards(show) {
-    ['photo-settings-card','trivia-settings-card','charades-settings-card'].forEach(id => {
+    ['photo-settings-card','trivia-settings-card','charades-settings-card','cat5-lang-card'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = show ? 'block' : 'none';
     });
@@ -1556,8 +1563,6 @@ async function applyEventCode() {
     // Code cleared — reset to default
     window._eventCode = '';
     window._eventName = null;
-    window._triviaLocked = false;
-    window._photoLocked = false;
     setCategoryCards(true); // show selector cards again
     if (status) { status.textContent = ''; }
     loadFromDrive(DRIVE_SCRIPT_URL);
@@ -1571,15 +1576,13 @@ async function applyEventCode() {
     const data = await res.json();
     if (data.valid) {
       window._eventCode = code;
-      window._triviaLocked = false;
-      window._photoLocked  = false;
       if (status) { status.textContent = `✅ ${data.eventName}`; status.style.color='#39FF14'; }
 
       // Wipe all cached data
       TR.loaded = false; TR.allQuestions = []; TR.rawQuestions = [];
       TR.selectedCats = new Set(); TR.selectedSubcats = new Set();
       CH.loaded = false; CH.allWords = []; CH.selectedCats = new Set();
-      PH.loaded = false; PH.allPhotos = []; PH.selectedCats = new Set(); PH.selectedSubcats = new Set();
+      PH.loaded = false; PH.allPhotos = []; PH.rawRows = []; PH.selectedCats = new Set(); PH.selectedSubcats = new Set();
       G.questions.r10 = []; G.questions.r9 = []; G.questions.r8 = [];
       G.media['r1'] = []; G.media['r2'] = [];
       try { localStorage.removeItem('asmila_questions_cache_v1'); } catch(e) {}
@@ -1637,7 +1640,7 @@ function loadBakedQuestions(data) {
     return arr;
   }
   if (data.r3) G.questions.r3 = shuffle([...data.r3]);
-  if (data.r410 && !TR.loaded) {
+  if (data.r410 && !window._eventCode) {
     const sh = shuffle([...data.r410]);
     const half = Math.floor(sh.length/2);
     G.questions.r10 = sh.slice(0, half);
@@ -1677,7 +1680,10 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 2000) {
 // ══════════════════════════════════════
 // DATA — Google Drive Auto-Loader
 // ══════════════════════════════════════
+let _driveLoadGen = 0; // increments on each load — stale loads are ignored
+
 async function loadFromDrive(urlOverride) {
+  const myGen = ++_driveLoadGen; // capture this load's generation
   const url = urlOverride || DRIVE_SCRIPT_URL;
   if (!url) return;
 
@@ -1711,7 +1717,7 @@ async function loadFromDrive(urlOverride) {
     const codeAtLoadTime = code; // snapshot — prevents race condition
     if (data.csvFiles && Object.keys(data.csvFiles).length > 0) {
       setLoadProgress(30);
-      await loadCSVFiles(data.csvFiles, codeAtLoadTime);
+      await loadCSVFiles(data.csvFiles, codeAtLoadTime, myGen);
     } else if (!(typeof QUESTIONS_DATA !== 'undefined' && QUESTIONS_DATA) && data.excel) {
       setLoadProgress(30);
       try {
@@ -1725,15 +1731,15 @@ async function loadFromDrive(urlOverride) {
     }
 
     // Step 3: Background — quick URL, no download needed
-    // Step 4: Images — store URLs, preload silently in background
-    if (images.length > 0) {
+    // Step 4: Images — store URLs, build photo selector from Drive images
+    // Step 4: Images
+    if (images.length > 0 && myGen === _driveLoadGen) {
       setLoadProgress(70);
 
-      if (window._eventCode) {
+      if (code) {
         // Event images — fetch via Apps Script to get authenticated blob URLs
         const imageItems = images.map(f => ({
-          id: f.id,
-          url: null, // will be filled after fetch
+          id: f.id, url: null,
           name: f.name,
           answer: f.name.replace(/\.[^/.]+$/, ''),
           type: 'image'
@@ -1741,36 +1747,75 @@ async function loadFromDrive(urlOverride) {
         G.media['r1'] = imageItems.slice(0, 10);
         G.media['r2'] = imageItems.slice(10, 20);
         PH.loaded = false; PH.allPhotos = []; PH.selectedCats = new Set();
-        window._photoLocked = true;
 
-        // Fetch blob URLs for all images in parallel
         const allItems = [...G.media['r1'], ...G.media['r2']];
         Promise.all(allItems.map(async item => {
           try {
             const res = await fetch(`${url}?action=file&id=${item.id}&t=${Date.now()}`);
-            const data = await res.json();
-            if (data.data) {
-              const bytes = Uint8Array.from(atob(data.data), c => c.charCodeAt(0));
-              const blob = new Blob([bytes], { type: data.mimeType || 'image/jpeg' });
+            const d2 = await res.json();
+            if (d2.data) {
+              const bytes = Uint8Array.from(atob(d2.data), c => c.charCodeAt(0));
+              const blob = new Blob([bytes], { type: d2.mimeType || 'image/jpeg' });
               item.url = URL.createObjectURL(blob);
             }
           } catch(e) {}
-        })).then(() => {
-          updateDataStatus();
-        });
+        })).then(() => { updateDataStatus(); });
 
       } else {
-        // Default folder — use thumbnail URLs (files are publicly shared)
+        // Default folder — thumbnail URLs (publicly shared)
         const imageItems = images.map(f => ({
           url: f.url || `https://drive.google.com/thumbnail?id=${f.id}&sz=w800`,
           name: f.name,
           answer: f.name.replace(/\.[^/.]+$/, ''),
           type: 'image'
         }));
-        G.media['r1'] = imageItems.slice(0, 10);
-        G.media['r2'] = imageItems.slice(10, 20);
+
+        // If images_csv already built PH with categories, match URLs to answers
+        // Otherwise fall back to flat "all photos" display
+        if (PH.loaded && PH.rawRows?.length) {
+          // Match Drive image URLs to CSV answers
+          const urlMap = {};
+          imageItems.forEach(img => { urlMap[img.answer.toLowerCase().trim()] = img.url; });
+          PH.allPhotos = PH.allPhotos.map(p => ({
+            ...p,
+            url: urlMap[p.answer.toLowerCase().trim()] || null,
+          }));
+          // Set G.media.r1/r2 from filtered photos with real URLs
+          applyPhotoFilter();
+        } else {
+          // No CSV — use all images directly
+          G.media['r1'] = imageItems.slice(0, 10);
+          G.media['r2'] = imageItems.slice(10, 20);
+          PH.allPhotos = imageItems.map(f => ({
+            url: f.url, answer: f.answer,
+            cat: _lang==='en' ? 'Photos' : 'صور', subcat: null,
+          }));
+          PH.selectedCats    = new Set([_lang==='en' ? 'Photos' : 'صور']);
+          PH.selectedSubcats = new Set();
+          PH.loaded = true;
+          if (!window._eventCode) {
+            document.getElementById('photo-settings-card').style.display = 'block';
+            const phLoad = document.getElementById('ph-loading');
+            if (phLoad) phLoad.style.display = 'none';
+            const phAcc = document.getElementById('ph-accordion');
+            if (phAcc) {
+              phAcc.style.display = 'block';
+              phAcc.innerHTML = `<div class="ph-acc-cat-row active">
+                <div class="ph-acc-cat-left">
+                  <div class="ph-acc-cat-check">✓</div>
+                  <span class="ph-acc-cat-name">${_lang==='en'?'All Photos':'كل الصور'}</span>
+                  <span class="ph-acc-cat-count">(${imageItems.length})</span>
+                </div>
+              </div>`;
+            }
+            const phCount = document.getElementById('ph-count-display');
+            if (phCount) phCount.textContent = _lang==='en'
+              ? `${Math.min(imageItems.length,10)} for Cat 1 · ${Math.min(Math.max(imageItems.length-10,0),10)} for Cat 2`
+              : `${Math.min(imageItems.length,10)} للفقرة 1 · ${Math.min(Math.max(imageItems.length-10,0),10)} للفقرة 2`;
+          }
+        }
         setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
-        details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} — ${G.media["r1"].length} ${_lang==="en"?"for Cat 1":"للفقرة 1"} ${_lang==="en"?"&":"و"} ${G.media["r2"].length} ${_lang==="en"?"for Cat 2":"للفقرة 2"}`);
+        details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} loaded`);
       }
     }
 
@@ -2143,105 +2188,6 @@ function toggleTriviaSettings() {
   arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
 
-// ── Load trivia categories from pre-parsed data (event CSV override) ──
-function loadTriviaFromData(items, eventCodeSnapshot) {
-  TR.loaded = false;
-  const lang = _lang;
-  const processed = items.map(q => ({
-    q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || ''),
-    a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || ''),
-    cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
-    subcat: lang === 'en' ? (q.subcat_en || q.subcat_ar || null)      : (q.subcat_ar || null),
-  })).filter(q => q.q && q.a);
-  TR.allQuestions    = processed;
-  TR.rawQuestions    = items;
-  TR.selectedCats    = new Set(processed.map(q => q.cat));
-  TR.selectedSubcats = new Set();
-  TR.loaded = true;
-  // Only override G.questions and lock when this was an event load
-  if (eventCodeSnapshot) {
-    const sh = shuffle([...processed]);
-    const half = Math.floor(sh.length / 2);
-    G.questions.r10 = sh.slice(0, half);
-    G.questions.r9  = sh.slice(half);
-    window._triviaLocked = true;
-  }
-  renderTriviaAccordion();
-  const loadEl = document.getElementById('tr-loading');
-  if (loadEl) loadEl.style.display = 'none';
-  const accEl = document.getElementById('tr-accordion');
-  if (accEl) accEl.style.display = 'block';
-  // Only show the card if NOT an event load
-  if (!eventCodeSnapshot) {
-    const card = document.getElementById('trivia-settings-card');
-    if (card) card.style.display = 'block';
-  }
-  applyTriviaFilter();
-}
-
-async function loadTriviaCategories() {
-  // Skip GitHub fetch if event code is active — CSV will load instead
-  if (window._eventCode) return;
-
-  function applyQuestions(questions) {
-    if (window._triviaLocked) {
-      return;
-    }
-    TR.rawQuestions = questions;
-    reprocessTrivia();
-  }
-
-  function reprocessTrivia() {
-    const lang = _lang;
-    const processed = TR.rawQuestions.map(q => ({
-      q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || q.q || ''),
-      a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || q.a || ''),
-      cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
-      subcat: lang === 'en' ? (q.subcat_en || q.subcat_ar || null)      : (q.subcat_ar || null),
-    })).filter(q => q.q && q.a);
-    TR.allQuestions    = processed;
-    TR.selectedCats    = new Set(processed.map(q => q.cat));
-    TR.selectedSubcats = new Set();
-    TR.loaded = true;
-    renderTriviaAccordion();
-    const loadEl = document.getElementById('tr-loading');
-    if (loadEl) loadEl.style.display = 'none';
-    const accEl = document.getElementById('tr-accordion');
-    if (accEl) accEl.style.display = 'block';
-    if (!window._eventCode) {
-      const card = document.getElementById('trivia-settings-card');
-      if (card) card.style.display = 'block';
-    }
-    applyTriviaFilter();
-  }
-
-  try {
-    const cached = localStorage.getItem(TRIVIA_CACHE_KEY);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (Date.now() - parsed.ts < TRIVIA_CACHE_TTL && parsed.questions?.length) {
-        applyQuestions(parsed.questions);
-        fetch(TRIVIA_JSON_URL + '?t=' + Date.now()).then(r => r.json())
-          .then(d => { if (d.questions?.length) localStorage.setItem(TRIVIA_CACHE_KEY, JSON.stringify({questions: d.questions, ts: Date.now()})); })
-          .catch(() => {});
-        return;
-      }
-    }
-  } catch(e) {}
-
-  try {
-    const res = await fetch(TRIVIA_JSON_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error('GitHub ' + res.status);
-    const data = await res.json();
-    if (!data.questions?.length) throw new Error('Empty');
-    try { localStorage.setItem(TRIVIA_CACHE_KEY, JSON.stringify({questions: data.questions, ts: Date.now()})); } catch(e) {}
-    applyQuestions(data.questions);
-  } catch(e) {
-    const el = document.getElementById('tr-loading');
-    if (el) el.textContent = '❌ تعذّر تحميل الأسئلة — سيتم استخدام أسئلة Drive';
-  }
-}
-
 function renderTriviaAccordion() {
   const wrap = document.getElementById('tr-accordion');
   if (!wrap) return;
@@ -2334,12 +2280,7 @@ function getFilteredQuestions() {
 }
 
 function applyTriviaFilter() {
-  if (!TR.loaded) return;
-  if (window._triviaLocked) { console.log('🔒 applyTriviaFilter BLOCKED by lock'); return; }
-  const filtered = shuffle([...getFilteredQuestions()]);
-  const half = Math.floor(filtered.length / 2);
-  G.questions.r10 = filtered.slice(0, half);
-  G.questions.r9  = filtered.slice(half);
+  // G.questions.r10/r9 set directly from CSV — no filter overwrite needed
 }
 
 // ══════════════════════════════════════════
@@ -2350,7 +2291,7 @@ const WAJHAK_CACHE_KEY = 'wajhak_photos_cache_v2';
 const WAJHAK_CACHE_TTL = 5 * 60 * 1000;
 
 const PH = {
-  allPhotos: [], selectedCats: new Set(), selectedSubcats: new Set(),
+  allPhotos: [], rawRows: [], selectedCats: new Set(), selectedSubcats: new Set(),
   openAccCat: null, loaded: false,
 };
 
@@ -2384,6 +2325,10 @@ function toggleCatPanel(panel) {
   if (!isOpen) {
     document.getElementById(target.body).classList.add('open');
     document.getElementById(target.arrow).style.transform = 'rotate(180deg)';
+    // Re-render accordion content when opened in case data loaded after initial render
+    if (panel === 'trivia' && TR.loaded) renderTriviaAccordion();
+    if (panel === 'charades' && CH.loaded) { buildCharadesFromRaw(); renderCharadesAccordion(); }
+    if (panel === 'photo' && PH.loaded) renderPhotoAccordion();
   }
 }
 
@@ -2421,56 +2366,8 @@ function toggleTriviaSettings()   { toggleCatPanel('trivia'); }
 function toggleCharadesSettings() { toggleCatPanel('charades'); }
 
 async function loadPhotoCategories() {
-  // Skip GitHub fetch if event code is active — Drive images load instead
-  if (window._eventCode) return;
-  function applyPhotos(photos) {
-    // When event code active — Drive images take priority, skip GitHub photos
-    if (window._eventCode) {
-      return;
-    }
-    const lang = _lang;
-    const processed = photos.map(p => ({
-      url:    p.url,
-      answer: p.answer,
-      cat:    lang === 'en' ? (p.cat_en    || p.cat_ar    || 'General') : (p.cat_ar    || 'عام'),
-      subcat: lang === 'en' ? (p.subcat_en || p.subcat_ar || null)      : (p.subcat_ar || null),
-    }));
-    PH.allPhotos       = processed;
-    PH.selectedCats    = new Set(processed.map(p => p.cat));
-    PH.selectedSubcats = new Set();
-    PH.loaded = true;
-    renderPhotoAccordion();
-    document.getElementById('ph-loading').style.display    = 'none';
-    document.getElementById('ph-accordion').style.display  = 'block';
-    document.getElementById('photo-settings-card').style.display = 'block';
-    applyPhotoFilter();
-  }
-
-  try {
-    const cached = localStorage.getItem(WAJHAK_CACHE_KEY);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (Date.now() - parsed.ts < WAJHAK_CACHE_TTL && parsed.photos?.length) {
-        applyPhotos(parsed.photos);
-        fetch(WAJHAK_JSON_URL + '?t=' + Date.now()).then(r => r.json())
-          .then(d => { if (d.photos?.length) localStorage.setItem(WAJHAK_CACHE_KEY, JSON.stringify({photos: d.photos, ts: Date.now()})); })
-          .catch(() => {});
-        return;
-      }
-    }
-  } catch(e) {}
-
-  try {
-    const res = await fetch(WAJHAK_JSON_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error('GitHub ' + res.status);
-    const data = await res.json();
-    if (!data.photos?.length) throw new Error('Empty');
-    try { localStorage.setItem(WAJHAK_CACHE_KEY, JSON.stringify({photos: data.photos, ts: Date.now()})); } catch(e) {}
-    applyPhotos(data.photos);
-  } catch(e) {
-    const el = document.getElementById('ph-loading');
-    if (el) el.textContent = '❌ تعذّر تحميل الصور — سيتم استخدام صور Drive';
-  }
+  // Photo categories now built directly from Drive images — GitHub source removed
+  return;
 }
 
 function renderPhotoAccordion() {
@@ -2566,10 +2463,28 @@ function getFilteredPhotos() {
 
 function applyPhotoFilter() {
   if (!PH.loaded) return;
-  if (window._photoLocked) { console.log('🔒 applyPhotoFilter BLOCKED by lock'); return; }
+  if (window._eventCode) return; // event images set directly from Drive — don't overwrite
   const filtered = shuffle([...getFilteredPhotos()]);
-  G.media['r1'] = filtered.slice(0, 10);
-  G.media['r2'] = filtered.slice(10, 20);
+  // Match filtered answers to actual Drive image objects (which have URLs)
+  const allDriveImages = [...(G.media['r1'] || []), ...(G.media['r2'] || [])];
+  if (allDriveImages.length > 0) {
+    // Match by answer name to Drive image filename
+    const matched = filtered.map(p => {
+      const driveImg = allDriveImages.find(img =>
+        img.answer && p.answer &&
+        img.answer.toLowerCase().trim() === p.answer.toLowerCase().trim()
+      );
+      return driveImg || { ...p, url: null };
+    }).filter(p => p.url); // only keep items with actual Drive URLs
+    const toShow = matched.length >= 10 ? matched : allDriveImages; // fallback to all if not enough matches
+    const sh = shuffle([...toShow]);
+    G.media['r1'] = sh.slice(0, 10);
+    G.media['r2'] = sh.slice(10, 20);
+  } else {
+    // No Drive images yet — store filtered for when images arrive
+    G.media['r1'] = filtered.slice(0, 10);
+    G.media['r2'] = filtered.slice(10, 20);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -2614,7 +2529,7 @@ const LANG = {
     startAuction: '🎯 ابدأ المزاد',
     startFirst: 'ابدأ السؤال أولاً! 🎯',
     revealFirst: 'كشف الجواب أولاً! 👁',
-    almostReady: '⏳ شوي و منكون جاهزين',
+    almostReady: '⏳ قليلاً و نكون جاهزين',
     correct: '✅ صح',
     wrong: '❌ خطأ',
     correctDone: '✅ صح ✓',
@@ -2631,7 +2546,7 @@ const LANG = {
     r8: 'سكر تمك',
     r9: 'من كل وادي عصا',
     // Status
-    allReady: '✅ كل شي جاهز',
+    allReady: 'كل شي جاهز',
     loadingImages: 'الأسئلة جاهزة — عم نحضّر الصور',
     loadingAll: 'يتم تحضير الأسئلة و الصور',
     bothConnected: '✅ الفريقين متصلين!',
@@ -2794,7 +2709,7 @@ const LANG = {
     r8: 'Zip It!',
     r9: 'General Knowledge',
     // Status
-    allReady: '✅ All ready',
+    allReady: 'All ready',
     loadingImages: 'Questions ready — loading images',
     loadingAll: 'Loading questions and images',
     bothConnected: '✅ Both teams connected!',
@@ -2998,9 +2913,32 @@ function applyLang() {
   if (triviaLbl) triviaLbl.textContent = isAr ? '📝 اختيار فئات الأسئلة' : '📝 Select Question Categories';
 
   // Re-apply photos with new language if loaded
-  if (PH.loaded) {
-    PH.openAccCat = null;
-    loadPhotoCategories();
+  // Rebuild photo accordion when language changes
+  if (PH.loaded && !window._eventCode && PH.rawRows?.length) {
+    PH.allPhotos = PH.rawRows.map(p => ({
+      answer: p.answer, url: null,
+      cat:    isAr ? (p.cat_ar    || p.cat_en)    : (p.cat_en    || p.cat_ar),
+      subcat: isAr ? (p.subcat_ar || p.subcat_en) : (p.subcat_en || p.subcat_ar),
+    }));
+    PH.selectedCats = new Set(PH.allPhotos.map(p => p.cat));
+    PH.selectedSubcats = new Set();
+    renderPhotoAccordion();
+  } else if (PH.loaded && !window._eventCode) {
+    // Fallback: just update label
+    const phAcc = document.getElementById('ph-accordion');
+    const catLabel = isAr ? 'كل الصور' : 'All Photos';
+    const totalImgs = PH.allPhotos.length;
+    if (phAcc) phAcc.innerHTML = `<div class="ph-acc-cat-row active">
+      <div class="ph-acc-cat-left">
+        <div class="ph-acc-cat-check">✓</div>
+        <span class="ph-acc-cat-name">${catLabel}</span>
+        <span class="ph-acc-cat-count">(${totalImgs})</span>
+      </div>
+    </div>`;
+    const phCount = document.getElementById('ph-count-display');
+    if (phCount) phCount.textContent = isAr
+      ? `${Math.min(totalImgs,10)} للفقرة 1 · ${Math.min(Math.max(totalImgs-10,0),10)} للفقرة 2`
+      : `${Math.min(totalImgs,10)} for Cat 1 · ${Math.min(Math.max(totalImgs-10,0),10)} for Cat 2`;
   }
 
   // Refresh charades settings label
@@ -3013,19 +2951,16 @@ function applyLang() {
   // Re-apply trivia with new language if loaded
   if (TR.loaded && TR.rawQuestions.length) {
     TR.openAccCat = null;
-    // Re-process raw questions with new language
-    const lang = _lang;
-    const processed = TR.rawQuestions.map(q => ({
-      q:      lang === 'en' ? (q.q_en || q.q_ar || '') : (q.q_ar || q.q || ''),
-      a:      lang === 'en' ? (q.a_en || q.a_ar || '') : (q.a_ar || q.a || ''),
-      cat:    lang === 'en' ? (q.cat_en    || q.cat_ar    || 'General') : (q.cat_ar    || 'عام'),
-      subcat: lang === 'en' ? (q.subcat_en || q.subcat_ar || null)      : (q.subcat_ar || null),
-    })).filter(q => q.q && q.a);
-    TR.allQuestions    = processed;
-    TR.selectedCats    = new Set(processed.map(q => q.cat));
+    const lang2 = _lang;
+    TR.allQuestions = TR.rawQuestions.map(q => ({
+      q:      lang2==='en'?(q.q_en||q.q_ar||''):(q.q_ar||''),
+      a:      lang2==='en'?(q.a_en||q.a_ar||''):(q.a_ar||''),
+      cat:    lang2==='en'?(q.cat_en||q.cat_ar||'General'):(q.cat_ar||'عام'),
+      subcat: lang2==='en'?(q.subcat_en||q.subcat_ar||null):(q.subcat_ar||null),
+    })).filter(q=>q.q&&q.a);
+    TR.selectedCats = new Set(TR.allQuestions.map(q=>q.cat));
     TR.selectedSubcats = new Set();
     renderTriviaAccordion();
-    applyTriviaFilter();
   }
 
   // Re-apply charades with new language if loaded
@@ -3105,7 +3040,7 @@ function processExcelWorkbook(wb) {
   else details.push(`⚠️ Category 3: ${_lang==="en"?"not found":"مش موجود"}`);
 
   const s410 = getRows('Category 4-10', true);
-  if (s410 && s410.length > 0 && !TR.loaded) {
+  if (s410 && s410.length > 0 && !window._eventCode) {
     const sh = shuffle([...s410]); const half = Math.floor(sh.length/2);
     G.questions.r10 = sh.slice(0, half); G.questions.r9 = sh.slice(half);
     details.push(`✅ ${_lang==="en"?"Trivia":"متفرقات"}: ${s410.length} ${_lang==="en"?"questions":"سؤال"}`);
@@ -3143,7 +3078,7 @@ function processExcelWorkbook(wb) {
 // ══════════════════════════════════════
 // DATA — CSV Loader (Google Drive)
 // ══════════════════════════════════════
-async function loadCSVFiles(csvFiles, eventCodeSnapshot) {
+async function loadCSVFiles(csvFiles, eventCodeSnapshot, loadGen) {
   function parseCSV(text) {
     const lines = text.split('\n').slice(1);
     return lines.map(line => {
@@ -3183,34 +3118,77 @@ async function loadCSVFiles(csvFiles, eventCodeSnapshot) {
 
   const results = await Promise.all(fetches);
 
+  // If a newer load has started, discard these results
+  if (loadGen && loadGen < _driveLoadGen) return;
+
   results.forEach(({ key, rows }) => {
     if (!rows || rows.length === 0) return;
     if (key === 'images_csv') {
-      // Single CSV for all images — shuffle then split 10/10
-      const mapped = rows.map(r => ({ filename: r[0]?.trim(), answer: r[1]?.trim() })).filter(x => x.filename);
+      // Format: answer | cat_ar | subcat_ar | cat_en | subcat_en
+      const mapped = rows.map(r => ({
+        answer:    (r[0]||'').trim(),
+        cat_ar:    (r[1]||'').trim(),
+        subcat_ar: (r[2]||'').trim(),
+        cat_en:    (r[3]||r[1]||'').trim(),
+        subcat_en: (r[4]||r[2]||'').trim(),
+      })).filter(x => x.answer);
       const shuffled = shuffle(mapped);
       G.questions.r1csv = shuffled.slice(0, 10);
       G.questions.r2csv = shuffled.slice(10, 20);
+
+      // Build PH for photo selector with categories/subcategories
+      PH.allPhotos = mapped.map(p => ({
+        answer: p.answer,
+        url: null, // URL will be matched from G.media.r1/r2 at game time
+        cat:    _lang==='en' ? (p.cat_en    || p.cat_ar)    : (p.cat_ar    || p.cat_en),
+        subcat: _lang==='en' ? (p.subcat_en || p.subcat_ar) : (p.subcat_ar || p.subcat_en),
+      }));
+      PH.selectedCats    = new Set(PH.allPhotos.map(p => p.cat));
+      PH.selectedSubcats = new Set();
+      PH.loaded = true;
+      PH.rawRows = mapped; // store raw for language rebuild
+
+      if (!eventCodeSnapshot) {
+        const card = document.getElementById('photo-settings-card');
+        if (card) card.style.display = 'block';
+        const phLoad = document.getElementById('ph-loading');
+        if (phLoad) phLoad.style.display = 'none';
+        const phAcc = document.getElementById('ph-accordion');
+        if (phAcc) phAcc.style.display = 'block';
+        renderPhotoAccordion();
+      }
     } else if (key === 'cat3') {
       // col0=Q_AR, col1=Q_EN
       G.questions.r3 = shuffle(rows.map(r => ({ q_ar: r[0], q_en: r[1] || r[0] })).filter(x => x.q_ar));
     } else if (key === 'cat410') {
-      if (eventCodeSnapshot || !TR.loaded) {
-        // Format: Q_AR | Q_EN | A_AR | A_EN | Cat_AR | Subcat_AR | Cat_EN | Subcat_EN
-        const items = rows.map(r => ({
-          q_ar:      (r[0] || '').trim(),
-          q_en:      (r[1] || r[0] || '').trim(),
-          a_ar:      (r[2] || '').trim(),
-          a_en:      (r[3] || r[2] || '').trim(),
-          cat_ar:    (r[4] || 'متفرقات').trim(),
-          subcat_ar: (r[5] || '').trim(),
-          cat_en:    (r[6] || r[4] || 'General').trim(),
-          subcat_en: (r[7] || r[5] || '').trim(),
-        })).filter(x => x.q_ar && x.a_ar);
-        const sh = shuffle([...items]); const half = Math.floor(sh.length/2);
-        G.questions.r10 = sh.slice(0, half);
-        G.questions.r9  = sh.slice(half);
-        loadTriviaFromData(items, eventCodeSnapshot);      }
+      const items410 = rows.map(r => ({
+        q_ar: (r[0]||'').trim(), q_en: (r[1]||r[0]||'').trim(),
+        a_ar: (r[2]||'').trim(), a_en: (r[3]||r[2]||'').trim(),
+        cat_ar: (r[4]||'متفرقات').trim(), subcat_ar: (r[5]||'').trim(),
+        cat_en: (r[6]||r[4]||'General').trim(), subcat_en: (r[7]||r[5]||'').trim(),
+      })).filter(x => x.q_ar && x.a_ar);
+      const sh410 = shuffle([...items410]); const half410 = Math.floor(sh410.length/2);
+      G.questions.r10 = sh410.slice(0, half410);
+      G.questions.r9  = sh410.slice(half410);
+      TR.rawQuestions = items410;
+      TR.allQuestions = items410.map(q => ({
+        q: _lang==='en'?(q.q_en||q.q_ar||''):(q.q_ar||''),
+        a: _lang==='en'?(q.a_en||q.a_ar||''):(q.a_ar||''),
+        cat: _lang==='en'?(q.cat_en||q.cat_ar||'General'):(q.cat_ar||'عام'),
+        subcat: _lang==='en'?(q.subcat_en||q.subcat_ar||null):(q.subcat_ar||null),
+      })).filter(q=>q.q&&q.a);
+      TR.selectedCats = new Set(TR.allQuestions.map(q=>q.cat));
+      TR.selectedSubcats = new Set();
+      TR.loaded = true;
+      if (!eventCodeSnapshot) {
+        const card = document.getElementById('trivia-settings-card');
+        if (card) card.style.display = 'block';
+        const trLoad = document.getElementById('tr-loading');
+        if (trLoad) trLoad.style.display = 'none';
+        const trAcc = document.getElementById('tr-accordion');
+        if (trAcc) trAcc.style.display = 'block';
+        renderTriviaAccordion();
+      }
     } else if (key === 'cat5') {
       G.questions.r4 = shuffle(rows.map(r => ({ q: r[0], a: r[1], lang: (r[2]||'').trim().toLowerCase() })).filter(x => x.q));
       setTimeout(updateCat5Count, 100);
@@ -3242,7 +3220,7 @@ function updateDataStatus() {
   const imagesReady    = G.media.r1.length > 0;
   const triviaReady    = G.questions.r10.length > 0 || G.questions.r9.length > 0;
   const questionsReady = window._eventCode
-    ? (triviaReady && G.questions.r3.length > 0)   // event: trivia + cat3 enough
+    ? triviaReady   // event: trivia is enough to show ready
     : (G.questions.r3.length > 0 && G.questions.r4.length > 0 && G.questions.r8.length > 0);
 
   if (questionsReady && imagesReady) {
@@ -3282,7 +3260,7 @@ function buildMenu() {
   if (grid) {
     grid.innerHTML = ROUNDS.map(r => {
       const isDone = G.done.has(r.id);
-      return `<button class="round-btn${isDone?' done':''}" onclick="openRound('${r.id}')">
+      return `<button class="round-btn${isDone?' done':''}" ${isDone ? 'disabled style="cursor:default;opacity:0.6"' : `onclick="openRound('${r.id}')"`}>
         <div class="rname">${r.name}</div>
       </button>`;
     }).join('');
@@ -3316,28 +3294,22 @@ function updateHeaderScores() {
 // GAME FLOW — Open Round
 // ══════════════════════════════════════
 function openRound(id) {
-  // When event code active — re-sync G.questions.r10/r9 from TR.allQuestions before starting
-  if (window._eventCode && TR.loaded && TR.allQuestions.length > 0) {
-    const sh = shuffle([...TR.allQuestions]);
-    const half = Math.floor(sh.length / 2);
-    G.questions.r10 = sh.slice(0, half);
-    G.questions.r9  = sh.slice(half);
-  }
+  if (G.done.has(id)) return; // already played — cannot replay
   _resetScoreState();
   const round = ROUNDS.find(r => r.id === id);
 
   // Check if data is ready for this round
   const dataMap = {
-    'r1': () => G.media.r1.length > 0,
-    'r2': () => G.media.r2.length > 0,
-    'r3': () => G.questions.r3.length > 0,
-    'r4': () => G.questions.r4.length > 0,
-    'r5': () => G.media.r5.length > 0,
-    'r6': () => G.questions.r6.length > 0,
-    'r7': () => G.questions.r7.length > 0,
-    'r8': () => G.questions.r8.length > 0,
-    'r9': () => G.questions.r9.length > 0,
-    'r10': () => G.questions.r10.length > 0,
+    'r1':  () => G.media.r1.length > 0,
+    'r2':  () => G.media.r2.length > 0,
+    'r3':  () => G.questions.r3.length > 0,
+    'r4':  () => (G.questions.r4 || []).length > 0,
+    'r5':  () => (G.media.r5 || []).length > 0,
+    'r6':  () => (G.questions.r6 || []).length > 0,
+    'r7':  () => (G.questions.r7 || []).length > 0,
+    'r8':  () => (G.questions.r8 || []).length > 0,
+    'r9':  () => (G.questions.r9 || []).length > 0,
+    'r10': () => (G.questions.r10 || []).length > 0,
   };
 
   if (dataMap[id] && !dataMap[id]()) {
@@ -3361,16 +3333,26 @@ function nextQ() {
   _resetScoreState();
   const r = G.currentRound;
   if (!r) return;
-  // For closest categories: block next if answer not revealed yet
+
+  // Block next question if answer not yet revealed (skip for title/rules slides and cat3/cat6)
+  const skipRevealCheck = G.currentQ <= 0 || r.id === 'r3' || r.id === 'r5';
+  if (!skipRevealCheck && !window._answerRevealed) {
+    showToast(t('revealFirst'));
+    return;
+  }
+
+  // For closest categories: also need reveal done
   if ((r.id === 'r6' || r.id === 'r7') && G.currentQ >= 1 && !window._closestRevealDone) {
     showToast(t('revealFirst'));
     return;
   }
+
   if (G.currentQ >= r.count) {
     showResult();
     return;
   }
   G.currentQ++;
+  window._answerRevealed = false; // reset for new question
   renderSlide();
   pushHostState();
 }
@@ -3383,6 +3365,7 @@ function renderSlide() {
   const sa = document.getElementById('slide-area');
   stopTimer();
   setTimeout(pushHostState, 150);
+  window._answerRevealed = false; // reset on each new slide
 
   // Reset slide-area styles for all rounds
   sa.style.overflow = '';
@@ -3841,11 +3824,90 @@ function addScore(team, val) {
   document.getElementById('mn-a-score') && (document.getElementById('mn-a-score').textContent = G.scoreA);
   document.getElementById('mn-b-score') && (document.getElementById('mn-b-score').textContent = G.scoreB);
   showToast(val > 0 ? `+${val} ${_lang==='en'?'pts':'نقطة'}! 🎉` : `${val} ${_lang==='en'?'pts':'نقطة'}`);
+  // Score flash overlay
+  showScoreFlash(val, team);
   const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
   if (db && fbSet && fbRef) {
     fbSet(fbRef(db, _path('hostState/scoreA')), G.scoreA);
     fbSet(fbRef(db, _path('hostState/scoreB')), G.scoreB);
   }
+}
+
+function unlockNextButton() {
+  // Find the next/results button and give it the green unlocked style
+  const btns = document.querySelectorAll('.nav-btn.primary');
+  btns.forEach(btn => {
+    if (btn.id === 'roulette-go-btn') return; // skip roulette button
+    btn.style.borderColor    = 'var(--neon-green)';
+    btn.style.color          = 'var(--neon-green)';
+    btn.style.textShadow     = 'var(--glow-green)';
+    btn.style.boxShadow      = 'var(--glow-green)';
+    btn.style.background     = 'rgba(57,255,20,0.15)';
+    btn.style.transform      = 'scale(1.03)';
+    setTimeout(() => { btn.style.transform = ''; }, 300);
+  });
+}
+
+function showScoreFlash(val, team) {
+  const existing = document.getElementById('score-flash-overlay');
+  if (existing) existing.remove();
+
+  const positive = val > 0;
+  const color    = positive ? '#39FF14' : '#FF2D2D';
+  const bg       = positive ? 'rgba(0,20,0,0.75)' : 'rgba(30,0,0,0.75)';
+  const label    = positive ? `+${val}` : `${val}`;
+  const teamName = team === 'a' ? G.teamA : G.teamB;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'score-flash-overlay';
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:9998;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+    background:${bg};
+    opacity:0;transition:opacity 0.1s;
+    pointer-events:none;
+  `;
+  overlay.innerHTML = `
+    <div id="score-flash-team" style="
+      font-family:'Cairo',sans-serif;
+      font-size:clamp(22px,5vw,42px);
+      font-weight:900;
+      color:${color};
+      opacity:0;
+      transform:translateY(-10px);
+      transition:transform 0.25s ease,opacity 0.2s;
+      line-height:1;
+      text-shadow:0 0 20px ${color};
+    ">${teamName}</div>
+    <div id="score-flash-num" style="
+      font-family:'Cairo',sans-serif;
+      font-size:clamp(80px,20vw,180px);
+      font-weight:900;
+      color:${color};
+      text-shadow:0 0 40px ${color};
+      opacity:0;
+      transform:scale(0.4);
+      transition:transform 0.25s cubic-bezier(0.17,0.67,0.12,1.5),opacity 0.15s;
+      line-height:1;
+    ">${label}</div>`;
+  document.body.appendChild(overlay);
+
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    const num  = document.getElementById('score-flash-num');
+    const name = document.getElementById('score-flash-team');
+    if (num)  { num.style.opacity = '1';  num.style.transform  = 'scale(1)'; }
+    if (name) { name.style.opacity = '1'; name.style.transform = 'translateY(0)'; }
+  });
+
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    const num  = document.getElementById('score-flash-num');
+    const name = document.getElementById('score-flash-team');
+    if (num)  { num.style.opacity  = '0'; num.style.transform  = 'scale(1.8)';     num.style.transition  = 'transform 0.4s ease-in,opacity 0.4s'; }
+    if (name) { name.style.opacity = '0'; name.style.transform = 'translateY(-10px)'; name.style.transition = 'transform 0.4s,opacity 0.4s'; }
+    setTimeout(() => overlay.remove(), 500);
+  }, 900);
 }
 
 // ══════════════════════════════════════════
@@ -4024,6 +4086,8 @@ function renderBuzzerImage(r, qIndex, sa) {
 }
 
 function revealSongAnswer() {
+  window._answerRevealed = true;
+  unlockNextButton();
   const area = document.getElementById('answer-area');
   if (area && window._currentSongA) {
     area.innerHTML = `<div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,30px)">${window._currentSongA}</div>`;
@@ -4031,6 +4095,8 @@ function revealSongAnswer() {
 }
 
 function revealImageAnswer(answer) {
+  window._answerRevealed = true;
+  unlockNextButton();
   const area = document.getElementById('answer-area');
   if(area) {
     area.innerHTML = `<div class="answer-box fade-in" style="background:rgba(0,10,50,0.6);border:2px solid #39FF14;box-shadow:0 0 12px rgba(57,255,20,0.5);border-radius:12px;padding:14px 28px;min-width:200px;text-align:center;font-size:clamp(16px,2.5vw,22px);font-weight:900;color:#39FF14;text-shadow:0 0 8px rgba(57,255,20,0.6)">${answer}</div>`;
@@ -4292,13 +4358,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
 
         // Flash on main screen
         showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
-        document.getElementById('bid-event-msg').textContent = _lang==="en"?`🔥 ${winnerName} bid ${bidVal} — ${waitingName} has 10 seconds to respond!`:`🔥 ${winnerName} زايد ${bidVal} — ${waitingName} عندو 10 ثواني للرد!`;
+        document.getElementById('bid-event-msg').textContent = _lang==="en"?`🔥 ${winnerName} bid ${bidVal} — ${waitingName} has 10 seconds to respond!`:`🔥 ${winnerName} زايد ${bidVal} — ${waitingName} لديه 10 ثواني للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
         const labelEl = document.getElementById('bid-countdown-label');
         numEl.style.display = 'block';
         labelEl.style.display = 'block';
-        labelEl.textContent = _lang==="en"?`${waitingName} needs to respond`:`${waitingName} تحتاج ترد`;
+        labelEl.textContent = _lang==="en"?`${waitingName} needs to respond`:`${waitingName} تحتاج أن ترد`;
 
         cat3BidCountdownInterval = setInterval(() => {
           const serverOff = 0; // server offset handled on phone side
@@ -4806,6 +4872,8 @@ function showCat6AnswerReveal() {
 }
 
 function cat6RevealAnswer() {
+  window._answerRevealed = true;
+  unlockNextButton();
   window._cat6Phase = 'answer';
   window._cat6Judgement = {}; // reset judgements
   window._cat6ScoringLocked = false;
@@ -5122,6 +5190,8 @@ function showClosestAnswers() {
 }
 
 function revealClosestNow() {
+  window._answerRevealed = true;
+  unlockNextButton();
   if (window._closestRevealDone) return;
   window._closestRevealDone = true;
   const revealBtn = document.getElementById('btn-reveal-ans');
@@ -5282,6 +5352,8 @@ function renderCharades(r, qIndex, sa) {
 }
 
 function revealChar() {
+  window._answerRevealed = true;
+  unlockNextButton();
   const el = document.getElementById('char-answer');
   if (el) el.style.filter = 'none';
 }
@@ -5303,7 +5375,7 @@ function renderBuzzerQuestion(r, qIndex, sa) {
   sa.innerHTML = `
     <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
     <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q || `${_lang==="en"?"Question":"السؤال"} ${qIndex+1}`}</div>
-    ${ans ? `<button class="answer-reveal-btn" onclick="document.getElementById('q-ans').style.display='flex'">${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}</button>
+    ${ans ? `<button class="answer-reveal-btn" onclick="window._answerRevealed=true;unlockNextButton();document.getElementById('q-ans').style.display='flex'">${_lang==="en"?"👁 Reveal Answer":"👁 كشف الجواب"}</button>
     <div class="answer-box" id="q-ans" style="display:none;font-size:30px">✅ ${ans}</div>` : ''}
     ${scorePanelHTML(2, 1)}
     <div class="nav-btns">
@@ -6037,10 +6109,18 @@ function setLoadProgress(pct) {
   if (bar) bar.style.width = pct + '%';
 }
 
+// ── APPS SCRIPT WARM-UP PING ──
+// Fire immediately on script parse — wakes up Apps Script cold start
+// before the user even finishes entering team names
+(function() {
+  try {
+    fetch(DRIVE_SCRIPT_URL + '?action=ping&t=' + Date.now(), { redirect: 'follow' })
+      .catch(() => {}); // silent — we don't care about the response
+  } catch(e) {}
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   autoLoad();
-  loadPhotoCategories();
-  loadTriviaCategories();
   loadCharadesFromSheet();
   applyLang(); // apply current language on load
 });

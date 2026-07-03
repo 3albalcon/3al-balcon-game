@@ -97,12 +97,12 @@ body { font-family:'Cairo',sans-serif; background:var(--dark); color:#fff; min-h
 
   <!-- Nav controls — always visible -->
   <div class="btn-row" id="nav-row">
-    <button class="btn btn-c btn-sm" id="btn-prev" onclick="c('prev')" disabled>← <span id='h-prev-lbl'>السابق</span></button>
-    <button class="btn btn-g" id="btn-next" onclick="c('next')" disabled style="font-size:18px;padding:16px 0"><span id='h-next-lbl'>التالي</span> →</button>
+    <button class="btn btn-w btn-sm" id="btn-prev" onclick="c('prev')" disabled>← <span id='h-prev-lbl'>السابق</span></button>
+    <button class="btn btn-g" id="btn-next" onclick="c('next')" disabled style="font-size:18px;padding:16px 0;box-shadow:0 0 12px rgba(57,255,20,0.25)"><span id='h-next-lbl'>التالي</span> →</button>
   </div>
   <div class="btn-row">
     <button class="btn btn-sm" onclick="goMenu()" style="flex:1;border-color:#FF8C00;color:#FF8C00;background:rgba(255,140,0,0.08);box-shadow:0 0 8px rgba(255,140,0,0.3)">🏠 <span id='h-menu-lbl'>القائمة</span></button>
-    <button class="btn btn-r btn-sm" id="btn-roulette" onclick="c('roulette')" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:4px">🎰 <span id='h-spin-lbl'>دوّر</span></button>
+    <button class="btn btn-sm" id="btn-roulette" style="flex:1;border-color:#FF2D78;color:#FF2D78;background:rgba(255,45,120,0.08);text-align:center;display:flex;align-items:center;justify-content:center;gap:4px" onclick="c('roulette')">🎰 <span id='h-spin-lbl'>دوّر</span></button>
   </div>
 
   <!-- Category grid — always at bottom -->
@@ -139,7 +139,7 @@ const db = getDatabase(app);
 
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
 let _answerRevealed = false;  // gate: must reveal before Next
-let _scoredThisQ = new Set(); // which teams scored this question
+let _scoredThisQ = new Map(); // team → pts scored this question
 
 // Session ID from URL
 const params = new URLSearchParams(window.location.search);
@@ -457,7 +457,7 @@ function render() {
       </div>
       <button class="btn btn-c btn-sm" onclick="c('videoReveal')" style="width:100%">${_lang==='en'?'📋 Show Question':'📋 عرض السؤال'}</button>
       ${view.answer?`<div class="card a-card" style="font-size:14px">${view.answer}</div>`:''}
-      ${view.answer?`<button class="btn btn-g btn-sm" onclick="c('revealCat6Answer')" style="width:100%">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>`:''}
+      ${view.answer?`<button class="btn btn-y btn-sm" onclick="c('revealCat6Answer')" style="width:100%">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>`:''}
       <div id="cat6-judge-area" style="width:100%"></div>`;
     loadCat6Answers();
     return;
@@ -473,7 +473,7 @@ function render() {
       ${ans ? `<div class="card a-card">${ans}</div>` : ''}
       <div class="btn-row">
         ${isFirstQ ? `<button class="btn btn-c btn-sm" onclick="c('showQuestion')" style="font-size:12px">${_lang==='en'?'📋 Show Question':'📋 عرض السؤال'}</button>` : ''}
-        <button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="font-size:12px">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب'}</button>
+        <button class="btn btn-y btn-sm" onclick="c('revealAnswer')" style="font-size:12px">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب'}</button>
       </div>`;
     return;
   }
@@ -485,42 +485,63 @@ function render() {
     ${!isImgCat && qText ? `<div class="card q-card">${qText}</div>` : ''}
     ${ans ? `<div class="card a-card">${ans}</div>` : _lang==='en'?'<div class="waiting">Loading question...</div>':'<div class="waiting">جاري تحميل السؤال...</div>'}
     ${isCat9 ? `<button class="btn btn-y btn-sm" onclick="c('startTimer',{seconds:60})" style="width:100%">${_lang==='en'?'⏱ Start Timer':'⏱ ابدأ التايمر'}</button>` : ''}
-    ${ans ? `<button class="btn btn-g btn-sm" onclick="c('revealAnswer')" style="width:100%;margin-top:2px">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>` : ''}
+    ${ans ? `<button class="btn btn-y btn-sm" onclick="c('revealAnswer')" style="width:100%;margin-top:2px">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>` : ''}
     ${scoreSection(round)}`;
 }
 
 function scoreSection(round) {
   if (!round) return '';
-  const tA = state.teamA||(_lang==='en'?'A':'أ');
-  const tB = state.teamB||(_lang==='en'?'B':'ب');
+  const tA   = state.teamA||(_lang==='en'?'A':'أ');
+  const tB   = state.teamB||(_lang==='en'?'B':'ب');
   const plus = round.plus || 2;
   const minus = Math.abs(round.minus || 0);
-  const scoredA = _scoredThisQ.has('a');
-  const scoredB = _scoredThisQ.has('b');
-  const lockStyle = 'opacity:0.25;cursor:not-allowed;pointer-events:none';
-  const doneLabel = _lang==='en'?' ✓':' ✓';
+  const stA  = _scoredThisQ.get('a'); // {pts} or undefined
+  const stB  = _scoredThisQ.get('b');
+
+  function teamRow(team, name, st) {
+    if (st !== undefined) {
+      // Scored — show result + undo button
+      const pos = st > 0;
+      const color = pos ? 'var(--green)' : 'var(--red)';
+      const bg    = pos ? 'rgba(57,255,20,0.08)' : 'rgba(255,45,45,0.08)';
+      const label = pos ? `+${st}` : `${st}`;
+      return `<div style="display:flex;gap:5px;align-items:center">
+        <div style="flex:1;padding:9px 10px;border-radius:9px;border:2px solid ${color};background:${bg};
+          color:${color};font-size:13px;font-weight:900;text-align:center">
+          ${label} ${name} ✓
+        </div>
+        <button onclick="hostUndoScore('${team}')" style="padding:9px 12px;border-radius:9px;border:2px solid rgba(255,255,255,0.2);
+          background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);font-family:Cairo,sans-serif;
+          font-size:13px;font-weight:900;cursor:pointer" title="${_lang==='en'?'Undo':'تراجع'}">↩</button>
+      </div>`;
+    }
+    // Not scored — show +/- buttons
+    return `<div class="btn-row">
+      <button class="btn btn-g btn-sm" onclick="hostScore('${team}',${plus})">+${plus} ${name}</button>
+      ${minus!==0?`<button class="btn btn-r btn-sm" onclick="hostScore('${team}',${-minus})">-${minus} ${name}</button>`:''}
+    </div>`;
+  }
+
   return `<div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
-    <div class="lbl">${_lang==='en'?'— Manual Score —':'— نقاط يدوية —'}</div>
-    <div class="btn-row">
-      <button class="btn btn-g btn-sm" ${scoredA?`style="${lockStyle}"`:''}
-        onclick="hostScore('a',${plus})">${scoredA?'✓':'+'+plus} ${tA}</button>
-      ${minus!==0?`<button class="btn btn-r btn-sm" ${scoredA?`style="${lockStyle}"`:''}
-        onclick="hostScore('a',${-minus})">${scoredA?'✓':'-'+minus} ${tA}</button>`:''}
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-g btn-sm" ${scoredB?`style="${lockStyle}"`:''}
-        onclick="hostScore('b',${plus})">${scoredB?'✓':'+'+plus} ${tB}</button>
-      ${minus!==0?`<button class="btn btn-r btn-sm" ${scoredB?`style="${lockStyle}"`:''}
-        onclick="hostScore('b',${-minus})">${scoredB?'✓':'-'+minus} ${tB}</button>`:''}
-    </div>
+    <div class="lbl">${_lang==='en'?'— Score —':'— النقاط —'}</div>
+    ${teamRow('a', tA, stA)}
+    ${teamRow('b', tB, stB)}
   </div>`;
 }
 
 window.hostScore = (team, pts) => {
-  if (_scoredThisQ.has(team)) return; // already scored this question
-  _scoredThisQ.add(team);
+  if (_scoredThisQ.has(team)) return;
+  _scoredThisQ.set(team, pts);
   c('addScore', {team, pts});
-  render(); // re-render to lock buttons
+  render();
+};
+
+window.hostUndoScore = (team) => {
+  if (!_scoredThisQ.has(team)) return;
+  const pts = _scoredThisQ.get(team);
+  _scoredThisQ.delete(team);
+  c('addScore', {team, pts: -pts}); // reverse
+  render();
 };
 
 // Firebase listeners
@@ -532,7 +553,7 @@ onValue(ref(db,P('hostState')), s => {
   // Reset per-question flags when question changes
   if (state.currentQ !== prev || state.currentRound !== prevRound) {
     _answerRevealed = false;
-    _scoredThisQ = new Set();
+    _scoredThisQ = new Map();
   }
   const dbg = document.getElementById('debug-session');
   if (dbg) dbg.textContent = `session: ${SESSION} | teams: ${state.teamA||'?'} vs ${state.teamB||'?'}`;
