@@ -1,0 +1,77 @@
+name: Sync Data from Google Drive
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:       # Manual trigger anytime
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch CSVs from Google Drive
+        run: |
+          echo "Fetching CSV data from Apps Script..."
+          curl -sL "${{ secrets.APPS_SCRIPT_URL }}?action=exportcsv&t=$(date +%s)" \
+            -o /tmp/drive_data.json
+          echo "Done. Response size: $(wc -c < /tmp/drive_data.json) bytes"
+
+      - name: Parse and save CSV files
+        run: |
+          python3 << 'PYEOF'
+          import json, os, sys
+
+          with open('/tmp/drive_data.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+          if 'error' in data:
+            print(f"❌ Error from Apps Script: {data['error']}")
+            sys.exit(1)
+
+          os.makedirs('data', exist_ok=True)
+
+          key_to_file = {
+            'images_csv': 'data/category_1_2.csv',
+            'cat3':       'data/category_3.csv',
+            'cat410':     'data/category_4_10.csv',
+            'cat5':       'data/category_5.csv',
+            'cat6':       'data/category_6.csv',
+            'cat78':      'data/category_7_8.csv',
+            'cat9':       'data/category_9.csv',
+          }
+
+          updated = []
+          for key, filepath in key_to_file.items():
+            if key in data and data[key]:
+              with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(data[key])
+              updated.append(filepath)
+              print(f"✅ Saved {filepath} ({len(data[key])} chars)")
+            else:
+              print(f"⚠️  {key} not found in response")
+
+          # Write sync timestamp
+          with open('data/last_sync.txt', 'w') as f:
+            f.write(data.get('_ts', 'unknown'))
+
+          print(f"\nSynced {len(updated)} files")
+          PYEOF
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Sync data from Google Drive [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+            git push
+            echo "✅ Changes pushed to GitHub"
+          fi
