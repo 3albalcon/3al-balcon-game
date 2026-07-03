@@ -123,7 +123,7 @@ body { font-family:'Cairo',sans-serif; background:rgba(6,13,31,0.6); color:#fff;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, goOnline, goOffline } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -136,6 +136,44 @@ const cfg = {
 };
 const app = initializeApp(cfg);
 const db = getDatabase(app);
+
+// ── Connection status monitor ──
+function showConnectionStatus(connected) {
+  let bar = document.getElementById('conn-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'conn-bar';
+    bar.style.cssText = `
+      position:fixed;top:0;left:0;right:0;z-index:9999;
+      padding:6px 12px;text-align:center;
+      font-family:Cairo,sans-serif;font-size:12px;font-weight:700;
+      transition:all 0.3s;
+    `;
+    document.body.appendChild(bar);
+  }
+  if (connected) {
+    bar.textContent = '✅ ' + (_lang==='ar' ? 'متصل' : 'Connected');
+    bar.style.background = 'rgba(57,255,20,0.15)';
+    bar.style.color = '#39FF14';
+    bar.style.borderBottom = '1px solid rgba(57,255,20,0.3)';
+    setTimeout(() => { if (bar) bar.style.display = 'none'; }, 2000);
+  } else {
+    bar.style.display = 'block';
+    bar.style.background = 'rgba(255,45,45,0.2)';
+    bar.style.color = '#FF2D2D';
+    bar.style.borderBottom = '1px solid rgba(255,45,45,0.3)';
+    bar.textContent = '⚠️ ' + (_lang==='ar' ? 'انقطع الاتصال — جاري إعادة الاتصال...' : 'Disconnected — reconnecting...');
+    // Try to force reconnect after 3 seconds
+    setTimeout(() => {
+      try { goOffline(db); setTimeout(() => goOnline(db), 500); } catch(e) {}
+    }, 3000);
+  }
+}
+
+// Monitor .info/connected
+onValue(ref(db, '.info/connected'), snap => {
+  showConnectionStatus(!!snap.val());
+});
 
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
 let _answerRevealed = false;  // gate: must reveal before Next
