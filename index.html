@@ -1474,7 +1474,7 @@ window.addEventListener('load', () => {
 // BAKED-IN QUESTIONS (paste generated code here)
 // ══════════════════════════════════════════
 
-const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0ld642RmcpiUADVvN5zHd_bHnaDKWhqnWlEFOlJCxPZTzScMbV5-q3-bQ3nLgoK-ngg/exec';
+const DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_tcvt8GkYCKVDaUixBb4uq9dozg4TjkWYVXXW1KCBByZvMsvAAcVHcNGr1dzWI7HOFg/exec';
 
 // ══════════════════════════════════════════
 // STATE
@@ -1689,15 +1689,40 @@ async function loadFromDrive(urlOverride) {
 
   // Include event code if set
   const code = (window._eventCode || '').trim().toUpperCase();
-  const listUrl = `${url}?action=list&t=${Date.now()}${code ? '&code='+encodeURIComponent(code) : ''}`;
 
   try {
-    const res = await fetchWithRetry(listUrl);
+    // Fire list and listcsv in parallel — both with retry
+    const listUrl = `${url}?action=list&t=${Date.now()}${code ? '&code='+encodeURIComponent(code) : ''}`;
+    const csvUrl  = `${url}?action=listcsv&t=${Date.now()}${code ? '&code='+encodeURIComponent(code) : ''}`;
+
+    // list uses fetchWithRetry; listcsv fires independently in background
+    const csvPromise = fetch(csvUrl, { redirect: 'follow' })
+      .then(r => r.json())
+      .catch(() => null);
+
+    const res  = await fetchWithRetry(listUrl);
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); }
     catch(e) { throw new Error(`الرد غير صالح — تأكد من إعدادات الـ deployment:\n${text.substring(0,200)}`); }
     if (data.error) throw new Error(data.error);
+
+    // Wait for CSV (should already be done since list took longer)
+    try {
+      const csvData = await csvPromise;
+      if (csvData && !csvData.error && Object.keys(csvData).length > 0) {
+        data.csvData = csvData;
+      } else if (!csvData || csvData.error) {
+        // csvData failed — retry once
+        try {
+          const csvRetry = await fetch(`${url}?action=listcsv&nocache=true&t=${Date.now()}${code ? '&code='+encodeURIComponent(code) : ''}`, { redirect: 'follow' });
+          const csvRetryData = await csvRetry.json();
+          if (csvRetryData && !csvRetryData.error && Object.keys(csvRetryData).length > 0) {
+            data.csvData = csvRetryData;
+          }
+        } catch(e2) {}
+      }
+    } catch(e) {}
 
     // Show event name if loaded via code
     if (data.eventName) {
@@ -1713,9 +1738,12 @@ async function loadFromDrive(urlOverride) {
     const images = shuffle([...data.images]);
     const videos = shuffle([...data.videos]);
 
-    // Step 2: Questions — load CSVs directly (fast!) or fall back to Excel
-    const codeAtLoadTime = code; // snapshot — prevents race condition
-    if (data.csvFiles && Object.keys(data.csvFiles).length > 0) {
+    // Step 2: Questions — use embedded CSV data or fetch via file IDs
+    const codeAtLoadTime = code;
+    if (data.csvData && Object.keys(data.csvData).length > 0) {
+      setLoadProgress(30);
+      await loadCSVData(data.csvData, codeAtLoadTime, myGen);
+    } else if (data.csvFiles && Object.keys(data.csvFiles).length > 0) {
       setLoadProgress(30);
       await loadCSVFiles(data.csvFiles, codeAtLoadTime, myGen);
     } else if (!(typeof QUESTIONS_DATA !== 'undefined' && QUESTIONS_DATA) && data.excel) {
@@ -1770,49 +1798,15 @@ async function loadFromDrive(urlOverride) {
           type: 'image'
         }));
 
-        // If images_csv already built PH with categories, match URLs to answers
-        // Otherwise fall back to flat "all photos" display
+        // Store globally so CSV handler can match when it arrives later
+        window._driveImageItems = imageItems;
+
+        // If CSV already loaded — match now; otherwise set directly (CSV will match later)
         if (PH.loaded && PH.rawRows?.length) {
-          // Match Drive image URLs to CSV answers
-          const urlMap = {};
-          imageItems.forEach(img => { urlMap[img.answer.toLowerCase().trim()] = img.url; });
-          PH.allPhotos = PH.allPhotos.map(p => ({
-            ...p,
-            url: urlMap[p.answer.toLowerCase().trim()] || null,
-          }));
-          // Set G.media.r1/r2 from filtered photos with real URLs
-          applyPhotoFilter();
+          matchPhotosAndApply(imageItems);
         } else {
-          // No CSV — use all images directly
-          G.media['r1'] = imageItems.slice(0, 10);
-          G.media['r2'] = imageItems.slice(10, 20);
-          PH.allPhotos = imageItems.map(f => ({
-            url: f.url, answer: f.answer,
-            cat: _lang==='en' ? 'Photos' : 'صور', subcat: null,
-          }));
-          PH.selectedCats    = new Set([_lang==='en' ? 'Photos' : 'صور']);
-          PH.selectedSubcats = new Set();
-          PH.loaded = true;
-          if (!window._eventCode) {
-            document.getElementById('photo-settings-card').style.display = 'block';
-            const phLoad = document.getElementById('ph-loading');
-            if (phLoad) phLoad.style.display = 'none';
-            const phAcc = document.getElementById('ph-accordion');
-            if (phAcc) {
-              phAcc.style.display = 'block';
-              phAcc.innerHTML = `<div class="ph-acc-cat-row active">
-                <div class="ph-acc-cat-left">
-                  <div class="ph-acc-cat-check">✓</div>
-                  <span class="ph-acc-cat-name">${_lang==='en'?'All Photos':'كل الصور'}</span>
-                  <span class="ph-acc-cat-count">(${imageItems.length})</span>
-                </div>
-              </div>`;
-            }
-            const phCount = document.getElementById('ph-count-display');
-            if (phCount) phCount.textContent = _lang==='en'
-              ? `${Math.min(imageItems.length,10)} for Cat 1 · ${Math.min(Math.max(imageItems.length-10,0),10)} for Cat 2`
-              : `${Math.min(imageItems.length,10)} للفقرة 1 · ${Math.min(Math.max(imageItems.length-10,0),10)} للفقرة 2`;
-          }
+          G.media['r1'] = shuffle([...imageItems]).slice(0, 10);
+          G.media['r2'] = shuffle([...imageItems]).slice(10, 20);
         }
         setTimeout(() => { imageItems.forEach(item => { const img = new Image(); img.src = item.url; }); }, 500);
         details.push(`✅ ${images.length} ${_lang==="en"?"images":"صورة"} loaded`);
@@ -2370,6 +2364,28 @@ async function loadPhotoCategories() {
   return;
 }
 
+function matchPhotosAndApply(imageItems) {
+  // Build URL map from Drive image filenames → thumbnail URLs
+  const urlMap = {};
+  imageItems.forEach(img => { urlMap[img.answer.toLowerCase().trim()] = img.url; });
+  // Update PH.allPhotos with real URLs
+  PH.allPhotos = PH.allPhotos.map(p => ({
+    ...p,
+    url: urlMap[p.answer.toLowerCase().trim()] || null,
+  }));
+  // Show photo card
+  if (!window._eventCode) {
+    const card = document.getElementById('photo-settings-card');
+    if (card) card.style.display = 'block';
+    const phLoad = document.getElementById('ph-loading');
+    if (phLoad) phLoad.style.display = 'none';
+    const phAcc = document.getElementById('ph-accordion');
+    if (phAcc) phAcc.style.display = 'block';
+    renderPhotoAccordion();
+  }
+  applyPhotoFilter();
+}
+
 function renderPhotoAccordion() {
   const wrap = document.getElementById('ph-accordion');
   if (!wrap) return;
@@ -2549,7 +2565,7 @@ const LANG = {
     allReady: 'كل شي جاهز',
     loadingImages: 'الأسئلة جاهزة — عم نحضّر الصور',
     loadingAll: 'يتم تحضير الأسئلة و الصور',
-    bothConnected: '✅ الفريقين متصلين!',
+    bothConnected: '✅ الفرق المتصلة والجاهزة',
     timesUp: "Time's Up!",
     allDone: 'كل الفقرات انتهت! 🎉',
     tiedSoFar: '🤝 تعادل حتى الآن!',
@@ -2712,7 +2728,7 @@ const LANG = {
     allReady: 'All ready',
     loadingImages: 'Questions ready — loading images',
     loadingAll: 'Loading questions and images',
-    bothConnected: '✅ Both teams connected!',
+    bothConnected: '✅ Connected and Ready Teams',
     timesUp: "Time's Up!",
     allDone: 'All rounds done! 🎉',
     tiedSoFar: '🤝 Tied so far!',
@@ -2999,6 +3015,20 @@ function startGame() {
   G.teamB = rawB.length > 0 ? rawB : (LANG[_lang].placeholderB || 'الفريق الثاني');
   // Generate unique session ID for this game
   window._gameSession = 's' + Date.now().toString(36) + Math.random().toString(36).substr(2,4);
+  // Regenerate host QR if host mode already active
+  if (window._hostMode) {
+    setTimeout(() => {
+      const qrEl = document.getElementById('host-qr');
+      if (qrEl && typeof QRCode !== 'undefined') {
+        qrEl.innerHTML = '';
+        const hostUrl = `https://3albalcon.github.io/3al-balcon-game/host.html?s=${window._gameSession}&l=${_lang}`;
+        new QRCode(qrEl, { text: hostUrl, width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
+        // Remove warning now that game has started
+        const warn = document.getElementById('host-qr-warn');
+        if (warn) warn.remove();
+      }
+    }, 100);
+  }
   // Push current lang immediately after session created
   setTimeout(() => {
     if (window._fbDb && window._fbRef && window._fbSet) {
@@ -3078,6 +3108,39 @@ function processExcelWorkbook(wb) {
 // ══════════════════════════════════════
 // DATA — CSV Loader (Google Drive)
 // ══════════════════════════════════════
+// ── Fast path: CSVs embedded in list response ──
+async function loadCSVData(csvData, eventCodeSnapshot, loadGen) {
+  function parseCSV(text) {
+    const lines = text.split('\n').slice(1);
+    return lines.map(line => {
+      const cols = [];
+      let col = '', inQuote = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQuote = !inQuote; }
+        else if (ch === ',' && !inQuote) { cols.push(col.trim()); col = ''; }
+        else { col += ch; }
+      }
+      cols.push(col.trim());
+      return cols;
+    }).filter(r => r[0] && r[0].length > 0);
+  }
+  function shuffle(arr) {
+    for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+    return arr;
+  }
+
+  if (loadGen && loadGen < _driveLoadGen) return;
+
+  // Convert csvData {key: textContent} to same format as loadCSVFiles results
+  const results = Object.entries(csvData).map(([key, text]) => ({
+    key, rows: parseCSV(text)
+  }));
+
+  // Reuse the same processing logic from loadCSVFiles
+  await processCSVResults(results, eventCodeSnapshot, loadGen, shuffle);
+}
+
 async function loadCSVFiles(csvFiles, eventCodeSnapshot, loadGen) {
   function parseCSV(text) {
     const lines = text.split('\n').slice(1);
@@ -3094,22 +3157,20 @@ async function loadCSVFiles(csvFiles, eventCodeSnapshot, loadGen) {
       return cols;
     }).filter(r => r[0] && r[0].length > 0);
   }
-
   function shuffle(arr) {
     for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
     return arr;
   }
 
-  // Always use Apps Script to serve CSVs — direct Drive fetch blocked by CORS on custom domains
-  const fetches = Object.entries(csvFiles).map(async ([key, driveUrl]) => {
+  const fetches = Object.entries(csvFiles).map(async ([key, fileIdOrUrl]) => {
     try {
-      const idMatch = driveUrl.match(/id=([^&]+)/);
-      if (!idMatch) return { key, rows: null };
-      const fileId = idMatch[1];
+      // csvFiles now stores file IDs directly (not download URLs)
+      const fileId = fileIdOrUrl.includes('/') 
+        ? (fileIdOrUrl.match(/id=([^&]+)/)?.[1] || fileIdOrUrl)  // legacy URL format
+        : fileIdOrUrl; // new ID-only format
       const res = await fetch(`${DRIVE_SCRIPT_URL}?action=file&id=${fileId}&t=${Date.now()}`, { redirect: 'follow' });
       const data = await res.json();
       if (data.error || !data.data) return { key, rows: null };
-      // Decode base64 properly — handles Arabic/Unicode
       const bytes = Uint8Array.from(atob(data.data), c => c.charCodeAt(0));
       const text = new TextDecoder('utf-8').decode(bytes);
       return { key, rows: parseCSV(text) };
@@ -3117,6 +3178,10 @@ async function loadCSVFiles(csvFiles, eventCodeSnapshot, loadGen) {
   });
 
   const results = await Promise.all(fetches);
+  await processCSVResults(results, eventCodeSnapshot, loadGen, shuffle);
+}
+
+async function processCSVResults(results, eventCodeSnapshot, loadGen, shuffle) {
 
   // If a newer load has started, discard these results
   if (loadGen && loadGen < _driveLoadGen) return;
@@ -3149,13 +3214,14 @@ async function loadCSVFiles(csvFiles, eventCodeSnapshot, loadGen) {
       PH.rawRows = mapped; // store raw for language rebuild
 
       if (!eventCodeSnapshot) {
-        const card = document.getElementById('photo-settings-card');
-        if (card) card.style.display = 'block';
-        const phLoad = document.getElementById('ph-loading');
-        if (phLoad) phLoad.style.display = 'none';
-        const phAcc = document.getElementById('ph-accordion');
-        if (phAcc) phAcc.style.display = 'block';
-        renderPhotoAccordion();
+        // If Drive images already loaded — match now; otherwise Drive handler will match
+        if (window._driveImageItems?.length) {
+          matchPhotosAndApply(window._driveImageItems);
+        } else {
+          // Drive images not ready yet — show card with loading state
+          const card = document.getElementById('photo-settings-card');
+          if (card) card.style.display = 'block';
+        }
       }
     } else if (key === 'cat3') {
       // col0=Q_AR, col1=Q_EN
@@ -4183,11 +4249,12 @@ function renderBidding(r, qIndex, sa) {
     <div class="question-number">${_lang==="en"?"Question":"سؤال"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
 
     <!-- READY PHASE — shown while waiting for host to start -->
-    <div id="cat3-ready-phase" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
-      <div style="font-size:18px;font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green)">${t('bothConnected')}</div>
-      <div id="ready-indicators" style="display:flex;gap:20px;justify-content:center">
-        <div id="ready-a" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamA}</div>
-        <div id="ready-b" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3)">⏳ ${G.teamB}</div>
+    <div id="cat3-ready-phase" style="display:flex;flex-direction:column;align-items:center;gap:20px;width:100%">
+      <div style="font-size:clamp(24px,4vw,42px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center">${t('bothConnected')}</div>
+      <div id="ready-indicators" style="display:flex;gap:32px;justify-content:center;align-items:center;flex-wrap:wrap">
+        <div id="ready-a" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:rgba(255,255,255,0.3);transition:all 0.4s">⏳ ${G.teamA}</div>
+        <div style="font-size:20px;color:rgba(255,255,255,0.2);font-weight:900">VS</div>
+        <div id="ready-b" style="font-size:clamp(20px,3vw,32px);font-weight:900;color:rgba(255,255,255,0.3);transition:all 0.4s">⏳ ${G.teamB}</div>
       </div>
       <button id="cat3-start-btn" onclick="startCat3Bidding('${roomId}')"
         style="display:none;padding:14px 40px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;
@@ -5464,6 +5531,14 @@ function toggleHostMode() {
     if (typeof QRCode !== 'undefined') {
       const hostUrl = `https://3albalcon.github.io/3al-balcon-game/host.html?s=${window._gameSession||'main'}&l=${_lang}`;
       new QRCode(qrEl, { text: hostUrl, width: 100, height: 100, colorDark: '#000', colorLight: '#fff' });
+      // Warn if game not started yet — QR will be regenerated on Start
+      if (!window._gameSession) {
+        const warn = document.createElement('div');
+        warn.id = 'host-qr-warn';
+        warn.style.cssText = 'font-size:10px;color:#FF8C00;text-align:center;margin-top:4px;font-weight:700;max-width:110px';
+        warn.textContent = _lang==='en' ? '⚠️ Start game first!' : '⚠️ ابدأ اللعبة أولاً!';
+        qrWrap.appendChild(warn);
+      }
     }
     pushHostView({ active: true, question: '', answer: '', categoryName: '', questionNum: '' });
   } else {
@@ -5685,6 +5760,16 @@ function updateHostView(categoryName, questionNum, question, answer) {
 // SHUTDOWN — Signal all phones to close
 // ══════════════════════════════════════
 function goToStartScreen() {
+  // Signal all phones game ended
+  pushShutdown();
+  // Reset game state so next Start is a fresh game
+  G.scoreA = 0; G.scoreB = 0;
+  G.done = new Set();
+  G.currentRound = null; G.currentQ = 0;
+  G.bids = [0, 0];
+  window._gameSession = null;
+  window._answerRevealed = false;
+  // Show setup screen
   show('setup-screen');
   document.getElementById('team-entry').style.display = 'flex';
   document.getElementById('auto-load-status').style.display = 'none';
@@ -6135,7 +6220,19 @@ document.addEventListener('keydown', e => {
   }
   if(e.key === 'Escape') backToMenu();
 
-window.addEventListener('beforeunload', () => { pushShutdown(); });
+// ── Reliable shutdown on browser close ──
+function pushShutdownSync() {
+  const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+  if (!db || !fbSet || !fbRef || !window._gameSession) return;
+  // Use sendBeacon for guaranteed delivery on page unload
+  const url = `https://al-balcon-default-rtdb.firebaseio.com/sessions/${window._gameSession}/shutdown.json`;
+  try { navigator.sendBeacon(url, JSON.stringify(true)); } catch(e) {}
+  // Also try regular set as backup
+  try { fbSet(fbRef(db, `sessions/${window._gameSession}/shutdown`), true); } catch(e) {}
+}
+
+window.addEventListener('beforeunload', pushShutdownSync);
+window.addEventListener('pagehide', pushShutdownSync);
 
   if(e.key === ' ') {
     e.preventDefault();
