@@ -257,6 +257,7 @@ window.c = (cmd, data={}) => {
 let _cat6RoomListener = null;
 let _cat6RoomWatching = null;
 let _cat6Judged = { a: null, b: null };
+let _cat6LastJudgeHTML = '';
 
 function loadCat6Answers() {
   const roomId = state.cat6RoomId;
@@ -269,6 +270,7 @@ function loadCat6Answers() {
     // Reset judgement when new question starts
     if (d.phase === 'waiting') {
       _cat6Judged = { a: null, b: null };
+      _cat6LastJudgeHTML = '';
       const area = document.getElementById('cat6-judge-area');
       if (area) area.innerHTML = '';
       return;
@@ -299,18 +301,30 @@ function renderJudgeArea(area, ansA, ansB, tsA, tsB) {
       ${buildTeamCard('a', ansA, state.teamA||(_lang==='en'?'A':'أ'), '#E50158', 'rgba(229,1,88,')}
       ${buildTeamCard('b', ansB, state.teamB||(_lang==='en'?'B':'ب'), '#E2DA51', 'rgba(226,218,81,')}
     </div>`;
+  _cat6LastJudgeHTML = area.innerHTML;
 }
 
 function buildTeamCard(team, ans, name, color, rgba) {
   const judged = _cat6Judged[team];
-  let statusBadge = '';
-  if (judged === true) statusBadge = `<div style="font-size:12px;color:#39FF14;font-weight:700">${_lang==='en'?'✅ Correct':'✅ صح'}</div>`;
-  else if (judged === false) statusBadge = `<div style="font-size:12px;color:#FF2D2D;font-weight:700">${_lang==='en'?'❌ Wrong':'❌ خطأ'}</div>`;
+  
+  if (judged === true) return `<div style="flex:1;padding:8px;border-radius:10px;background:rgba(57,255,20,0.08);border:1.5px solid #39FF14;display:flex;flex-direction:column;align-items:center;gap:5px">
+    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
+    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
+    <div style="font-size:12px;color:#39FF14;font-weight:700">✅ ${_lang==='en'?'Correct':'صح'}</div>
+    <button onclick="hostUndoJudge('${team}')" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);background:transparent;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer">↩ ${_lang==='en'?'Change':'تغيير'}</button>
+  </div>`;
+  
+  if (judged === false) return `<div style="flex:1;padding:8px;border-radius:10px;background:rgba(255,45,45,0.08);border:1.5px solid #FF2D2D;display:flex;flex-direction:column;align-items:center;gap:5px">
+    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
+    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
+    <div style="font-size:12px;color:#FF2D2D;font-weight:700">❌ ${_lang==='en'?'Wrong':'خطأ'}</div>
+    <button onclick="hostUndoJudge('${team}')" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);background:transparent;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer">↩ ${_lang==='en'?'Change':'تغيير'}</button>
+  </div>`;
 
   return `<div style="flex:1;padding:8px;border-radius:10px;background:${rgba}0.07);border:1px solid ${rgba}0.3);display:flex;flex-direction:column;align-items:center;gap:5px">
     <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
     <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
-    ${!ans ? '' : judged !== null ? statusBadge : `
+    ${!ans ? '' : `
       <div style="display:flex;gap:4px">
         <button onclick="hostJudge('${team}',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
         <button onclick="hostJudge('${team}',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
@@ -318,16 +332,28 @@ function buildTeamCard(team, ans, name, color, rgba) {
   </div>`;
 }
 
+window.hostUndoJudge = (team) => {
+  const prev = _cat6Judged[team];
+  if (prev === null) return;
+  // Reverse the score
+  _cat6Judged[team] = null;
+  c('judgeTeam', { team, correct: !prev, undo: true }); // reverse previous
+  // Re-render judge area
+  const roomId = state.cat6RoomId;
+  if (!roomId) return;
+  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
+    get(ref(db, `cat6/${roomId}`)).then(snap => {
+      const d = snap.val() || {};
+      const area = document.getElementById('cat6-judge-area');
+      if (area) renderJudgeArea(area, d.answerA, d.answerB, d.answeredAtA, d.answeredAtB);
+    });
+  });
+};
+
 window.hostJudge = (team, correct) => {
   _cat6Judged[team] = correct;
   c('judgeTeam', { team, correct });
-  if (correct) {
-    // Lock all judge buttons once a team gets points
-    document.querySelectorAll('button[onclick*="hostJudge"]').forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
-  } else {
-    document.querySelectorAll(`button[onclick*="hostJudge('${team}'"]`).forEach(b => { b.disabled = true; b.style.opacity = '0.3'; });
-  }
-  // Re-render judge area
+  // Re-render judge area to show result + change button
   const roomId = state.cat6RoomId;
   if (!roomId) return;
   import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
@@ -497,6 +523,11 @@ function render() {
       ${view.answer?`<div class="card a-card" style="font-size:14px">${view.answer}</div>`:''}
       ${view.answer?`<button class="btn btn-y btn-sm" onclick="c('revealCat6Answer')" style="width:100%">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>`:''}
       <div id="cat6-judge-area" style="width:100%"></div>`;
+    // Restore judge area content if it was wiped by re-render
+    const judgeArea = document.getElementById('cat6-judge-area');
+    if (judgeArea && _cat6LastJudgeHTML) {
+      judgeArea.innerHTML = _cat6LastJudgeHTML;
+    }
     loadCat6Answers();
     return;
   }
