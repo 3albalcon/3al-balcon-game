@@ -474,6 +474,9 @@ window.cancelConfirm = function() {
 
 window.doConfirmAnswers = async function() {
   if(locked) return;
+  // Stop the countdown timer immediately
+  clearInterval(ansInterval);
+  ansInterval = null;
   lockAnswering();
   await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
 };
@@ -603,18 +606,21 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='answering'){
       if(d.auctionWinner===team){
-        totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
+        totalAns=d.winningBid||1;
+        // Only load submitted answers if writing already started (prevents stale data from prev question)
+        submitted = d.writingStarted ? (d.answers||[]) : [];
+        locked=false;
         showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
         const timerWrap = document.getElementById('ans-timer-wrap');
         if(d.writingStarted){
-          // Writing already started — show input and timer
           if(swWrap) swWrap.style.display='none';
           if(inWrap) inWrap.style.display='flex';
           if(timerWrap) timerWrap.style.display='flex';
           if(d.answerTimerEnd) startAnsTimer(d.answerTimerEnd - serverOffset);
         } else {
+          submitted = []; // ensure clean slate
           if(swWrap) swWrap.style.display='flex';
           if(inWrap) inWrap.style.display='none';
           if(timerWrap) timerWrap.style.display='none';
@@ -645,9 +651,9 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   }
   // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
-  if(p==='answering'&&d.auctionWinner===team&&d.answers){
-    submitted=d.answers; renderAnswers();
-    if(d.answersConfirmed&&!locked) lockAnswering();
+  if(p==='answering'&&d.auctionWinner===team&&d.writingStarted){
+    submitted=d.answers||[]; renderAnswers();
+    if(d.answersConfirmed&&!locked) { clearInterval(ansInterval); lockAnswering(); }
   }
 });
 
