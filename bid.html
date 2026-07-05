@@ -314,6 +314,7 @@ function startBidTimer(endTime) {
 }
 
 function startAnsTimer(endTime) {
+  if(locked) return; // don't restart if already locked
   clearInterval(ansInterval);
   const fill = document.getElementById('ans-fill');
   const num = document.getElementById('ans-timer-num');
@@ -324,7 +325,7 @@ function startAnsTimer(endTime) {
     const secs = Math.ceil(rem/1000);
     if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<20?'var(--red)':'var(--green)'; }
     if(num){ num.textContent=secs; num.style.color=pct<20?'var(--red)':'var(--yellow)'; }
-    if(rem<=0){ clearInterval(ansInterval); lockAnswering(); }
+    if(rem<=0){ clearInterval(ansInterval); ansInterval=null; if(!locked) { lockAnswering(); update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()}); } }
   },100);
 }
 
@@ -610,6 +611,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
         // Only load submitted answers if writing already started (prevents stale data from prev question)
         submitted = d.writingStarted ? (d.answers||[]) : [];
         locked=false;
+        clearInterval(ansInterval); ansInterval=null; // clear any stale timer
         showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
@@ -632,8 +634,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
       }
     }
     else if(p==='nextquestion'){
-      // Show logo — wait for next question without refreshing
-      if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
+      if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null; ansInterval=null;
       showPhase('logo');
       document.getElementById('logo-msg').textContent=bt('waitNext');
       myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
