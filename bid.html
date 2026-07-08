@@ -608,21 +608,32 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     else if(p==='answering'){
       if(d.auctionWinner===team){
         totalAns=d.winningBid||1;
-        // Only load submitted answers if writing already started (prevents stale data from prev question)
-        submitted = d.writingStarted ? (d.answers||[]) : [];
         locked=false;
-        clearInterval(ansInterval); ansInterval=null; // clear any stale timer
+        clearInterval(ansInterval); ansInterval=null;
+
+        // Guard against stale data from previous question
+        // If answerTimerEnd is in the past and we just entered this phase, it's stale
+        const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
+        const isTimerStale = timerEndMs > 0 && timerEndMs < Date.now() - 500;
+        const writingValid = d.writingStarted && !isTimerStale;
+        const confirmedValid = d.answersConfirmed && !isTimerStale;
+
+        submitted = writingValid ? (d.answers||[]) : [];
+
         showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
         const timerWrap = document.getElementById('ans-timer-wrap');
-        if(d.writingStarted){
+
+        if(writingValid){
           if(swWrap) swWrap.style.display='none';
           if(inWrap) inWrap.style.display='flex';
           if(timerWrap) timerWrap.style.display='flex';
-          if(d.answerTimerEnd) startAnsTimer(d.answerTimerEnd - serverOffset);
+          if(confirmedValid) { clearInterval(ansInterval); ansInterval=null; if(!locked) lockAnswering(); }
+          else if(d.answerTimerEnd) startAnsTimer(timerEndMs);
         } else {
-          submitted = []; // ensure clean slate
+          // Fresh start — show the Start Writing button
+          submitted = [];
           if(swWrap) swWrap.style.display='flex';
           if(inWrap) inWrap.style.display='none';
           if(timerWrap) timerWrap.style.display='none';
@@ -653,8 +664,12 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
   if(p==='answering'&&d.auctionWinner===team&&d.writingStarted){
-    submitted=d.answers||[]; renderAnswers();
-    if(d.answersConfirmed&&!locked) { clearInterval(ansInterval); lockAnswering(); }
+    const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
+    const isTimerStale = timerEndMs > 0 && timerEndMs < Date.now() - 500;
+    if(!isTimerStale) {
+      submitted=d.answers||[]; renderAnswers();
+      if(d.answersConfirmed) { clearInterval(ansInterval); ansInterval=null; if(!locked) lockAnswering(); }
+    }
   }
 });
 
