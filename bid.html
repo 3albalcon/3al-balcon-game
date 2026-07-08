@@ -267,6 +267,7 @@ let lastBidCountdownEnd = null;
 let bidInterval = null;
 let ansInterval = null;
 let locked = false;
+let ansGeneration = 0; // increments each new question to invalidate stale callbacks
 
 // Get server time offset once for accurate timers
 let serverOffset = 0;
@@ -314,18 +315,19 @@ function startBidTimer(endTime) {
 }
 
 function startAnsTimer(endTime) {
-  if(locked) return; // don't restart if already locked
+  if(locked) return;
   clearInterval(ansInterval);
   const fill = document.getElementById('ans-fill');
   const num = document.getElementById('ans-timer-num');
   const total = 60000;
   ansInterval = setInterval(()=>{
+    if(locked){ clearInterval(ansInterval); ansInterval=null; return; } // stop if locked
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
     const secs = Math.ceil(rem/1000);
     if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<20?'var(--red)':'var(--green)'; }
     if(num){ num.textContent=secs; num.style.color=pct<20?'var(--red)':'var(--yellow)'; }
-    if(rem<=0){ clearInterval(ansInterval); ansInterval=null; if(!locked) { lockAnswering(); update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()}); } }
+    if(rem<=0){ clearInterval(ansInterval); ansInterval=null; if(!locked){ lockAnswering(); update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()}); } }
   },100);
 }
 
@@ -610,35 +612,46 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
         totalAns=d.winningBid||1;
         locked=false;
         clearInterval(ansInterval); ansInterval=null;
+        ansGeneration++; // new answering phase = new generation
+        const myGen = ansGeneration;
 
-        // Guard against stale data from previous question
-        // If answerTimerEnd is in the past and we just entered this phase, it's stale
-        const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
-        const isTimerStale = timerEndMs > 0 && timerEndMs < Date.now() - 500;
-        const writingValid = d.writingStarted && !isTimerStale;
-        const confirmedValid = d.answersConfirmed && !isTimerStale;
-
-        submitted = writingValid ? (d.answers||[]) : [];
-
+        // Fresh start — always show Start Writing button on phase entry
+        submitted = [];
         showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
         const timerWrap = document.getElementById('ans-timer-wrap');
-
-        if(writingValid){
-          if(swWrap) swWrap.style.display='none';
-          if(inWrap) inWrap.style.display='flex';
-          if(timerWrap) timerWrap.style.display='flex';
-          if(confirmedValid) { clearInterval(ansInterval); ansInterval=null; if(!locked) lockAnswering(); }
-          else if(d.answerTimerEnd) startAnsTimer(timerEndMs);
-        } else {
-          // Fresh start — show the Start Writing button
-          submitted = [];
-          if(swWrap) swWrap.style.display='flex';
-          if(inWrap) inWrap.style.display='none';
-          if(timerWrap) timerWrap.style.display='none';
-        }
+        if(swWrap) swWrap.style.display='flex';
+        if(inWrap) inWrap.style.display='none';
+        if(timerWrap) timerWrap.style.display='none';
         renderAnswers();
+
+        // Wait 600ms for Firebase reset to propagate, then check state
+        setTimeout(() => {
+          if(ansGeneration !== myGen) return; // another phase arrived — ignore
+          // Re-read current Firebase state
+          import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get })=>{
+            get(ref(db,`rooms/${roomId}`)).then(snap=>{
+              if(ansGeneration !== myGen) return;
+              const fd = snap.val()||{};
+              if(fd.writingStarted && !fd.answersConfirmed && fd.answerTimerEnd) {
+                // Writing is in progress — restore state
+                submitted = fd.answers||[];
+                if(swWrap) swWrap.style.display='none';
+                if(inWrap) inWrap.style.display='flex';
+                if(timerWrap) timerWrap.style.display='flex';
+                renderAnswers();
+                startAnsTimer(fd.answerTimerEnd - serverOffset);
+              } else if(fd.writingStarted && fd.answersConfirmed) {
+                // Already confirmed — show done state
+                submitted = fd.answers||[];
+                renderAnswers();
+                lockAnswering();
+              }
+              // else: writingStarted=false → keep showing Start Writing button ✓
+            });
+          });
+        }, 600);
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent=bt('otherWriting');
@@ -648,7 +661,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
       if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null; ansInterval=null;
       showPhase('logo');
       document.getElementById('logo-msg').textContent=bt('waitNext');
-      myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
+      myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null; ansGeneration++;
     }
     else if(p==='done'){
       showPhase('logo');
@@ -663,10 +676,8 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   }
   // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
-  if(p==='answering'&&d.auctionWinner===team&&d.writingStarted){
-    const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
-    const isTimerStale = timerEndMs > 0 && timerEndMs < Date.now() - 500;
-    if(!isTimerStale) {
+  if(p==='answering'&&d.auctionWinner===team){
+    if(d.writingStarted) {
       submitted=d.answers||[]; renderAnswers();
       if(d.answersConfirmed) { clearInterval(ansInterval); ansInterval=null; if(!locked) lockAnswering(); }
     }
