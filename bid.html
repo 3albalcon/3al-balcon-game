@@ -626,32 +626,37 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
         if(timerWrap) timerWrap.style.display='none';
         renderAnswers();
 
-        // Wait 600ms for Firebase reset to propagate, then check state
+        // Wait 1200ms for ALL Firebase resets to propagate, then check state
         setTimeout(() => {
-          if(ansGeneration !== myGen) return; // another phase arrived — ignore
-          // Re-read current Firebase state
+          if(ansGeneration !== myGen) return;
           import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get })=>{
             get(ref(db,`rooms/${roomId}`)).then(snap=>{
               if(ansGeneration !== myGen) return;
               const fd = snap.val()||{};
+              // Only trust writingStarted if this is genuinely the current question
+              if(fd.phase !== 'answering') return;
+              if(fd.auctionWinner !== team) return;
               if(fd.writingStarted && !fd.answersConfirmed && fd.answerTimerEnd) {
-                // Writing is in progress — restore state
-                submitted = fd.answers||[];
-                if(swWrap) swWrap.style.display='none';
-                if(inWrap) inWrap.style.display='flex';
-                if(timerWrap) timerWrap.style.display='flex';
-                renderAnswers();
-                startAnsTimer(fd.answerTimerEnd - serverOffset);
+                const rem = fd.answerTimerEnd - serverOffset - Date.now();
+                if(rem > 0) {
+                  // Writing is actively in progress
+                  submitted = fd.answers||[];
+                  if(swWrap) swWrap.style.display='none';
+                  if(inWrap) inWrap.style.display='flex';
+                  if(timerWrap) timerWrap.style.display='flex';
+                  renderAnswers();
+                  startAnsTimer(fd.answerTimerEnd - serverOffset);
+                }
+                // else timer already expired — keep showing Start Writing
               } else if(fd.writingStarted && fd.answersConfirmed) {
-                // Already confirmed — show done state
                 submitted = fd.answers||[];
                 renderAnswers();
                 lockAnswering();
               }
-              // else: writingStarted=false → keep showing Start Writing button ✓
+              // writingStarted=false → keep showing Start Writing button ✓
             });
           });
-        }, 600);
+        }, 1200);
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent=bt('otherWriting');
