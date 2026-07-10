@@ -568,11 +568,11 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     clearInterval(ansInterval); ansInterval = null;
     if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval = null;
     myBid = 0; lastBidder = null; lastBidCountdownEnd = null;
-    // Show waiting screen briefly before new phase renders
-    if(d.phase === 'ready') {
-      showPhase('logo');
-      document.getElementById('logo-msg').textContent = bt('waitNext');
-    }
+    // Show waiting screen and reset phase tracker
+    phase = 'ready'; // sync local phase with new state
+    showPhase('logo');
+    document.getElementById('logo-msg').textContent = bt('waitNext');
+    return; // don't process phase change in same event — wait for next Firebase update
   }
 
   // Set waiting screen image if available
