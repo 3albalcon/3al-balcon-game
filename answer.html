@@ -137,6 +137,8 @@ if (!roomId || !team) {
       document.getElementById('input-section').style.display = 'none';
       document.getElementById('q-box').style.display = 'none';
       input.value = '';
+      input.disabled = false;
+      input.placeholder = mode === 'number' ? t('phNum') : t('phText');
       document.getElementById('submit-btn').disabled = false;
     }
 
@@ -147,6 +149,26 @@ if (!roomId || !team) {
         document.getElementById('q-box').style.display = 'block';
       }
       document.getElementById('input-section').style.display = 'flex';
+
+      // Enforce timer — disable input when time is up
+      if (d.timerEnd) {
+        const remaining = d.timerEnd - Date.now();
+        if (remaining <= 0) {
+          // Time already up — disable input
+          document.getElementById('submit-btn').disabled = true;
+          input.disabled = true;
+          input.placeholder = _lang === 'ar' ? 'انتهى الوقت!' : 'Time\'s up!';
+        } else {
+          // Set a timeout to disable when time runs out
+          setTimeout(() => {
+            if (!submitted) {
+              document.getElementById('submit-btn').disabled = true;
+              input.disabled = true;
+              input.placeholder = _lang === 'ar' ? 'انتهى الوقت!' : 'Time\'s up!';
+            }
+          }, remaining);
+        }
+      }
     }
 
     if (submitted) {
