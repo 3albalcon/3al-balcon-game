@@ -117,6 +117,9 @@ function applyWallpaper(url) {
   document.body.style.backgroundImage = `url('${url}')`;
 }
 
+let timerTimeout = null;
+let activeTimerEnd = null;
+
 if (!roomId || !team) {
   document.getElementById('team-badge').textContent = t('badLink');
 } else {
@@ -130,7 +133,10 @@ if (!roomId || !team) {
     const name = isA ? d.teamA : d.teamB;
     document.getElementById('team-badge').textContent = name || (isA ? t('teamA') : t('teamB'));
 
-    if (d.phase === 'waiting' && submitted) {
+    if (d.phase === 'waiting') {
+      // Reset everything for new question
+      if (timerTimeout) { clearTimeout(timerTimeout); timerTimeout = null; }
+      activeTimerEnd = null;
       submitted = false;
       document.getElementById('done-section').style.display = 'none';
       document.getElementById('state-waiting').style.display = 'block';
@@ -149,18 +155,22 @@ if (!roomId || !team) {
         document.getElementById('q-box').style.display = 'block';
       }
       document.getElementById('input-section').style.display = 'flex';
+      input.disabled = false;
+      document.getElementById('submit-btn').disabled = false;
 
-      // Enforce timer — disable input when time is up
-      if (d.timerEnd) {
+      // Only set timer once per question (timerEnd changes = new question)
+      if (d.timerEnd && d.timerEnd !== activeTimerEnd) {
+        activeTimerEnd = d.timerEnd;
+        if (timerTimeout) clearTimeout(timerTimeout);
         const remaining = d.timerEnd - Date.now();
         if (remaining <= 0) {
-          // Time already up — disable input
-          document.getElementById('submit-btn').disabled = true;
-          input.disabled = true;
-          input.placeholder = _lang === 'ar' ? 'انتهى الوقت!' : 'Time\'s up!';
+          if (!submitted) {
+            document.getElementById('submit-btn').disabled = true;
+            input.disabled = true;
+            input.placeholder = _lang === 'ar' ? 'انتهى الوقت!' : 'Time\'s up!';
+          }
         } else {
-          // Set a timeout to disable when time runs out
-          setTimeout(() => {
+          timerTimeout = setTimeout(() => {
             if (!submitted) {
               document.getElementById('submit-btn').disabled = true;
               input.disabled = true;
