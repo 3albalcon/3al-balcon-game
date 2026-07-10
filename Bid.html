@@ -110,6 +110,11 @@ body > * { position:relative;z-index:1; }
 <!-- ANSWERING -->
 <div id="ph-answering" style="width:100%;display:flex;flex-direction:column;gap:8px;flex:1;display:none">
   <div class="q-box" id="q-ans"></div>
+  <!-- Answer timer -->
+  <div id="ans-timer-wrap" style="display:none;width:100%;flex-direction:column;align-items:center;gap:4px">
+    <div class="timer-bar"><div class="timer-fill" id="ans-fill" style="width:100%;background:var(--green)"></div></div>
+    <div class="q-ind" id="ans-timer-num" style="font-size:16px;font-weight:900;color:var(--green)"></div>
+  </div>
 
   <div class="sbox s-green" id="ans-title"><span id="bid-ans-title">اكتبوا الأجوبة!</span></div>
   <div id="ans-scroll" class="ans-scroll"></div>
@@ -262,6 +267,8 @@ let lastBidCountdownEnd = null;
 let bidInterval = null;
 let ansInterval = null;
 let locked = false;
+let ansGeneration = 0; // increments each new question to invalidate stale callbacks
+let currentQuestionIndex = -1; // tracks Firebase questionIndex to detect new questions
 
 // Get server time offset once for accurate timers
 let serverOffset = 0;
@@ -309,17 +316,19 @@ function startBidTimer(endTime) {
 }
 
 function startAnsTimer(endTime) {
+  if(locked) return;
   clearInterval(ansInterval);
   const fill = document.getElementById('ans-fill');
   const num = document.getElementById('ans-timer-num');
   const total = 60000;
   ansInterval = setInterval(()=>{
+    if(locked){ clearInterval(ansInterval); ansInterval=null; return; } // stop if locked
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
     const secs = Math.ceil(rem/1000);
     if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<20?'var(--red)':'var(--green)'; }
     if(num){ num.textContent=secs; num.style.color=pct<20?'var(--red)':'var(--yellow)'; }
-    if(rem<=0){ clearInterval(ansInterval); lockAnswering(); }
+    if(rem<=0){ clearInterval(ansInterval); ansInterval=null; if(!locked){ lockAnswering(); update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()}); } }
   },100);
 }
 
@@ -357,13 +366,16 @@ function renderAnswers() {
 window.startWriting = async function() {
   document.getElementById('start-writing-wrap').style.display = 'none';
   document.getElementById('ans-input-wrap').style.display = 'flex';
+  const timerEnd = serverNow() + 60000;
   // Start 60s timer immediately when player taps ابدأ الكتابة
-  await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: serverNow() + 60000 });
+  await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: timerEnd });
+  // Show timer
+  const timerWrap = document.getElementById('ans-timer-wrap');
+  if (timerWrap) timerWrap.style.display = 'flex';
+  startAnsTimer(timerEnd);
   setTimeout(() => {
-    const waitLogo = document.getElementById('bid-wait-logo');
-  if (waitLogo) waitLogo.textContent = isAr ? 'انتظر...' : 'Wait...';
-  const inp = document.getElementById('ans-input');
-    if(inp) { inp.disabled = false; inp.focus(); }
+    const inp = document.getElementById('ans-input');
+    if(inp) { inp.disabled = false; inp.placeholder = bt('writeHere'); inp.focus(); }
   }, 100);
 };
 
@@ -453,13 +465,22 @@ window.confirmAnswers = async function() {
 };
 
 window.cancelConfirm = function() {
+  // Restore the input area HTML that was replaced by confirm dialog
   const wrap = document.getElementById('ans-input-wrap');
-  const input = document.getElementById('ans-input') ? '' : ''; // trigger re-render
-  renderAnswers(); // re-render to restore original buttons
+  if (wrap) wrap.innerHTML = `
+    <input class="answer-input" id="ans-input" type="text" dir="${_lang==='ar'?'rtl':'ltr'}" autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()">
+    <button class="btn btn-g" id="ans-submit-btn" onclick="submitAnswer()"><span>${bt('addAns')}</span></button>
+    <button class="btn btn-c" id="confirm-btn" onclick="confirmAnswers()" style="display:none"><span>${bt('confirmLbl')}</span></button>`;
+  const inp = document.getElementById('ans-input');
+  if (inp) { inp.placeholder = bt('writeHere'); inp.focus(); }
+  renderAnswers();
 };
 
 window.doConfirmAnswers = async function() {
   if(locked) return;
+  // Stop the countdown timer immediately
+  clearInterval(ansInterval);
+  ansInterval = null;
   lockAnswering();
   await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
 };
@@ -533,12 +554,26 @@ function handleBidUpdate(d) {
 // Firebase listener
 onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   const d=snap.val(); 
-  // Debug - show connection status
-  // debug title removed
   if(!d) return;
   const tName=team==='a'?d.teamA:d.teamB;
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
   if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=bt('questionOf', d.questionIndex);
+
+  // New question detected via questionIndex change
+  if (d.questionIndex !== undefined && d.questionIndex !== currentQuestionIndex) {
+    currentQuestionIndex = d.questionIndex;
+    ansGeneration++;
+    locked = false;
+    submitted = [];
+    clearInterval(ansInterval); ansInterval = null;
+    if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval = null;
+    myBid = 0; lastBidder = null; lastBidCountdownEnd = null;
+    phase = 'ready'; // sync local phase so next update triggers phase-change handler
+    // Show "waiting for host" message immediately
+    showPhase('waiting');
+    document.getElementById('wait-msg').textContent = _lang==='ar' ? '✅ متصل — انتظر المقدّم لبدء المزايدة' : '✅ Connected — waiting for host to start';
+    return; // stop here — next Firebase event (countdown/bidding) will proceed normally
+  }
 
   // Set waiting screen image if available
   if(d.waitingScreenUrl) {
@@ -569,10 +604,9 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
       document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitMsg');
     }
     else if(p==='ready'){
-      showPhase('ready');
-      const myR=team==='a'?d.readyA:d.readyB;
-      if(myR){document.getElementById('ready-btn').disabled=true;document.getElementById('ready-btn').textContent=bt('readyBtn');}
-      document.getElementById('ready-msg').textContent=(team==='a'?d.readyB:d.readyA)?bt('otherReady'):bt('readyMsg');
+      // Show waiting message — host controls when bidding starts
+      showPhase('waiting');
+      document.getElementById('wait-msg').textContent = _lang==='ar' ? '✅ متصل — انتظر المقدّم لبدء المزايدة' : '✅ Connected — waiting for host to start';
     }
     else if(p==='countdown'){
       showPhase('countdown');
@@ -590,25 +624,50 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     }
     else if(p==='answering'){
       if(d.auctionWinner===team){
-        totalAns=d.winningBid||1; submitted=d.answers||[]; locked=false;
-        // Reset writing state so start writing button always shows
+        totalAns=d.winningBid||1;
+        ansGeneration++;
+        const myGen = ansGeneration;
+
+        // Always show Start Writing fresh — wait for writingStarted from player tap
+        // The questionIndex reset above already cleared locked/submitted/ansInterval
+        submitted = [];
+        showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
-        if(swWrap && !d.writingStarted) swWrap.style.display='flex';
-        if(inWrap && !d.writingStarted) inWrap.style.display='none';
-        showPhase('answering');
-        renderAnswers();
+        const timerWrap = document.getElementById('ans-timer-wrap');
+
+        // If writingStarted is true AND timer is still running → restore writing state
+        const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
+        const timerStillRunning = timerEndMs > Date.now() + 500;
+
+        if(d.writingStarted && timerStillRunning && !d.answersConfirmed) {
+          submitted = d.answers||[];
+          if(swWrap) swWrap.style.display='none';
+          if(inWrap) inWrap.style.display='flex';
+          if(timerWrap) timerWrap.style.display='flex';
+          renderAnswers();
+          startAnsTimer(timerEndMs);
+        } else if(d.writingStarted && d.answersConfirmed) {
+          submitted = d.answers||[];
+          renderAnswers();
+          lockAnswering();
+        } else {
+          // Fresh — show Start Writing button
+          if(swWrap) swWrap.style.display='flex';
+          if(inWrap) inWrap.style.display='none';
+          if(timerWrap) timerWrap.style.display='none';
+          renderAnswers();
+        }
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent=bt('otherWriting');
       }
     }
     else if(p==='nextquestion'){
-      // Show logo — wait for next question without refreshing
-      if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null;
+      if(bidInterval) cancelAnimationFrame(bidInterval); clearInterval(ansInterval); bidInterval=null; ansInterval=null;
       showPhase('logo');
       document.getElementById('logo-msg').textContent=bt('waitNext');
-      myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null;
+      myBid=0; submitted=[]; locked=false; lastBidder=null; lastBidCountdownEnd=null; ansGeneration++;
     }
     else if(p==='done'){
       showPhase('logo');
@@ -621,14 +680,16 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     const conn=d.connected||{};
     document.getElementById('wait-msg').textContent=conn[other]?bt('otherWaiting'):bt('waitMsg');
   }
-  if(p==='ready'){
-    const otherR=team==='a'?d.readyB:d.readyA;
-    if(otherR) document.getElementById('ready-msg').textContent=bt('otherReady');
-  }
+  // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
-  if(p==='answering'&&d.auctionWinner===team&&d.answers){
-    submitted=d.answers; renderAnswers();
-    if(d.answersConfirmed&&!locked) lockAnswering();
+  if(p==='answering'&&d.auctionWinner===team){
+    if(d.writingStarted) {
+      submitted=d.answers||[]; renderAnswers();
+      if(d.answersConfirmed) {
+        clearInterval(ansInterval); ansInterval=null;
+        if(!locked) lockAnswering();
+      }
+    }
   }
 });
 
