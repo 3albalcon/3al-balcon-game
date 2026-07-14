@@ -638,36 +638,20 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
         ansGeneration++;
         const myGen = ansGeneration;
 
-        // Always show Start Writing fresh — wait for writingStarted from player tap
-        // The questionIndex reset above already cleared locked/submitted/ansInterval
+        // ALWAYS show Start Writing fresh on phase entry
+        // Never trust writingStarted/answersConfirmed here — they may be stale
+        // from a previous question's in-flight Firebase update
         submitted = [];
+        locked = false;
+        clearInterval(ansInterval); ansInterval = null;
         showPhase('answering');
         const swWrap = document.getElementById('start-writing-wrap');
         const inWrap = document.getElementById('ans-input-wrap');
         const timerWrap = document.getElementById('ans-timer-wrap');
-
-        // If writingStarted is true AND timer is still running → restore writing state
-        const timerEndMs = d.answerTimerEnd ? (d.answerTimerEnd - serverOffset) : 0;
-        const timerStillRunning = timerEndMs > Date.now() + 500;
-
-        if(d.writingStarted && timerStillRunning && !d.answersConfirmed) {
-          submitted = d.answers||[];
-          if(swWrap) swWrap.style.display='none';
-          if(inWrap) inWrap.style.display='flex';
-          if(timerWrap) timerWrap.style.display='flex';
-          renderAnswers();
-          startAnsTimer(timerEndMs);
-        } else if(d.writingStarted && d.answersConfirmed) {
-          submitted = d.answers||[];
-          renderAnswers();
-          lockAnswering();
-        } else {
-          // Fresh — show Start Writing button
-          if(swWrap) swWrap.style.display='flex';
-          if(inWrap) inWrap.style.display='none';
-          if(timerWrap) timerWrap.style.display='none';
-          renderAnswers();
-        }
+        if(swWrap) swWrap.style.display='flex';
+        if(inWrap) inWrap.style.display='none';
+        if(timerWrap) timerWrap.style.display='none';
+        renderAnswers();
       } else {
         showPhase('logo');
         document.getElementById('logo-msg').textContent=bt('otherWriting');
@@ -693,12 +677,23 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
   if(p==='answering'&&d.auctionWinner===team){
-    // Guard: only process if on same question
-    if(d.writingStarted && d.questionIndex === currentQuestionIndex) {
-      submitted=d.answers||[]; renderAnswers();
-      if(d.answersConfirmed) {
-        clearInterval(ansInterval); ansInterval=null;
-        if(!locked) lockAnswering();
+    // Only process if on same question index
+    if(d.questionIndex === currentQuestionIndex) {
+      if(d.writingStarted && !locked) {
+        submitted=d.answers||[]; renderAnswers();
+        // Show input if not already showing
+        const swWrap = document.getElementById('start-writing-wrap');
+        const inWrap = document.getElementById('ans-input-wrap');
+        const timerWrap = document.getElementById('ans-timer-wrap');
+        if(swWrap && swWrap.style.display !== 'none') swWrap.style.display='none';
+        if(inWrap && inWrap.style.display === 'none') inWrap.style.display='flex';
+        if(timerWrap && timerWrap.style.display === 'none') timerWrap.style.display='flex';
+        if(d.answersConfirmed) {
+          clearInterval(ansInterval); ansInterval=null;
+          lockAnswering();
+        } else if(d.answerTimerEnd && !ansInterval) {
+          startAnsTimer(d.answerTimerEnd - serverOffset);
+        }
       }
     }
   }
