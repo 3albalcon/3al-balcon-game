@@ -559,7 +559,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   if(tName){badge.textContent=tName; badge.className=`team-badge badge-${team}`;}
   if(d.questionIndex!==undefined) document.getElementById('q-ind').textContent=bt('questionOf', d.questionIndex);
 
-  // New question detected via questionIndex change
+  // New question detected via questionIndex change — reset all local state
   if (d.questionIndex !== undefined && d.questionIndex !== currentQuestionIndex) {
     currentQuestionIndex = d.questionIndex;
     ansGeneration++;
@@ -568,11 +568,7 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
     clearInterval(ansInterval); ansInterval = null;
     if(bidInterval) cancelAnimationFrame(bidInterval); bidInterval = null;
     myBid = 0; lastBidder = null; lastBidCountdownEnd = null;
-    // Show waiting screen and reset phase tracker
-    phase = 'ready'; // sync local phase with new state
-    showPhase('logo');
-    document.getElementById('logo-msg').textContent = bt('waitNext');
-    return; // don't process phase change in same event — wait for next Firebase update
+    phase = ''; // force phase-change handler to fire even if p === 'ready'
   }
 
   // Set waiting screen image if available
