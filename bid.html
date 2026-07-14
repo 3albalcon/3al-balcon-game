@@ -170,28 +170,27 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getDatabase, ref, onValue, update, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
-import { getServerOffset } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
 const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyBFbm6LJCP4YJXrWBz7gy4GzVMYQ_KCuKs",
-  authDomain:"al-balcon-default-rtdb.firebaseapp.com",
-  databaseURL:"https://al-balcon-default-rtdb.firebaseio.com",
-  projectId:"al-balcon-default-rtdb",
-  storageBucket:"al-balcon-default-rtdb.appspot.com",
-  messagingSenderId:"398902807571",
-  appId:"1:398902807571:web:3ba1e2c7fa7d4a48b07df9"
+  apiKey: "AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
+  authDomain: "al-balcon.firebaseapp.com",
+  databaseURL: "https://al-balcon-default-rtdb.firebaseio.com",
+  projectId: "al-balcon",
+  storageBucket: "al-balcon.appspot.com",
+  messagingSenderId: "556294454945",
+  appId: "1:556294454945:web:770c330e71a4e484277ae0"
 };
 
 const app = initializeApp(FIREBASE_CONFIG);
 const db = getDatabase(app);
 
 // ── URL params ──
-const params = new URLSearchParams(location.search);
+const params  = new URLSearchParams(location.search);
 const session = params.get('s') || 'main';
 const team    = params.get('t') || 'a'; // 'a' or 'b'
 const _lang   = params.get('l') || 'ar';
-const roomId  = `${session}_cat3`;
+const roomId  = params.get('r') || `${session}_cat3`; // r param from QR
 const other   = team === 'a' ? 'b' : 'a';
 const isAr    = _lang === 'ar';
 
