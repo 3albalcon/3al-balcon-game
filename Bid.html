@@ -75,12 +75,12 @@ body{overflow:hidden} /* body fixed — scroll on #app instead */
 </div>
 
 <!-- COUNTDOWN -->
-<div class="phase center-phase" id="phase-countdown">
+<div class="phase" id="phase-countdown" style="min-height:80vh;justify-content:center">
   <div id="ph-cd-num">3</div>
 </div>
 
 <!-- BIDDING -->
-<div class="phase center-phase" id="phase-bidding">
+<div class="phase" id="phase-bidding" style="min-height:80vh;justify-content:center">
   <div class="bid-num" id="bid-val">0</div>
   <div class="bid-btns">
     <button class="bid-btn plus" id="btn-plus">+</button>
@@ -270,17 +270,21 @@ function setupBidBtn(id, dir) {
   const btn = el(id);
   if (!btn) return;
   let lastFire = 0;
+  let hasTouchSupport = false;
   btn.addEventListener('touchstart', e => {
-    e.preventDefault(); // stops zoom AND default click
+    e.preventDefault();
+    hasTouchSupport = true;
     const now = Date.now();
-    if (now - lastFire < 350) return;
+    if (now - lastFire < 400) return;
     lastFire = now;
     doBid(dir);
   }, {passive: false});
-  // Fallback for non-touch
-  btn.addEventListener('click', e => {
-    if (Date.now() - lastFire < 350) return;
-    lastFire = Date.now();
+  // Only use click on non-touch devices
+  btn.addEventListener('click', () => {
+    if (hasTouchSupport) return; // touch already handled it
+    const now = Date.now();
+    if (now - lastFire < 400) return;
+    lastFire = now;
     doBid(dir);
   });
 }
