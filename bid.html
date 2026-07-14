@@ -321,14 +321,26 @@ function startAnsTimer(endTime) {
   const fill = document.getElementById('ans-fill');
   const num = document.getElementById('ans-timer-num');
   const total = 60000;
+  const timerGen = ansGeneration; // capture current generation
+  const timerQIdx = currentQuestionIndex; // capture current question index
   ansInterval = setInterval(()=>{
-    if(locked){ clearInterval(ansInterval); ansInterval=null; return; } // stop if locked
+    // Stop if locked, generation changed, or question changed
+    if(locked || ansGeneration !== timerGen || currentQuestionIndex !== timerQIdx){
+      clearInterval(ansInterval); ansInterval=null; return;
+    }
     const rem = Math.max(0, endTime - Date.now());
     const pct = (rem/total)*100;
     const secs = Math.ceil(rem/1000);
     if(fill){ fill.style.width=pct+'%'; fill.style.background=pct<20?'var(--red)':'var(--green)'; }
     if(num){ num.textContent=secs; num.style.color=pct<20?'var(--red)':'var(--yellow)'; }
-    if(rem<=0){ clearInterval(ansInterval); ansInterval=null; if(!locked){ lockAnswering(); update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()}); } }
+    if(rem<=0){
+      clearInterval(ansInterval); ansInterval=null;
+      // Only fire if still on same question
+      if(!locked && currentQuestionIndex===timerQIdx){
+        lockAnswering();
+        update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
+      }
+    }
   },100);
 }
 
@@ -478,11 +490,13 @@ window.cancelConfirm = function() {
 
 window.doConfirmAnswers = async function() {
   if(locked) return;
-  // Stop the countdown timer immediately
-  clearInterval(ansInterval);
-  ansInterval = null;
+  const confirmQIdx = currentQuestionIndex; // capture before async
+  clearInterval(ansInterval); ansInterval = null;
   lockAnswering();
-  await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
+  // Only update if still on same question
+  if(currentQuestionIndex === confirmQIdx) {
+    await update(ref(db,`rooms/${roomId}`),{answersConfirmed:true, answerTimerEnd:Date.now()});
+  }
 };
 
 // ── Bid update handler ──
@@ -679,7 +693,8 @@ onValue(ref(db,`rooms/${roomId}`),(snap)=>{
   // ready phase handled above
   if(p==='bidding') handleBidUpdate(d);
   if(p==='answering'&&d.auctionWinner===team){
-    if(d.writingStarted) {
+    // Guard: only process if on same question
+    if(d.writingStarted && d.questionIndex === currentQuestionIndex) {
       submitted=d.answers||[]; renderAnswers();
       if(d.answersConfirmed) {
         clearInterval(ansInterval); ansInterval=null;
