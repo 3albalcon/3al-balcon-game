@@ -117,8 +117,8 @@ body{min-height:100dvh;min-height:100vh;font-family:'Cairo',sans-serif;backgroun
 <div class="phase" id="phase-bidding">
   <div class="bid-num" id="bid-val">0</div>
   <div class="bid-btns">
-    <button class="bid-btn plus" id="btn-plus" onclick="placeBid(1)">+</button>
-    <button class="bid-btn minus" id="btn-minus" onclick="placeBid(-1)">−</button>
+    <button class="bid-btn plus" id="btn-plus" ontouchend="e=>{e.preventDefault();placeBid(1)}" onclick="placeBid(1)">+</button>
+    <button class="bid-btn minus" id="btn-minus" ontouchend="e=>{e.preventDefault();placeBid(-1)}" onclick="placeBid(-1)">−</button>
   </div>
   <div id="bid-msg"></div>
 </div>
@@ -126,6 +126,7 @@ body{min-height:100dvh;min-height:100vh;font-family:'Cairo',sans-serif;backgroun
 <!-- ── ANSWERING phase ── -->
 <div class="phase" id="phase-answering">
   <div id="ans-target-msg"></div>
+  <div id="ans-remaining" style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center"></div>
   <!-- Timer (hidden until writing starts) -->
   <div id="ans-timer-wrap" style="width:100%;display:none;flex-direction:column;align-items:center;gap:6px">
     <div id="ans-timer-num">60</div>
@@ -139,8 +140,10 @@ body{min-height:100dvh;min-height:100vh;font-family:'Cairo',sans-serif;backgroun
   <div id="ans-input-area" style="display:none;width:100%;flex-direction:column;gap:10px">
     <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off" onkeydown="if(event.key==='Enter')addAnswer()">
     <button class="btn btn-g" id="btn-add" onclick="addAnswer()">✅ أضف الجواب</button>
-    <button class="btn btn-y" id="btn-confirm" style="display:none" onclick="showConfirm()">🔒 تأكيد الأجوبة</button>
+    <!-- confirm moved outside input area -->
   </div>
+  <!-- Confirm button OUTSIDE input area — always visible -->
+  <button class="btn btn-y" id="btn-confirm-outside" style="display:none" onclick="showConfirm()">🔒 تأكيد الأجوبة</button>
   <!-- Done card (shown after confirm) -->
   <div id="done-card" style="display:none">
     <div class="done-icon">✅</div>
@@ -263,12 +266,21 @@ function setBidBtns(enabled) {
 
 function renderAnsList() {
   const list = document.getElementById('ans-list');
-  list.innerHTML = submitted.map((a, i) =>
-    `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${a}</span></div>`
-  ).join('');
-  // Show confirm button when at least one answer added
+  list.innerHTML = submitted.map((a, i) => {
+    const txt = typeof a === 'object' ? (a.text || '') : a;
+    return `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${txt}</span></div>`;
+  }).join('');
+  // Show confirm button when at least one answer added, inside input area
   const confirmBtn = document.getElementById('btn-confirm');
   if (confirmBtn) confirmBtn.style.display = submitted.length > 0 ? 'block' : 'none';
+  // Show confirm button OUTSIDE input area too (always visible after writing)
+  const confirmBtn2 = document.getElementById('btn-confirm-outside');
+  if (confirmBtn2) confirmBtn2.style.display = submitted.length > 0 ? 'block' : 'none';
+  // Update remaining count
+  const remaining = document.getElementById('ans-remaining');
+  if (remaining) remaining.textContent = isAr
+    ? `${submitted.length} / ${totalAns} إجابة`
+    : `${submitted.length} / ${totalAns} answers`;
 }
 
 function resetAnsweringUI() {
@@ -346,9 +358,11 @@ function showDoneCard() {
   const inputArea = document.getElementById('ans-input-area');
   const doneCard  = document.getElementById('done-card');
   const btnStart  = document.getElementById('btn-start-writing');
+  const confOut   = document.getElementById('btn-confirm-outside');
   if (inputArea) inputArea.style.display = 'none';
   if (doneCard)  doneCard.style.display = 'flex';
   if (btnStart)  btnStart.style.display = 'none';
+  if (confOut)   confOut.style.display = 'none';
 }
 
 // ── Bid actions ──
@@ -388,7 +402,9 @@ window.addAnswer = function() {
   if (!inp || inp.disabled) return;
   const val = inp.value.trim();
   if (!val) return;
-  if (submitted.length >= totalAns) {
+  // Count only plain string answers we've submitted (not status objects from Firebase)
+  const myAnswers = submitted.filter(a => typeof a === 'string');
+  if (myAnswers.length >= totalAns) {
     inp.placeholder = isAr ? `الحد الأقصى ${totalAns} إجابة` : `Max ${totalAns} answers`;
     return;
   }
@@ -398,12 +414,12 @@ window.addAnswer = function() {
   inp.focus();
   renderAnsList();
   // Lock input when reached max
-  if (submitted.length >= totalAns) {
+  if (submitted.filter(a => typeof a === 'string').length >= totalAns) {
     inp.disabled = true;
     const addBtn = document.getElementById('btn-add');
     if (addBtn) addBtn.disabled = true;
   }
-  // Update Firebase
+  // Send plain strings to Firebase
   update(ref(db, `rooms/${roomId}`), { answers: submitted });
 };
 
