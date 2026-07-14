@@ -7,167 +7,134 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-html{height:100%;font-family:'Cairo',sans-serif;background:#060d1f;color:#fff}
-body{min-height:100dvh;min-height:100vh;font-family:'Cairo',sans-serif;background:#060d1f;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-
-/* Colors */
-:root{
-  --green:#39FF14;--yellow:#FAC70A;--cyan:#00EFFF;
-  --red:#FF2D2D;--pink:#FF2D78;--navy:#060d1f;
-}
-
-/* Team badge */
-.team-badge{font-size:clamp(18px,5vw,28px);font-weight:900;color:var(--yellow);text-shadow:0 0 12px rgba(250,199,10,0.5);text-align:center}
-
-/* Question box */
-.q-box{font-size:clamp(16px,4vw,26px);font-weight:700;color:#fff;text-align:center;
+html,body{font-family:'Cairo',sans-serif;background:#060d1f;color:#fff}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  padding:16px;gap:12px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px}
+:root{--green:#39FF14;--yellow:#FAC70A;--cyan:#00EFFF;--red:#FF2D2D}
+.team-badge{font-size:clamp(18px,5vw,26px);font-weight:900;color:var(--yellow);text-align:center;padding-top:8px}
+.q-box{font-size:clamp(15px,4vw,22px);font-weight:700;color:#fff;text-align:center;
   background:rgba(0,10,50,0.6);border:2px solid var(--cyan);border-radius:14px;
-  padding:16px 20px;width:100%;max-width:480px;direction:rtl;line-height:1.4;display:none}
-
-/* Phase containers */
-.phase{display:none;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:480px}
+  padding:14px 18px;width:100%;max-width:480px;direction:rtl;line-height:1.4;display:none}
+.phase{display:none;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:480px}
 .phase.active{display:flex}
-/* Center short content vertically */
-#phase-waiting,#phase-countdown,#phase-logo{min-height:60vh;justify-content:center}
-
-/* Waiting */
-#wait-msg{font-size:clamp(16px,4vw,22px);font-weight:700;color:rgba(255,255,255,0.6);text-align:center;line-height:1.5}
-
-/* Countdown */
-#ph-cd-num{font-size:clamp(80px,25vw,160px);font-weight:900;color:var(--yellow);text-shadow:0 0 40px rgba(250,199,10,0.6);line-height:1}
-
-/* Bidding */
-.bid-num{font-size:clamp(60px,20vw,120px);font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(57,255,20,0.5);line-height:1}
-.bid-btns{display:flex;gap:16px}
-.bid-btn{width:72px;height:72px;border-radius:50%;border:3px solid;font-size:36px;font-weight:900;
-  cursor:pointer;font-family:'Cairo',sans-serif;transition:all 0.15s;background:transparent}
+.center-phase{min-height:70vh;justify-content:center}
+#wait-msg{font-size:clamp(15px,4vw,20px);font-weight:700;color:rgba(255,255,255,0.6);text-align:center;line-height:1.5}
+#ph-cd-num{font-size:clamp(80px,25vw,150px);font-weight:900;color:var(--yellow);line-height:1}
+.bid-num{font-size:clamp(60px,20vw,110px);font-weight:900;color:var(--green);line-height:1}
+.bid-btns{display:flex;gap:20px}
+.bid-btn{width:76px;height:76px;border-radius:50%;border:3px solid;font-size:38px;font-weight:900;
+  cursor:pointer;font-family:'Cairo',sans-serif;background:transparent;user-select:none}
 .bid-btn.plus{border-color:var(--green);color:var(--green)}
-.bid-btn.plus:active{background:rgba(57,255,20,0.2)}
 .bid-btn.minus{border-color:var(--red);color:var(--red)}
-.bid-btn.minus:active{background:rgba(255,45,45,0.2)}
-.bid-btn:disabled{opacity:0.2;cursor:default}
-#bid-msg{font-size:clamp(13px,3.5vw,18px);font-weight:700;color:var(--yellow);text-align:center;
-  padding:10px 16px;background:rgba(250,199,10,0.08);border:1px solid rgba(250,199,10,0.3);
+.bid-btn:disabled{opacity:0.2}
+#bid-msg{font-size:clamp(13px,3.5vw,17px);font-weight:700;color:var(--yellow);text-align:center;
+  padding:10px 14px;background:rgba(250,199,10,0.08);border:1px solid rgba(250,199,10,0.3);
   border-radius:10px;width:100%;display:none}
-
-/* Answering */
-#ans-target-msg{font-size:clamp(14px,3.5vw,20px);font-weight:700;color:var(--cyan);text-align:center}
-/* Timer */
-.timer-bar{width:100%;height:10px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden}
-.timer-fill{height:100%;background:var(--green);border-radius:100px;transition:width 0.2s linear}
-#ans-timer-num{font-size:clamp(32px,8vw,52px);font-weight:900;color:var(--green);line-height:1}
-/* Answers list */
-#ans-list{width:100%;display:flex;flex-direction:column;gap:8px}
-.ans-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;
-  background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);font-size:clamp(14px,3.5vw,18px);font-weight:700;direction:rtl}
-.ans-num{color:rgba(255,255,255,0.3);font-size:12px;min-width:20px}
-/* Input */
-.ans-input{width:100%;padding:14px 16px;border-radius:12px;border:2px solid rgba(255,255,255,0.2);
+#ans-target-msg{font-size:clamp(14px,3.5vw,19px);font-weight:700;color:var(--cyan);text-align:center}
+#ans-count{font-size:13px;color:rgba(255,255,255,0.4);text-align:center}
+.timer-bar{width:100%;height:8px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden}
+.timer-fill{height:100%;background:var(--green);border-radius:100px}
+#ans-timer-num{font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--green);line-height:1}
+#ans-list{width:100%;display:flex;flex-direction:column;gap:6px}
+.ans-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;
+  background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);
+  font-size:clamp(14px,3.5vw,17px);font-weight:700;direction:rtl}
+.ans-num{color:rgba(255,255,255,0.3);font-size:11px;min-width:18px;flex-shrink:0}
+.ans-input{width:100%;padding:13px 14px;border-radius:12px;border:2px solid rgba(255,255,255,0.2);
   background:rgba(255,255,255,0.05);color:#fff;font-family:'Cairo',sans-serif;
-  font-size:clamp(16px,4vw,22px);font-weight:700;direction:rtl;outline:none;
-  -webkit-appearance:none}
-.ans-input:focus{border-color:var(--cyan);background:rgba(0,239,255,0.05)}
-.ans-input:disabled{opacity:0.4;cursor:default}
-/* Buttons */
-.btn{padding:12px 20px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:clamp(14px,3.5vw,18px);
-  font-weight:900;cursor:pointer;border:2px solid;transition:all 0.15s;width:100%;text-align:center}
-.btn:active{transform:scale(0.97)}
-.btn:disabled{opacity:0.3;cursor:default;transform:none}
-.btn-g{border-color:var(--green);color:var(--green);background:rgba(57,255,20,0.07)}
-.btn-y{border-color:var(--yellow);color:var(--yellow);background:rgba(250,199,10,0.07)}
-.btn-r{border-color:var(--red);color:var(--red);background:rgba(255,45,45,0.07)}
-.btn-c{border-color:var(--cyan);color:var(--cyan);background:rgba(0,239,255,0.07)}
-
-/* Logo/done screen */
-#logo-msg{font-size:clamp(16px,4vw,22px);font-weight:700;color:rgba(255,255,255,0.5);text-align:center;line-height:1.5}
-.logo-title{font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--yellow);
-  text-shadow:0 0 20px rgba(250,199,10,0.5);letter-spacing:3px}
-
-/* Done card */
+  font-size:18px;font-weight:700;direction:rtl;outline:none;-webkit-appearance:none}
+.ans-input:focus{border-color:var(--cyan)}
+.ans-input:disabled{opacity:0.4}
+.btn{padding:13px 18px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:clamp(14px,3.5vw,17px);
+  font-weight:900;cursor:pointer;border:2px solid;width:100%;text-align:center;background:transparent}
+.btn:disabled{opacity:0.3;cursor:default}
+.btn-g{border-color:var(--green);color:var(--green)}
+.btn-y{border-color:var(--yellow);color:var(--yellow)}
+.btn-c{border-color:var(--cyan);color:var(--cyan)}
 #done-card{width:100%;padding:20px;border:2px solid var(--green);border-radius:16px;
-  background:rgba(57,255,20,0.05);text-align:center;display:flex;flex-direction:column;gap:10px}
-#done-card .done-icon{font-size:48px}
-#done-card .done-msg{font-size:clamp(16px,4vw,22px);font-weight:700;color:var(--green)}
-#done-card .done-sub{font-size:14px;color:rgba(255,255,255,0.4)}
-
-/* Shutdown overlay */
+  background:rgba(57,255,20,0.05);text-align:center;flex-direction:column;gap:10px}
+.logo-title{font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--yellow);letter-spacing:3px}
+#logo-msg{font-size:clamp(15px,4vw,20px);font-weight:700;color:rgba(255,255,255,0.5);text-align:center}
+#confirm-dialog{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,13,31,0.96);
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px}
 #shutdown-overlay{display:none;position:fixed;inset:0;z-index:9999;background:#060d1f;
   align-items:center;justify-content:center;flex-direction:column;gap:12px}
 </style>
 </head>
 <body>
 
-<!-- Team name -->
 <div class="team-badge" id="team-badge">جاري الاتصال...</div>
-
-<!-- Question text (shown during bidding & answering) -->
 <div class="q-box" id="q-box"></div>
 
-<!-- ── WAITING phase ── -->
-<div class="phase active" id="phase-waiting">
+<!-- WAITING -->
+<div class="phase center-phase active" id="phase-waiting">
   <div id="wait-msg">⏳ جاري الاتصال...</div>
 </div>
 
-<!-- ── COUNTDOWN phase ── -->
-<div class="phase" id="phase-countdown">
+<!-- COUNTDOWN -->
+<div class="phase center-phase" id="phase-countdown">
   <div id="ph-cd-num">3</div>
 </div>
 
-<!-- ── BIDDING phase ── -->
-<div class="phase" id="phase-bidding">
+<!-- BIDDING -->
+<div class="phase center-phase" id="phase-bidding">
   <div class="bid-num" id="bid-val">0</div>
   <div class="bid-btns">
-    <button class="bid-btn plus" id="btn-plus" ontouchend="e=>{e.preventDefault();placeBid(1)}" onclick="placeBid(1)">+</button>
-    <button class="bid-btn minus" id="btn-minus" ontouchend="e=>{e.preventDefault();placeBid(-1)}" onclick="placeBid(-1)">−</button>
+    <button class="bid-btn plus" id="btn-plus">+</button>
+    <button class="bid-btn minus" id="btn-minus">−</button>
   </div>
   <div id="bid-msg"></div>
 </div>
 
-<!-- ── ANSWERING phase ── -->
+<!-- ANSWERING -->
 <div class="phase" id="phase-answering">
   <div id="ans-target-msg"></div>
-  <div id="ans-remaining" style="font-size:13px;color:rgba(255,255,255,0.4);text-align:center"></div>
-  <!-- Timer (hidden until writing starts) -->
-  <div id="ans-timer-wrap" style="width:100%;display:none;flex-direction:column;align-items:center;gap:6px">
+  <div id="ans-count"></div>
+
+  <!-- Timer -->
+  <div id="ans-timer-wrap" style="display:none;width:100%;flex-direction:column;align-items:center;gap:6px">
     <div id="ans-timer-num">60</div>
     <div class="timer-bar"><div class="timer-fill" id="ans-fill" style="width:100%"></div></div>
   </div>
-  <!-- Submitted answers list -->
+
+  <!-- Answers list -->
   <div id="ans-list"></div>
-  <!-- Start Writing button -->
-  <button class="btn btn-y" id="btn-start-writing" onclick="startWriting()">✏️ ابدأ الكتابة</button>
-  <!-- Input area (hidden until Start Writing tapped) -->
+
+  <!-- Start Writing -->
+  <button class="btn btn-y" id="btn-start-writing">✏️ ابدأ الكتابة</button>
+
+  <!-- Input area -->
   <div id="ans-input-area" style="display:none;width:100%;flex-direction:column;gap:10px">
-    <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off" onkeydown="if(event.key==='Enter')addAnswer()">
-    <button class="btn btn-g" id="btn-add" onclick="addAnswer()">✅ أضف الجواب</button>
-    <!-- confirm moved outside input area -->
+    <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off">
+    <button class="btn btn-g" id="btn-add">✅ أضف الجواب</button>
   </div>
-  <!-- Confirm button OUTSIDE input area — always visible -->
-  <button class="btn btn-y" id="btn-confirm-outside" style="display:none" onclick="showConfirm()">🔒 تأكيد الأجوبة</button>
-  <!-- Done card (shown after confirm) -->
+
+  <!-- Confirm button — always outside input area -->
+  <button class="btn btn-y" id="btn-confirm" style="display:none">🔒 تأكيد الأجوبة</button>
+
+  <!-- Done card -->
   <div id="done-card" style="display:none">
-    <div class="done-icon">✅</div>
-    <div class="done-msg">تم إرسال الأجوبة!</div>
-    <div class="done-sub">في انتظار المقدّم...</div>
+    <div style="font-size:44px">✅</div>
+    <div style="font-size:clamp(16px,4vw,20px);font-weight:700;color:var(--green)">تم إرسال الأجوبة!</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4)">في انتظار المقدّم...</div>
   </div>
 </div>
 
-<!-- ── LOGO / OTHER WRITING phase ── -->
-<div class="phase" id="phase-logo">
+<!-- LOGO -->
+<div class="phase center-phase" id="phase-logo">
   <div class="logo-title">3AL BALCON</div>
   <div id="logo-msg"></div>
 </div>
 
-<!-- Confirm dialog (overlay) -->
-<div id="confirm-dialog" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(6,13,31,0.95);
-  align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:24px">
+<!-- Confirm dialog -->
+<div id="confirm-dialog">
   <div style="font-size:22px;font-weight:900;color:var(--yellow)">🔒 تأكيد الأجوبة؟</div>
   <div style="font-size:14px;color:rgba(255,255,255,0.5);text-align:center">لا يمكن التعديل بعد التأكيد</div>
-  <button class="btn btn-g" onclick="confirmAnswers()">✅ تأكيد</button>
-  <button class="btn btn-c" onclick="cancelConfirm()">↩ رجوع</button>
+  <button class="btn btn-g" id="btn-confirm-yes">✅ تأكيد</button>
+  <button class="btn btn-c" id="btn-cancel-confirm">↩ رجوع</button>
 </div>
 
-<!-- Shutdown overlay -->
+<!-- Shutdown -->
 <div id="shutdown-overlay">
   <div class="logo-title">3AL BALCON</div>
   <div style="font-size:14px;color:rgba(255,255,255,0.3)">انتهت اللعبة</div>
@@ -177,7 +144,7 @@ body{min-height:100dvh;min-height:100vh;font-family:'Cairo',sans-serif;backgroun
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
-const FIREBASE_CONFIG = {
+const app = initializeApp({
   apiKey: "AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
   authDomain: "al-balcon.firebaseapp.com",
   databaseURL: "https://al-balcon-default-rtdb.firebaseio.com",
@@ -185,192 +152,137 @@ const FIREBASE_CONFIG = {
   storageBucket: "al-balcon.appspot.com",
   messagingSenderId: "556294454945",
   appId: "1:556294454945:web:770c330e71a4e484277ae0"
-};
-
-const app = initializeApp(FIREBASE_CONFIG);
+});
 const db = getDatabase(app);
 
-// ── URL params ──
 const params  = new URLSearchParams(location.search);
 const session = params.get('s') || 'main';
-const team    = params.get('t') || 'a'; // 'a' or 'b'
+const team    = params.get('t') || 'a';
 const _lang   = params.get('l') || 'ar';
-const roomId  = params.get('r') || `${session}_cat3`; // r param from QR
-const other   = team === 'a' ? 'b' : 'a';
+const roomId  = params.get('r') || `${session}_cat3`;
 const isAr    = _lang === 'ar';
 
 // ── State ──
-let phase         = '';       // current phase from Firebase
-let questionIndex = -1;       // tracks current question to detect new questions
-let myBid         = 0;        // my current bid value
-let totalAns      = 1;        // answers I need to write
-let submitted     = [];       // answers I've written
-let writingActive = false;    // true after I tapped Start Writing
-let confirmed     = false;    // true after I confirmed answers
-let ansTimer      = null;     // setInterval for 60s countdown
-let ansTimerEnd   = 0;        // when the timer ends (ms)
-let ansTimerQIdx  = -1;       // questionIndex when timer started
+let phase         = '';
+let questionIdx   = -1;
+let myBid         = 0;
+let totalAns      = 1;       // max answers = winning bid
+let myAnswers     = [];      // plain strings only — what I typed
+let writingActive = false;
+let confirmed     = false;
+let ansTimer      = null;
+let ansTimerEnd   = 0;
+let ansTimerQIdx  = -1;
 
-// ── Helpers ──
-function bt(key, ...args) {
-  const strings = {
-    ar: {
-      connecting:    'جاري الاتصال...',
-      waitHost:      '✅ متصل — انتظر المقدّم لبدء المزايدة',
-      otherWriting:  '⏳ الفريق الثاني يكتب الأجوبة...',
-      waitNext:      '⏳ انتظر السؤال التالي...',
-      done:          'انتهت جولة المزاد!',
-      yourBid:       n => `مزايدتك: ${n}`,
-      otherBid:      n => `🔥 الفريق الثاني زايد ${n}`,
-      otherUrgent:   n => `⚡ الفريق الثاني زايد ${n} — زايد أو خسرت!`,
-      youLead:       n => `✅ مزايدتك: ${n} — انتظر الفريق الثاني`,
-      writeNow:      n => `اكتب ${n} إجابة`,
-      timeUp:        'انتهى الوقت!',
-      questionOf:    (n,t) => `سؤال ${n} من ${t}`,
-    },
-    en: {
-      connecting:    'Connecting...',
-      waitHost:      '✅ Connected — waiting for host to start',
-      otherWriting:  '⏳ Other team is writing answers...',
-      waitNext:      '⏳ Waiting for next question...',
-      done:          'Auction round done!',
-      yourBid:       n => `Your bid: ${n}`,
-      otherBid:      n => `🔥 Other team bid ${n}`,
-      otherUrgent:   n => `⚡ Other team bid ${n} — bid higher or lose!`,
-      youLead:       n => `✅ Your bid: ${n} — waiting for other team`,
-      writeNow:      n => `Write ${n} answer${n>1?'s':''}`,
-      timeUp:        "Time's up!",
-      questionOf:    (n,t) => `Question ${n} of ${t}`,
-    }
-  };
-  const s = strings[isAr ? 'ar' : 'en'];
-  const v = s[key];
-  return typeof v === 'function' ? v(...args) : (v || key);
-}
+// ── UI helpers ──
+function el(id) { return document.getElementById(id); }
 
 function showPhase(name) {
   document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById('phase-' + name);
-  if (el) el.classList.add('active');
+  const p = el('phase-' + name);
+  if (p) p.classList.add('active');
 }
 
-function setWait(msg) {
+function setWaiting(msg) {
   showPhase('waiting');
-  document.getElementById('wait-msg').textContent = msg;
+  el('wait-msg').textContent = msg;
 }
 
-function setBidBtns(enabled) {
-  document.getElementById('btn-plus').disabled  = !enabled;
-  document.getElementById('btn-minus').disabled = !enabled;
-}
-
-function renderAnsList() {
-  const list = document.getElementById('ans-list');
-  list.innerHTML = submitted.map((a, i) => {
-    const txt = typeof a === 'object' ? (a.text || '') : a;
-    return `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${txt}</span></div>`;
-  }).join('');
-  // Show confirm button when at least one answer added, inside input area
-  const confirmBtn = document.getElementById('btn-confirm');
-  if (confirmBtn) confirmBtn.style.display = submitted.length > 0 ? 'block' : 'none';
-  // Show confirm button OUTSIDE input area too (always visible after writing)
-  const confirmBtn2 = document.getElementById('btn-confirm-outside');
-  if (confirmBtn2) confirmBtn2.style.display = submitted.length > 0 ? 'block' : 'none';
-  // Update remaining count
-  const remaining = document.getElementById('ans-remaining');
-  if (remaining) remaining.textContent = isAr
-    ? `${submitted.length} / ${totalAns} إجابة`
-    : `${submitted.length} / ${totalAns} answers`;
+// ── Answer list ──
+function renderList() {
+  el('ans-list').innerHTML = myAnswers.map((txt, i) =>
+    `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${txt}</span></div>`
+  ).join('');
+  const count = el('ans-count');
+  if (count) count.textContent = isAr
+    ? `${myAnswers.length} / ${totalAns} إجابات`
+    : `${myAnswers.length} / ${totalAns} answers`;
+  // Show confirm once at least 1 answer added
+  const confBtn = el('btn-confirm');
+  if (confBtn) confBtn.style.display = myAnswers.length > 0 ? 'block' : 'none';
+  // Lock input if max reached
+  if (myAnswers.length >= totalAns) {
+    const inp = el('ans-input');
+    const add = el('btn-add');
+    if (inp) { inp.disabled = true; inp.placeholder = isAr ? `وصلت للحد الأقصى (${totalAns})` : `Max reached (${totalAns})`; }
+    if (add) add.disabled = true;
+  }
 }
 
 function resetAnsweringUI() {
   writingActive = false;
   confirmed     = false;
-  submitted     = [];
-  clearAnsTimer();
-  // Reset UI
-  const btnStart  = document.getElementById('btn-start-writing');
-  const inputArea = document.getElementById('ans-input-area');
-  const doneCard  = document.getElementById('done-card');
-  const timerWrap = document.getElementById('ans-timer-wrap');
-  if (btnStart)  { btnStart.style.display = 'block'; btnStart.disabled = false; }
-  if (inputArea) inputArea.style.display = 'none';
-  if (doneCard)  doneCard.style.display = 'none';
-  if (timerWrap) timerWrap.style.display = 'none';
-  const inp = document.getElementById('ans-input');
-  if (inp) { inp.value = ''; inp.disabled = false; }
-  const addBtn = document.getElementById('btn-add');
-  if (addBtn) addBtn.disabled = false;
-  renderAnsList();
+  myAnswers     = [];
+  clearTimer();
+  el('btn-start-writing').style.display = 'block';
+  el('ans-input-area').style.display = 'none';
+  el('ans-timer-wrap').style.display = 'none';
+  el('done-card').style.display = 'none';
+  el('btn-confirm').style.display = 'none';
+  const inp = el('ans-input');
+  if (inp) { inp.value = ''; inp.disabled = false; inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...'; }
+  const add = el('btn-add');
+  if (add) add.disabled = false;
+  renderList();
 }
 
-function clearAnsTimer() {
+function showDone() {
+  el('ans-input-area').style.display = 'none';
+  el('btn-start-writing').style.display = 'none';
+  el('btn-confirm').style.display = 'none';
+  el('done-card').style.display = 'flex';
+}
+
+// ── Timer ──
+function clearTimer() {
   if (ansTimer) { clearInterval(ansTimer); ansTimer = null; }
 }
 
-function startAnsTimer(endTimeMs) {
-  clearAnsTimer();
-  ansTimerQIdx = questionIndex; // capture question index
-  ansTimerEnd  = endTimeMs;
-  const fill   = document.getElementById('ans-fill');
-  const num    = document.getElementById('ans-timer-num');
-  const total  = 60000;
-
+function startTimer(endMs) {
+  clearTimer();
+  ansTimerEnd  = endMs;
+  ansTimerQIdx = questionIdx;
+  const fill = el('ans-fill');
+  const num  = el('ans-timer-num');
   function tick() {
-    // Stop if question changed or confirmed
-    if (questionIndex !== ansTimerQIdx || confirmed) {
-      clearAnsTimer();
-      return;
-    }
-    const rem  = Math.max(0, endTimeMs - Date.now());
-    const pct  = (rem / total) * 100;
+    if (questionIdx !== ansTimerQIdx || confirmed) { clearTimer(); return; }
+    const rem  = Math.max(0, endMs - Date.now());
+    const pct  = (rem / 60000) * 100;
     const secs = Math.ceil(rem / 1000);
     if (fill) { fill.style.width = pct + '%'; fill.style.background = pct < 20 ? 'var(--red)' : 'var(--green)'; }
     if (num)  { num.textContent = secs; num.style.color = pct < 20 ? 'var(--red)' : 'var(--green)'; }
-    if (rem <= 0) {
-      clearAnsTimer();
-      if (!confirmed && questionIndex === ansTimerQIdx) {
-        timeUp();
-      }
+    if (rem <= 0 && !confirmed && questionIdx === ansTimerQIdx) {
+      clearTimer();
+      confirmed = true;
+      update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
+      showDone();
     }
   }
   tick();
   ansTimer = setInterval(tick, 200);
 }
 
-function timeUp() {
-  // Lock input
-  const inp    = document.getElementById('ans-input');
-  const addBtn = document.getElementById('btn-add');
-  const conBtn = document.getElementById('btn-confirm');
-  if (inp)    { inp.disabled = true; inp.placeholder = bt('timeUp'); }
-  if (addBtn) addBtn.disabled = true;
-  if (conBtn) conBtn.disabled = true;
-  // Auto-confirm with whatever was submitted
-  if (!confirmed && questionIndex === ansTimerQIdx) {
-    confirmed = true;
-    update(ref(db, `rooms/${roomId}`), { answersConfirmed: true });
-    showDoneCard();
-  }
+// ── Bid buttons (prevent double-tap zoom) ──
+function setupBidBtn(id, dir) {
+  const btn = el(id);
+  if (!btn) return;
+  let lastTouch = 0;
+  btn.addEventListener('touchstart', e => { e.preventDefault(); }, { passive: false });
+  btn.addEventListener('touchend', e => {
+    e.preventDefault();
+    const now = Date.now();
+    if (now - lastTouch < 300) return; // debounce
+    lastTouch = now;
+    doBid(dir);
+  });
+  btn.addEventListener('click', e => { doBid(dir); });
 }
 
-function showDoneCard() {
-  const inputArea = document.getElementById('ans-input-area');
-  const doneCard  = document.getElementById('done-card');
-  const btnStart  = document.getElementById('btn-start-writing');
-  const confOut   = document.getElementById('btn-confirm-outside');
-  if (inputArea) inputArea.style.display = 'none';
-  if (doneCard)  doneCard.style.display = 'flex';
-  if (btnStart)  btnStart.style.display = 'none';
-  if (confOut)   confOut.style.display = 'none';
-}
-
-// ── Bid actions ──
-window.placeBid = function(dir) {
+function doBid(dir) {
   const newBid = Math.max(1, myBid + dir);
   if (newBid === myBid && dir < 0) return;
   myBid = newBid;
-  document.getElementById('bid-val').textContent = myBid;
+  el('bid-val').textContent = myBid;
   const ts = Date.now();
   update(ref(db, `rooms/${roomId}`), {
     [`bids/${team}/value`]: myBid,
@@ -378,74 +290,56 @@ window.placeBid = function(dir) {
     lastBidder:             team,
     bidCountdownEnd:        ts + 10000,
   });
-};
+}
+setupBidBtn('btn-plus', 1);
+setupBidBtn('btn-minus', -1);
 
 // ── Writing actions ──
-window.startWriting = async function() {
+el('btn-start-writing').addEventListener('click', async () => {
+  writingActive = true;
   const timerEnd = Date.now() + 60000;
-  writingActive  = true;
-  // Update Firebase first
   await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: timerEnd });
-  // Then show UI
-  const btnStart  = document.getElementById('btn-start-writing');
-  const inputArea = document.getElementById('ans-input-area');
-  const timerWrap = document.getElementById('ans-timer-wrap');
-  if (btnStart)  btnStart.style.display = 'none';
-  if (inputArea) { inputArea.style.display = 'flex'; }
-  if (timerWrap) timerWrap.style.display = 'flex';
-  startAnsTimer(timerEnd);
-  document.getElementById('ans-input')?.focus();
-};
+  el('btn-start-writing').style.display = 'none';
+  el('ans-input-area').style.display = 'flex';
+  el('ans-timer-wrap').style.display = 'flex';
+  startTimer(timerEnd);
+  el('ans-input')?.focus();
+});
 
-window.addAnswer = function() {
-  const inp = document.getElementById('ans-input');
+function doAddAnswer() {
+  const inp = el('ans-input');
   if (!inp || inp.disabled) return;
-  const val = inp.value.trim();
+  const val = (inp.value || '').trim();
   if (!val) return;
-  // Count only plain string answers we've submitted (not status objects from Firebase)
-  const myAnswers = submitted.filter(a => typeof a === 'string');
-  if (myAnswers.length >= totalAns) {
-    inp.placeholder = isAr ? `الحد الأقصى ${totalAns} إجابة` : `Max ${totalAns} answers`;
-    return;
-  }
-  submitted.push(val);
+  if (myAnswers.length >= totalAns) return; // hard limit
+  myAnswers.push(val);
   inp.value = '';
-  inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...';
-  inp.focus();
-  renderAnsList();
-  // Lock input when reached max
-  if (submitted.filter(a => typeof a === 'string').length >= totalAns) {
-    inp.disabled = true;
-    const addBtn = document.getElementById('btn-add');
-    if (addBtn) addBtn.disabled = true;
-  }
+  if (!inp.disabled) inp.focus();
+  renderList();
   // Send plain strings to Firebase
-  update(ref(db, `rooms/${roomId}`), { answers: submitted });
-};
+  update(ref(db, `rooms/${roomId}`), { answers: myAnswers });
+}
 
-window.showConfirm = function() {
-  document.getElementById('confirm-dialog').style.display = 'flex';
-};
+el('btn-add').addEventListener('click', doAddAnswer);
+el('ans-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAddAnswer(); } });
 
-window.cancelConfirm = function() {
-  document.getElementById('confirm-dialog').style.display = 'none';
-};
-
-window.confirmAnswers = function() {
-  document.getElementById('confirm-dialog').style.display = 'none';
+el('btn-confirm').addEventListener('click', () => {
+  el('confirm-dialog').style.display = 'flex';
+});
+el('btn-confirm-yes').addEventListener('click', () => {
+  el('confirm-dialog').style.display = 'none';
   if (confirmed) return;
   confirmed = true;
-  clearAnsTimer();
-  // Update Firebase
+  clearTimer();
   update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
-  showDoneCard();
-};
+  showDone();
+});
+el('btn-cancel-confirm').addEventListener('click', () => {
+  el('confirm-dialog').style.display = 'none';
+});
 
-// ── Firebase listener ──
-// Mark as connected
+// ── Firebase ──
 update(ref(db, `rooms/${roomId}`), { [`connected${team.toUpperCase()}`]: true });
-
-// Language on html element
 document.documentElement.lang = isAr ? 'ar' : 'en';
 document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
 
@@ -455,123 +349,95 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
 
   // Team name
   const name = team === 'a' ? d.teamA : d.teamB;
-  if (name) document.getElementById('team-badge').textContent = name;
+  if (name) el('team-badge').textContent = name;
 
   // Question text
-  if (d.question) {
-    const qBox = document.getElementById('q-box');
-    if (qBox) { qBox.textContent = d.question; qBox.style.display = 'block'; }
-  }
+  if (d.question) { el('q-box').textContent = d.question; el('q-box').style.display = 'block'; }
 
   const newPhase = d.phase || 'waiting';
   const newQIdx  = d.questionIndex ?? -1;
 
-  // ── New question detected ──
-  if (newQIdx !== questionIndex && newQIdx !== -1) {
-    questionIndex = newQIdx;
-    // Reset all local state
-    myBid         = 0;
-    writingActive = false;
-    confirmed     = false;
-    submitted     = [];
-    clearAnsTimer();
-    phase = ''; // force phase change to fire
-    // Hide question box until question comes
-    const qBox = document.getElementById('q-box');
-    if (qBox) qBox.style.display = 'none';
+  // New question
+  if (newQIdx !== questionIdx && newQIdx !== -1) {
+    questionIdx = newQIdx;
+    myBid = 0; myAnswers = []; writingActive = false; confirmed = false;
+    clearTimer();
+    el('q-box').style.display = 'none';
+    phase = ''; // force phase change
   }
 
-  // ── Phase change ──
+  // Phase change
   if (newPhase !== phase) {
     phase = newPhase;
 
     if (phase === 'waiting' || phase === 'ready') {
-      setWait(bt('waitHost'));
+      setWaiting(isAr ? '✅ متصل — انتظر المقدّم لبدء المزايدة' : '✅ Connected — waiting for host');
     }
     else if (phase === 'countdown') {
       showPhase('countdown');
-      let n = 3;
-      const el = document.getElementById('ph-cd-num');
-      if (el) el.textContent = n;
-      const cd = setInterval(() => {
-        n--;
-        if (el) el.textContent = n > 0 ? n : '🎯';
-        if (n <= 0) clearInterval(cd);
-      }, 1000);
+      let n = 3; el('ph-cd-num').textContent = n;
+      const cd = setInterval(() => { n--; el('ph-cd-num').textContent = n > 0 ? n : '🎯'; if (n <= 0) clearInterval(cd); }, 1000);
     }
     else if (phase === 'bidding') {
       myBid = d.bids?.[team]?.value || 0;
+      el('bid-val').textContent = myBid;
+      el('bid-msg').style.display = 'none';
+      el('btn-plus').disabled = false;
+      el('btn-minus').disabled = false;
       showPhase('bidding');
-      document.getElementById('bid-val').textContent = myBid;
-      document.getElementById('bid-msg').style.display = 'none';
-      setBidBtns(true);
     }
     else if (phase === 'answering') {
       if (d.auctionWinner === team) {
-        // We won — show answering screen fresh
         totalAns = d.winningBid || 1;
+        el('ans-target-msg').textContent = isAr ? `اكتب ${totalAns} إجابة` : `Write ${totalAns} answer${totalAns>1?'s':''}`;
         resetAnsweringUI();
         showPhase('answering');
-        document.getElementById('ans-target-msg').textContent = bt('writeNow', totalAns);
       } else {
-        // We lost — show waiting
         showPhase('logo');
-        document.getElementById('logo-msg').textContent = bt('otherWriting');
+        el('logo-msg').textContent = isAr ? '⏳ الفريق الثاني يكتب الأجوبة...' : '⏳ Other team is writing...';
       }
     }
     else if (phase === 'nextquestion') {
-      clearAnsTimer();
+      clearTimer();
       showPhase('logo');
-      document.getElementById('logo-msg').textContent = bt('waitNext');
+      el('logo-msg').textContent = isAr ? '⏳ انتظر السؤال التالي...' : '⏳ Waiting for next question...';
     }
     else if (phase === 'done') {
-      clearAnsTimer();
+      clearTimer();
       showPhase('logo');
-      document.getElementById('logo-msg').textContent = bt('done');
+      el('logo-msg').textContent = isAr ? 'انتهت جولة المزاد!' : 'Auction round done!';
     }
   }
 
-  // ── Same-phase updates ──
+  // Same-phase bidding updates
   if (phase === 'bidding') {
     const bidA = d.bids?.a?.value || 0;
     const bidB = d.bids?.b?.value || 0;
-    const myBidVal  = team === 'a' ? bidA : bidB;
-    const otherBidVal = team === 'a' ? bidB : bidA;
-    myBid = myBidVal;
-    document.getElementById('bid-val').textContent = myBidVal;
-
-    const msgEl = document.getElementById('bid-msg');
-    if (d.lastBidder && d.lastBidder !== team) {
-      // Other team just bid
+    const mine  = team === 'a' ? bidA : bidB;
+    const theirs = team === 'a' ? bidB : bidA;
+    myBid = mine;
+    el('bid-val').textContent = mine;
+    const msgEl = el('bid-msg');
+    if (d.lastBidder && d.lastBidder !== team && theirs > 0) {
+      const urgent = d.bidCountdownEnd && d.bidCountdownEnd > Date.now();
       msgEl.style.display = 'block';
-      if (d.bidCountdownEnd && d.bidCountdownEnd > Date.now()) {
-        msgEl.textContent = bt('otherUrgent', otherBidVal);
-        msgEl.style.color = 'var(--red)';
-      } else {
-        msgEl.textContent = bt('otherBid', otherBidVal);
-        msgEl.style.color = 'var(--yellow)';
-      }
-    } else if (d.lastBidder === team) {
+      msgEl.style.color = urgent ? 'var(--red)' : 'var(--yellow)';
+      msgEl.textContent = urgent
+        ? (isAr ? `⚡ الفريق الثاني زايد ${theirs} — زايد أو خسرت!` : `⚡ Other team bid ${theirs} — bid higher or lose!`)
+        : (isAr ? `🔥 الفريق الثاني زايد ${theirs}` : `🔥 Other team bid ${theirs}`);
+    } else if (d.lastBidder === team && mine > 0) {
       msgEl.style.display = 'block';
-      msgEl.textContent = bt('youLead', myBidVal);
       msgEl.style.color = 'var(--green)';
+      msgEl.textContent = isAr ? `✅ مزايدتك: ${mine} — انتظر الفريق الثاني` : `✅ Your bid: ${mine} — waiting`;
     }
   }
 
   // Shutdown
-  if (d.shutdown) {
-    clearAnsTimer();
-    const overlay = document.getElementById('shutdown-overlay');
-    if (overlay) overlay.style.display = 'flex';
-  }
+  if (d.shutdown) { clearTimer(); el('shutdown-overlay').style.display = 'flex'; }
 });
 
-// Session listener
 onValue(ref(db, `sessions/${session}/shutdown`), snap => {
-  if (!snap.val()) return;
-  clearAnsTimer();
-  const overlay = document.getElementById('shutdown-overlay');
-  if (overlay) overlay.style.display = 'flex';
+  if (snap.val()) { clearTimer(); el('shutdown-overlay').style.display = 'flex'; }
 });
 </script>
 </body>
