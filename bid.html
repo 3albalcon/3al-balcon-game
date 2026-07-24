@@ -125,12 +125,6 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; }
 
     <button class="btn btn-y" id="btn-confirm" style="display:none">🔒 تأكيد الأجوبة</button>
 
-    <!-- Sticky confirm always visible at bottom -->
-    <div id="sticky-confirm" style="display:none;position:fixed;bottom:0;left:0;right:0;
-      padding:12px 16px 28px;background:linear-gradient(transparent,#060d1f 40%);z-index:50">
-      <button class="btn btn-y" id="btn-confirm-sticky" style="box-shadow:0 0 20px rgba(0,0,0,0.8)">🔒 تأكيد الأجوبة</button>
-    </div>
-
     <div class="done-card" id="done-card">
       <div style="font-size:44px">✅</div>
       <div style="font-size:clamp(16px,4vw,20px);font-weight:700;color:var(--green)">تم إرسال الأجوبة!</div>
@@ -258,10 +252,6 @@ function renderList() {
     ? `${myAnswers.length} / ${totalAns} إجابات`
     : `${myAnswers.length} / ${totalAns} answers`;
   el('btn-confirm').style.display = myAnswers.length > 0 ? 'block' : 'none';
-  el('sticky-confirm').style.display = myAnswers.length > 0 ? 'block' : 'none';
-  if (myAnswers.length > 0) {
-    setTimeout(() => el('btn-confirm').scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
-  }
   // Lock when max reached
   if (myAnswers.length >= totalAns) {
     el('ans-input').disabled = true;
@@ -279,7 +269,6 @@ function resetAnswering() {
   el('timer-wrap').style.display = 'none';
   el('done-card').style.display = 'none';
   el('btn-confirm').style.display = 'none';
-  el('sticky-confirm').style.display = 'none';
   const inp = el('ans-input');
   inp.value = ''; inp.disabled = false;
   inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...';
@@ -292,7 +281,6 @@ function showDone() {
   el('btn-start').style.display = 'none';
   el('input-area').style.display = 'none';
   el('btn-confirm').style.display = 'none';
-  el('sticky-confirm').style.display = 'none';
   el('done-card').style.display = 'flex';
 }
 
@@ -377,7 +365,6 @@ el('btn-add').addEventListener('click', doAdd);
 el('ans-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); } });
 
 el('btn-confirm').addEventListener('click', () => { el('confirm-dialog').style.display = 'flex'; });
-el('btn-confirm-sticky').addEventListener('click', () => { el('confirm-dialog').style.display = 'flex'; });
 el('btn-yes').addEventListener('click', () => {
   el('confirm-dialog').style.display = 'none';
   if (confirmed) return;
