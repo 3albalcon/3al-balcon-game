@@ -6,133 +6,148 @@
 <title>مزاد علني</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:#060d1f;font-family:'Cairo',sans-serif;color:#fff}
-#app{display:flex;flex-direction:column;align-items:center;
-  width:100%;min-height:100vh;padding:16px 16px 140px;gap:12px}
-:root{--green:#39FF14;--yellow:#FAC70A;--cyan:#00EFFF;--red:#FF2D2D}
-.team-badge{font-size:clamp(18px,5vw,26px);font-weight:900;color:var(--yellow);text-align:center;padding-top:8px}
-.q-box{font-size:clamp(15px,4vw,22px);font-weight:700;color:#fff;text-align:center;
-  background:rgba(0,10,50,0.6);border:2px solid var(--cyan);border-radius:14px;
-  padding:14px 18px;width:100%;max-width:480px;direction:rtl;line-height:1.4;display:none}
-.phase{display:none;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:480px}
-.phase.active{display:flex}
-.center-phase{min-height:60vh;justify-content:center}
-#wait-msg{font-size:clamp(15px,4vw,20px);font-weight:700;color:rgba(255,255,255,0.6);text-align:center;line-height:1.5}
-#ph-cd-num{font-size:clamp(80px,25vw,150px);font-weight:900;color:var(--yellow);line-height:1}
-.bid-num{font-size:clamp(60px,20vw,110px);font-weight:900;color:var(--green);line-height:1}
-.bid-btns{display:flex;gap:20px}
-.bid-btn{width:76px;height:76px;border-radius:50%;border:3px solid;font-size:38px;font-weight:900;
-  cursor:pointer;font-family:'Cairo',sans-serif;background:transparent;user-select:none;
-  touch-action:manipulation;-webkit-touch-callout:none}
-.bid-btn.plus{border-color:var(--green);color:var(--green)}
-.bid-btn.minus{border-color:var(--red);color:var(--red)}
-.bid-btn:disabled{opacity:0.2}
-#bid-msg{font-size:clamp(13px,3.5vw,17px);font-weight:700;color:var(--yellow);text-align:center;
-  padding:10px 14px;background:rgba(250,199,10,0.08);border:1px solid rgba(250,199,10,0.3);
-  border-radius:10px;width:100%;display:none}
-#ans-target-msg{font-size:clamp(14px,3.5vw,19px);font-weight:700;color:var(--cyan);text-align:center}
-#ans-count{font-size:13px;color:rgba(255,255,255,0.4);text-align:center}
-.timer-bar{width:100%;height:8px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden}
-.timer-fill{height:100%;background:var(--green);border-radius:100px}
-#ans-timer-num{font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--green);line-height:1}
-#ans-list{width:100%;display:flex;flex-direction:column;gap:6px}
-.ans-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;
-  background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.12);
-  font-size:clamp(14px,3.5vw,17px);font-weight:700;direction:rtl}
-.ans-num{color:rgba(255,255,255,0.3);font-size:11px;min-width:18px;flex-shrink:0}
-.ans-input{width:100%;padding:13px 14px;border-radius:12px;border:2px solid rgba(255,255,255,0.2);
-  background:rgba(255,255,255,0.05);color:#fff;font-family:'Cairo',sans-serif;
-  font-size:18px;font-weight:700;direction:rtl;outline:none;-webkit-appearance:none}
-.ans-input:focus{border-color:var(--cyan)}
-.ans-input:disabled{opacity:0.4}
-.btn{padding:13px 18px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:clamp(14px,3.5vw,17px);
-  font-weight:900;cursor:pointer;border:2px solid;width:100%;text-align:center;background:transparent}
-.btn:disabled{opacity:0.3;cursor:default}
-.btn-g{border-color:var(--green);color:var(--green)}
-.btn-y{border-color:var(--yellow);color:var(--yellow)}
-.btn-c{border-color:var(--cyan);color:var(--cyan)}
-#done-card{width:100%;padding:20px;border:2px solid var(--green);border-radius:16px;
-  background:rgba(57,255,20,0.05);text-align:center;flex-direction:column;gap:10px}
-.logo-title{font-size:clamp(28px,8vw,48px);font-weight:900;color:var(--yellow);letter-spacing:3px}
-#logo-msg{font-size:clamp(15px,4vw,20px);font-weight:700;color:rgba(255,255,255,0.5);text-align:center}
-#confirm-dialog{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,13,31,0.96);
-  align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px}
-#shutdown-overlay{display:none;position:fixed;inset:0;z-index:9999;background:#060d1f;
-  align-items:center;justify-content:center;flex-direction:column;gap:12px}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; padding: 16px 16px 160px 16px; }
+
+:root { --green: #39FF14; --yellow: #FAC70A; --cyan: #00EFFF; --red: #FF2D2D; }
+
+.center { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; max-width: 480px; margin: 0 auto; }
+
+.team-badge { font-size: clamp(18px,5vw,26px); font-weight: 900; color: var(--yellow); text-align: center; padding-top: 8px; }
+
+.q-box { font-size: clamp(15px,4vw,22px); font-weight: 700; color: #fff; text-align: center;
+  background: rgba(0,10,50,0.6); border: 2px solid var(--cyan); border-radius: 14px;
+  padding: 14px 18px; width: 100%; direction: rtl; line-height: 1.4; display: none; }
+
+.section { display: none; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+.section.active { display: flex; }
+
+.msg { font-size: clamp(15px,4vw,20px); font-weight: 700; color: rgba(255,255,255,0.6); text-align: center; line-height: 1.6; padding: 40px 0; }
+
+.big-num { font-size: clamp(80px,25vw,150px); font-weight: 900; color: var(--yellow); text-align: center; padding: 40px 0; }
+
+.bid-num { font-size: clamp(60px,20vw,110px); font-weight: 900; color: var(--green); text-align: center; }
+.bid-btns { display: flex; gap: 20px; justify-content: center; }
+.bid-btn { width: 76px; height: 76px; border-radius: 50%; border: 3px solid; font-size: 38px; font-weight: 900;
+  cursor: pointer; font-family: 'Cairo', sans-serif; background: transparent; touch-action: manipulation; }
+.bid-btn.plus { border-color: var(--green); color: var(--green); }
+.bid-btn.minus { border-color: var(--red); color: var(--red); }
+.bid-btn:disabled { opacity: 0.2; }
+.bid-msg { font-size: clamp(13px,3.5vw,17px); font-weight: 700; color: var(--yellow); text-align: center;
+  padding: 10px 14px; background: rgba(250,199,10,0.08); border: 1px solid rgba(250,199,10,0.3);
+  border-radius: 10px; width: 100%; display: none; }
+
+.target-msg { font-size: clamp(14px,3.5vw,19px); font-weight: 700; color: var(--cyan); text-align: center; }
+.count-msg { font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; }
+
+.timer-wrap { width: 100%; display: none; flex-direction: column; align-items: center; gap: 6px; }
+.timer-num { font-size: clamp(28px,8vw,48px); font-weight: 900; color: var(--green); text-align: center; }
+.timer-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; }
+.timer-fill { height: 100%; background: var(--green); border-radius: 100px; transition: width 0.2s linear; }
+
+.ans-list { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.ans-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.12);
+  font-size: clamp(14px,3.5vw,17px); font-weight: 700; direction: rtl; }
+.ans-num { color: rgba(255,255,255,0.3); font-size: 11px; min-width: 18px; flex-shrink: 0; }
+
+.ans-input { width: 100%; padding: 13px 14px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05); color: #fff; font-family: 'Cairo', sans-serif;
+  font-size: 18px; font-weight: 700; direction: rtl; outline: none; -webkit-appearance: none; }
+.ans-input:focus { border-color: var(--cyan); }
+.ans-input:disabled { opacity: 0.4; }
+
+.btn { width: 100%; padding: 13px 18px; border-radius: 12px; font-family: 'Cairo', sans-serif;
+  font-size: clamp(14px,3.5vw,17px); font-weight: 900; cursor: pointer; border: 2px solid;
+  text-align: center; background: transparent; touch-action: manipulation; }
+.btn:disabled { opacity: 0.3; cursor: default; }
+.btn-g { border-color: var(--green); color: var(--green); }
+.btn-y { border-color: var(--yellow); color: var(--yellow); }
+.btn-c { border-color: var(--cyan); color: var(--cyan); }
+
+.done-card { width: 100%; padding: 24px; border: 2px solid var(--green); border-radius: 16px;
+  background: rgba(57,255,20,0.05); text-align: center; display: none; flex-direction: column; gap: 10px; }
+
+.logo-title { font-size: clamp(28px,8vw,48px); font-weight: 900; color: var(--yellow); letter-spacing: 3px; text-align: center; }
+
+#confirm-dialog { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(6,13,31,0.96);
+  align-items: center; justify-content: center; flex-direction: column; gap: 14px; padding: 24px; }
+
+#shutdown-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: #060d1f;
+  align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
 </style>
 </head>
 <body>
-<div id="app">
-<div class="team-badge" id="team-badge">جاري الاتصال...</div>
-<div class="q-box" id="q-box"></div>
 
-<!-- WAITING -->
-<div class="phase center-phase active" id="phase-waiting">
-  <div id="wait-msg">⏳ جاري الاتصال...</div>
-</div>
+<div class="center">
 
-<!-- COUNTDOWN -->
-<div class="phase" id="phase-countdown" style="min-height:80vh;justify-content:center">
-  <div id="ph-cd-num">3</div>
-</div>
+  <div class="team-badge" id="team-badge">جاري الاتصال...</div>
+  <div class="q-box" id="q-box"></div>
 
-<!-- BIDDING -->
-<div class="phase" id="phase-bidding" style="min-height:80vh;justify-content:center">
-  <div class="bid-num" id="bid-val">0</div>
-  <div class="bid-btns">
-    <button class="bid-btn plus" id="btn-plus">+</button>
-    <button class="bid-btn minus" id="btn-minus">−</button>
-  </div>
-  <div id="bid-msg"></div>
-</div>
-
-<!-- ANSWERING -->
-<div class="phase" id="phase-answering">
-  <div id="ans-target-msg"></div>
-  <div id="ans-count"></div>
-
-  <!-- Timer -->
-  <div id="ans-timer-wrap" style="display:none;width:100%;flex-direction:column;align-items:center;gap:6px">
-    <div id="ans-timer-num">60</div>
-    <div class="timer-bar"><div class="timer-fill" id="ans-fill" style="width:100%"></div></div>
+  <!-- WAITING -->
+  <div class="section active" id="sec-waiting">
+    <div class="msg" id="wait-msg">⏳ جاري الاتصال...</div>
   </div>
 
-  <!-- Answers list -->
-  <div id="ans-list"></div>
-
-  <!-- Start Writing -->
-  <button class="btn btn-y" id="btn-start-writing">✏️ ابدأ الكتابة</button>
-
-  <!-- Input area -->
-  <div id="ans-input-area" style="display:none;width:100%;flex-direction:column;gap:10px">
-    <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off">
-    <button class="btn btn-g" id="btn-add">✅ أضف الجواب</button>
+  <!-- COUNTDOWN -->
+  <div class="section" id="sec-countdown">
+    <div class="big-num" id="cd-num">3</div>
   </div>
 
-  <!-- Confirm button — sticky at bottom -->
-  <button class="btn btn-y" id="btn-confirm" style="display:none;position:sticky;bottom:12px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.6)">🔒 تأكيد الأجوبة</button>
-
-  <!-- Done card -->
-  <div id="done-card" style="display:none">
-    <div style="font-size:44px">✅</div>
-    <div style="font-size:clamp(16px,4vw,20px);font-weight:700;color:var(--green)">تم إرسال الأجوبة!</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.4)">في انتظار المقدّم...</div>
+  <!-- BIDDING -->
+  <div class="section" id="sec-bidding">
+    <div class="bid-num" id="bid-val">0</div>
+    <div class="bid-btns">
+      <button class="bid-btn plus" id="btn-plus">+</button>
+      <button class="bid-btn minus" id="btn-minus">−</button>
+    </div>
+    <div class="bid-msg" id="bid-msg"></div>
   </div>
-</div>
 
-<!-- LOGO -->
-<div class="phase center-phase" id="phase-logo">
-  <div class="logo-title">3AL BALCON</div>
-  <div id="logo-msg"></div>
-</div>
+  <!-- ANSWERING -->
+  <div class="section" id="sec-answering">
+    <div class="target-msg" id="target-msg"></div>
+    <div class="count-msg" id="count-msg"></div>
+
+    <div class="timer-wrap" id="timer-wrap">
+      <div class="timer-num" id="timer-num">60</div>
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    </div>
+
+    <div class="ans-list" id="ans-list"></div>
+
+    <button class="btn btn-y" id="btn-start">✏️ ابدأ الكتابة</button>
+
+    <div id="input-area" style="display:none;width:100%;display:none;flex-direction:column;gap:10px">
+      <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off">
+      <button class="btn btn-g" id="btn-add">✅ أضف الجواب</button>
+    </div>
+
+    <button class="btn btn-y" id="btn-confirm" style="display:none">🔒 تأكيد الأجوبة</button>
+
+    <div class="done-card" id="done-card">
+      <div style="font-size:44px">✅</div>
+      <div style="font-size:clamp(16px,4vw,20px);font-weight:700;color:var(--green)">تم إرسال الأجوبة!</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4)">في انتظار المقدّم...</div>
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div class="section" id="sec-logo">
+    <div style="padding:40px 0">
+      <div class="logo-title">3AL BALCON</div>
+      <div class="msg" id="logo-msg" style="padding:20px 0"></div>
+    </div>
+  </div>
+
+</div><!-- .center -->
 
 <!-- Confirm dialog -->
 <div id="confirm-dialog">
   <div style="font-size:22px;font-weight:900;color:var(--yellow)">🔒 تأكيد الأجوبة؟</div>
   <div style="font-size:14px;color:rgba(255,255,255,0.5);text-align:center">لا يمكن التعديل بعد التأكيد</div>
-  <button class="btn btn-g" id="btn-confirm-yes">✅ تأكيد</button>
-  <button class="btn btn-c" id="btn-cancel-confirm">↩ رجوع</button>
+  <button class="btn btn-g" id="btn-yes">✅ تأكيد</button>
+  <button class="btn btn-c" id="btn-no">↩ رجوع</button>
 </div>
 
 <!-- Shutdown -->
@@ -156,37 +171,71 @@ const app = initializeApp({
 });
 const db = getDatabase(app);
 
-const params  = new URLSearchParams(location.search);
-const session = params.get('s') || 'main';
-const team    = params.get('t') || 'a';
-const _lang   = params.get('l') || 'ar';
-const roomId  = params.get('r') || `${session}_cat3`;
-const isAr    = _lang === 'ar';
+const params     = new URLSearchParams(location.search);
+const session    = params.get('s') || 'main';
+const team       = params.get('t') || 'a';
+const _lang      = params.get('l') || 'ar';
+const roomId     = params.get('r') || `${session}_cat3`;
+const isAr       = _lang === 'ar';
 
 // ── State ──
-let phase         = '';
-let questionIdx   = -1;
-let myBid         = 0;
-let totalAns      = 1;       // max answers = winning bid
-let myAnswers     = [];      // plain strings only — what I typed
+let phase        = '';
+let questionIdx  = -1;
+let myBid        = 0;
+let otherBid     = 0;
+let totalAns     = 1;
+let myAnswers    = [];
 let writingActive = false;
-let confirmed     = false;
-let ansTimer      = null;
-let ansTimerEnd   = 0;
-let ansTimerQIdx  = -1;
+let confirmed    = false;
+let timerInterval = null;
+let timerEnd     = 0;
+let timerQIdx    = -1;
 
-// ── UI helpers ──
-function el(id) { return document.getElementById(id); }
+// ── Helpers ──
+const el = id => document.getElementById(id);
 
-function showPhase(name) {
-  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
-  const p = el('phase-' + name);
-  if (p) p.classList.add('active');
+function showSection(name) {
+  ['waiting','countdown','bidding','answering','logo'].forEach(n => {
+    el('sec-' + n).classList.remove('active');
+  });
+  el('sec-' + name).classList.add('active');
 }
 
-function setWaiting(msg) {
-  showPhase('waiting');
+function setWait(msg) {
+  showSection('waiting');
   el('wait-msg').textContent = msg;
+  el('q-box').style.display = 'none';
+}
+
+// ── Timer ──
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function startTimer(endMs) {
+  stopTimer();
+  timerEnd  = endMs;
+  timerQIdx = questionIdx;
+  el('timer-wrap').style.display = 'flex';
+
+  function tick() {
+    if (questionIdx !== timerQIdx || confirmed) { stopTimer(); return; }
+    const rem  = Math.max(0, endMs - Date.now());
+    const pct  = (rem / 60000) * 100;
+    const secs = Math.ceil(rem / 1000);
+    el('timer-num').textContent = secs;
+    el('timer-num').style.color = pct < 20 ? 'var(--red)' : 'var(--green)';
+    el('timer-fill').style.width = pct + '%';
+    el('timer-fill').style.background = pct < 20 ? 'var(--red)' : 'var(--green)';
+    if (rem <= 0 && !confirmed && questionIdx === timerQIdx) {
+      stopTimer();
+      confirmed = true;
+      update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
+      showDone();
+    }
+  }
+  tick();
+  timerInterval = setInterval(tick, 200);
 }
 
 // ── Answer list ──
@@ -194,95 +243,54 @@ function renderList() {
   el('ans-list').innerHTML = myAnswers.map((txt, i) =>
     `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${txt}</span></div>`
   ).join('');
-  const count = el('ans-count');
-  if (count) count.textContent = isAr
+  el('count-msg').textContent = isAr
     ? `${myAnswers.length} / ${totalAns} إجابات`
     : `${myAnswers.length} / ${totalAns} answers`;
-  // Show confirm once at least 1 answer added
-  const confBtn = el('btn-confirm');
-  if (confBtn) {
-    confBtn.style.display = myAnswers.length > 0 ? 'block' : 'none';
-    if (myAnswers.length > 0) setTimeout(() => confBtn.scrollIntoView({behavior:'smooth', block:'end'}), 100);
-  }
-  // Lock input if max reached
+  el('btn-confirm').style.display = myAnswers.length > 0 ? 'block' : 'none';
+  // Lock when max reached
   if (myAnswers.length >= totalAns) {
-    const inp = el('ans-input');
-    const add = el('btn-add');
-    if (inp) { inp.disabled = true; inp.placeholder = isAr ? `وصلت للحد الأقصى (${totalAns})` : `Max reached (${totalAns})`; }
-    if (add) add.disabled = true;
+    el('ans-input').disabled = true;
+    el('btn-add').disabled = true;
+    el('ans-input').placeholder = isAr ? `وصلت للحد الأقصى (${totalAns})` : `Max ${totalAns} answers`;
   }
 }
 
-function resetAnsweringUI() {
-  writingActive = false;
-  confirmed     = false;
-  myAnswers     = [];
-  clearTimer();
-  el('btn-start-writing').style.display = 'block';
-  el('ans-input-area').style.display = 'none';
-  el('ans-timer-wrap').style.display = 'none';
+function resetAnswering() {
+  writingActive = false; confirmed = false; myAnswers = [];
+  stopTimer();
+  el('btn-start').style.display = 'block';
+  el('btn-start').disabled = false;
+  el('input-area').style.display = 'none';
+  el('timer-wrap').style.display = 'none';
   el('done-card').style.display = 'none';
   el('btn-confirm').style.display = 'none';
   const inp = el('ans-input');
-  if (inp) { inp.value = ''; inp.disabled = false; inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...'; }
-  const add = el('btn-add');
-  if (add) add.disabled = false;
+  inp.value = ''; inp.disabled = false;
+  inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...';
+  el('btn-add').disabled = false;
   renderList();
 }
 
 function showDone() {
-  el('ans-input-area').style.display = 'none';
-  el('btn-start-writing').style.display = 'none';
+  stopTimer();
+  el('btn-start').style.display = 'none';
+  el('input-area').style.display = 'none';
   el('btn-confirm').style.display = 'none';
   el('done-card').style.display = 'flex';
 }
 
-// ── Timer ──
-function clearTimer() {
-  if (ansTimer) { clearInterval(ansTimer); ansTimer = null; }
-}
-
-function startTimer(endMs) {
-  clearTimer();
-  ansTimerEnd  = endMs;
-  ansTimerQIdx = questionIdx;
-  const fill = el('ans-fill');
-  const num  = el('ans-timer-num');
-  function tick() {
-    if (questionIdx !== ansTimerQIdx || confirmed) { clearTimer(); return; }
-    const rem  = Math.max(0, endMs - Date.now());
-    const pct  = (rem / 60000) * 100;
-    const secs = Math.ceil(rem / 1000);
-    if (fill) { fill.style.width = pct + '%'; fill.style.background = pct < 20 ? 'var(--red)' : 'var(--green)'; }
-    if (num)  { num.textContent = secs; num.style.color = pct < 20 ? 'var(--red)' : 'var(--green)'; }
-    if (rem <= 0 && !confirmed && questionIdx === ansTimerQIdx) {
-      clearTimer();
-      confirmed = true;
-      update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
-      showDone();
-    }
-  }
-  tick();
-  ansTimer = setInterval(tick, 200);
-}
-
-// ── Bid buttons (prevent double-tap zoom) ──
-function setupBidBtn(id, dir) {
+// ── Bid buttons ──
+function setupBid(id, dir) {
   const btn = el(id);
-  if (!btn) return;
   let lastFire = 0;
-  let hasTouchSupport = false;
   btn.addEventListener('touchstart', e => {
     e.preventDefault();
-    hasTouchSupport = true;
     const now = Date.now();
     if (now - lastFire < 400) return;
     lastFire = now;
     doBid(dir);
-  }, {passive: false});
-  // Only use click on non-touch devices
+  }, { passive: false });
   btn.addEventListener('click', () => {
-    if (hasTouchSupport) return; // touch already handled it
     const now = Date.now();
     if (now - lastFire < 400) return;
     lastFire = now;
@@ -292,86 +300,73 @@ function setupBidBtn(id, dir) {
 
 function doBid(dir) {
   const newBid = Math.max(1, myBid + dir);
-  if (newBid === myBid) return; // no change
+  if (newBid === myBid) return;
   myBid = newBid;
   el('bid-val').textContent = myBid;
   const ts = Date.now();
-  const updateData = {
+  const data = {
     [`bids/${team}/value`]: myBid,
-    [`bids/${team}/time`]:  ts,
+    [`bids/${team}/time`]: ts,
   };
-  // Only become lastBidder (start countdown) if our bid is strictly HIGHER than other team
-  // This prevents someone bidding lower from winning
-  const otherBid = currentOtherBid || 0;
   if (myBid > otherBid) {
-    updateData.lastBidder    = team;
-    updateData.bidCountdownEnd = ts + 10000;
+    data.lastBidder    = team;
+    data.bidCountdownEnd = ts + 10000;
   }
-  update(ref(db, `rooms/${roomId}`), updateData);
+  update(ref(db, `rooms/${roomId}`), data);
 }
-setupBidBtn('btn-plus', 1);
-setupBidBtn('btn-minus', -1);
 
-// ── Writing actions ──
-el('btn-start-writing').addEventListener('click', async () => {
+setupBid('btn-plus', 1);
+setupBid('btn-minus', -1);
+
+// ── Writing ──
+el('btn-start').addEventListener('click', async () => {
   writingActive = true;
-  const timerEnd = Date.now() + 60000;
-  await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: timerEnd });
-  el('btn-start-writing').style.display = 'none';
-  el('ans-input-area').style.display = 'flex';
-  el('ans-timer-wrap').style.display = 'flex';
-  startTimer(timerEnd);
-  el('ans-input')?.focus();
+  const end = Date.now() + 60000;
+  await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: end });
+  el('btn-start').style.display = 'none';
+  el('input-area').style.display = 'flex';
+  startTimer(end);
+  el('ans-input').focus();
 });
 
-function doAddAnswer() {
+function doAdd() {
   const inp = el('ans-input');
-  if (!inp || inp.disabled) return;
-  const val = (inp.value || '').trim();
+  if (inp.disabled) return;
+  const val = inp.value.trim();
   if (!val) return;
-  if (myAnswers.length >= totalAns) return; // hard limit
+  if (myAnswers.length >= totalAns) return;
   myAnswers.push(val);
   inp.value = '';
   if (!inp.disabled) inp.focus();
   renderList();
-  // Send plain strings to Firebase
   update(ref(db, `rooms/${roomId}`), { answers: myAnswers });
 }
 
-el('btn-add').addEventListener('click', doAddAnswer);
-el('ans-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAddAnswer(); } });
+el('btn-add').addEventListener('click', doAdd);
+el('ans-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); } });
 
-el('btn-confirm').addEventListener('click', () => {
-  el('confirm-dialog').style.display = 'flex';
-});
-el('btn-confirm-yes').addEventListener('click', () => {
+el('btn-confirm').addEventListener('click', () => { el('confirm-dialog').style.display = 'flex'; });
+el('btn-yes').addEventListener('click', () => {
   el('confirm-dialog').style.display = 'none';
   if (confirmed) return;
   confirmed = true;
-  clearTimer();
+  stopTimer();
   update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
   showDone();
 });
-el('btn-cancel-confirm').addEventListener('click', () => {
-  el('confirm-dialog').style.display = 'none';
-});
+el('btn-no').addEventListener('click', () => { el('confirm-dialog').style.display = 'none'; });
 
-let currentOtherBid = 0; // tracks other team's bid for comparison
-
-
+// ── Firebase ──
 update(ref(db, `rooms/${roomId}`), { [`connected${team.toUpperCase()}`]: true });
 document.documentElement.lang = isAr ? 'ar' : 'en';
 document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
 
 onValue(ref(db, `rooms/${roomId}`), snap => {
-  const d = snap.val();
-  if (!d) return;
+  const d = snap.val(); if (!d) return;
 
-  // Team name
   const name = team === 'a' ? d.teamA : d.teamB;
   if (name) el('team-badge').textContent = name;
 
-  // Question text
   if (d.question) { el('q-box').textContent = d.question; el('q-box').style.display = 'block'; }
 
   const newPhase = d.phase || 'waiting';
@@ -380,51 +375,51 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
   // New question
   if (newQIdx !== questionIdx && newQIdx !== -1) {
     questionIdx = newQIdx;
-    myBid = 0; myAnswers = []; writingActive = false; confirmed = false;
-    clearTimer();
+    myBid = 0; otherBid = 0; myAnswers = [];
+    writingActive = false; confirmed = false;
+    stopTimer();
     el('q-box').style.display = 'none';
-    phase = ''; // force phase change
+    phase = '';
   }
 
   // Phase change
   if (newPhase !== phase) {
     phase = newPhase;
-
     if (phase === 'waiting' || phase === 'ready') {
-      setWaiting(isAr ? '✅ متصل — انتظر المقدّم لبدء المزايدة' : '✅ Connected — waiting for host');
+      setWait(isAr ? '✅ متصل — انتظر المقدّم لبدء المزايدة' : '✅ Connected — waiting for host');
     }
     else if (phase === 'countdown') {
-      showPhase('countdown');
-      let n = 3; el('ph-cd-num').textContent = n;
-      const cd = setInterval(() => { n--; el('ph-cd-num').textContent = n > 0 ? n : '🎯'; if (n <= 0) clearInterval(cd); }, 1000);
+      showSection('countdown');
+      let n = 3; el('cd-num').textContent = n;
+      const cd = setInterval(() => { n--; el('cd-num').textContent = n > 0 ? n : '🎯'; if (n <= 0) clearInterval(cd); }, 1000);
     }
     else if (phase === 'bidding') {
       myBid = d.bids?.[team]?.value || 0;
+      otherBid = d.bids?.[team === 'a' ? 'b' : 'a']?.value || 0;
       el('bid-val').textContent = myBid;
       el('bid-msg').style.display = 'none';
-      el('btn-plus').disabled = false;
-      el('btn-minus').disabled = false;
-      showPhase('bidding');
+      el('btn-plus').disabled = false; el('btn-minus').disabled = false;
+      showSection('bidding');
     }
     else if (phase === 'answering') {
       if (d.auctionWinner === team) {
         totalAns = d.winningBid || 1;
-        el('ans-target-msg').textContent = isAr ? `اكتب ${totalAns} إجابة` : `Write ${totalAns} answer${totalAns>1?'s':''}`;
-        resetAnsweringUI();
-        showPhase('answering');
+        el('target-msg').textContent = isAr ? `اكتب ${totalAns} إجابة` : `Write ${totalAns} answer${totalAns>1?'s':''}`;
+        resetAnswering();
+        showSection('answering');
       } else {
-        showPhase('logo');
+        showSection('logo');
         el('logo-msg').textContent = isAr ? '⏳ الفريق الثاني يكتب الأجوبة...' : '⏳ Other team is writing...';
       }
     }
     else if (phase === 'nextquestion') {
-      clearTimer();
-      showPhase('logo');
+      stopTimer();
+      showSection('logo');
       el('logo-msg').textContent = isAr ? '⏳ انتظر السؤال التالي...' : '⏳ Waiting for next question...';
     }
     else if (phase === 'done') {
-      clearTimer();
-      showPhase('logo');
+      stopTimer();
+      showSection('logo');
       el('logo-msg').textContent = isAr ? 'انتهت جولة المزاد!' : 'Auction round done!';
     }
   }
@@ -435,8 +430,7 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
     const bidB = d.bids?.b?.value || 0;
     const mine  = team === 'a' ? bidA : bidB;
     const theirs = team === 'a' ? bidB : bidA;
-    myBid = mine;
-    currentOtherBid = theirs; // track for doBid comparison
+    myBid = mine; otherBid = theirs;
     el('bid-val').textContent = mine;
     const msgEl = el('bid-msg');
     if (d.lastBidder && d.lastBidder !== team && theirs > 0) {
@@ -444,7 +438,7 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
       msgEl.style.display = 'block';
       msgEl.style.color = urgent ? 'var(--red)' : 'var(--yellow)';
       msgEl.textContent = urgent
-        ? (isAr ? `⚡ الفريق الثاني زايد ${theirs} — زايد أو خسرت!` : `⚡ Other team bid ${theirs} — bid higher or lose!`)
+        ? (isAr ? `⚡ الفريق الثاني زايد ${theirs} — زايد أو خسرت!` : `⚡ Other bid ${theirs} — bid higher or lose!`)
         : (isAr ? `🔥 الفريق الثاني زايد ${theirs}` : `🔥 Other team bid ${theirs}`);
     } else if (d.lastBidder === team && mine > 0) {
       msgEl.style.display = 'block';
@@ -453,14 +447,17 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
     }
   }
 
-  // Shutdown
-  if (d.shutdown) { clearTimer(); el('shutdown-overlay').style.display = 'flex'; }
+  // Answering same-phase — only if same question and writing started
+  if (phase === 'answering' && d.auctionWinner === team && d.writingStarted && d.questionIndex === questionIdx) {
+    if (d.answersConfirmed && !confirmed) { confirmed = true; stopTimer(); showDone(); }
+  }
+
+  if (d.shutdown) { stopTimer(); el('shutdown-overlay').style.display = 'flex'; }
 });
 
 onValue(ref(db, `sessions/${session}/shutdown`), snap => {
-  if (snap.val()) { clearTimer(); el('shutdown-overlay').style.display = 'flex'; }
+  if (snap.val()) { stopTimer(); el('shutdown-overlay').style.display = 'flex'; }
 });
 </script>
-</div><!-- #app -->
 </body>
 </html>
