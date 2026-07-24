@@ -7,7 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; padding: 16px 16px 160px 16px; }
+html, body { height: 100%; }
+body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff;
+  overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 :root { --green: #39FF14; --yellow: #FAC70A; --cyan: #00EFFF; --red: #FF2D2D; }
 
@@ -78,7 +80,7 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; paddi
 </style>
 </head>
 <body>
-
+<div style="padding: 16px 16px 200px 16px; min-height: 100%; background: #060d1f;">
 <div class="center">
 
   <div class="team-badge" id="team-badge">جاري الاتصال...</div>
@@ -147,6 +149,7 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; paddi
   </div>
 
 </div><!-- .center -->
+</div><!-- wrapper -->
 
 <!-- Confirm dialog -->
 <div id="confirm-dialog">
