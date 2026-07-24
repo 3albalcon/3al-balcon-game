@@ -7,9 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; }
-body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff;
-  overflow-y: auto; -webkit-overflow-scrolling: touch; }
+body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; }
 
 :root { --green: #39FF14; --yellow: #FAC70A; --cyan: #00EFFF; --red: #FF2D2D; }
 
@@ -120,7 +118,7 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff;
 
     <button class="btn btn-y" id="btn-start">✏️ ابدأ الكتابة</button>
 
-    <div id="input-area" style="display:none;width:100%;display:none;flex-direction:column;gap:10px">
+    <div id="input-area" style="display:none;width:100%;flex-direction:column;gap:10px">
       <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off">
       <button class="btn btn-g" id="btn-add">✅ أضف الجواب</button>
     </div>
@@ -250,7 +248,11 @@ function startTimer(endMs) {
 // ── Answer list ──
 function renderList() {
   el('ans-list').innerHTML = myAnswers.map((txt, i) =>
-    `<div class="ans-item"><span class="ans-num">${i+1}.</span><span style="flex:1">${txt}</span></div>`
+    `<div class="ans-item">
+      <span class="ans-num">${i+1}.</span>
+      <span style="flex:1">${txt}</span>
+      ${!confirmed ? `<button onclick="deleteAnswer(${i})" style="background:none;border:none;color:rgba(255,100,100,0.7);font-size:16px;cursor:pointer;padding:0 4px;font-family:Cairo,sans-serif">✕</button>` : ''}
+    </div>`
   ).join('');
   el('count-msg').textContent = isAr
     ? `${myAnswers.length} / ${totalAns} إجابات`
@@ -343,6 +345,20 @@ el('btn-start').addEventListener('click', async () => {
   startTimer(end);
   el('ans-input').focus();
 });
+
+window.deleteAnswer = function(i) {
+  if (confirmed) return;
+  myAnswers.splice(i, 1);
+  // Re-enable input if under limit
+  const inp = el('ans-input');
+  if (myAnswers.length < totalAns) {
+    inp.disabled = false;
+    el('btn-add').disabled = false;
+    inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...';
+  }
+  renderList();
+  update(ref(db, `rooms/${roomId}`), { answers: myAnswers });
+};
 
 function doAdd() {
   const inp = el('ans-input');
