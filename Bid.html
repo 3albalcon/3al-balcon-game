@@ -7,11 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#060d1f}
-body{min-height:100%;font-family:'Cairo',sans-serif;color:#fff;background:#060d1f;
-  display:flex;flex-direction:column;align-items:center}
+html{background:#060d1f}
+body{font-family:'Cairo',sans-serif;color:#fff;background:#060d1f;
+  min-height:100vh;min-height:-webkit-fill-available;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto}
 #app{display:flex;flex-direction:column;align-items:center;
-  width:100%;padding:16px 16px 100px;gap:12px}
+  width:100%;padding:16px 16px 120px;gap:12px;flex:1}
 :root{--green:#39FF14;--yellow:#FAC70A;--cyan:#00EFFF;--red:#FF2D2D}
 .team-badge{font-size:clamp(18px,5vw,26px);font-weight:900;color:var(--yellow);text-align:center;padding-top:8px}
 .q-box{font-size:clamp(15px,4vw,22px);font-weight:700;color:#fff;text-align:center;
