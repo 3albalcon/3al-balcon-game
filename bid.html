@@ -399,6 +399,7 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
     stopTimer();
     el('q-box').style.display = 'none';
     phase = '';
+    resetAnswering(); // reset DOM immediately
   }
 
   // Phase change
@@ -433,6 +434,7 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
     }
     else if (phase === 'nextquestion') {
       stopTimer();
+      resetAnswering();
       showSection('logo');
       el('logo-msg').textContent = isAr ? '⏳ انتظر السؤال التالي...' : '⏳ Waiting for next question...';
     }
