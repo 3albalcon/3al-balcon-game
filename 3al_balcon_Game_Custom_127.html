@@ -4474,7 +4474,7 @@ function renderBidding(r, qIndex, sa) {
       <div id="winner-announce" style="font-size:clamp(24px,5vw,48px);font-weight:900;color:var(--neon-green);text-shadow:var(--glow-green);text-align:center"></div>
       <div id="answers-display" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center"></div>
       <div id="validation-wrap" style="display:none"></div>
-      <div id="score-result" style="font-size:18px;font-weight:700;text-align:center;display:none"></div>
+      <div id="score-result" style="font-size:clamp(20px,2.4vw,32px);font-weight:900;text-align:center;display:none"></div>
     </div>
 
     <!-- FORCE SKIP button for host (stalemate) -->
@@ -4571,11 +4571,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
     if (!connA || !connB) return;
 
     // Show ready phase with start button when waiting or ready
+    const startBtn = document.getElementById('cat3-start-btn');
     if (data.phase === 'waiting' || data.phase === 'ready') {
       const readyPhase = document.getElementById('cat3-ready-phase');
       if (readyPhase) readyPhase.style.display = 'flex';
-      const startBtn = document.getElementById('cat3-start-btn');
       if (startBtn) startBtn.style.display = 'flex';
+    } else if (startBtn) {
+      startBtn.style.display = 'none';
     }
 
     // Ready indicators
@@ -4755,7 +4757,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       if (winnerArea && !document.getElementById('winner-q-display')) {
         const qDisplay = document.createElement('div');
         qDisplay.id = 'winner-q-display';
-        qDisplay.style.cssText = 'width:100%;text-align:center;font-size:18px;font-weight:700;color:var(--neon-cyan);text-shadow:var(--glow-cyan);padding:12px 16px;background:rgba(0,239,255,0.06);border:2px solid var(--neon-cyan);border-radius:14px;';
+        qDisplay.style.cssText = 'width:100%;max-width:1300px;margin:0 auto;text-align:center;font-size:clamp(20px,2.4vw,34px);font-weight:900;color:var(--neon-cyan);text-shadow:var(--glow-cyan);padding:12px 16px;background:rgba(0,239,255,0.06);border:2px solid var(--neon-cyan);border-radius:14px;';
         qDisplay.textContent = q;
         winnerArea.insertBefore(qDisplay, winnerArea.firstChild);
       }
@@ -4852,13 +4854,13 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
               <span style="font-size:0.8em;flex-shrink:0">${isPending?'⏳':isCorrect?'✅':'❌'}</span>
               ${showResults ? `
               <button data-i="${i}" data-s="correct" onclick="overrideVal(this)"
-                style="padding:1px 4px;border-radius:4px;border:1px solid var(--neon-green);
+                style="min-height:0;padding:2px 8px;border-radius:6px;border:1.5px solid var(--neon-green);
                 background:${isCorrect?'rgba(57,255,20,0.25)':'rgba(57,255,20,0.04)'};
-                color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;flex-shrink:0">✅</button>
+                color:var(--neon-green);font-family:'Cairo',sans-serif;font-size:0.55em;cursor:pointer;flex-shrink:0">✅</button>
               <button data-i="${i}" data-s="wrong" onclick="overrideVal(this)"
-                style="padding:1px 4px;border-radius:4px;border:1px solid var(--neon-red);
+                style="min-height:0;padding:2px 8px;border-radius:6px;border:1.5px solid var(--neon-red);
                 background:${isWrong?'rgba(255,45,45,0.25)':'rgba(255,45,45,0.04)'};
-                color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;flex-shrink:0">❌</button>` : ''}
+                color:var(--neon-red);font-family:'Cairo',sans-serif;font-size:0.55em;cursor:pointer;flex-shrink:0">❌</button>` : ''}
             </div>`;
         }).join('');
       } else {
@@ -5324,18 +5326,17 @@ function renderTeamVideo(r, qIndex, sa) {
     <div id="video-question-area" style="display:none;flex-direction:column;align-items:center;gap:16px;width:100%">
       <div class="question-text-box fade-in" style="font-size:${dynFont(matchedQ)}">${matchedQ || '—'}</div>
 
-      <!-- Submission indicators -->
-      <div style="display:flex;gap:16px;justify-content:center">
-        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
-          <div id="dot-a-cat6q" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-          <span>${G.teamA}</span>
-          <span id="cat6-sub-a" style="display:none;color:#39FF14">✅</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.5)">
-          <div id="dot-b-cat6q" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2)"></div>
-          <span>${G.teamB}</span>
-          <span id="cat6-sub-b" style="display:none;color:#39FF14">✅</span>
-        </div>
+      <!-- Submission status — same team cards as categories 7-8 (replaced by the
+           answer cards once the answer is revealed) -->
+      <div id="cat6-status" style="display:flex;gap:14px;justify-content:center;width:100%;max-width:1000px">
+        ${['a', 'b'].map(tm => {
+          const rgb = tm === 'a' ? '229,1,88' : '226,218,81';
+          return `
+        <div id="cat6-status-${tm}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 16px;border-radius:14px;background:rgba(${rgb},0.07);border:2px solid rgba(${rgb},0.35);min-width:0;transition:all 0.3s">
+          <div style="font-size:clamp(16px,2vw,24px);font-weight:900;color:${tm === 'a' ? '#E50158' : '#E2DA51'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${escHTML(tm === 'a' ? G.teamA : G.teamB)}</div>
+          <div id="cat6-sub-${tm}" style="font-size:clamp(14px,1.7vw,20px);font-weight:700;color:rgba(255,255,255,0.45)">⏳ ${_lang==='en'?'Waiting for answer…':'بانتظار الجواب…'}</div>
+        </div>`;
+        }).join('')}
       </div>
 
       <div id="vq-timer">${timerHTML(30)}</div>
@@ -5416,10 +5417,16 @@ function cat6ShowQuestion(qIndex) {
       // Store timestamps for first-submit scoring
       if (d.answeredAtA) window._cat6TimestampA = d.answeredAtA;
       if (d.answeredAtB) window._cat6TimestampB = d.answeredAtB;
-      const subA = document.getElementById('cat6-sub-a');
-      const subB = document.getElementById('cat6-sub-b');
-      if (subA && d.answerA) subA.style.display = 'block';
-      if (subB && d.answerB) subB.style.display = 'block';
+      ['a', 'b'].forEach(tm => {
+        const sub = document.getElementById('cat6-sub-' + tm);
+        const card = document.getElementById('cat6-status-' + tm);
+        const sent = !!(tm === 'a' ? d.answerA : d.answerB);
+        if (sub) {
+          sub.textContent = sent ? `✅ ${_lang==='en'?'Answer submitted':'تم إرسال الجواب'}` : `⏳ ${_lang==='en'?'Waiting for answer…':'بانتظار الجواب…'}`;
+          sub.style.color = sent ? '#39FF14' : 'rgba(255,255,255,0.45)';
+        }
+        if (card && sent) card.style.boxShadow = '0 0 14px rgba(57,255,20,0.25)';
+      });
       // When both answered or timer ends show reveal button
       if (d.answerA && d.answerB) {
         stopTimer();
@@ -5444,6 +5451,8 @@ function cat6RevealAnswer() {
   unlockNextButton();
   stopTimer();
   if (window._cat6AnswersUnsub) { window._cat6AnswersUnsub(); window._cat6AnswersUnsub = null; }
+  // The answer cards replace the timer and the "submitted" cards
+  ['vq-timer', 'cat6-status'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
 
   const area = document.getElementById('vq-answer-area');
   const ans = window._cat6A || '';
@@ -5478,7 +5487,7 @@ function cat6RevealAnswer() {
         <div class="answer-box fade-in" style="display:inline-block;width:auto;max-width:90%;align-self:center;font-size:clamp(18px,2.6vw,28px) !important">
           ${_lang==='en'?'✅ Answer':'✅ الجواب'}: ${escHTML(ans)}
         </div>
-        <div style="display:flex;gap:12px;width:100%;align-items:stretch">
+        <div style="display:flex;gap:12px;width:100%;max-width:1100px;margin:0 auto;align-items:stretch">
           ${teamBox('a')}
           <div id="cat6-result-center" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;min-width:90px;text-align:center">
             <div id="cat6-result-emoji" style="font-size:32px;line-height:1"></div>
@@ -5559,7 +5568,7 @@ function renderCat6JudgeUI() {
                     + btn('rgba(255,45,45,0.08)', '#FF2D2D', '#FF2D2D', t('wrong'), `cat6Judge('${team}',false)`);
     } else {
       box.innerHTML = `<span style="font-size:14px;font-weight:900;color:${j ? '#39FF14' : '#FF2D2D'}">${j ? '✅ ' + (_lang==='en'?'Correct':'صح') : '❌ ' + (_lang==='en'?'Wrong':'خطأ')}</span>`
-        + `<button onclick="cat6UndoJudge('${team}')" title="${_lang==='en'?'Change':'تغيير'}" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.5);background:transparent;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">↩</button>`;
+        + `<button onclick="cat6UndoJudge('${team}')" style="min-height:0;padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.04);font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">↩ ${_lang==='en'?'Change':'تغيير'}</button>`;
     }
   });
 
@@ -5860,7 +5869,7 @@ function renderCharades(r, qIndex, sa) {
 
       <!-- QR code — top left on desktop, bottom on mobile. Hidden as soon as the
            actor's phone opens it, so the other players can't scan it too. -->
-      <button id="qr-show-btn" onclick="charShowQR()" style="display:none;padding:6px 14px;border-radius:100px;border:1.5px solid rgba(0,239,255,0.5);background:rgba(0,239,255,0.06);color:#00EFFF;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer">📱 ${_lang==='en'?'Show QR again':'إظهار رمز QR'}</button>
+      <button id="qr-show-btn" onclick="charShowQR()" style="display:none;min-height:0;white-space:nowrap;padding:6px 14px;border-radius:100px;border:1.5px solid rgba(0,239,255,0.5);background:rgba(0,239,255,0.06);color:#00EFFF;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer">📱 ${_lang==='en'?'Show QR again':'إظهار رمز QR'}</button>
       <div id="qr-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px">
         <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #00EFFF;box-shadow:0 0 16px rgba(0,239,255,0.3)">
           <div id="qr-code-box"></div>
@@ -5868,7 +5877,7 @@ function renderCharades(r, qIndex, sa) {
         <div style="font-size:11px;font-weight:700;color:#00EFFF;text-shadow:0 0 8px rgba(0,239,255,0.6);direction:rtl;text-align:center">
           ${t('actorScan')}
         </div>
-        <button onclick="charHideQR()" style="padding:3px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">🙈 ${_lang==='en'?'Hide':'إخفاء'}</button>
+        <button onclick="charHideQR()" style="min-height:0;white-space:nowrap;padding:3px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">🙈 ${_lang==='en'?'Hide':'إخفاء'}</button>
       </div>
 
       <div class="question-number">${_lang==="en"?"Round":"دور"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
@@ -5902,7 +5911,7 @@ function renderCharades(r, qIndex, sa) {
 
     <style>
       @media(min-width:601px) {
-        #qr-wrap {
+        #qr-wrap, #qr-show-btn {
           position:absolute;
           top:0;left:0;
           z-index:5;
