@@ -49,7 +49,7 @@ body { font-family:'Cairo',sans-serif; color:#fff; min-height:100dvh; display:fl
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -181,6 +181,14 @@ if (!roomId || !team) {
       }
     }
 
+    // Answer revealed on the TV: no more submissions for this question
+    if (d.phase === 'answer' && !submitted) {
+      if (timerTimeout) { clearTimeout(timerTimeout); timerTimeout = null; }
+      document.getElementById('submit-btn').disabled = true;
+      input.disabled = true;
+      input.placeholder = _lang === 'ar' ? 'تم كشف الجواب' : 'Answer revealed';
+    }
+
     if (submitted) {
       const bothDone = d[`answer${isA?'A':'B'}`] && d[`answer${isA?'B':'A'}`];
       document.getElementById('done-msg').textContent = bothDone ? t('bothSent') : t('waitOther');
@@ -195,7 +203,8 @@ window.submitAnswer = function() {
   const dbPath = mode === 'text' ? `cat6/${roomId}` : `closest/${roomId}`;
   update(ref(db, dbPath), {
     [`answer${isA?'A':'B'}`]: val,
-    [`answeredAt${isA?'A':'B'}`]: Date.now()
+    // Server time, so "who answered first" doesn't depend on phone clocks
+    [`answeredAt${isA?'A':'B'}`]: serverTimestamp()
   });
   document.getElementById('input-section').style.display = 'none';
   document.getElementById('done-section').style.display = 'block';
