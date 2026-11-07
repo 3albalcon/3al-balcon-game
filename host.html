@@ -123,7 +123,7 @@ body { font-family:'Cairo',sans-serif; background:rgba(6,13,31,0.6); color:#fff;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, goOnline, goOffline } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -138,7 +138,14 @@ const app = initializeApp(cfg);
 const db = getDatabase(app);
 
 // ── Connection status monitor ──
+// Firebase reconnects by itself. Do NOT force goOffline()/goOnline() here: each
+// forced disconnect fires another "disconnected" event, which used to schedule
+// the next forced disconnect — an endless drop every 3 seconds.
+let _everConnected = false;
 function showConnectionStatus(connected) {
+  // .info/connected always starts as false while the first connection opens
+  if (!connected && !_everConnected) return;
+  if (connected) _everConnected = true;
   let bar = document.getElementById('conn-bar');
   if (!bar) {
     bar = document.createElement('div');
@@ -156,17 +163,14 @@ function showConnectionStatus(connected) {
     bar.style.background = 'rgba(57,255,20,0.15)';
     bar.style.color = '#39FF14';
     bar.style.borderBottom = '1px solid rgba(57,255,20,0.3)';
-    setTimeout(() => { if (bar) bar.style.display = 'none'; }, 2000);
+    bar.style.display = 'block';
+    setTimeout(() => { if (bar && bar.textContent.startsWith('✅')) bar.style.display = 'none'; }, 2000);
   } else {
     bar.style.display = 'block';
     bar.style.background = 'rgba(255,45,45,0.2)';
     bar.style.color = '#FF2D2D';
     bar.style.borderBottom = '1px solid rgba(255,45,45,0.3)';
     bar.textContent = '⚠️ ' + (_lang==='ar' ? 'انقطع الاتصال — جاري إعادة الاتصال...' : 'Disconnected — reconnecting...');
-    // Try to force reconnect after 3 seconds
-    setTimeout(() => {
-      try { goOffline(db); setTimeout(() => goOnline(db), 500); } catch(e) {}
-    }, 3000);
   }
 }
 
@@ -176,8 +180,11 @@ onValue(ref(db, '.info/connected'), snap => {
 });
 
 let state={}, view={}, cat3=null, cat3Room=null, roulette=null, ansShown=false;
+let _cat3Unsub = null;
 let _answerRevealed = false;  // gate: must reveal before Next
-let _scoredThisQ = new Map(); // team → pts scored this question
+let _scorePending = new Set(); // teams whose score tap is on its way to the TV
+
+const escHTML = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 
 // Session ID from URL
 const params = new URLSearchParams(window.location.search);
@@ -242,9 +249,11 @@ function ht(key, ...args) {
 // Send command to main screen
 window.c = (cmd, data={}) => {
   const path = P('hostCmd');
-  set(ref(db, path), {cmd, data, ts:Date.now()});
+  // id makes every command unique, so the TV never drops or replays one
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  set(ref(db, path), {cmd, data, ts:Date.now(), id});
   // Track answer revealed
-  if (cmd === 'revealAnswer' || cmd === 'revealCat6Answer' || cmd === 'videoReveal') {
+  if (cmd === 'revealAnswer' || cmd === 'revealCat6Answer') {
     _answerRevealed = true;
     render(); // re-render to enable Next
   }
@@ -256,114 +265,79 @@ window.c = (cmd, data={}) => {
 
 let _cat6RoomListener = null;
 let _cat6RoomWatching = null;
-let _cat6Judged = { a: null, b: null };
-let _cat6LastJudgeHTML = '';
+let _cat6Data = null; // latest cat6 room snapshot (answers + timestamps)
+
+// Verdicts, the step (video → question → answer) and "no answer" flags all
+// live on the TV and come back through hostState, so both screens always agree.
+const cat6Verdict = (team) => {
+  const v = state.cat6Judgement?.[team];
+  return v === true || v === false ? v : null;
+};
 
 function loadCat6Answers() {
   const roomId = state.cat6RoomId;
   if (!roomId || roomId === _cat6RoomWatching) return;
   _cat6RoomWatching = roomId;
-  _cat6Judged = { a: null, b: null };
+  _cat6Data = null;
   if (_cat6RoomListener) { _cat6RoomListener(); _cat6RoomListener = null; }
   _cat6RoomListener = onValue(ref(db, `cat6/${roomId}`), snap => {
-    const d = snap.val(); if (!d) return;
-    // Reset judgement when new question starts
-    if (d.phase === 'waiting') {
-      _cat6Judged = { a: null, b: null };
-      _cat6LastJudgeHTML = '';
-      const area = document.getElementById('cat6-judge-area');
-      if (area) area.innerHTML = '';
-      return;
-    }
-    const area = document.getElementById('cat6-judge-area');
-    if (!area) return;
-    const ansA = d.answerA || null;
-    const ansB = d.answerB || null;
-    if (!ansA && !ansB) { area.innerHTML = ''; return; }
-    renderJudgeArea(area, ansA, ansB, d.answeredAtA, d.answeredAtB);
+    _cat6Data = snap.val();
+    if (state.currentRound === 'r5') render();
   });
 }
 
-function renderJudgeArea(area, ansA, ansB, tsA, tsB) {
-  const bothJudged = _cat6Judged.a !== null && _cat6Judged.b !== null;
-  // Show who was faster only after both judged
-  let speedLabel = '';
-  if (bothJudged && tsA && tsB) {
-    speedLabel = tsA < tsB
-      ? `<div style="font-size:10px;color:#FFE600;text-align:center;margin-top:4px">⚡ ${state.teamA||(_lang==='en'?'A':'أ')} ${_lang==='en'?'faster':'أسرع'}</div>`
-      : `<div style="font-size:10px;color:#FFE600;text-align:center;margin-top:4px">⚡ ${state.teamB||(_lang==='en'?'B':'ب')} ${_lang==='en'?'faster':'أسرع'}</div>`;
-  }
-
-  area.innerHTML = `
-    <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;text-align:center;margin-top:6px">${_lang==='en'?'— Team Answers —':'— أجوبة الفرق —'}</div>
-    ${speedLabel}
-    <div style="display:flex;gap:8px;width:100%;margin-top:4px">
-      ${buildTeamCard('a', ansA, state.teamA||(_lang==='en'?'A':'أ'), '#E50158', 'rgba(229,1,88,')}
-      ${buildTeamCard('b', ansB, state.teamB||(_lang==='en'?'B':'ب'), '#E2DA51', 'rgba(226,218,81,')}
+function cat6StatusRow() {
+  const d = _cat6Data || {};
+  const pill = (team, name, color) => {
+    const sent = !!(team === 'a' ? d.answerA : d.answerB);
+    return `<div style="flex:1;text-align:center;padding:6px;border-radius:8px;border:1px solid ${sent ? '#39FF14' : 'rgba(255,255,255,0.15)'};font-size:12px;font-weight:700">
+      <span style="color:${color}">${escHTML(name)}</span><br>
+      <span style="color:${sent ? '#39FF14' : 'rgba(255,255,255,0.4)'}">${sent ? (_lang==='en'?'✅ Submitted':'✅ أرسل') : (_lang==='en'?'⏳ Writing…':'⏳ يكتب…')}</span>
     </div>`;
-  _cat6LastJudgeHTML = area.innerHTML;
+  };
+  return `<div style="display:flex;gap:8px">${pill('a', state.teamA||'A', '#E50158')}${pill('b', state.teamB||'B', '#E2DA51')}</div>`;
 }
 
-function buildTeamCard(team, ans, name, color, rgba) {
-  const judged = _cat6Judged[team];
-  
-  if (judged === true) return `<div style="flex:1;padding:8px;border-radius:10px;background:rgba(57,255,20,0.08);border:1.5px solid #39FF14;display:flex;flex-direction:column;align-items:center;gap:5px">
-    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
-    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
-    <div style="font-size:12px;color:#39FF14;font-weight:700">✅ ${_lang==='en'?'Correct':'صح'}</div>
-    <button onclick="hostUndoJudge('${team}')" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);background:transparent;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer">↩ ${_lang==='en'?'Change':'تغيير'}</button>
-  </div>`;
-  
-  if (judged === false) return `<div style="flex:1;padding:8px;border-radius:10px;background:rgba(255,45,45,0.08);border:1.5px solid #FF2D2D;display:flex;flex-direction:column;align-items:center;gap:5px">
-    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
-    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
-    <div style="font-size:12px;color:#FF2D2D;font-weight:700">❌ ${_lang==='en'?'Wrong':'خطأ'}</div>
-    <button onclick="hostUndoJudge('${team}')" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);background:transparent;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer">↩ ${_lang==='en'?'Change':'تغيير'}</button>
-  </div>`;
-
-  return `<div style="flex:1;padding:8px;border-radius:10px;background:${rgba}0.07);border:1px solid ${rgba}0.3);display:flex;flex-direction:column;align-items:center;gap:5px">
-    <div style="font-size:10px;color:${color};font-weight:700">${name}</div>
-    <div style="font-size:13px;font-weight:700;color:#fff;text-align:center;direction:rtl">${ans || '—'}</div>
-    ${!ans ? '' : `
-      <div style="display:flex;gap:4px">
-        <button onclick="hostJudge('${team}',true)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">✅</button>
-        <button onclick="hostJudge('${team}',false)" style="padding:4px 10px;border-radius:6px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">❌</button>
-      </div>`}
-  </div>`;
+function cat6JudgeCards() {
+  const d = _cat6Data || {};
+  const J = state.cat6Judgement || {};
+  const bothJudged = cat6Verdict('a') !== null && cat6Verdict('b') !== null;
+  // Winner, same rule as the TV: one right → that team; both right → faster
+  let winner = null;
+  if (bothJudged) {
+    if (J.a && J.b) winner = (d.answeredAtA && d.answeredAtB) ? (d.answeredAtA <= d.answeredAtB ? 'a' : 'b') : (d.answeredAtB && !d.answeredAtA ? 'b' : 'a');
+    else if (J.a) winner = 'a'; else if (J.b) winner = 'b';
+  }
+  const card = (team, name, color) => {
+    const ans = team === 'a' ? d.answerA : d.answerB;
+    const v = cat6Verdict(team);
+    const noAns = !!state.cat6NoAnswer?.[team];
+    const isWin = winner === team;
+    let actions;
+    if (noAns) actions = `<div style="font-size:12px;color:#FF2D2D;font-weight:700">❌ ${_lang==='en'?'No answer — wrong':'لا جواب — خطأ'}</div>`;
+    else if (v === null) actions = `<div style="display:flex;gap:6px">
+        <button onclick="hostJudge('${team}',true)" style="padding:8px 14px;border-radius:8px;border:1.5px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.07);font-family:Cairo,sans-serif;font-size:14px;cursor:pointer">✅</button>
+        <button onclick="hostJudge('${team}',false)" style="padding:8px 14px;border-radius:8px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.07);font-family:Cairo,sans-serif;font-size:14px;cursor:pointer">❌</button>
+      </div>`;
+    else actions = `<div style="font-size:12px;font-weight:700;color:${v ? '#39FF14' : '#FF2D2D'}">${v ? (_lang==='en'?'✅ Correct':'✅ صح') : (_lang==='en'?'❌ Wrong':'❌ خطأ')}</div>
+      <button onclick="hostUndoJudge('${team}')" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);background:transparent;font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">↩ ${_lang==='en'?'Change':'تغيير'}</button>`;
+    return `<div style="flex:1;padding:8px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:6px;
+        border:${isWin ? '2.5px solid #FFE600' : '1px solid rgba(255,255,255,0.15)'};background:${isWin ? 'rgba(255,230,0,0.1)' : 'rgba(0,0,0,0.3)'}">
+      <div style="font-size:${isWin ? 14 : 11}px;color:${isWin ? '#FFE600' : color};font-weight:900">${isWin ? '🏆 ' : ''}${escHTML(name)}</div>
+      <div style="font-size:14px;font-weight:700;color:${ans ? '#fff' : 'rgba(255,255,255,0.35)'};text-align:center;direction:rtl">${ans ? escHTML(ans) : (_lang==='en'?'No answer':'لا جواب')}</div>
+      ${actions}
+    </div>`;
+  };
+  const result = !bothJudged ? '' : `<div class="info-card" style="color:${winner ? 'var(--green)' : 'rgba(255,255,255,0.5)'}">${winner
+      ? `🏆 ${escHTML(winner === 'a' ? state.teamA : state.teamB)} +3`
+      : (_lang==='en'?'🤝 No points':'🤝 لا نقاط')}</div>`;
+  return `<div style="display:flex;gap:8px;width:100%">${card('a', state.teamA||'A', '#E50158')}${card('b', state.teamB||'B', '#E2DA51')}</div>${result}`;
 }
 
-window.hostUndoJudge = (team) => {
-  const prev = _cat6Judged[team];
-  if (prev === null) return;
-  // Reverse the score
-  _cat6Judged[team] = null;
-  c('judgeTeam', { team, correct: !prev, undo: true }); // reverse previous
-  // Re-render judge area
-  const roomId = state.cat6RoomId;
-  if (!roomId) return;
-  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
-    get(ref(db, `cat6/${roomId}`)).then(snap => {
-      const d = snap.val() || {};
-      const area = document.getElementById('cat6-judge-area');
-      if (area) renderJudgeArea(area, d.answerA, d.answerB, d.answeredAtA, d.answeredAtB);
-    });
-  });
-};
-
-window.hostJudge = (team, correct) => {
-  _cat6Judged[team] = correct;
-  c('judgeTeam', { team, correct });
-  // Re-render judge area to show result + change button
-  const roomId = state.cat6RoomId;
-  if (!roomId) return;
-  import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
-    get(ref(db, `cat6/${roomId}`)).then(snap => {
-      const d = snap.val() || {};
-      const area = document.getElementById('cat6-judge-area');
-      if (area) renderJudgeArea(area, d.answerA, d.answerB, d.answeredAtA, d.answeredAtB);
-    });
-  });
-};
+// The TV applies the verdict and moves the 3 points; the cards update when its
+// new verdicts come back through hostState.
+window.hostUndoJudge = (team) => c('judgeTeam', { team, undo: true });
+window.hostJudge = (team, correct) => c('judgeTeam', { team, correct });
 
 window.overrideCat3 = (idx, status) => {
   c('overrideCat3', { idx, status });
@@ -411,12 +385,21 @@ function render() {
   const inGame = state.onGameScreen && !!state.currentRound;
   const onQuestion = inGame && q >= 1;
   const maxQ = state.currentRoundCount || 10;
+  const isCat3 = state.currentRound === 'r3';
+  // Cat 3: Next waits for both phones on the rules slide, then for each auction
+  // to be settled (the TV decides and mirrors it in hostState.cat3CanAdvance)
+  const cat3BothConnected = !!((cat3?.connectedA ?? cat3?.connected?.a) && (cat3?.connectedB ?? cat3?.connected?.b));
+  const cat3Blocked = isCat3 && ((q === 0 && !cat3BothConnected) || (q >= 1 && !state.cat3CanAdvance));
   // Block Next until answer revealed (only on question slides, not title/rules)
-  const nextBlocked = onQuestion && !_answerRevealed && !['r3'].includes(state.currentRound);
+  const revealBlocked = onQuestion && !isCat3 && (state.currentRound === 'r5' ? state.cat6Phase !== 'answer' : !_answerRevealed);
+  const nextBlocked = inGame && (revealBlocked || cat3Blocked);
   btnNext.disabled = !inGame || nextBlocked;
-  btnNext.title = nextBlocked ? (_lang==='en'?'Reveal answer first':'اكشف الجواب أولاً') : '';
+  btnNext.title = revealBlocked ? (_lang==='en'?'Reveal answer first':'اكشف الجواب أولاً')
+    : cat3Blocked ? (q === 0 ? (_lang==='en'?'Waiting for both teams':'انتظر اتصال الفريقين') : (_lang==='en'?'Finish this auction first':'أنهِ هذا المزاد أولاً'))
+    : '';
   btnNext.style.opacity = nextBlocked ? '0.35' : '1';
-  btnPrev.disabled = !inGame || q <= -1;
+  // Cat 3 questions can't be revisited (the TV ignores it too)
+  btnPrev.disabled = !inGame || q <= -1 || (isCat3 && q >= 1);
 
   // Hide roulette button when inside a category
   const rouletteBtn = document.getElementById('btn-roulette');
@@ -485,7 +468,7 @@ function render() {
     const connB = cat3.connectedB ?? cat3.connected?.b;
     const bothConnected = connA && connB;
     dyn.innerHTML = `
-      ${cat3.question?`<div class="card q-card">${cat3.question}</div>`:''}
+      ${cat3.question?`<div class="card q-card">${escHTML(cat3.question)}</div>`:''}
       ${(phase === 'waiting' || phase === 'ready') && !cat3.auctionWinner ? `
         <div style="display:flex;gap:8px;justify-content:center;font-size:12px">
           <span style="color:${connA?'#39FF14':'rgba(255,255,255,0.3)'}">● ${cat3.teamA||(_lang==='en'?'A':'أ')}</span>
@@ -502,11 +485,12 @@ function render() {
           <div style="font-size:12px;color:rgba(255,255,255,0.2);align-self:center">VS</div>
           <div class="bid-card bid-b"><div class="bid-n" style="color:#E2DA51">${cat3.teamB||(_lang==='en'?'B':'ب')}</div><div class="bid-v" style="color:#E2DA51">${bids.b?.value||'—'}</div></div>
         </div>
-        ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB} — ${cat3.winningBid} ${_lang==='en'?'answers':'أجوبة'}</div>`:''}
+        ${cat3.auctionWinner?`<div class="info-card" style="color:var(--green)">🏆 ${escHTML(cat3.auctionWinner==='a'?cat3.teamA:cat3.teamB)} — ${cat3.winningBid} ${_lang==='en'?'answers':'أجوبة'}</div>`:''}
+        ${phase === 'answering' && cat3.auctionWinner && !state.cat3CanAdvance ? `<div class="info-card" style="font-size:11px">${_lang==='en'?'⏳ Waiting for answers — Next unlocks when the auction is settled':'⏳ بانتظار الأجوبة — التالي يُفتح عند انتهاء المزاد'}</div>` : ''}
         <div style="display:flex;flex-direction:column;gap:5px">
           ${answers.length?answers.map((a,i)=>`
             <div class="ans-chip chip-${a.status==='correct'?'ok':a.status==='wrong'?'no':'p'}" style="justify-content:space-between">
-              <span>${i+1}. ${a.text}</span>
+              <span>${i+1}. ${escHTML(a.text)}</span>
               <span style="display:flex;gap:4px;flex-shrink:0">
                 <button onclick="overrideCat3(${i},'correct')" style="padding:2px 7px;border-radius:5px;border:1.5px solid #39FF14;color:#39FF14;background:${a.status==='correct'?'rgba(57,255,20,0.25)':'rgba(57,255,20,0.05)'};font-size:11px;cursor:pointer">✅</button>
                 <button onclick="overrideCat3(${i},'wrong')" style="padding:2px 7px;border-radius:5px;border:1.5px solid #FF2D2D;color:#FF2D2D;background:${a.status==='wrong'?'rgba(255,45,45,0.25)':'rgba(255,45,45,0.05)'};font-size:11px;cursor:pointer">❌</button>
@@ -519,21 +503,35 @@ function render() {
 
   // Cat 6 — video controls
   if (state.currentRound === 'r5') {
+    // Step by step, following the TV: video → question → answer + judging.
+    // The answer only appears here once it's revealed on the TV.
+    const ph = state.cat6Phase || 'video';
+    const step = (n, label, on) => `<div style="flex:1;text-align:center;font-size:10px;padding:4px;border-radius:6px;${on ? 'background:rgba(255,230,0,0.15);color:#FFE600;font-weight:900' : 'color:rgba(255,255,255,0.3)'}">${n}. ${label}</div>`;
+    const steps = `<div style="display:flex;gap:4px">${step(1, _lang==='en'?'Video':'الفيديو', ph==='video')}${step(2, _lang==='en'?'Question':'السؤال', ph==='question')}${step(3, _lang==='en'?'Answer':'الجواب', ph==='answer')}</div>`;
+    let body = '';
+    if (ph === 'video') {
+      body = `
+        <div class="btn-row">
+          <button class="btn btn-g btn-sm" onclick="c('videoPlay')">${_lang==='en'?'▶ Play':'▶ تشغيل'}</button>
+          <button class="btn btn-y btn-sm" onclick="c('videoRepeat')">${_lang==='en'?'🔁 Replay':'🔁 إعادة'}</button>
+        </div>
+        <button class="btn btn-c" onclick="c('videoReveal')" style="width:100%;font-size:15px">${_lang==='en'?'📋 Show Question on screen':'📋 اعرض السؤال على الشاشة'}</button>`;
+    } else if (ph === 'question') {
+      body = `
+        ${view.question ? `<div class="card q-card">${escHTML(view.question)}</div>` : ''}
+        ${cat6StatusRow()}
+        <button class="btn btn-y" onclick="c('revealCat6Answer')" style="width:100%;font-size:15px">${_lang==='en'?'👁 Reveal Answer on screen':'👁 اكشف الجواب على الشاشة'}</button>`;
+    } else {
+      body = `
+        ${view.question ? `<div class="card q-card" style="font-size:13px">${escHTML(view.question)}</div>` : ''}
+        ${view.answer ? `<div class="card a-card">${escHTML(view.answer)}</div>` : ''}
+        <div class="lbl">${_lang==='en'?'— Judge each team (also on the TV) —':'— احكم على كل فريق (يظهر على الشاشة أيضاً) —'}</div>
+        ${cat6JudgeCards()}`;
+    }
     dyn.innerHTML = `
       <div class="card q-card" style="color:var(--yellow);border-color:var(--yellow)">🎬 ${_lang==='en'?'Video':'فيديو'} ${q >= 1 ? q : ''} ${_lang==='en'?'of':'من'} ${state.currentRoundCount||4}</div>
-      <div class="btn-row">
-        <button class="btn btn-g btn-sm" onclick="c('videoPlay')">${_lang==='en'?'▶ Play':'▶ تشغيل'}</button>
-        <button class="btn btn-y btn-sm" onclick="c('videoRepeat')">${_lang==='en'?'🔁 Replay':'🔁 إعادة'}</button>
-      </div>
-      <button class="btn btn-c btn-sm" onclick="c('videoReveal')" style="width:100%">${_lang==='en'?'📋 Show Question':'📋 عرض السؤال'}</button>
-      ${view.answer?`<div class="card a-card" style="font-size:14px">${view.answer}</div>`:''}
-      ${view.answer?`<button class="btn btn-y btn-sm" onclick="c('revealCat6Answer')" style="width:100%">${_lang==='en'?'👁 Reveal Answer':'👁 كشف الجواب للجميع'}</button>`:''}
-      <div id="cat6-judge-area" style="width:100%"></div>`;
-    // Restore judge area content if it was wiped by re-render
-    const judgeArea = document.getElementById('cat6-judge-area');
-    if (judgeArea && _cat6LastJudgeHTML) {
-      judgeArea.innerHTML = _cat6LastJudgeHTML;
-    }
+      ${steps}
+      ${body}`;
     loadCat6Answers();
     return;
   }
@@ -570,8 +568,9 @@ function scoreSection(round) {
   const tB   = state.teamB||(_lang==='en'?'B':'ب');
   const plus = round.plus || 2;
   const minus = Math.abs(round.minus || 0);
-  const stA  = _scoredThisQ.get('a'); // {pts} or undefined
-  const stB  = _scoredThisQ.get('b');
+  // Score state comes from the TV, so a score given on the TV shows here too
+  const stA  = state.scored?.a ?? undefined;
+  const stB  = state.scored?.b ?? undefined;
 
   function teamRow(team, name, st) {
     if (st !== undefined) {
@@ -604,19 +603,20 @@ function scoreSection(round) {
   </div>`;
 }
 
+// The TV keeps the per-question score state (one score per team, undo
+// reverses exactly what was applied). We only send the request.
 window.hostScore = (team, pts) => {
-  if (_scoredThisQ.has(team)) return;
-  _scoredThisQ.set(team, pts);
-  c('addScore', {team, pts});
-  render();
+  if (state.scored?.[team] != null || _scorePending.has(team)) return;
+  _scorePending.add(team);
+  setTimeout(() => _scorePending.delete(team), 1500);
+  c('scoreTeam', {team, pts});
 };
 
 window.hostUndoScore = (team) => {
-  if (!_scoredThisQ.has(team)) return;
-  const pts = _scoredThisQ.get(team);
-  _scoredThisQ.delete(team);
-  c('addScore', {team, pts: -pts}); // reverse
-  render();
+  if (state.scored?.[team] == null || _scorePending.has(team)) return;
+  _scorePending.add(team);
+  setTimeout(() => _scorePending.delete(team), 1500);
+  c('undoScoreTeam', {team});
 };
 
 // Firebase listeners
@@ -628,13 +628,14 @@ onValue(ref(db,P('hostState')), s => {
   // Reset per-question flags when question changes
   if (state.currentQ !== prev || state.currentRound !== prevRound) {
     _answerRevealed = false;
-    _scoredThisQ = new Map();
   }
+  _scorePending.clear();
   const dbg = document.getElementById('debug-session');
   if (dbg) dbg.textContent = `session: ${SESSION} | teams: ${state.teamA||'?'} vs ${state.teamB||'?'}`;
   if (state.cat3RoomId && state.cat3RoomId !== cat3Room) {
     cat3Room = state.cat3RoomId;
-    onValue(ref(db,`rooms/${cat3Room}`), r => { cat3 = r.val(); render(); });
+    if (_cat3Unsub) _cat3Unsub();
+    _cat3Unsub = onValue(ref(db,`rooms/${cat3Room}`), r => { cat3 = r.val(); render(); });
   }
   render();
 });

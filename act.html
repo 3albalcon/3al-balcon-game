@@ -67,7 +67,7 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
 const cfg = {
   apiKey:"AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -87,6 +87,10 @@ const session = params.get('s') || 'main';
 let _lang     = params.get('l') || 'ar';
 
 document.getElementById('name').textContent = name;
+
+// Tell the TV this QR was scanned, so it hides it from the other players
+const scanId = params.get('k');
+if (scanId && session !== 'main') set(ref(db, `sessions/${session}/actScan`), scanId);
 
 const T = {
   ar: { label:'🎭 سكر تمك — الاسم السري', hint:'بس انت شوف الجواب', tapBtn:'اضغط لرؤية الكلمة' },

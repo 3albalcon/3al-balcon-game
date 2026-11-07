@@ -1448,6 +1448,10 @@ window._fbRef = ref;
 window._fbSet = set;
 window._fbOnValue = onValue;
 window._fbGet = get;
+// Phones and the TV compare deadlines (bid window, writing time). Each device's
+// own clock can be seconds off, so everyone works in Firebase server time.
+window._fbServerOffset = 0;
+onValue(ref(db, '.info/serverTimeOffset'), s => { window._fbServerOffset = s.val() || 0; });
 window.addEventListener('load', () => {
   // Clear any stale hostCmd from previous session (on main path only)
   setTimeout(() => {
@@ -3027,8 +3031,7 @@ function startGame() {
       window._fbSet(window._fbRef(window._fbDb, `sessions/${window._gameSession}/shutdown`), false);
     }
   }, 300);
-  // Restart host cmd listener on new session path
-  _lastHostCmdTs = Date.now();
+  // Restart host cmd listener on new session path (it ignores any leftover command)
   startHostCmdListener();
   buildMenu();
   show('menu-screen');
@@ -3418,6 +3421,12 @@ function openRound(id) {
   _celebrationCleanup();
   document.querySelectorAll('video').forEach(v => { try { v.pause(); v.currentTime = 0; } catch(e) {} });
   _resetScoreState();
+  // Fresh phone rooms for this visit (created on the rules slide)
+  if (cat3Listener) { cat3Listener(); cat3Listener = null; }
+  cat3RoomId = null;
+  window._cat3BothConnected = false;
+  window._cat3CanAdvance = false;
+  window._cat6RoomId = null;
 
   // For photo categories — pick a fresh batch excluding already-used photos
   if (id === 'r1' || id === 'r2') {
@@ -3642,7 +3651,9 @@ function renderRules(r, sa) {
 
   // Cat3 — init room and show QRs on rules page
   if (isCat3) {
-    cat3RoomId = initCat3Room(G.teamA, G.teamB);
+    // One room per visit to the category. Coming back to this slide must not
+    // create a new room — the phones have already scanned the old QR codes.
+    if (!cat3RoomId) cat3RoomId = initCat3Room(G.teamA, G.teamB);
     const roomId = cat3RoomId;
     const baseUrl = 'https://3albalcon.github.io/3al-balcon-game/bid.html';
     const urlA = `${baseUrl}?t=a&r=${roomId}&s=${window._gameSession||'main'}&l=${_lang}`;
@@ -3651,10 +3662,12 @@ function renderRules(r, sa) {
     // Listen for connections
     const db = window._fbDb; const fbRef = window._fbRef; const fbOnValue = window._fbOnValue;
     if (db && fbOnValue) {
-      fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
+      if (window._cat3RulesUnsub) window._cat3RulesUnsub();
+      window._cat3RulesUnsub = fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
         const d = snap.val() || {};
         const connA = d.connectedA || d.connected?.a || false;
         const connB = d.connectedB || d.connected?.b || false;
+        window._cat3BothConnected = !!(connA && connB);
         const dotA = document.getElementById('dot-a-cat3');
         const dotB = document.getElementById('dot-b-cat3');
         if (dotA) { dotA.style.background = connA ? '#39FF14' : 'rgba(255,255,255,0.15)'; dotA.style.boxShadow = connA ? '0 0 10px #39FF14, 0 0 20px rgba(57,255,20,0.3)' : 'none'; }
@@ -3716,13 +3729,15 @@ function renderRules(r, sa) {
 
   // Cat6 — create Firebase room and show QRs on rules page
   if (isCat6) {
-    const roomId = `cat6_${Date.now()}`;
-    window._cat6RoomId = roomId;
+    // Reuse the room when coming back to this slide (phones already scanned it)
+    const isNewRoom = !window._cat6RoomId;
+    if (isNewRoom) window._cat6RoomId = `cat6_${Date.now()}`;
+    const roomId = window._cat6RoomId;
     window._cat6RoomPhase = 'waiting';
 
     const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet; const fbOnValue = window._fbOnValue;
     if (db && fbSet) {
-      fbSet(fbRef(db, `cat6/${roomId}`), {
+      if (isNewRoom) fbSet(fbRef(db, `cat6/${roomId}`), {
         teamA: G.teamA, teamB: G.teamB,
         connectedA: false, connectedB: false,
         question: null, answerA: null, answerB: null,
@@ -3730,7 +3745,8 @@ function renderRules(r, sa) {
         wallpaper: G.waitingScreenUrl || G.hostWallpaperUrl || null
       });
       // Listen for connections
-      fbOnValue(fbRef(db, `cat6/${roomId}`), (snap) => {
+      if (window._cat6RulesUnsub) window._cat6RulesUnsub();
+      window._cat6RulesUnsub = fbOnValue(fbRef(db, `cat6/${roomId}`), (snap) => {
         const d = snap.val(); if (!d) return;
         const dotA = document.getElementById('dot-a-cat6');
         const dotB = document.getElementById('dot-b-cat6');
@@ -3899,7 +3915,8 @@ function renderRules(r, sa) {
 // ── Per-question score state: null | {team, val} — one action per question, undoable ──
 let _scoreState = null; // { a: val|null, b: val|null }
 
-function _resetScoreState() { _scoreState = { a: null, b: null }; }
+let _scoreApplied = { a: 0, b: 0 }; // what addScore really changed, for undo
+function _resetScoreState() { _scoreState = { a: null, b: null }; _scoreApplied = { a: 0, b: 0 }; }
 _resetScoreState();
 
 function scorePanelHTML(plus=2, minus=1) {
@@ -3951,36 +3968,50 @@ function scorePanelHTML(plus=2, minus=1) {
     </div>`;
 }
 
+// Re-render only the score panel. Never re-render the whole slide here: that
+// hides an already revealed answer and re-locks the Next button.
+function _refreshScorePanel() {
+  const panel = document.querySelector('.score-panel');
+  if (!panel) return;
+  const p = parseInt(panel.dataset.plus || 2);
+  const m = parseInt(panel.dataset.minus || 1);
+  panel.outerHTML = scorePanelHTML(p, m);
+}
+
 function scoreOnce(team, val) {
   if (!_scoreState) _resetScoreState();
   if (_scoreState[team] !== null) return; // already scored this question
   _scoreState[team] = val;
-  addScore(team, val);
-  // Re-render score panel in current slide
-  const panel = document.querySelector('.score-panel');
-  if (panel) {
-    const p = parseInt(panel.dataset.plus || 2);
-    const m = parseInt(panel.dataset.minus || 1);
-    panel.outerHTML = scorePanelHTML(p, m);
-  } else {
-    renderSlide();
-  }
+  _scoreApplied[team] = addScore(team, val);
+  _refreshScorePanel();
+  pushHostState();
 }
 
 function undoScore(team) {
   if (!_scoreState || _scoreState[team] === null) return;
-  const val = _scoreState[team];
   _scoreState[team] = null;
-  addScore(team, -val); // reverse
-  renderSlide();
+  // Reverse what was actually applied — scores are floored at 0, so a -2 on a
+  // team with 1 point only took 1 away and undo must only give 1 back.
+  addScore(team, -_scoreApplied[team]);
+  _scoreApplied[team] = 0;
+  _refreshScorePanel();
+  pushHostState();
 }
 
 // ══════════════════════════════════════
 // SCORING
 // ══════════════════════════════════════
+// Escape text typed on a phone before putting it into innerHTML.
+function escHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Returns the change actually applied (scores never go below 0).
 function addScore(team, val) {
+  const before = team === 'a' ? G.scoreA : G.scoreB;
   if(team==='a') G.scoreA = Math.max(0, G.scoreA + val);
   else G.scoreB = Math.max(0, G.scoreB + val);
+  const applied = (team === 'a' ? G.scoreA : G.scoreB) - before;
   updateHeaderScores();
   document.getElementById('sp-a') && (document.getElementById('sp-a').textContent = G.scoreA);
   document.getElementById('sp-b') && (document.getElementById('sp-b').textContent = G.scoreB);
@@ -3994,6 +4025,7 @@ function addScore(team, val) {
     fbSet(fbRef(db, _path('hostState/scoreA')), G.scoreA);
     fbSet(fbRef(db, _path('hostState/scoreB')), G.scoreB);
   }
+  return applied;
 }
 
 function unlockNextButton() {
@@ -4283,6 +4315,35 @@ let cat3LastBidCountdownEnd = null;
 // ══════════════════════════════════════
 // CATEGORY 3 — Public Auction (Bidding)
 // ══════════════════════════════════════
+// Firebase server time — see _fbServerOffset
+function srvNow() { return Date.now() + (window._fbServerOffset || 0); }
+
+// Who currently holds the auction: highest bid; on a draw, whoever reached
+// that number first. Returns null when nobody has bid yet.
+function cat3Leader(vA, vB, tA, tB) {
+  if (!vA && !vB) return null;
+  if (vA !== vB) return vA > vB ? 'a' : 'b';
+  return (tA || Infinity) <= (tB || Infinity) ? 'a' : 'b';
+}
+
+// Normalise an answer so trivial differences (case, spaces, Arabic hamza /
+// taa marbuta / tashkeel, a leading "ال") don't make the same answer count twice.
+function normAnswer(txt) {
+  return String(txt || '').toLowerCase()
+    .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+    .split(' ').map(w => w.length > 3 ? w.replace(/^ال/, '') : w).join(' ');
+}
+
+// Next is only allowed once the auction for this question is settled. The flag
+// is mirrored to the host phone through hostState.
+function setCat3CanAdvance(v) {
+  if (!!window._cat3CanAdvance === v) return;
+  window._cat3CanAdvance = v;
+  pushHostState();
+}
+
 function initCat3Room(teamA, teamB) {
   // Generate one roomId for the whole session
   cat3RoomId = `cat3_${Date.now()}`;
@@ -4324,6 +4385,9 @@ function renderBidding(r, qIndex, sa) {
   window._cat3CurBidB = 0;
   window._cat3CurTimeA = 0;
   window._cat3CurTimeB = 0;
+  window._cat3AutoConfirmSent = false;
+  clearTimeout(window._cat3DeadlineTimer);
+  setCat3CanAdvance(false);
   _validatingSet.clear();
   _cat3ValidationRun = null;                       // stop stale AI validation
   cat3LastBidder = null;
@@ -4466,7 +4530,7 @@ function forceCat3Skip(roomId) {
       phase: 'answering',
       auctionWinner: null,
       winningBid: 0,
-      answerTimerEnd: Date.now(),
+      answerTimerEnd: srvNow(),
       answers: [],
       gaveUp: 'skip'
     });
@@ -4484,8 +4548,10 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
   if (!db) return;
   if (cat3Listener) cat3Listener();
 
-  cat3Listener = window._fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
-    const data = snap.val();
+  // Kept so a deadline can re-run the handler even if no new snapshot arrives
+  // (e.g. the winning team's phone was closed before its timer ran out).
+  let lastData = null;
+  const handle = (data) => {
     if (!data) return;
 
     // Reject stale snapshots left over from the previous question.
@@ -4581,7 +4647,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
               const db2 = window._fbDb; const fbRef2 = window._fbRef;
               if (db2 && fbRef2) update(fbRef2(db2, `rooms/${roomId}`), {
                 phase: 'answering', auctionWinner: null, winningBid: 0,
-                answerTimerEnd: Date.now(), answers: [], gaveUp: 'skip'
+                answerTimerEnd: srvNow(), answers: [], gaveUp: 'skip'
               });
             });
           }
@@ -4607,12 +4673,15 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         cat3LastBidCountdownEnd = data.bidCountdownEnd;
         clearInterval(cat3BidCountdownInterval);
 
-        const winnerName = data.lastBidder === 'a' ? G.teamA : G.teamB;
-        const waitingName = data.lastBidder === 'a' ? G.teamB : G.teamA;
-        const bidVal = data.lastBidder === 'a' ? bidA : bidB;
+        // Name the team that actually leads (two bids can cross in flight, so
+        // lastBidder is not always the leader)
+        const lead = cat3Leader(bidA || 0, bidB || 0, bids.a?.time, bids.b?.time) || data.lastBidder;
+        const winnerName = lead === 'a' ? G.teamA : G.teamB;
+        const waitingName = lead === 'a' ? G.teamB : G.teamA;
+        const bidVal = lead === 'a' ? bidA : bidB;
 
         // Flash on main screen
-        showBidFlash(`${bidVal} 🔥`, data.lastBidder === 'a' ? '#E50158' : '#E2DA51');
+        showBidFlash(`${bidVal} 🔥`, lead === 'a' ? '#E50158' : '#E2DA51');
         document.getElementById('bid-event-msg').textContent = _lang==="en"?`🔥 ${winnerName} bid ${bidVal} — ${waitingName} has 10 seconds to respond!`:`🔥 ${winnerName} زايد ${bidVal} — ${waitingName} لديه 10 ثواني للرد!`;
 
         const numEl = document.getElementById('bid-countdown-num');
@@ -4622,7 +4691,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         labelEl.textContent = _lang==="en"?`${waitingName} needs to respond`:`${waitingName} تحتاج أن ترد`;
 
         cat3BidCountdownInterval = setInterval(() => {
-          const remaining = Math.max(0, Math.ceil((data.bidCountdownEnd - Date.now()) / 1000));
+          const remaining = Math.max(0, Math.ceil((data.bidCountdownEnd - srvNow()) / 1000));
           numEl.textContent = remaining;
           if (remaining <= 0) {
             clearInterval(cat3BidCountdownInterval);
@@ -4633,19 +4702,31 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             // several bids out of date by the time it expires.
             if (data.phase === 'bidding' && data.bidCountdownEnd === cat3LastBidCountdownEnd) {
               const vA = window._cat3CurBidA || 0, vB = window._cat3CurBidB || 0;
-              const tA = window._cat3CurTimeA || Infinity, tB = window._cat3CurTimeB || Infinity;
-              const winner = vA === vB ? (tA <= tB ? 'a' : 'b') : (vA > vB ? 'a' : 'b');
+              const winner = cat3Leader(vA, vB, window._cat3CurTimeA, window._cat3CurTimeB) || 'a';
               const winnerBid = winner === 'a' ? vA : vB;
               fbUpdate(`rooms/${roomId}`, {
                 phase: 'answering',
                 auctionWinner: winner,
                 winningBid: winnerBid,
-                answerTimerEnd: Date.now() + 60000,
+                // Deadline to tap "Start writing"; the phone replaces it with the
+                // real 60s writing deadline when the team taps it.
+                answerTimerEnd: srvNow() + 60000,
                 answers: []
               });
             }
           }
         }, 100);
+      }
+
+      // Draw: the team that reached the number first keeps the lead
+      if (bidA > 0 && bidA === bidB) {
+        const lead = cat3Leader(bidA, bidB, bids.a?.time, bids.b?.time);
+        const leadName = lead === 'a' ? G.teamA : G.teamB;
+        const otherName = lead === 'a' ? G.teamB : G.teamA;
+        const msgEl = document.getElementById('bid-event-msg');
+        if (msgEl) msgEl.textContent = _lang==='en'
+          ? `⚖️ ${otherName} matched ${bidA} — ${leadName} still leads (reached ${bidA} first)`
+          : `⚖️ ${otherName} عادل ${bidA} — ${leadName} لا يزال متقدماً (وصل إلى ${bidA} أولاً)`;
       }
     }
 
@@ -4662,6 +4743,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         document.getElementById('winner-announce').textContent = _lang==='en' ? '⏩ No bids — moving to next question' : '⏩ لا مزايدات — ننتقل للسؤال التالي';
         const nav = document.getElementById('cat3-nav-btns');
         if (nav) nav.style.display = 'flex';
+        setCat3CanAdvance(true);
         window._pendingCat3Score = null; // no score for skipped question
         return;
       }
@@ -4707,7 +4789,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
               if (secsEl) secsEl.style.color = 'rgba(255,255,255,0.3)';
               return;
             }
-            const rem = Math.max(0, timerEnd - Date.now());
+            const rem = Math.max(0, timerEnd - srvNow());
             const secs = Math.ceil(rem / 1000);
             const pct = (rem / 60000) * 100;
             const secsEl = document.getElementById('main-ans-secs');
@@ -4723,13 +4805,31 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       const answers = data.answers || [];
       const display = document.getElementById('answers-display');
       const answersConfirmed = data.answersConfirmed || false;
-      const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= Date.now();
+      const ansTimeUp = data.answerTimerEnd && data.answerTimerEnd <= srvNow();
+
+      // Deadline handling that doesn't depend on the phone still being open:
+      // re-check a moment after the deadline, and if writing had started but the
+      // phone never confirmed, lock the answers ourselves so they get judged.
+      if (!answersConfirmed && data.answerTimerEnd) {
+        const graceLeft = data.answerTimerEnd + 2500 - srvNow();
+        if (graceLeft > 0) {
+          window._cat3RecheckLater?.(graceLeft + 50);
+        } else if (data.writingStarted && !window._cat3AutoConfirmSent) {
+          window._cat3AutoConfirmSent = true;
+          fbUpdate(`rooms/${roomId}`, { answersConfirmed: true });
+        }
+      }
       const showResults = answersConfirmed; // only show ✅/❌ buttons after confirmed
 
       // Determine columns based on count
       // Scale columns to fit max 25 answers: 1→5, 6→10→2col, 11→15→3col, 16→20→4col, 21→25→5col
-      const cols = answers.length <= 5 ? 1 : answers.length <= 10 ? 2 : answers.length <= 15 ? 3 : answers.length <= 20 ? 4 : 5;
-      display.style.cssText = `width:100%;display:grid;grid-template-columns:repeat(${cols},1fr);gap:3px;`;
+      // Readable from across the room: big text for few answers, smaller only as
+      // the count grows (still fits 25 without scrolling). Text wraps, no "…".
+      const n = answers.length;
+      const cols = n <= 4 ? 1 : n <= 8 ? 2 : n <= 15 ? 3 : n <= 20 ? 4 : 5;
+      const fs = n <= 4 ? 'clamp(22px,3vw,40px)' : n <= 8 ? 'clamp(18px,2.4vw,32px)' : n <= 15 ? 'clamp(15px,1.8vw,24px)' : 'clamp(13px,1.4vw,19px)';
+      const pad = n <= 8 ? '8px 14px' : '5px 8px';
+      display.style.cssText = `width:100%;max-width:${cols === 1 ? '900px' : '100%'};margin:0 auto;display:grid;grid-template-columns:repeat(${cols},1fr);gap:${n <= 8 ? 8 : 5}px;`;
 
       if (answers.length > 0) {
         display.innerHTML = answers.map((a, i) => {
@@ -4744,12 +4844,12 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
           const bg  = isCorrect ? 'rgba(57,255,20,0.08)' : isWrong ? 'rgba(255,45,45,0.08)' : 'rgba(255,255,255,0.04)';
           const bdr = isCorrect ? 'var(--neon-green)' : isWrong ? 'var(--neon-red)' : 'rgba(255,255,255,0.12)';
           return `
-            <div style="display:flex;align-items:center;gap:3px;padding:3px 5px;border-radius:6px;
-              background:${bg};border:1.5px solid ${bdr};">
-              <span style="font-size:9px;color:rgba(255,255,255,0.3);flex-shrink:0;min-width:12px">${i+1}.</span>
-              <span style="flex:1;font-size:11px;font-weight:700;color:#fff;direction:${dir};
-                overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2" title="${txt}">${txt}</span>
-              <span style="font-size:11px;flex-shrink:0">${isPending?'⏳':isCorrect?'✅':'❌'}</span>
+            <div style="display:flex;align-items:center;gap:8px;padding:${pad};border-radius:10px;
+              background:${bg};border:2px solid ${bdr};font-size:${fs}">
+              <span style="font-size:0.6em;color:rgba(255,255,255,0.4);flex-shrink:0;min-width:1.4em">${i+1}.</span>
+              <span style="flex:1;font-weight:900;color:#fff;direction:${dir};
+                white-space:normal;word-break:break-word;line-height:1.25" title="${escHTML(txt)}">${escHTML(txt)}</span>
+              <span style="font-size:0.8em;flex-shrink:0">${isPending?'⏳':isCorrect?'✅':'❌'}</span>
               ${showResults ? `
               <button data-i="${i}" data-s="correct" onclick="overrideVal(this)"
                 style="padding:1px 4px;border-radius:4px;border:1px solid var(--neon-green);
@@ -4800,7 +4900,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             if (secsEl) secsEl.style.color = 'rgba(255,255,255,0.3)';
             return;
           }
-          const rem = Math.max(0, timerEnd - Date.now());
+          const rem = Math.max(0, timerEnd - srvNow());
           const secs = Math.ceil(rem / 1000);
           const pct = (rem / 60000) * 100;
           const secsEl = document.getElementById('main-ans-secs');
@@ -4831,6 +4931,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
             : `❌ ${winnerName} ${_lang==="en"?"answered only":"أجاب"} ${correct}/${winnerBid} ${_lang==="en"?"— -2 pts":"فقط — -2 نقاط"}`;
           window._pendingCat3Score = { winner, correct, winnerBid };
           if (nav) nav.style.display = 'flex';
+          setCat3CanAdvance(true);
         } else if (answersConfirmed || ansTimeUp) {
           // Validation still in flight. Keep the running score up to date on every
           // snapshot, and tell the host so they don't advance on a half-scored round.
@@ -4844,6 +4945,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
               : '⏳ جاري التحقق من الأجوبة… يمكنك أيضاً الحكم عليها بنفسك';
           }
           if (nav) nav.style.display = 'flex';
+          setCat3CanAdvance(true);
         }
       } else if (answersConfirmed || ansTimeUp) {
         // No answers submitted
@@ -4856,6 +4958,7 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
         }
         const nav = document.getElementById('cat3-nav-btns');
         if (nav) nav.style.display = 'flex';
+        setCat3CanAdvance(true);
       }
     }
 
@@ -4882,8 +4985,22 @@ function startCat3Listener(roomId, q, qIndex, isLast) {
       if (winnerAnn) winnerAnn.textContent = _lang==='en' ? '⏩ No bids — question skipped' : '⏩ لا مزايدات — تم تجاوز السؤال';
       const nav = document.getElementById('cat3-nav-btns');
       if (nav) nav.style.display = 'flex';
+      setCat3CanAdvance(true);
     }
+  };
+
+  cat3Listener = window._fbOnValue(fbRef(db, `rooms/${roomId}`), (snap) => {
+    lastData = snap.val();
+    handle(lastData);
   });
+
+  // Re-check the room shortly after its writing deadline
+  window._cat3RecheckLater = (ms) => {
+    clearTimeout(window._cat3DeadlineTimer);
+    window._cat3DeadlineTimer = setTimeout(() => {
+      if (window._cat3QuestionIndex === qIndex && lastData) handle(lastData);
+    }, ms);
+  };
 }
 
 // ── AI VALIDATION via Cloudflare Worker ──
@@ -4908,8 +5025,17 @@ async function autoValidateAnswers(answers, roomId, question, winnerBid, winner,
 
   // Normalize plain strings -> {text,status}. Only write if it actually changes
   // something, so we don't bounce our own snapshot back through the listener.
-  const normalized = answers.map(a => typeof a === 'string' ? { text: a, status: 'pending' } : a);
-  const needsNormalize = answers.some(a => typeof a === 'string');
+  const normalized = answers.map(a => typeof a === 'string' ? { text: a, status: 'pending' } : { ...a });
+  let needsNormalize = answers.some(a => typeof a === 'string');
+  // The same answer only counts once: later repeats are marked wrong up front
+  // (the host can still override).
+  const seen = new Set();
+  normalized.forEach(a => {
+    const k = normAnswer(a.text);
+    if (k && seen.has(k)) {
+      if (a.status !== 'wrong') { a.status = 'wrong'; a.dup = true; needsNormalize = true; }
+    } else if (k) seen.add(k);
+  });
   if (needsNormalize) await update(fbRef(db, `rooms/${roomId}`), { answers: normalized });
 
   // Ask the AI about every answer in parallel
@@ -4972,6 +5098,7 @@ async function validateCat3(idx, status, roomId) {
 
 function nextCat3Question() {
   if (!window._cat3QuestionPlayed) { showToast(t('startFirst')); return; }
+  if (!window._cat3CanAdvance) { showToast(_lang==='en' ? 'Finish this auction first' : 'أنهِ هذا المزاد أولاً'); return; }
   window._cat3QuestionPlayed = false;
   if (window._pendingCat3Score) {
     const { winner, correct, winnerBid } = window._pendingCat3Score;
@@ -4990,6 +5117,9 @@ function nextCat3Question() {
   window._cat3NoBidCountdownStarted = false;
   window._cat3CurBidA = 0; window._cat3CurBidB = 0;
   window._cat3CurTimeA = 0; window._cat3CurTimeB = 0;
+  window._cat3AutoConfirmSent = false;
+  clearTimeout(window._cat3DeadlineTimer);
+  setCat3CanAdvance(false);
   clearInterval(cat3BidCountdownInterval);
   if (window._noBidInterval) { clearInterval(window._noBidInterval); window._noBidInterval = null; }
   if (window._cat3AnsTimerInterval) { clearInterval(window._cat3AnsTimerInterval); window._cat3AnsTimerInterval = null; }
@@ -5145,9 +5275,13 @@ function renderTeamVideo(r, qIndex, sa) {
   window._cat6DriveId = item?.driveId || null;
   window._cat6Phase = 'video';
   window._cat6Judgement = {};
+  window._cat6Award = null;
+  window._cat6NoAnswer = { a: false, b: false };
+  if (window._cat6AnswersUnsub) { window._cat6AnswersUnsub(); window._cat6AnswersUnsub = null; }
+  window._cat6TsA = null;
+  window._cat6TsB = null;
   window._cat6TimestampA = 0;
   window._cat6TimestampB = 0;
-  window._cat6ScoringLocked = false;
 
   // Reset answers in Firebase for new question
   const roomId = window._cat6RoomId;
@@ -5210,7 +5344,6 @@ function renderTeamVideo(r, qIndex, sa) {
       </div>
     </div>
 
-    ${scorePanelHTML(3, 0)}
     <div class="nav-btns">
       ${isLast
         ? `<button class="nav-btn primary" onclick="showResult()">${t('results')}</button>`
@@ -5237,7 +5370,8 @@ function cat6PlayVideo(qIndex) {
     </video>`;
   container.style.cursor = 'default';
   container.onclick = null;
-  window._cat6Phase = 'video';
+  // Replaying never re-opens a question that was already shown / revealed
+  if (!window._cat6Phase || window._cat6Phase === 'video') window._cat6Phase = 'video';
   setTimeout(() => {
     const showBtn = document.getElementById('cat6-show-q-btn');
     if (showBtn) showBtn.style.display = 'flex';
@@ -5250,7 +5384,9 @@ function cat6PlayVideo(qIndex) {
 }
 
 function cat6ShowQuestion(qIndex) {
+  if (window._cat6Phase !== 'video') return;   // shown once per question
   window._cat6Phase = 'question';
+  pushHostState();
   const container = document.getElementById('video-container-' + qIndex);
   const showBtn = document.getElementById('cat6-show-q-btn');
   const qArea = document.getElementById('video-question-area');
@@ -5273,8 +5409,9 @@ function cat6ShowQuestion(qIndex) {
         answerA: null, answerB: null
       });
     });
-    // Listen for answers
-    window._fbOnValue(window._fbRef(window._fbDb, `cat6/${roomId}`), (snap) => {
+    // Listen for answers (one listener per question)
+    if (window._cat6AnswersUnsub) window._cat6AnswersUnsub();
+    window._cat6AnswersUnsub = window._fbOnValue(window._fbRef(window._fbDb, `cat6/${roomId}`), (snap) => {
       const d = snap.val(); if (!d) return;
       // Store timestamps for first-submit scoring
       if (d.answeredAtA) window._cat6TimestampA = d.answeredAtA;
@@ -5298,158 +5435,176 @@ function showCat6AnswerReveal() {
 }
 
 function cat6RevealAnswer() {
+  // The answer is revealed once per question, and only after the question was
+  // shown. A second reveal (e.g. from the host phone) must not rebuild the
+  // judging area — that used to allow judging the same answers twice.
+  if (window._cat6Phase !== 'question') return;
+  window._cat6Phase = 'answer';
   window._answerRevealed = true;
   unlockNextButton();
-  window._cat6Phase = 'answer';
-  window._cat6Judgement = {}; // reset judgements
-  window._cat6ScoringLocked = false;
-  const qIdx = window._cat6QIndex !== undefined ? window._cat6QIndex : (G.currentQ - 1);
-  const qArea = document.getElementById('video-question-area');
-  const container = document.getElementById('video-container-' + qIdx);
-  const showBtn = document.getElementById('cat6-show-q-btn');
-  if (qArea && qArea.style.display === 'none') {
-    const vid = document.getElementById('video-el-' + qIdx);
-    if (vid) vid.pause();
-    if (container) container.style.display = 'none';
-    if (showBtn) showBtn.style.display = 'none';
-    qArea.style.display = 'flex';
-  }
   stopTimer();
+  if (window._cat6AnswersUnsub) { window._cat6AnswersUnsub(); window._cat6AnswersUnsub = null; }
 
-  const roomId = window._cat6RoomId;
   const area = document.getElementById('vq-answer-area');
   const ans = window._cat6A || '';
-
+  const roomId = window._cat6RoomId;
   const db = window._fbDb; const fbRef = window._fbRef;
+
+  const build = (d) => {
+    const txtA = (d.answerA || '').toString().trim();
+    const txtB = (d.answerB || '').toString().trim();
+    window._cat6TsA = d.answeredAtA || null;
+    window._cat6TsB = d.answeredAtB || null;
+    // No answer written = wrong, decided automatically and not changeable
+    window._cat6NoAnswer = { a: !txtA, b: !txtB };
+    if (!txtA) window._cat6Judgement.a = false;
+    if (!txtB) window._cat6Judgement.b = false;
+
+    const teamBox = (team) => {
+      const name = team === 'a' ? G.teamA : G.teamB;
+      const color = team === 'a' ? '#E50158' : '#E2DA51';
+      const rgb = team === 'a' ? '229,1,88' : '226,218,81';
+      const txt = team === 'a' ? txtA : txtB;
+      return `
+        <div id="cat6-box-${team}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border-radius:12px;background:rgba(${rgb},0.08);border:1.5px solid rgba(${rgb},0.3);transition:all 0.3s;min-width:0">
+          <div id="cat6-name-${team}" style="font-size:clamp(14px,1.8vw,20px);color:${color};font-weight:900;transition:all 0.3s">${escHTML(name)}</div>
+          <div style="font-size:clamp(18px,2.6vw,30px);font-weight:900;color:${txt ? '#fff' : 'rgba(255,255,255,0.35)'};text-align:center;word-break:break-word">${txt ? escHTML(txt) : (_lang==='en' ? 'No answer' : 'لا جواب')}</div>
+          <div id="cat6-judge-${team}" style="display:flex;gap:6px;align-items:center;justify-content:center;min-height:36px"></div>
+        </div>`;
+    };
+
+    if (area) area.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%">
+        <div class="answer-box fade-in" style="display:inline-block;width:auto;max-width:90%;align-self:center;font-size:clamp(18px,2.6vw,28px) !important">
+          ${_lang==='en'?'✅ Answer':'✅ الجواب'}: ${escHTML(ans)}
+        </div>
+        <div style="display:flex;gap:12px;width:100%;align-items:stretch">
+          ${teamBox('a')}
+          <div id="cat6-result-center" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;min-width:90px;text-align:center">
+            <div id="cat6-result-emoji" style="font-size:32px;line-height:1"></div>
+            <div id="cat6-result-text" style="font-size:13px;font-weight:900;text-align:center"></div>
+          </div>
+          ${teamBox('b')}
+        </div>
+      </div>`;
+
+    // Apply the automatic "no answer" verdicts (and any points they imply)
+    cat6SetJudgement('a', window._cat6Judgement.a);
+    cat6SetJudgement('b', window._cat6Judgement.b);
+  };
+
   if (db && fbRef && roomId) {
-    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get }) => {
-      get(fbRef(db, `cat6/${roomId}`)).then(snap => {
-        const d = snap.val() || {};
-        const ansA = d.answerA || '—';
-        const ansB = d.answerB || '—';
-        const tsA  = d.answeredAtA || null;
-        const tsB  = d.answeredAtB || null;
-        window._cat6TsA = tsA;
-        window._cat6TsB = tsB;
-
-        if (area) area.innerHTML = `
-          <div style="display:flex;flex-direction:column;gap:10px;width:100%">
-
-            <div class="answer-box fade-in" style="font-size:clamp(16px,2.5vw,22px) !important">
-              ${_lang==='en'?'✅ Answer':'✅ الجواب'}: ${ans}
-            </div>
-
-            <div style="display:flex;gap:10px;width:100%;align-items:flex-start">
-              <!-- TEAM A -->
-              <div id="cat6-box-a" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(229,1,88,0.08);border:1.5px solid rgba(229,1,88,0.3);transition:all 0.3s">
-                <div style="font-size:11px;color:#E50158;font-weight:700">${G.teamA}</div>
-                <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansA}</div>
-                <div style="display:flex;gap:6px">
-                  <button id="cat6-a-correct" onclick="cat6Judge('a',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
-                  <button id="cat6-a-wrong"   onclick="cat6Judge('a',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
-                </div>
-              </div>
-
-              <!-- RESULT — center, appears after both judged -->
-              <div id="cat6-result-center" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;min-width:80px;text-align:center">
-                <div id="cat6-result-emoji" style="font-size:28px;line-height:1"></div>
-                <div id="cat6-result-text" style="font-size:12px;font-weight:900;text-align:center"></div>
-              </div>
-
-              <!-- TEAM B -->
-              <div id="cat6-box-b" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:10px;background:rgba(226,218,81,0.08);border:1.5px solid rgba(226,218,81,0.3);transition:all 0.3s">
-                <div style="font-size:11px;color:#E2DA51;font-weight:700">${G.teamB}</div>
-                <div style="font-size:clamp(14px,2vw,20px);font-weight:900;color:#fff;text-align:center">${ansB}</div>
-                <div style="display:flex;gap:6px">
-                  <button id="cat6-b-correct" onclick="cat6Judge('b',true)" style="padding:6px 12px;border-radius:8px;border:2px solid #39FF14;color:#39FF14;background:rgba(57,255,20,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('correct')}</button>
-                  <button id="cat6-b-wrong"   onclick="cat6Judge('b',false)" style="padding:6px 12px;border-radius:8px;border:2px solid #FF2D2D;color:#FF2D2D;background:rgba(255,45,45,0.08);font-family:Cairo,sans-serif;font-size:13px;font-weight:700;cursor:pointer">${t('wrong')}</button>
-                </div>
-              </div>
-            </div>
-
-          </div>`;
-      });
+    import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js").then(({ get, update }) => {
+      get(fbRef(db, `cat6/${roomId}`)).then(snap => build(snap.val() || {}));
+      update(fbRef(db, `cat6/${roomId}`), { phase: 'answer' });
     });
-  } else if (area) {
-    area.innerHTML = `<div class="answer-box fade-in">✅ ${ans}</div>`;
+  } else {
+    build({});
   }
 }
 
-function cat6Judge(team, isCorrect) {
-  if (window._cat6ScoringLocked) return;
-
-  // Store this judgement
-  if (!window._cat6Judgement) window._cat6Judgement = {};
-  window._cat6Judgement[team] = isCorrect;
-
-  // Update button visual for judged team
-  const correctBtn = document.getElementById(`cat6-${team}-correct`);
-  const wrongBtn   = document.getElementById(`cat6-${team}-wrong`);
-  if (correctBtn) { correctBtn.disabled = true; correctBtn.style.opacity = isCorrect ? '1' : '0.2'; correctBtn.style.background = isCorrect ? 'rgba(57,255,20,0.3)' : ''; }
-  if (wrongBtn)   { wrongBtn.disabled = true;   wrongBtn.style.opacity   = isCorrect ? '0.2' : '1'; wrongBtn.style.background   = isCorrect ? '' : 'rgba(255,45,45,0.3)'; }
-
-  // Check if both teams are judged
-  const jA = window._cat6Judgement['a'];
-  const jB = window._cat6Judgement['b'];
-  if (jA === undefined || jB === undefined) return; // still waiting for other team
-
-  // Both judged — apply scoring
-  window._cat6ScoringLocked = true;
-
-  const boxA     = document.getElementById('cat6-box-a');
-  const boxB     = document.getElementById('cat6-box-b');
-  const center   = document.getElementById('cat6-result-center');
-  const emoji    = document.getElementById('cat6-result-emoji');
-  const resText  = document.getElementById('cat6-result-text');
-  const tsA      = window._cat6TsA;
-  const tsB      = window._cat6TsB;
-
-  let winner = null; // 'a', 'b', 'both-wrong', 'tie'
-
-  if (jA && jB) {
+// ── Cat 6 judging ──
+// One verdict per team per question, given from the TV or the host phone and
+// shown on both. Judging opens only once the answer is revealed. The 3 points
+// always follow the current verdicts: changing a verdict moves (or removes)
+// the points instead of stacking or losing them.
+function cat6Winner() {
+  const J = window._cat6Judgement || {};
+  if (J.a === undefined || J.b === undefined) return null;
+  if (J.a && J.b) {
     // Both correct — fastest wins
-    if (tsA && tsB) {
-      winner = tsA <= tsB ? 'a' : 'b';
-    } else if (tsA) { winner = 'a'; }
-    else if (tsB)   { winner = 'b'; }
-    else             { winner = 'a'; } // fallback
-  } else if (jA && !jB) {
-    winner = 'a';
-  } else if (jB && !jA) {
-    winner = 'b';
-  } else {
-    winner = 'both-wrong';
+    const tsA = window._cat6TsA || window._cat6TimestampA || 0;
+    const tsB = window._cat6TsB || window._cat6TimestampB || 0;
+    if (tsA && tsB) return tsA <= tsB ? 'a' : 'b';
+    return (tsB && !tsA) ? 'b' : 'a';
   }
+  if (J.a) return 'a';
+  if (J.b) return 'b';
+  return null; // both wrong
+}
 
-  if (winner === 'both-wrong') {
-    // No points
+function cat6SetJudgement(team, verdict) { // verdict: true | false | null/undefined (clear)
+  if (team !== 'a' && team !== 'b') return;
+  if (window._cat6Phase !== 'answer') return;           // reveal first
+  if (!window._cat6Judgement) window._cat6Judgement = {};
+  if (window._cat6NoAnswer?.[team]) verdict = false;     // no answer is always wrong
+  if (verdict === null || verdict === undefined) delete window._cat6Judgement[team];
+  else window._cat6Judgement[team] = !!verdict;
+
+  const winner = cat6Winner();
+  const prev = window._cat6Award || null;
+  if ((prev ? prev.team : null) !== winner) {
+    if (prev) addScore(prev.team, -prev.applied);
+    window._cat6Award = winner ? { team: winner, applied: addScore(winner, 3) } : null;
+  }
+  renderCat6JudgeUI();
+  pushHostState();
+}
+
+function cat6Judge(team, isCorrect) { cat6SetJudgement(team, isCorrect); }
+function cat6UndoJudge(team) { cat6SetJudgement(team, null); }
+
+function renderCat6JudgeUI() {
+  const J = window._cat6Judgement || {};
+  const btn = (bg, bd, col, label, onclick) =>
+    `<button onclick="${onclick}" style="padding:6px 14px;border-radius:8px;border:2px solid ${bd};color:${col};background:${bg};font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer">${label}</button>`;
+  ['a', 'b'].forEach(team => {
+    const box = document.getElementById(`cat6-judge-${team}`);
+    if (!box) return;
+    const j = J[team];
+    if (window._cat6NoAnswer?.[team]) {
+      box.innerHTML = `<span style="font-size:14px;font-weight:900;color:#FF2D2D">❌ ${_lang==='en'?'Wrong':'خطأ'}</span>`;
+    } else if (j === undefined) {
+      box.innerHTML = btn('rgba(57,255,20,0.08)', '#39FF14', '#39FF14', t('correct'), `cat6Judge('${team}',true)`)
+                    + btn('rgba(255,45,45,0.08)', '#FF2D2D', '#FF2D2D', t('wrong'), `cat6Judge('${team}',false)`);
+    } else {
+      box.innerHTML = `<span style="font-size:14px;font-weight:900;color:${j ? '#39FF14' : '#FF2D2D'}">${j ? '✅ ' + (_lang==='en'?'Correct':'صح') : '❌ ' + (_lang==='en'?'Wrong':'خطأ')}</span>`
+        + `<button onclick="cat6UndoJudge('${team}')" title="${_lang==='en'?'Change':'تغيير'}" style="padding:3px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.5);background:transparent;font-family:Cairo,sans-serif;font-size:12px;cursor:pointer">↩</button>`;
+    }
+  });
+
+  const center  = document.getElementById('cat6-result-center');
+  const emoji   = document.getElementById('cat6-result-emoji');
+  const resText = document.getElementById('cat6-result-text');
+  // Back to neutral, then decorate the current result
+  ['a', 'b'].forEach(team => {
+    const box = document.getElementById(`cat6-box-${team}`);
+    const name = document.getElementById(`cat6-name-${team}`);
+    const rgb = team === 'a' ? '229,1,88' : '226,218,81';
+    if (box) { box.style.border = `1.5px solid rgba(${rgb},0.3)`; box.style.background = `rgba(${rgb},0.08)`; box.style.boxShadow = 'none'; box.style.opacity = '1'; }
+    if (name) { name.style.color = team === 'a' ? '#E50158' : '#E2DA51'; name.style.fontSize = 'clamp(14px,1.8vw,20px)'; name.style.textShadow = 'none'; name.textContent = team === 'a' ? G.teamA : G.teamB; }
+  });
+
+  const bothJudged = J.a !== undefined && J.b !== undefined;
+  if (!bothJudged) { if (center) center.style.display = 'none'; return; }
+
+  const winner = cat6Winner();
+  if (!winner) {
     if (emoji)   emoji.textContent = '🤝';
     if (resText) { resText.textContent = _lang==='en'?'No points':'لا نقاط'; resText.style.color = 'rgba(255,255,255,0.5)'; }
   } else {
-    addScore(winner, 3);
-    const winName  = winner === 'a' ? G.teamA : G.teamB;
-    const winColor = winner === 'a' ? '#E50158' : '#E2DA51';
-    const winBox   = winner === 'a' ? boxA : boxB;
-    const loseBox  = winner === 'a' ? boxB : boxA;
-
-    // Glow winning team box green
+    const bothCorrect = J.a && J.b;
+    const winBox  = document.getElementById(`cat6-box-${winner}`);
+    const winName = document.getElementById(`cat6-name-${winner}`);
+    const loseBox = document.getElementById(`cat6-box-${winner === 'a' ? 'b' : 'a'}`);
+    // Same highlight as categories 7-8: yellow frame, winner's name in yellow
     if (winBox) {
-      winBox.style.border    = '2px solid #39FF14';
-      winBox.style.background = 'rgba(57,255,20,0.1)';
-      winBox.style.boxShadow  = '0 0 16px rgba(57,255,20,0.4)';
+      winBox.style.border     = '3px solid #FFE600';
+      winBox.style.background = 'rgba(255,230,0,0.1)';
+      winBox.style.boxShadow  = '0 0 20px rgba(255,230,0,0.4)';
     }
-    if (loseBox && !(jA && jB)) {
-      loseBox.style.opacity = '0.5';
+    if (winName) {
+      winName.textContent = '🏆 ' + (winner === 'a' ? G.teamA : G.teamB);
+      winName.style.color = '#FFE600';
+      winName.style.fontSize = 'clamp(18px,2.4vw,28px)';
+      winName.style.textShadow = '0 0 12px rgba(255,230,0,0.7)';
     }
-
+    if (loseBox && !bothCorrect) loseBox.style.opacity = '0.5';
     if (emoji)   emoji.textContent = '🏆';
     if (resText) {
-      const bothCorrect = jA && jB;
-      resText.innerHTML = `<span style="color:${winColor};font-size:13px;font-weight:900">${winName}</span><br><span style="color:#39FF14">+3 ${_lang==='en'?'pts':'نقاط'}${bothCorrect ? ('<br><span style="font-size:10px;color:rgba(255,255,255,0.5)">'+(_lang==='en'?'⚡ fastest':'⚡ أسرع')+'</span>') : ''}</span>`;
+      resText.innerHTML = `<span style="color:#39FF14">+3 ${_lang==='en'?'pts':'نقاط'}</span>${bothCorrect ? ('<br><span style="font-size:11px;color:rgba(255,255,255,0.5)">'+(_lang==='en'?'⚡ fastest':'⚡ أسرع')+'</span>') : ''}`;
     }
   }
-
-  // Show center result
   if (center) center.style.display = 'flex';
 }
 
@@ -5521,10 +5676,8 @@ function renderClosest(r, qIndex, sa) {
       const dotB = document.getElementById('dot-b');
       if (dotA) dotA.style.background = d.connectedA ? '#39FF14' : 'rgba(255,255,255,0.2)';
       if (dotB) dotB.style.background = d.connectedB ? '#39FF14' : 'rgba(255,255,255,0.2)';
-      const subA = document.getElementById('sub-a');
-      const subB = document.getElementById('sub-b');
-      if (subA && d.answerA !== null && d.answerA !== undefined) subA.style.display = 'block';
-      if (subB && d.answerB !== null && d.answerB !== undefined) subB.style.display = 'block';
+      closestMarkSubmitted('a', d.answerA !== null && d.answerA !== undefined);
+      closestMarkSubmitted('b', d.answerB !== null && d.answerB !== undefined);
       const bothDone = d.answerA !== null && d.answerA !== undefined &&
                        d.answerB !== null && d.answerB !== undefined;
       if (bothDone) showClosestAnswers();
@@ -5542,17 +5695,22 @@ function renderClosest(r, qIndex, sa) {
       <div class="question-text-box slide-in" style="font-size:${dynFont(q)}">${q}</div>
     </div>
 
-    <!-- Status row: team connection + submission in one compact line -->
-    <div style="display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;background:rgba(229,1,88,0.08);border:1px solid rgba(229,1,88,0.25)">
-        <div id="dot-a" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.4s;flex-shrink:0"></div>
-        <span style="font-size:13px;font-weight:700;color:#E50158">${G.teamA}</span>
-        <span id="sub-a" style="display:none;font-size:11px;color:#39FF14">✅</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;background:rgba(226,218,81,0.08);border:1px solid rgba(226,218,81,0.25)">
-        <div id="dot-b" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.4s;flex-shrink:0"></div>
-        <span style="font-size:13px;font-weight:700;color:#E2DA51">${G.teamB}</span>
-        <span id="sub-b" style="display:none;font-size:11px;color:#39FF14">✅</span>
+    <!-- One card per team: name, then submitted status, then (when shown) the answer -->
+    <div id="closest-answers-area" style="width:100%">
+      <div style="display:flex;gap:14px;justify-content:center;width:100%;max-width:1000px;margin:0 auto">
+        ${['a', 'b'].map(tm => {
+          const rgb = tm === 'a' ? '229,1,88' : '226,218,81';
+          const col = tm === 'a' ? '#E50158' : '#E2DA51';
+          return `
+        <div id="closest-card-${tm}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 16px;border-radius:14px;background:rgba(${rgb},0.07);border:2px solid rgba(${rgb},0.35);min-width:0;transition:all 0.3s">
+          <div style="display:flex;align-items:center;gap:8px;max-width:100%">
+            <div id="dot-${tm}" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all 0.4s;flex-shrink:0"></div>
+            <div style="font-size:clamp(16px,2vw,24px);font-weight:900;color:${col};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHTML(tm === 'a' ? G.teamA : G.teamB)}</div>
+          </div>
+          <div id="sub-${tm}" style="font-size:clamp(14px,1.7vw,20px);font-weight:700;color:rgba(255,255,255,0.45)">⏳ ${_lang==='en'?'Waiting for answer…':'بانتظار الجواب…'}</div>
+          <div id="ans-box-${tm}" style="display:none;font-size:clamp(26px,4vw,46px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center;min-height:50px;align-items:center;justify-content:center">—</div>
+        </div>`;
+        }).join('')}
       </div>
     </div>
 
@@ -5560,19 +5718,6 @@ function renderClosest(r, qIndex, sa) {
     <!-- Timer -->
     <div id="timer-area" style="${qIndex > 0 ? '' : 'display:none'}">${timerHTML(30)}</div>
 
-    <!-- Answers — wide equal boxes -->
-    <div id="closest-answers-area" style="display:none;width:100%">
-      <div style="display:flex;gap:12px;justify-content:center;width:100%">
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(229,1,88,0.07);border:2px solid rgba(229,1,88,0.35);min-width:0">
-          <div style="font-size:13px;font-weight:700;color:#E50158;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamA}</div>
-          <div id="ans-box-a" style="font-size:clamp(22px,3.5vw,40px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center">—</div>
-        </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(226,218,81,0.07);border:2px solid rgba(226,218,81,0.35);min-width:0">
-          <div style="font-size:13px;font-weight:700;color:#E2DA51;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center">${G.teamB}</div>
-          <div id="ans-box-b" style="font-size:clamp(22px,3.5vw,40px);font-weight:900;color:#39FF14;line-height:1.2;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center">—</div>
-        </div>
-      </div>
-    </div>
 
     <div id="closest-result"></div>
 
@@ -5602,12 +5747,23 @@ function showClosestQuestion(roomId) {
   startTimer(30);
 }
 
+// Submitted status inside the team's card (the answer itself appears below it)
+function closestMarkSubmitted(team, sent) {
+  const sub = document.getElementById('sub-' + team);
+  const card = document.getElementById('closest-card-' + team);
+  if (!sub) return;
+  sub.textContent = sent ? `✅ ${_lang==='en'?'Answer submitted':'تم إرسال الجواب'}` : `⏳ ${_lang==='en'?'Waiting for answer…':'بانتظار الجواب…'}`;
+  sub.style.color = sent ? '#39FF14' : 'rgba(255,255,255,0.45)';
+  if (card && sent) card.style.boxShadow = '0 0 14px rgba(57,255,20,0.25)';
+}
+
 function showClosestAnswers() {
   const area = document.getElementById('closest-answers-area');
   const boxA = document.getElementById('ans-box-a');
   const boxB = document.getElementById('ans-box-b');
   if (!area) return;
-  area.style.display = 'block';
+  if (boxA) boxA.style.display = 'flex';
+  if (boxB) boxB.style.display = 'flex';
   const a = window._closestAnswers?.a;
   const b = window._closestAnswers?.b;
   if (boxA) boxA.textContent = a !== null && a !== undefined ? a : '—';
@@ -5694,12 +5850,17 @@ function renderCharades(r, qIndex, sa) {
 
   updateHostView(r.name, `${_lang==="en"?"Round":"دور"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}`, '${_lang==="en"?"Secret word for actor":"كلمة سرية للممثل"}', item);
   const encoded = encodeURIComponent(item);
-  const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}&l=${_lang}&s=${window._gameSession||'main'}`;
+  // Scan id: the actor's phone reports it back so the TV can hide the QR
+  const scanId = `${qIndex}_${Date.now().toString(36)}`;
+  const qrData = `https://3albalcon.github.io/3al-balcon-game/act.html?n=${encoded}&l=${_lang}&s=${window._gameSession||'main'}&k=${scanId}`;
+  charWatchScan(scanId);
 
   sa.innerHTML = `
     <div style="position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px">
 
-      <!-- QR code — top left on desktop, bottom on mobile -->
+      <!-- QR code — top left on desktop, bottom on mobile. Hidden as soon as the
+           actor's phone opens it, so the other players can't scan it too. -->
+      <button id="qr-show-btn" onclick="charShowQR()" style="display:none;padding:6px 14px;border-radius:100px;border:1.5px solid rgba(0,239,255,0.5);background:rgba(0,239,255,0.06);color:#00EFFF;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer">📱 ${_lang==='en'?'Show QR again':'إظهار رمز QR'}</button>
       <div id="qr-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px">
         <div style="background:#fff;border-radius:12px;padding:8px;border:2px solid #00EFFF;box-shadow:0 0 16px rgba(0,239,255,0.3)">
           <div id="qr-code-box"></div>
@@ -5707,6 +5868,7 @@ function renderCharades(r, qIndex, sa) {
         <div style="font-size:11px;font-weight:700;color:#00EFFF;text-shadow:0 0 8px rgba(0,239,255,0.6);direction:rtl;text-align:center">
           ${t('actorScan')}
         </div>
+        <button onclick="charHideQR()" style="padding:3px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);font-family:Cairo,sans-serif;font-size:11px;cursor:pointer">🙈 ${_lang==='en'?'Hide':'إخفاء'}</button>
       </div>
 
       <div class="question-number">${_lang==="en"?"Round":"دور"} ${qIndex+1} ${_lang==="en"?"of":"من"} ${r.count}</div>
@@ -5768,10 +5930,12 @@ function renderCharades(r, qIndex, sa) {
     }
   }, 100);
 
-  const charTimerPatch = setInterval(() => {
+  if (window._charTimerPatch) clearInterval(window._charTimerPatch);
+  window._charTimerPatch = setInterval(() => {
     const numEl = document.getElementById('timer-num');
-    if (numEl && parseInt(numEl.textContent) <= 0) {
-      clearInterval(charTimerPatch);
+    if (!numEl) { clearInterval(window._charTimerPatch); return; }   // left the slide
+    if (parseInt(numEl.textContent) <= 0) {
+      clearInterval(window._charTimerPatch);
       revealChar();
     }
   }, 500);
@@ -5780,8 +5944,35 @@ function renderCharades(r, qIndex, sa) {
 function revealChar() {
   window._answerRevealed = true;
   unlockNextButton();
+  stopTimer();   // answer is out — the timer stops with it
+  if (window._charTimerPatch) { clearInterval(window._charTimerPatch); window._charTimerPatch = null; }
   const el = document.getElementById('char-answer');
   if (el) el.style.filter = 'none';
+}
+
+function charHideQR() {
+  const wrap = document.getElementById('qr-wrap');
+  const btn = document.getElementById('qr-show-btn');
+  if (wrap) wrap.style.display = 'none';
+  if (btn) btn.style.display = 'inline-block';
+}
+function charShowQR() {
+  const wrap = document.getElementById('qr-wrap');
+  const btn = document.getElementById('qr-show-btn');
+  if (wrap) wrap.style.display = 'flex';
+  if (btn) btn.style.display = 'none';
+}
+// act.html writes sessions/<s>/actScan = <scan id> when the actor opens it
+function charWatchScan(scanId) {
+  if (window._charScanUnsub) { window._charScanUnsub(); window._charScanUnsub = null; }
+  const db = window._fbDb, fbRef = window._fbRef, fbOnValue = window._fbOnValue;
+  if (!db || !fbOnValue || !window._gameSession) return;
+  window._charScanUnsub = fbOnValue(fbRef(db, _path('actScan')), snap => {
+    if (snap.val() === scanId) {
+      charHideQR();
+      if (window._charScanUnsub) { window._charScanUnsub(); window._charScanUnsub = null; }
+    }
+  });
 }
 
 
@@ -5827,13 +6018,6 @@ function showResult() {
   }
   // Stop videos when leaving a round
   document.querySelectorAll('video').forEach(v => { try { v.pause(); v.currentTime = 0; } catch(e) {} });
-  // Apply pending cat3 score if any
-  if (window._pendingCat3Score) {
-    const { winner, correct, winnerBid } = window._pendingCat3Score;
-    if (correct >= winnerBid) addScore(winner, 4);
-    else addScore(winner, -2);
-    window._pendingCat3Score = null;
-  }
   // Mark current round as done
   if (G.currentRound) {
     G.done.add(G.currentRound.id);
@@ -5958,7 +6142,12 @@ function pushHostState() {
     scoreA: G.scoreA,
     scoreB: G.scoreB,
     cat3RoomId: cat3RoomId || null,
+    cat3CanAdvance: !!window._cat3CanAdvance,
     cat6RoomId: window._cat6RoomId || null,
+    cat6Judgement: { ...(window._cat6Judgement || {}) },
+    cat6Phase: G.currentRound?.id === 'r5' ? (window._cat6Phase || 'video') : null,
+    cat6NoAnswer: { ...(window._cat6NoAnswer || {}) },
+    scored: { a: _scoreState?.a ?? null, b: _scoreState?.b ?? null },
     onGameScreen: gameScreenVisible,
     sessionId: window._gameSession || null,
     hostWallpaper: G.hostWallpaperUrl || null,
@@ -5966,7 +6155,7 @@ function pushHostState() {
   });
 }
 
-let _lastHostCmdTs = 0;
+let _lastHostCmdKey = null;
 let _hostCmdUnsubscribe = null;
 function startHostCmdListener() {
   const db = window._fbDb;
@@ -5980,10 +6169,18 @@ function startHostCmdListener() {
   // Unsubscribe previous listener
   if (_hostCmdUnsubscribe) { _hostCmdUnsubscribe(); _hostCmdUnsubscribe = null; }
   const path = _path('hostCmd');
+  let firstValue = true;
   _hostCmdUnsubscribe = fbOnValue(fbRef(db, path), (snap) => {
     const d = snap.val();
-    if (!d || !d.ts || d.ts <= _lastHostCmdTs) return;
-    _lastHostCmdTs = d.ts;
+    // The first value is whatever command was left in Firebase before we
+    // subscribed (e.g. after a reload) — remember it but never replay it.
+    if (firstValue) { firstValue = false; _lastHostCmdKey = d ? (d.id || d.ts || null) : null; return; }
+    if (!d || !d.ts) return;
+    // Commands are told apart by their id (or ts for older host pages), not by
+    // comparing clocks — a host phone whose clock is behind must still work.
+    const key = d.id || d.ts;
+    if (key === _lastHostCmdKey) return;
+    _lastHostCmdKey = key;
     const cmd = d.cmd;
 
     if (cmd === 'next') {
@@ -5991,6 +6188,16 @@ function startHostCmdListener() {
         const r = G.currentRound;
         // Block for closest if not yet revealed
         if ((r.id === 'r6' || r.id === 'r7') && G.currentQ >= 1 && !window._closestRevealDone) return;
+        // Cat 3: same gates as the TV — both phones connected before leaving the
+        // rules, and no moving on until the auction for this question is settled.
+        if (r.id === 'r3' && G.currentQ === 0 && !window._cat3BothConnected) {
+          showToast(_lang==='en' ? 'Waiting for both teams to connect' : 'انتظر اتصال الفريقين');
+          return;
+        }
+        if (r.id === 'r3' && G.currentQ >= 1 && !window._cat3CanAdvance) {
+          showToast(_lang==='en' ? 'Finish this auction first' : 'أنهِ هذا المزاد أولاً');
+          return;
+        }
         if (G.currentQ >= r.count) {
           showResult();
         } else if (r.id === 'r3' && G.currentQ >= 1) {
@@ -6004,8 +6211,12 @@ function startHostCmdListener() {
       }
       else { console.warn('next: no currentRound'); }
     } else if (cmd === 'prev') {
+      // Cat 3 questions can't be revisited: the room only holds the current
+      // question, so going back would replay (and re-score) the auction.
+      if (G.currentRound?.id === 'r3' && G.currentQ >= 1) return;
       if (G.currentRound && G.currentQ > -1) {
         G.currentQ--;
+        _resetScoreState();
         renderSlide();
         pushHostState();
       }
@@ -6021,19 +6232,12 @@ function startHostCmdListener() {
       pushHostState();
     } else if (cmd === 'openCat') {
       const roundId = d.data?.id;
-      if (roundId && !G.done.has(roundId)) {
-        const round = ROUNDS.find(r => r.id === roundId);
-        if (round) {
-          G.currentRound = round;
-          G.currentQ = -1;
-          document.getElementById('gh-title').textContent = round.name;
-          updateHeaderScores();
-          show('game-screen');
-          renderSlide();
-          pushHostState();
-          const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
-          if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), null);
-        }
+      if (roundId && !G.done.has(roundId) && ROUNDS.some(r => r.id === roundId)) {
+        // Same path as tapping the round on the TV, so photo batches, question
+        // de-duplication and the data-ready check also happen for the host.
+        openRound(roundId);
+        const db = window._fbDb; const fbRef = window._fbRef; const fbSet = window._fbSet;
+        if (db && fbSet) fbSet(fbRef(db, _path('rouletteResult')), null);
       }
     } else if (cmd === 'roulette') {
       G.currentRound = null;
@@ -6093,36 +6297,19 @@ function startHostCmdListener() {
       startTimer(secs);
     } else if (cmd === 'judgeTeam') {
       const team = d.data?.team;
-      const correct = d.data?.correct;
-      const isUndo = d.data?.undo;
-      const pts = 3;
-      if (!window._cat6Judgement) window._cat6Judgement = {};
-
-      if (isUndo) {
-        // Reverse previous judgement
-        const prev = window._cat6Judgement[team];
-        if (prev === true) addScore(team, -pts); // undo the +3
-        window._cat6Judgement[team] = undefined;
-        window._cat6ScoringLocked = false;
-      } else {
-        window._cat6Judgement[team] = correct;
-        const ja = window._cat6Judgement['a'];
-        const jb = window._cat6Judgement['b'];
-        if (ja !== undefined && jb !== undefined) {
-          if (ja && jb) {
-            const tsA = window._cat6TimestampA || 0;
-            const tsB = window._cat6TimestampB || 0;
-            if (tsA && tsB) { addScore(tsA < tsB ? 'a' : 'b', pts); }
-            else if (tsA) { addScore('a', pts); }
-            else { addScore('b', pts); }
-          } else if (ja && !jb) { addScore('a', pts); }
-          else if (!ja && jb) { addScore('b', pts); }
-          window._cat6Judgement = {};
-        }
-      }
+      cat6SetJudgement(team, d.data?.undo ? null : !!d.data?.correct);
     } else if (cmd === 'celebrate') {
       playCelebration();
+    } else if (cmd === 'scoreTeam') {
+      // Shares the TV's per-question score state: one score per team, undoable
+      const team = d.data?.team;
+      const pts = Number(d.data?.pts) || 0;
+      if ((team === 'a' || team === 'b') && pts) scoreOnce(team, pts);
+    } else if (cmd === 'undoScoreTeam') {
+      const team = d.data?.team;
+      if (team === 'a' || team === 'b') undoScore(team);
     } else if (cmd === 'addScore') {
+      // Older host pages
       const team = d.data?.team;
       const pts = d.data?.pts || 0;
       if (team) addScore(team, pts);

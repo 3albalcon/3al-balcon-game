@@ -99,7 +99,6 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; }
     <div class="bid-num" id="bid-val">0</div>
     <div class="bid-btns">
       <button class="bid-btn plus" id="btn-plus">+</button>
-      <button class="bid-btn minus" id="btn-minus">−</button>
     </div>
     <div class="bid-msg" id="bid-msg"></div>
   </div>
@@ -122,8 +121,6 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; }
       <input class="ans-input" id="ans-input" type="text" placeholder="اكتب الجواب هنا..." autocomplete="off">
       <button class="btn btn-g" id="btn-add">✅ أضف الجواب</button>
     </div>
-
-    <button class="btn btn-y" id="btn-confirm" style="display:none">🔒 تأكيد الأجوبة</button>
 
     <!-- Sticky confirm always visible at bottom -->
     <div id="sticky-confirm" style="display:none;position:fixed;bottom:0;left:0;right:0;
@@ -165,7 +162,7 @@ body { font-family: 'Cairo', sans-serif; background: #060d1f; color: #fff; }
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+import { getDatabase, ref, onValue, update, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
 const app = initializeApp({
   apiKey: "AIzaSyAY-zBQnRPTZLUDMCbod-NFkmuIG4W0XxE",
@@ -177,6 +174,12 @@ const app = initializeApp({
   appId: "1:556294454945:web:770c330e71a4e484277ae0"
 });
 const db = getDatabase(app);
+
+// Deadlines are shared with the TV and the other phone, so work in Firebase
+// server time rather than this phone's own clock (which can be seconds off).
+let serverOffset = 0;
+onValue(ref(db, '.info/serverTimeOffset'), s => { serverOffset = s.val() || 0; });
+const srvNow = () => Date.now() + serverOffset;
 
 const params     = new URLSearchParams(location.search);
 const session    = params.get('s') || 'main';
@@ -197,9 +200,29 @@ let confirmed    = false;
 let timerInterval = null;
 let timerEnd     = 0;
 let timerQIdx    = -1;
+let firstSnapshot = true;   // true only for the very first Firebase snapshot after load
 
 // ── Helpers ──
 const el = id => document.getElementById(id);
+
+const escHTML = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Same normalisation as the TV: case, spaces, hamza / taa marbuta / tashkeel
+// and a leading "ال" don't make two answers different.
+function normAnswer(txt) {
+  return String(txt || '').toLowerCase()
+    .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+    .split(' ').map(w => w.length > 3 ? w.replace(/^ال/, '') : w).join(' ');
+}
+
+// Highest bid leads; on a draw, whoever reached that number first.
+function leaderOf(vA, vB, tA, tB) {
+  if (!vA && !vB) return null;
+  if (vA !== vB) return vA > vB ? 'a' : 'b';
+  return (tA || Infinity) <= (tB || Infinity) ? 'a' : 'b';
+}
 
 function showSection(name) {
   ['waiting','countdown','bidding','answering','logo'].forEach(n => {
@@ -227,7 +250,7 @@ function startTimer(endMs) {
 
   function tick() {
     if (questionIdx !== timerQIdx || confirmed) { stopTimer(); return; }
-    const rem  = Math.max(0, endMs - Date.now());
+    const rem  = Math.max(0, endMs - srvNow());
     const pct  = (rem / 60000) * 100;
     const secs = Math.ceil(rem / 1000);
     el('timer-num').textContent = secs;
@@ -237,7 +260,7 @@ function startTimer(endMs) {
     if (rem <= 0 && !confirmed && questionIdx === timerQIdx) {
       stopTimer();
       confirmed = true;
-      update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
+      update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: srvNow() });
       showDone();
     }
   }
@@ -250,18 +273,15 @@ function renderList() {
   el('ans-list').innerHTML = myAnswers.map((txt, i) =>
     `<div class="ans-item">
       <span class="ans-num">${i+1}.</span>
-      <span style="flex:1">${txt}</span>
+      <span style="flex:1">${escHTML(txt)}</span>
       ${!confirmed ? `<button onclick="deleteAnswer(${i})" style="background:none;border:none;color:rgba(255,100,100,0.7);font-size:16px;cursor:pointer;padding:0 4px;font-family:Cairo,sans-serif">✕</button>` : ''}
     </div>`
   ).join('');
   el('count-msg').textContent = isAr
     ? `${myAnswers.length} / ${totalAns} إجابات`
     : `${myAnswers.length} / ${totalAns} answers`;
-  el('btn-confirm').style.display = myAnswers.length > 0 ? 'block' : 'none';
-  el('sticky-confirm').style.display = myAnswers.length > 0 ? 'block' : 'none';
-  if (myAnswers.length > 0) {
-    setTimeout(() => el('btn-confirm').scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
-  }
+  // Single confirm button, pinned to the bottom of the screen
+  el('sticky-confirm').style.display = myAnswers.length > 0 && !confirmed ? 'block' : 'none';
   // Lock when max reached
   if (myAnswers.length >= totalAns) {
     el('ans-input').disabled = true;
@@ -278,7 +298,6 @@ function resetAnswering() {
   el('input-area').style.display = 'none';
   el('timer-wrap').style.display = 'none';
   el('done-card').style.display = 'none';
-  el('btn-confirm').style.display = 'none';
   el('sticky-confirm').style.display = 'none';
   const inp = el('ans-input');
   inp.value = ''; inp.disabled = false;
@@ -291,7 +310,6 @@ function showDone() {
   stopTimer();
   el('btn-start').style.display = 'none';
   el('input-area').style.display = 'none';
-  el('btn-confirm').style.display = 'none';
   el('sticky-confirm').style.display = 'none';
   el('done-card').style.display = 'flex';
 }
@@ -315,30 +333,32 @@ function setupBid(id, dir) {
   });
 }
 
+// Bids only go up — a team can never lower its bid.
 function doBid(dir) {
-  const newBid = Math.max(1, myBid + dir);
-  if (newBid === myBid) return;
-  myBid = newBid;
+  if (phase !== 'bidding' || dir <= 0) return;
+  myBid = Math.max(1, myBid + 1);
   el('bid-val').textContent = myBid;
-  const ts = Date.now();
   const data = {
     [`bids/${team}/value`]: myBid,
-    [`bids/${team}/time`]: ts,
+    // Stamped by the Firebase server, so draws ("who reached it first") are
+    // decided fairly whatever the phones' clocks say.
+    [`bids/${team}/time`]: serverTimestamp(),
   };
+  // Taking the lead (re)starts the other team's 10 seconds. Matching does not:
+  // on a draw the team that reached the number first keeps the lead.
   if (myBid > otherBid) {
-    data.lastBidder    = team;
-    data.bidCountdownEnd = ts + 10000;
+    data.lastBidder      = team;
+    data.bidCountdownEnd = srvNow() + 10000;
   }
   update(ref(db, `rooms/${roomId}`), data);
 }
 
 setupBid('btn-plus', 1);
-setupBid('btn-minus', -1);
 
 // ── Writing ──
 el('btn-start').addEventListener('click', async () => {
   writingActive = true;
-  const end = Date.now() + 60000;
+  const end = srvNow() + 60000;
   await update(ref(db, `rooms/${roomId}`), { writingStarted: true, answerTimerEnd: end });
   el('btn-start').style.display = 'none';
   el('input-area').style.display = 'flex';
@@ -366,6 +386,13 @@ function doAdd() {
   const val = inp.value.trim();
   if (!val) return;
   if (myAnswers.length >= totalAns) return;
+  // The same answer only counts once
+  if (myAnswers.some(a => normAnswer(a) === normAnswer(val))) {
+    inp.value = '';
+    inp.placeholder = isAr ? 'هذا الجواب مكتوب مسبقاً' : 'Already added';
+    return;
+  }
+  inp.placeholder = isAr ? 'اكتب الجواب هنا...' : 'Write your answer here...';
   myAnswers.push(val);
   inp.value = '';
   if (!inp.disabled) inp.focus();
@@ -376,14 +403,13 @@ function doAdd() {
 el('btn-add').addEventListener('click', doAdd);
 el('ans-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); } });
 
-el('btn-confirm').addEventListener('click', () => { el('confirm-dialog').style.display = 'flex'; });
 el('btn-confirm-sticky').addEventListener('click', () => { el('confirm-dialog').style.display = 'flex'; });
 el('btn-yes').addEventListener('click', () => {
   el('confirm-dialog').style.display = 'none';
   if (confirmed) return;
   confirmed = true;
   stopTimer();
-  update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: Date.now() });
+  update(ref(db, `rooms/${roomId}`), { answersConfirmed: true, answerTimerEnd: srvNow() });
   showDone();
 });
 el('btn-no').addEventListener('click', () => { el('confirm-dialog').style.display = 'none'; });
@@ -399,9 +425,16 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
   const name = team === 'a' ? d.teamA : d.teamB;
   if (name) el('team-badge').textContent = name;
 
-  if (d.question) { el('q-box').textContent = d.question; el('q-box').style.display = 'block'; }
-
   const newPhase = d.phase || 'waiting';
+
+  // Question stays hidden until the auction actually opens — same as the main screen
+  if (d.question && (newPhase === 'bidding' || newPhase === 'answering')) {
+    el('q-box').textContent = d.question;
+    el('q-box').style.display = 'block';
+  } else if (newPhase !== 'bidding' && newPhase !== 'answering') {
+    el('q-box').style.display = 'none';
+  }
+
   const newQIdx  = d.questionIndex ?? -1;
 
   // New question
@@ -430,7 +463,7 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
       otherBid = d.bids?.[team === 'a' ? 'b' : 'a']?.value || 0;
       el('bid-val').textContent = myBid;
       el('bid-msg').style.display = 'none';
-      el('btn-plus').disabled = false; el('btn-minus').disabled = false;
+      el('btn-plus').disabled = false;
       showSection('bidding');
     }
     else if (phase === 'answering') {
@@ -439,6 +472,22 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
         el('target-msg').textContent = isAr ? `اكتب ${totalAns} إجابة` : `Write ${totalAns} answer${totalAns>1?'s':''}`;
         resetAnswering();
         showSection('answering');
+        // Reloaded / rescanned mid-question: put the player back where they were
+        // instead of wiping what they already sent.
+        if (firstSnapshot && d.writingStarted && !d.answersConfirmed
+            && d.answerTimerEnd && d.answerTimerEnd > srvNow() + 500) {
+          myAnswers = (d.answers || []).map(a => typeof a === 'string' ? a : (a.text || ''));
+          writingActive = true;
+          el('btn-start').style.display = 'none';
+          el('input-area').style.display = 'flex';
+          renderList();
+          startTimer(d.answerTimerEnd);
+        } else if (firstSnapshot && d.writingStarted && d.answersConfirmed) {
+          myAnswers = (d.answers || []).map(a => typeof a === 'string' ? a : (a.text || ''));
+          confirmed = true;
+          renderList();
+          showDone();
+        }
       } else {
         showSection('logo');
         el('logo-msg').textContent = isAr ? '⏳ الفريق الثاني يكتب الأجوبة...' : '⏳ Other team is writing...';
@@ -465,17 +514,25 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
     myBid = mine; otherBid = theirs;
     el('bid-val').textContent = mine;
     const msgEl = el('bid-msg');
-    if (d.lastBidder && d.lastBidder !== team && theirs > 0) {
-      const urgent = d.bidCountdownEnd && d.bidCountdownEnd > Date.now();
-      msgEl.style.display = 'block';
-      msgEl.style.color = urgent ? 'var(--red)' : 'var(--yellow)';
-      msgEl.textContent = urgent
-        ? (isAr ? `⚡ الفريق الثاني زايد ${theirs} — زايد أو خسرت!` : `⚡ Other bid ${theirs} — bid higher or lose!`)
-        : (isAr ? `🔥 الفريق الثاني زايد ${theirs}` : `🔥 Other team bid ${theirs}`);
-    } else if (d.lastBidder === team && mine > 0) {
+    const lead = leaderOf(bidA, bidB, d.bids?.a?.time, d.bids?.b?.time);
+    const draw = mine > 0 && mine === theirs;
+    if (!lead) {
+      msgEl.style.display = 'none';
+    } else if (lead === team) {
       msgEl.style.display = 'block';
       msgEl.style.color = 'var(--green)';
-      msgEl.textContent = isAr ? `✅ مزايدتك: ${mine} — انتظر الفريق الثاني` : `✅ Your bid: ${mine} — waiting`;
+      msgEl.textContent = draw
+        ? (isAr ? `⚖️ الفريق الثاني عادل ${mine} — أنت متقدم لأنك وصلت أولاً` : `⚖️ Other team matched ${mine} — you still lead (you got there first)`)
+        : (isAr ? `✅ مزايدتك: ${mine} — انتظر الفريق الثاني` : `✅ Your bid: ${mine} — waiting`);
+    } else {
+      const urgent = d.bidCountdownEnd && d.bidCountdownEnd > srvNow();
+      msgEl.style.display = 'block';
+      msgEl.style.color = urgent ? 'var(--red)' : 'var(--yellow)';
+      msgEl.textContent = draw
+        ? (isAr ? `⚖️ عادلت ${theirs} — لكن الفريق الثاني وصل أولاً. زايد أكثر لتتقدم!` : `⚖️ You matched ${theirs} — but they got there first. Bid higher to lead!`)
+        : urgent
+          ? (isAr ? `⚡ الفريق الثاني زايد ${theirs} — زايد أو خسرت!` : `⚡ Other bid ${theirs} — bid higher or lose!`)
+          : (isAr ? `🔥 الفريق الثاني زايد ${theirs}` : `🔥 Other team bid ${theirs}`);
     }
   }
 
@@ -485,6 +542,8 @@ onValue(ref(db, `rooms/${roomId}`), snap => {
   }
 
   if (d.shutdown) { stopTimer(); el('shutdown-overlay').style.display = 'flex'; }
+
+  firstSnapshot = false;
 });
 
 onValue(ref(db, `sessions/${session}/shutdown`), snap => {
