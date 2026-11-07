@@ -5964,6 +5964,7 @@ function charShowQR() {
 }
 // act.html writes sessions/<s>/actScan = <scan id> when the actor opens it
 function charWatchScan(scanId) {
+  window._charScanId = scanId;
   if (window._charScanUnsub) { window._charScanUnsub(); window._charScanUnsub = null; }
   const db = window._fbDb, fbRef = window._fbRef, fbOnValue = window._fbOnValue;
   if (!db || !fbOnValue || !window._gameSession) return;
