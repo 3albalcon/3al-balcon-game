@@ -476,10 +476,13 @@ function render() {
   if (state.currentRound === 'r3') {
     if (!cat3) { dyn.innerHTML = _lang==='en'?'<div class="waiting">Waiting for auction...</div>':'<div class="waiting">انتظر بدء المزاد...</div>'; return; }
     const bids = cat3.bids||{};
-    const answers = cat3.answers||[];
+    // Answers arrive from the phone as plain strings and only become
+    // {text,status} after validation — normalise before rendering.
+    const answers = (cat3.answers||[]).map(a => typeof a === 'string' ? { text: a, status: 'pending' } : a);
     const phase = cat3.phase || 'waiting';
-    const connA = cat3.connected?.a;
-    const connB = cat3.connected?.b;
+    // bid.html writes connectedA/connectedB; older builds wrote connected.a/b
+    const connA = cat3.connectedA ?? cat3.connected?.a;
+    const connB = cat3.connectedB ?? cat3.connected?.b;
     const bothConnected = connA && connB;
     dyn.innerHTML = `
       ${cat3.question?`<div class="card q-card">${cat3.question}</div>`:''}
@@ -489,6 +492,9 @@ function render() {
           <span style="color:${connB?'#39FF14':'rgba(255,255,255,0.3)'}">● ${cat3.teamB||(_lang==='en'?'B':'ب')}</span>
         </div>
         ${bothConnected ? `<button class="btn btn-g btn-sm" onclick="c('startCat3')" style="width:100%;font-size:15px">${_lang==='en'?'🎯 Start Auction':'🎯 ابدأ المزاد'}</button>` : _lang==='en'?'<div class="waiting" style="font-size:12px">Waiting for both teams...</div>':'<div class="waiting" style="font-size:12px">انتظر اتصال الفريقين...</div>'}
+      ` : ''}
+      ${phase === 'bidding' && !cat3.auctionWinner ? `
+        <button class="btn btn-y btn-sm" onclick="c('skipCat3')" style="width:100%">${_lang==='en'?'⏩ Skip Question':'⏩ تجاوز السؤال'}</button>
       ` : ''}
       ${phase === 'bidding' || phase === 'answering' || cat3.auctionWinner ? `
         <div class="bid-row">
